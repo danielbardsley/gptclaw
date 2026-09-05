@@ -250,7 +250,7 @@ an apply.
 
 **Entry gate:** Phases 1–5 are implemented on a feature branch.
 
-- [ ] **6.1 Repository — Open the implementation pull request.** Link SPEC-001,
+- [x] **6.1 Repository — Open the implementation pull request.** Link SPEC-001,
   TDD-001, and this task list; describe all one-time external configuration.
 - [ ] **6.2 Operator — Verify the credential preflight.** Confirm the plan token
   can reach the intended HCP organization/workspace and the plan role sees the
