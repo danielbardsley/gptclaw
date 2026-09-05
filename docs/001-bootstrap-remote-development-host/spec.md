@@ -178,8 +178,12 @@ that needs it and must never be committed, printed, or stored on the EC2 host.
 
 HCP Terraform must authenticate to the target AWS account with dynamic provider
 credentials using an AWS IAM OIDC trust and separate least-privilege plan and
-apply roles. Static AWS access keys are not an implementation fallback; an OIDC
-configuration or permission failure must stop the run and be repaired narrowly.
+apply roles during normal operation. The OIDC provider and roles are themselves
+Terraform-managed resources. The only permitted bootstrap exception is a
+temporary, sensitive AWS environment credential in the HCP workspace for the
+first GitHub-triggered HCP apply. It must be removed immediately after that
+apply creates the OIDC trust and must never be used to apply AWS changes outside
+the committed GitHub Actions path.
 
 Long-lived AWS credentials must not be copied into Terraform files, Terraform state, GitHub workflow files, or GitHub logs. GitHub-hosted runners do not require AWS credentials when HCP Terraform performs the remote run.
 
@@ -290,7 +294,8 @@ Secrets, access tokens, device codes, private keys, and complete environment dum
 ## 7. Security requirements
 
 - EC2 receives no production deployment permissions.
-- AWS credentials used by Terraform must come from the HCP Terraform workspace identity through short-lived OIDC credentials.
+- After the first pipeline bootstrap apply, AWS credentials used by Terraform must come from the HCP Terraform workspace identity through short-lived OIDC credentials.
+- Temporary bootstrap AWS credentials may exist only as sensitive HCP workspace environment variables and must be deleted after OIDC is verified.
 - AWS credentials used by applications on EC2 must come from an instance role, not stored access keys.
 - The GitHub Actions runner must not receive AWS credentials when the Terraform run executes remotely in HCP Terraform.
 - The plan-only HCP Terraform token must be stored as `TF_API_TOKEN_PLAN`; the apply-capable token must be stored only as `TF_API_TOKEN_APPLY` in the protected GitHub environment. Either token must be rotated if stale or excessively scoped.
@@ -309,12 +314,13 @@ Secrets, access tokens, device codes, private keys, and complete environment dum
 
 1. Confirm the HCP Terraform organization, target AWS account ID, region, and development naming conventions.
 2. Create the `gptclaw-dev-host` HCP Terraform workspace in remote-execution mode.
-3. Configure HCP Terraform access to AWS with OIDC-based dynamic provider credentials and separate plan and apply roles.
-4. Add or rotate the plan-only `TF_API_TOKEN_PLAN` repository secret, create the protected `development` GitHub environment, and add or rotate its `TF_API_TOKEN_APPLY` secret.
-5. Add Terraform code beneath `infra/dev-host` and the deployment workflow beneath `.github/workflows/`.
+3. Add Terraform code beneath `infra/dev-host`, including the AWS OIDC provider and phase-specific roles, and add the deployment workflow beneath `.github/workflows/`.
+4. Add the temporary bootstrap AWS credential only to the HCP workspace as sensitive environment variables.
+5. Add or rotate the plan-only `TF_API_TOKEN_PLAN` repository secret, create the protected `development` GitHub environment, and add or rotate its `TF_API_TOKEN_APPLY` secret.
 6. Run the credential preflight and repair stale credentials or insufficient permissions without placing credentials in source control.
 7. Open a pull request and obtain a successful validation and speculative HCP Terraform plan.
-8. Merge the reviewed change to `main`, manually dispatch the `development` deployment with the exact confirmation, complete any environment approval, and let the GitHub Actions workflow trigger the HCP Terraform apply.
+8. Merge the reviewed change to `main`, manually dispatch the `development` deployment with the exact confirmation, complete any environment approval, and let the GitHub Actions workflow trigger the first HCP Terraform apply.
+9. Configure the HCP dynamic provider variables with the Terraform-created role ARNs, remove both static AWS credential variables, and run a no-change pipeline plan to prove OIDC access.
 9. Confirm the successful GitHub Actions run, HCP Terraform run, remote state, and expected AWS account and region.
 10. Confirm SSM access before configuring any alternative access path.
 11. Install Tailscale and enroll the host without placing the enrollment secret in Terraform state.
@@ -356,7 +362,7 @@ The work is complete only when all of the following pass:
 ## 10. Required inputs before implementation
 
 - AWS account ID and target region.
-- An authorized bootstrap path for establishing HCP Terraform's AWS trust and least-privilege plan/apply roles.
+- An authorized AWS bootstrap credential stored temporarily and sensitively in HCP Terraform; it is used only by a GitHub-triggered remote apply and removed after OIDC verification.
 - HCP Terraform organization name and permission to create the `gptclaw-dev-host` workspace.
 - Valid, separately scoped HCP Terraform team or service-account tokens for repository plans and protected-environment applies; existing tokens are assumed stale until verified.
 - Confirmation of whether GitHub environment required reviewers are available for this repository plan; manual dispatch with exact confirmation remains required either way.

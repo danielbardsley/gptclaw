@@ -35,6 +35,27 @@ if ! grep -Eq '^[[:space:]]*prevent_destroy[[:space:]]*=[[:space:]]*true' infra/
   status=1
 fi
 
+if ! grep -Eq '^[[:space:]]*prevent_destroy[[:space:]]*=[[:space:]]*true' infra/dev-host/hcp_identity.tf; then
+  echo "The HCP OIDC provider and deployment roles must be protected from accidental destruction." >&2
+  status=1
+fi
+
+if ! grep -Eq '^[[:space:]]*secret_string_wo[[:space:]]*=' infra/dev-host/secrets.tf; then
+  echo "The Tailscale auth key must use the provider's write-only secret argument." >&2
+  status=1
+fi
+
+if grep -Eq '^[[:space:]]*secret_string[[:space:]]*=' infra/dev-host/secrets.tf; then
+  echo "The Tailscale auth key must never use the state-persisted secret_string argument." >&2
+  status=1
+fi
+
+hcp_self_management=$(sed -n '/sid[[:space:]]*=[[:space:]]*"ManageDevelopmentHostRole"/,/^[[:space:]]*}/p' infra/dev-host/hcp_identity.tf)
+if grep -q 'hcp-apply' <<<"$hcp_self_management"; then
+  echo "The dynamic apply role must not be allowed to modify its own permissions." >&2
+  status=1
+fi
+
 if ! grep -Eq '^[[:space:]]*user_data_replace_on_change[[:space:]]*=[[:space:]]*true' infra/dev-host/compute.tf; then
   echo "Bootstrap changes must trigger a reviewed compute replacement." >&2
   status=1

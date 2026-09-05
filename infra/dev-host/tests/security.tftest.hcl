@@ -22,17 +22,23 @@ mock_provider "aws" {
       value = "ami-0123456789abcdef0"
     }
   }
+
+  mock_data "aws_iam_policy_document" {
+    defaults = {
+      json = "{}"
+    }
+  }
 }
 
 mock_provider "cloudinit" {}
 
 variables {
-  aws_account_id            = "123456789012"
-  aws_region                = "us-east-1"
-  availability_zone         = "us-east-1a"
-  desktop_ssh_public_key    = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExamplePublicKeyForTerraformTests forge-dev-test"
-  tailscale_auth_secret_arn = "arn:aws:secretsmanager:us-east-1:123456789012:secret:gptclaw/tailscale-test"
-  deployment_revision       = "0123456789abcdef0123456789abcdef01234567"
+  aws_account_id         = "123456789012"
+  aws_region             = "us-east-1"
+  availability_zone      = "us-east-1a"
+  desktop_ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExamplePublicKeyForTerraformTests forge-dev-test"
+  tailscale_auth_key     = "tskey-auth-test"
+  deployment_revision    = "0123456789abcdef0123456789abcdef01234567"
 }
 
 run "security_controls" {
@@ -79,8 +85,23 @@ run "security_controls" {
   }
 
   assert {
-    condition     = strcontains(aws_iam_role_policy.dev_host_runtime.policy, "arn:aws:secretsmanager:us-east-1:123456789012:secret:gptclaw/tailscale-test")
+    condition     = strcontains(aws_iam_role_policy.dev_host_runtime.policy, aws_secretsmanager_secret.tailscale_enrollment.arn)
     error_message = "The host role must be limited to the exact Tailscale secret."
+  }
+
+  assert {
+    condition     = strcontains(aws_iam_role.hcp_plan.assume_role_policy, "organization:Bardsley:project:gptclaw:workspace:gptclaw-dev-host:run_phase:plan")
+    error_message = "The plan role trust must be limited to the exact HCP plan subject."
+  }
+
+  assert {
+    condition     = strcontains(aws_iam_role.hcp_apply.assume_role_policy, "organization:Bardsley:project:gptclaw:workspace:gptclaw-dev-host:run_phase:apply")
+    error_message = "The apply role trust must be limited to the exact HCP apply subject."
+  }
+
+  assert {
+    condition     = aws_iam_openid_connect_provider.hcp_terraform.client_id_list == toset(["aws.workload.identity"])
+    error_message = "The HCP OIDC provider must accept only the workload identity audience."
   }
 }
 
@@ -88,8 +109,7 @@ run "reject_wrong_account" {
   command = plan
 
   variables {
-    aws_account_id            = "999999999999"
-    tailscale_auth_secret_arn = "arn:aws:secretsmanager:us-east-1:999999999999:secret:gptclaw/tailscale-test"
+    aws_account_id = "999999999999"
   }
 
   expect_failures = [check.target_account]
@@ -105,12 +125,12 @@ run "reject_private_ssh_key" {
   expect_failures = [var.desktop_ssh_public_key]
 }
 
-run "reject_cross_region_secret" {
+run "reject_invalid_tailscale_key" {
   command = plan
 
   variables {
-    tailscale_auth_secret_arn = "arn:aws:secretsmanager:us-west-2:123456789012:secret:gptclaw/tailscale-test"
+    tailscale_auth_key = "not-a-tailscale-key"
   }
 
-  expect_failures = [check.tailscale_secret_scope]
+  expect_failures = [var.tailscale_auth_key]
 }

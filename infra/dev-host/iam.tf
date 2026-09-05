@@ -48,7 +48,7 @@ resource "aws_iam_role_policy" "dev_host_runtime" {
           "secretsmanager:DescribeSecret",
           "secretsmanager:GetSecretValue",
         ]
-        Resource = var.tailscale_auth_secret_arn
+        Resource = aws_secretsmanager_secret.tailscale_enrollment.arn
       },
     ]
   })

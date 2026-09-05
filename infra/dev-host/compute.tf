@@ -4,7 +4,7 @@ locals {
     data_volume_id            = aws_ebs_volume.projects.id
     instance_name             = var.instance_name
     log_group_name            = aws_cloudwatch_log_group.dev_host.name
-    tailscale_auth_secret_arn = var.tailscale_auth_secret_arn
+    tailscale_auth_secret_arn = aws_secretsmanager_secret.tailscale_enrollment.arn
     tailscale_tag             = var.tailscale_tag
   })
 }

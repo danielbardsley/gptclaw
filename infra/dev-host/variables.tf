@@ -133,14 +133,45 @@ variable "desktop_ssh_public_key" {
   }
 }
 
-variable "tailscale_auth_secret_arn" {
-  description = "ARN of the Secrets Manager secret containing a fresh one-use Tailscale auth key."
+variable "tailscale_auth_key" {
+  description = "Fresh one-use, tagged Tailscale auth key. HCP Terraform supplies it ephemerally and Terraform never stores it in state."
   type        = string
+  sensitive   = true
+  ephemeral   = true
 
   validation {
-    condition     = can(regex("^arn:(aws|aws-us-gov):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[A-Za-z0-9/_+=.@-]+$", var.tailscale_auth_secret_arn))
-    error_message = "tailscale_auth_secret_arn must be a Secrets Manager secret ARN."
+    condition     = can(regex("^tskey-auth-", var.tailscale_auth_key))
+    error_message = "tailscale_auth_key must be a Tailscale authentication key."
   }
+}
+
+variable "tailscale_auth_key_version" {
+  description = "Monotonic version used to rotate the write-only Tailscale secret value. Increment whenever tailscale_auth_key changes."
+  type        = number
+  default     = 1
+
+  validation {
+    condition     = var.tailscale_auth_key_version >= 1 && floor(var.tailscale_auth_key_version) == var.tailscale_auth_key_version
+    error_message = "tailscale_auth_key_version must be a positive integer."
+  }
+}
+
+variable "hcp_terraform_organization" {
+  description = "HCP Terraform organization trusted to assume the AWS deployment roles."
+  type        = string
+  default     = "Bardsley"
+}
+
+variable "hcp_terraform_project" {
+  description = "HCP Terraform project trusted to assume the AWS deployment roles."
+  type        = string
+  default     = "gptclaw"
+}
+
+variable "hcp_terraform_workspace" {
+  description = "HCP Terraform workspace trusted to assume the AWS deployment roles."
+  type        = string
+  default     = "gptclaw-dev-host"
 }
 
 variable "tailscale_tag" {

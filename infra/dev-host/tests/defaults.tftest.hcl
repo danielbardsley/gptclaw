@@ -22,17 +22,23 @@ mock_provider "aws" {
       value = "ami-0123456789abcdef0"
     }
   }
+
+  mock_data "aws_iam_policy_document" {
+    defaults = {
+      json = "{}"
+    }
+  }
 }
 
 mock_provider "cloudinit" {}
 
 variables {
-  aws_account_id            = "123456789012"
-  aws_region                = "us-east-1"
-  availability_zone         = "us-east-1a"
-  desktop_ssh_public_key    = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExamplePublicKeyForTerraformTests forge-dev-test"
-  tailscale_auth_secret_arn = "arn:aws:secretsmanager:us-east-1:123456789012:secret:gptclaw/tailscale-test"
-  deployment_revision       = "0123456789abcdef0123456789abcdef01234567"
+  aws_account_id         = "123456789012"
+  aws_region             = "us-east-1"
+  availability_zone      = "us-east-1a"
+  desktop_ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExamplePublicKeyForTerraformTests forge-dev-test"
+  tailscale_auth_key     = "tskey-auth-test"
+  deployment_revision    = "0123456789abcdef0123456789abcdef01234567"
 }
 
 run "planned_defaults" {
@@ -66,5 +72,10 @@ run "planned_defaults" {
   assert {
     condition     = output.deployment_revision == "0123456789abcdef0123456789abcdef01234567"
     error_message = "The deployment revision output must retain the workflow SHA."
+  }
+
+  assert {
+    condition     = aws_secretsmanager_secret_version.tailscale_enrollment.secret_string_wo_version == 1
+    error_message = "The default Tailscale secret version must begin at one."
   }
 }

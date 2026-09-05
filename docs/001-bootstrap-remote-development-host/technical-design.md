@@ -32,7 +32,7 @@ boundary.
 | D-005 | GitHub uses separate HCP plan/apply tokens. | PR code never receives apply capability. |
 | D-006 | EC2 uses a public subnet/public IPv4 with zero security-group ingress. | Outbound services work without NAT gateway cost; the public address is not an access path. |
 | D-007 | Project data uses a separate encrypted EBS volume with destruction protection. | Compute replacement cannot silently delete repositories. |
-| D-008 | Tailscale uses a tagged, pre-authorized, one-use key read from Secrets Manager. | The value stays out of Git, GitHub, user data, and Terraform state. |
+| D-008 | Tailscale uses a tagged, pre-authorized, one-use key written to Secrets Manager through an ephemeral Terraform variable and a write-only provider argument. | The value stays out of Git, GitHub, user data, and Terraform state. |
 | D-009 | Standard OpenSSH runs over Tailscale; Tailscale SSH is disabled. | Matches ChatGPT's SSH connection model. |
 | D-010 | `forge` is not a sudoer. | Project and user-scoped tooling remains available while system changes stay behind a controlled administrative path. |
 | D-011 | Bootstrap uses cloud-init/systemd, not Terraform provisioners. | Terraform never needs inbound SSH. |
@@ -179,7 +179,11 @@ The workflow supplies `TF_CLOUD_ORGANIZATION` and `TF_WORKSPACE=gptclaw-dev-host
 | `root_volume_size_gib` | `30` | Minimum 20. |
 | `data_volume_size_gib` | `80` | Minimum 40; shrinking rejected. |
 | `desktop_ssh_public_key` | Required HCP variable | Approved public key; private-key markers rejected. |
-| `tailscale_auth_secret_arn` | Required HCP variable | Secrets Manager ARN in target account/region. |
+| `tailscale_auth_key` | Required sensitive HCP variable | Ephemeral Terraform input; must start with `tskey-auth-`; never stored in state. |
+| `tailscale_auth_key_version` | `1` | Positive integer; increment whenever the key value changes. |
+| `hcp_terraform_organization` | `Bardsley` | Exact OIDC subject component. |
+| `hcp_terraform_project` | `gptclaw` | Exact OIDC subject component. |
+| `hcp_terraform_workspace` | `gptclaw-dev-host` | Exact OIDC subject component. |
 | `tailscale_tag` | `tag:gptclaw-dev` | Starts with `tag:`. |
 | `deployment_revision` | GitHub SHA | 40 lowercase hex characters. |
 | `log_retention_days` | `14` | Allowed CloudWatch retention value. |
@@ -311,17 +315,25 @@ Non-secret outputs:
 
 ### 6.1 One-time boundary
 
-HCP cannot assume an AWS role until its AWS trust exists. With an existing authorized AWS identity, the owner:
+HCP cannot assume a role until its AWS trust exists. The circular dependency is
+resolved without an out-of-band AWS mutation:
 
-1. Verifies account and region.
-2. Creates/reuses the AWS OIDC provider for `https://app.terraform.io`, audience `aws.workload.identity`.
-3. Creates `gptclaw-dev-hcp-plan` and `gptclaw-dev-hcp-apply`.
-4. Restricts trust to exact HCP organization, project, workspace, and phase.
-5. Creates/configures `gptclaw-dev-host`.
-6. Stores a tagged one-use Tailscale key in Secrets Manager.
-7. Creates/rotates HCP team tokens for GitHub.
+1. The owner creates the HCP workspace and supplies an existing authorized AWS
+   credential as sensitive workspace environment variables.
+2. The reviewed GitHub workflow queues the first remote HCP apply.
+3. That Terraform apply creates the account-wide HCP OIDC provider,
+   `gptclaw-dev-hcp-plan`, `gptclaw-dev-hcp-apply`, their policies, the
+   Tailscale secret, and all development-host resources in one state.
+4. The owner sets `TFC_AWS_PROVIDER_AUTH=true` and the two role ARN variables,
+   then deletes `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` from HCP.
+5. A GitHub-triggered no-change plan proves that HCP can use OIDC.
 
-`runbooks/bootstrap-hcp-aws.md` documents this. It is outside dev-host state to avoid a circular trust dependency. No EC2 resource is created manually.
+The OIDC provider, roles, role policies, Tailscale secret metadata, and
+persistent EBS volume use destruction protection. The dynamic apply role can
+manage the host role but cannot modify its own role, policy, trust, or the OIDC
+provider. A future trust/policy change therefore requires temporarily restoring
+an authorized bootstrap credential in HCP and still applying only through the
+reviewed GitHub pipeline. `runbooks/bootstrap-hcp-aws.md` documents the process.
 
 ### 6.2 HCP-to-AWS OIDC
 
@@ -345,6 +357,11 @@ Apply trust substitutes `run_phase:apply`. Organization, project, and workspace 
 | `TFC_AWS_APPLY_ROLE_ARN` | Exact apply role ARN |
 
 Plan gets only describe/get/list operations needed by refresh/data sources. Apply gets the EC2, EBS, VPC, IAM, Logs, tagging, and `iam:PassRole` actions required by declared resources. Permission errors are fixed by adding the smallest missing permission, never administrator access.
+
+The OIDC provider and both roles are declared in `infra/dev-host/hcp_identity.tf`.
+Their names are outputs of the first apply. The plan role has no mutation
+permissions. The apply role cannot modify the HCP deployment identities or OIDC
+provider, preventing a normal run from expanding its own authority.
 
 ### 6.3 GitHub-to-HCP
 
@@ -371,7 +388,8 @@ No AWS credential exists in this workflow. Stale AWS secrets are ignored and rem
 |---|---|
 | HCP plan token 401/403 | Rotate `TF_API_TOKEN_PLAN`; do not alter AWS. |
 | HCP apply token rejected | Rotate `TF_API_TOKEN_APPLY`; redispatch. |
-| OIDC denied | Match organization/project/workspace/phase exactly. |
+| Bootstrap credential denied | Repair only the missing permission in the HCP workspace credential; do not apply from a workstation. |
+| OIDC denied | Match organization/project/workspace/phase exactly; temporarily restore bootstrap credentials only if the committed trust itself must change. |
 | Read API denied | Add only the required plan action. |
 | Mutation denied | Add only the required apply action/resource. |
 | Wrong account/region | Correct input; never relax account allowlist. |
@@ -447,9 +465,11 @@ Phases log start/success/failure without environment dumps. Failures preserve SS
 
 ### 8.2 Tailscale
 
-Before deployment, configure tag `tag:gptclaw-dev`, ownership, and access from the owner's identity/device to that tag on TCP 22. Create a tagged, pre-authorized, non-ephemeral, one-use auth key and store exactly that value in Secrets Manager.
+Before deployment, configure tag `tag:gptclaw-dev`, ownership, and access from the owner's identity/device to that tag on TCP 22. Create a tagged, pre-authorized, non-ephemeral, one-use auth key and store it as the sensitive HCP Terraform variable `tailscale_auth_key`.
 
-Terraform receives only the ARN. The host retrieves the value with its role and runs without shell tracing:
+Terraform treats the variable as ephemeral and uses
+`secret_string_wo`; the key is sent to AWS Secrets Manager but not persisted in
+Terraform state. The host retrieves the value with its role and runs without shell tracing:
 
 ~~~text
 tailscale up --auth-key=<in-memory-value> \
@@ -458,7 +478,7 @@ tailscale up --auth-key=<in-memory-value> \
   --ssh=false
 ~~~
 
-The variable is cleared. Reboots reuse node state and do not retrieve the key. Before replacement, store a fresh one-use key.
+The shell variable is cleared. Reboots reuse node state and do not retrieve the key. Before replacement, store a fresh one-use key in HCP and increment `tailscale_auth_key_version` in the same approved change.
 
 ### 8.3 SSH
 
@@ -647,7 +667,7 @@ Evidence contains statuses, resource IDs, Git SHA, GitHub run URL, and HCP run U
 ## 13. Implementation stages
 
 1. **Repository:** layout, ignores, versions, lock, tests, workflow skeleton.
-2. **Identity:** HCP workspace, GitHub environment, split HCP tokens, AWS OIDC roles.
+2. **Identity:** HCP workspace, temporary bootstrap credential, GitHub environment, split HCP tokens, Terraform-managed AWS OIDC roles.
 3. **AWS:** guardrails, network, IAM, logs, storage, EC2.
 4. **Bootstrap:** cloud-init, mount, SSM, Tailscale, SSH, Codex.
 5. **Plan:** repair stale credentials/read permissions.

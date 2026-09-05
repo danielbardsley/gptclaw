@@ -32,3 +32,18 @@ output "deployment_revision" {
   description = "Git revision associated with the deployment."
   value       = var.deployment_revision
 }
+
+output "hcp_terraform_plan_role_arn" {
+  description = "AWS role configured as TFC_AWS_PLAN_ROLE_ARN after the bootstrap apply."
+  value       = aws_iam_role.hcp_plan.arn
+}
+
+output "hcp_terraform_apply_role_arn" {
+  description = "AWS role configured as TFC_AWS_APPLY_ROLE_ARN after the bootstrap apply."
+  value       = aws_iam_role.hcp_apply.arn
+}
+
+output "tailscale_enrollment_secret_arn" {
+  description = "Secrets Manager ARN used once by the host to join Tailscale."
+  value       = aws_secretsmanager_secret.tailscale_enrollment.arn
+}

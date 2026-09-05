@@ -81,28 +81,32 @@ are committed and a secret scan finds no credentials or Terraform artifacts.
 
 ## Phase 2 — Bootstrap HCP Terraform, AWS trust, and GitHub controls
 
-**Entry gate:** Phases 0–1 complete. An existing authorized AWS identity and
-HCP Terraform administrator are available for one-time setup.
+**Entry gate:** Phases 0–1 complete. An existing authorized AWS credential can
+be stored temporarily in HCP Terraform, and an HCP administrator is available
+for one-time setup. No AWS resource is changed outside the pipeline.
 
 - [x] **2.1 Operator — Create the HCP Terraform workspace.** Create
   `gptclaw-dev-host` in the approved project with remote execution, no VCS
   connection, no working-directory prefix, auto-apply disabled, and Terraform
   `1.16.1`.
-- [ ] **2.2 Operator — Create or verify the HCP AWS OIDC provider.** Use issuer
-  `https://app.terraform.io` and audience `aws.workload.identity`.
-- [ ] **2.3 Operator — Create the HCP plan role.** Restrict trust to the exact
-  organization, project, workspace, and `run_phase:plan`; grant only the read
-  actions needed for refresh and data sources.
-- [ ] **2.4 Operator — Create the HCP apply role.** Restrict trust to the exact
-  organization, project, workspace, and `run_phase:apply`; grant only the
-  resource mutations required by this design and limit `iam:PassRole` to the
-  GptClaw host role.
-- [ ] **2.5 Operator — Configure dynamic AWS credentials in HCP.** Set
+- [x] **2.2 Repository — Define the HCP AWS OIDC provider.** Declare issuer
+  `https://app.terraform.io`, audience `aws.workload.identity`, and destruction
+  protection in the development-host Terraform state.
+- [x] **2.3 Repository — Define the phase-specific HCP roles.** Restrict trust
+  to exact organization, project, workspace, and run phase; give plan read-only
+  access and apply only the required mutations; limit `iam:PassRole` to the
+  GptClaw host role and prohibit apply-role self-management.
+- [x] **2.4 Operator — Configure the temporary AWS bootstrap credential.** Add
+  `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` only as sensitive HCP workspace
+  environment variables. They may be used only by the first GitHub-triggered
+  remote apply.
+- [ ] **2.5 Operator — Complete the OIDC cutover.** After the first apply, set
   `TFC_AWS_PROVIDER_AUTH`, `TFC_AWS_PLAN_ROLE_ARN`, and
-  `TFC_AWS_APPLY_ROLE_ARN` as workspace environment variables.
+  `TFC_AWS_APPLY_ROLE_ARN`, delete both static AWS variables, and prove the
+  dynamic identities with a no-change pipeline plan.
 - [ ] **2.6 Operator — Configure HCP Terraform variables.** Add the approved
-  account, region, availability zone, desktop SSH public key, Tailscale secret
-  ARN, and other non-default inputs. Mark sensitive values appropriately.
+  account, region, availability zone, desktop SSH public key, ephemeral
+  `tailscale_auth_key`, and other non-default inputs. Mark the key sensitive.
 - [ ] **2.7 Operator — Create separate HCP tokens.** Create or rotate a
   workspace-scoped plan token and apply-capable token, preferring team or
   service-account tokens over personal tokens.
@@ -117,14 +121,15 @@ HCP Terraform administrator are available for one-time setup.
   confirmation in all cases.
 - [ ] **2.11 Operator — Prepare Tailscale enrollment.** Configure tag ownership
   and TCP 22 access, create a tagged pre-authorized non-ephemeral one-use key,
-  and store it in AWS Secrets Manager.
+  and store it only as the sensitive HCP variable `tailscale_auth_key`.
 - [x] **2.12 Repository — Write `runbooks/bootstrap-hcp-aws.md`.** Document the
   one-time trust boundary, configuration names, validation steps, rotation, and
   least-privilege repair process without recording secret values.
 
-**Exit gate:** HCP can obtain the intended plan/apply AWS identities, GitHub has
-separate HCP credentials, the Tailscale secret exists, and the observed account
-and region match the approved inputs.
+**Exit gate:** The first apply was initiated by GitHub and executed by HCP, HCP
+can obtain the intended dynamic plan/apply AWS identities, the static bootstrap
+variables are deleted, GitHub has separate HCP credentials, the Terraform-owned
+Tailscale secret exists, and account/region match the approved inputs.
 
 ## Phase 3 — Implement and test the Terraform configuration
 

@@ -19,13 +19,3 @@ check "target_availability_zone" {
     error_message = "The selected availability zone does not belong to the approved region."
   }
 }
-
-check "tailscale_secret_scope" {
-  assert {
-    condition = (
-      strcontains(var.tailscale_auth_secret_arn, ":${var.aws_region}:") &&
-      strcontains(var.tailscale_auth_secret_arn, ":${var.aws_account_id}:")
-    )
-    error_message = "The Tailscale secret must be in the approved AWS account and region."
-  }
-}

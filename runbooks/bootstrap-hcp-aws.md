@@ -1,9 +1,10 @@
 # Bootstrap HCP Terraform, AWS trust, and GitHub
 
-This runbook creates the one-time trust anchors required before the development
-host pipeline can run. It does not create EC2, VPC, EBS, or runtime IAM
-resources manually. Those resources are owned exclusively by Terraform in the
-`gptclaw-dev-host` workspace.
+This runbook bootstraps the trust required by the development-host pipeline.
+Every AWS mutation—including the OIDC provider, deployment roles, Tailscale
+secret, EC2, VPC, EBS, and runtime IAM—is made by committed Terraform through
+GitHub Actions and the `gptclaw-dev-host` HCP workspace. No AWS console, CLI, or
+local Terraform mutation is permitted.
 
 Do not record token values, Tailscale keys, AWS access keys, device codes, or
 complete environment dumps while following this runbook.
@@ -48,20 +49,24 @@ If HCP does not yet offer `1.16.1`, select one supported `1.16.x` version and
 update `.terraform-version`, `versions.tf`, the workflow variable, and all
 planning documents in the same pull request.
 
-## 3. Establish HCP-to-AWS OIDC trust
+## 3. Bootstrap HCP-to-AWS trust through the pipeline
 
-Create or reuse the AWS IAM OIDC provider with:
+Add the existing authorized AWS credential to the HCP workspace only as
+sensitive environment variables:
 
-- Provider URL: `https://app.terraform.io` without a trailing slash
-- Audience: `aws.workload.identity`
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
 
-Create two roles:
+Do not add them to GitHub, Terraform input variables, local files, or shell
+history. The credential exists only to authorize the first GitHub-triggered HCP
+apply. `infra/dev-host/hcp_identity.tf` creates the OIDC provider and two roles:
 
 - `gptclaw-dev-hcp-plan`
 - `gptclaw-dev-hcp-apply`
 
-Each trust policy must use `sts:AssumeRoleWithWebIdentity`, match the audience,
-and match the exact HCP organization, project, workspace, and run phase:
+Their trust uses `sts:AssumeRoleWithWebIdentity`, the sole audience
+`aws.workload.identity`, and the exact HCP organization, project, workspace, and
+run phase:
 
 ```json
 {
@@ -72,17 +77,20 @@ and match the exact HCP organization, project, workspace, and run phase:
 }
 ```
 
-The plan role receives only the read operations needed for refresh and data
-sources. The apply role receives only the EC2, EBS, VPC, IAM, Logs, tagging, and
-`iam:PassRole` operations required by `infra/dev-host`; `iam:PassRole` must be
-restricted to the GptClaw EC2 role. Add a denied permission only after a failed
-run identifies the exact missing action and resource.
+The plan role receives only refresh/data-source reads. The apply role receives
+the declared EC2, EBS, VPC, host-IAM, Logs, secret, tagging, and scoped
+`iam:PassRole` operations. It cannot modify itself, the plan role, or the OIDC
+provider. All three identities and their policies have destruction protection.
 
-Static AWS access keys are not a fallback.
+After the first successful apply, configure the dynamic variables in section 4
+and delete both static AWS variables. A later OIDC or deployment-policy change
+requires temporarily restoring an authorized bootstrap credential, but the
+change must still flow through pull request, GitHub Actions, and HCP Terraform.
 
 ## 4. Configure HCP workspace variables
 
-Environment variables:
+Before the first apply, the only AWS environment variables are the two sensitive
+bootstrap variables from section 3. After that apply, add:
 
 | Name | Value |
 |---|---|
@@ -90,13 +98,21 @@ Environment variables:
 | `TFC_AWS_PLAN_ROLE_ARN` | Exact plan-role ARN |
 | `TFC_AWS_APPLY_ROLE_ARN` | Exact apply-role ARN |
 
+Then delete `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` before queuing the
+OIDC verification plan.
+
 Terraform variables:
 
 - `aws_account_id`
 - `aws_region`
 - `availability_zone`
 - `desktop_ssh_public_key`
-- `tailscale_auth_secret_arn`
+- `tailscale_auth_key` (sensitive)
+
+`tailscale_auth_key` is an ephemeral Terraform variable and is written through
+the AWS provider's write-only secret argument, so its value is not stored in
+Terraform state. Set `tailscale_auth_key_version` to `1`; increment it whenever
+the key is rotated.
 
 The workflow supplies `deployment_revision`; the remaining variables have safe
 defaults documented in `infra/dev-host/terraform.tfvars.example`.
@@ -109,9 +125,10 @@ In the tailnet policy:
 2. Permit only the approved owner identity or desktop device to reach that tag
    on TCP 22.
 3. Create a tagged, pre-authorized, non-ephemeral, one-use auth key.
-4. Store only the key value in an AWS Secrets Manager secret in the target
-   account and region.
-5. Record the secret ARN, never the value.
+4. Store the key only in the sensitive HCP Terraform variable
+   `tailscale_auth_key`.
+5. Let the first pipeline apply create the AWS Secrets Manager secret and write
+   its value without persisting that value in Terraform state.
 
 Create a fresh one-use key immediately before initial creation or instance
 replacement. The host consumes the value once and retains Tailscale node state
@@ -139,14 +156,23 @@ plan supports them. The exact manual confirmation remains mandatory either way.
 
 ## 7. Preflight
 
-Before merging the implementation pull request, confirm:
+Before the first apply, confirm:
 
 - The plan token can queue a speculative run only in `gptclaw-dev-host`.
-- The plan phase assumes `gptclaw-dev-hcp-plan` in the approved account.
+- The temporary bootstrap AWS variables are sensitive HCP environment variables.
 - The plan reports the approved region and fixed availability zone.
 - The apply token is unavailable to pull-request jobs.
 - No AWS credential is configured in GitHub Actions.
 - HCP auto-apply remains disabled.
+
+After the first apply, confirm:
+
+- HCP reports the output ARNs for `gptclaw-dev-hcp-plan` and
+  `gptclaw-dev-hcp-apply`.
+- Both static AWS variables have been deleted from HCP.
+- A new GitHub-triggered plan assumes `gptclaw-dev-hcp-plan` and reports no
+  infrastructure changes.
+- The apply phase assumes `gptclaw-dev-hcp-apply` only after the GitHub gate.
 
 Retain links to the GitHub and HCP runs. Do not retain raw credentials or full
 environment output.
