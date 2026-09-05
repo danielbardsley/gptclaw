@@ -691,7 +691,7 @@ Each stage updates its runbook with its code.
 | Availability Zone | None | Required/sticky |
 | HCP organization | `Bardsley` | Confirmed |
 | HCP project | `gptclaw` | Created with dedicated `gptclaw-dev-host` workspace |
-| HCP token capability | HCP Free owners-team tokens; environment-protected | One plan token created; relocate to environment |
+| HCP token capability | HCP Free owners-team tokens; environment-protected | Both configured; no repository-level copy |
 | GitHub environment reviewers | Existing plan | Verify |
 | Tailscale tailnet | Existing | Required |
 | Tailscale tag | `tag:gptclaw-dev` | Confirm |

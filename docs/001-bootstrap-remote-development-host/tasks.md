@@ -107,13 +107,13 @@ for one-time setup. No AWS resource is changed outside the pipeline.
 - [ ] **2.6 Operator — Configure HCP Terraform variables.** Add the approved
   account, region, availability zone, desktop SSH public key, ephemeral
   `tailscale_auth_key`, and other non-default inputs. Mark the key sensitive.
-- [ ] **2.7 Operator — Create separate HCP tokens.** On HCP Free, create two
+- [x] **2.7 Operator — Create separate HCP tokens.** On HCP Free, create two
   owners-team tokens for independent rotation. Record that both have owner
   capability and use short expirations.
-- [ ] **2.8 Operator — Configure GitHub Actions settings.** Add both
+- [x] **2.8 Operator — Configure GitHub Actions settings.** Add both
   `TF_API_TOKEN_PLAN` and `TF_API_TOKEN_APPLY` only to the protected
   `development` environment. Remove any repository-level copy.
-- [ ] **2.9 Operator — Configure GitHub variables.** Add
+- [x] **2.9 Operator — Configure GitHub variables.** Add
   `HCP_TERRAFORM_ORGANIZATION`, `HCP_TERRAFORM_WORKSPACE`, and
   `TERRAFORM_VERSION` with the approved values.
 - [ ] **2.10 Operator — Configure the deployment gate.** Enable required
