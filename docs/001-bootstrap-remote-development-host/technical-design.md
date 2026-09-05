@@ -1,6 +1,6 @@
 # TDD-001: Bootstrap the Remote Development Host
 
-- **Status:** Proposed
+- **Status:** Ready for implementation
 - **Owner:** Daniel
 - **Source:** [SPEC-001](./spec.md)
 - **Implementation tasks:** [TASKS-001](./tasks.md)
@@ -12,6 +12,14 @@
 This document turns SPEC-001 into an implementation-ready design. It defines the secure path from a reviewed Git revision to a persistent AWS development host, and from the ChatGPT desktop app to that host through Tailscale and OpenSSH.
 
 It covers only the first host and connection. Slack control, reusable project templates, application runtimes, previews, Expo, and production deployment remain out of scope.
+
+The resulting host is the execution foundation for those later capabilities.
+This design permits `forge` to edit repositories, run development tools, and
+install unprivileged project or user dependencies. It deliberately withholds
+unrestricted system administration and production AWS access; later designs
+will add controlled software installation, isolated service runtimes, preview
+exposure, steering files, and production promotion without weakening that
+boundary.
 
 ## 2. Decisions
 
@@ -26,9 +34,10 @@ It covers only the first host and connection. Slack control, reusable project te
 | D-007 | Project data uses a separate encrypted EBS volume with destruction protection. | Compute replacement cannot silently delete repositories. |
 | D-008 | Tailscale uses a tagged, pre-authorized, one-use key read from Secrets Manager. | The value stays out of Git, GitHub, user data, and Terraform state. |
 | D-009 | Standard OpenSSH runs over Tailscale; Tailscale SSH is disabled. | Matches ChatGPT's SSH connection model. |
-| D-010 | `forge` is not a sudoer. | Agent work is separated from host administration. |
+| D-010 | `forge` is not a sudoer. | Project and user-scoped tooling remains available while system changes stay behind a controlled administrative path. |
 | D-011 | Bootstrap uses cloud-init/systemd, not Terraform provisioners. | Terraform never needs inbound SSH. |
 | D-012 | This release uses one Terraform root module. | Module extraction follows demonstrated reuse. |
+| D-013 | A rendered-bootstrap change replaces compute while preserving project EBS. | Bootstrap changes take effect predictably instead of leaving declared and actual host state different. |
 
 ## 3. Architecture
 
@@ -50,7 +59,7 @@ HCP Terraform: gptclaw-dev-host
     |
     | OIDC, phase-specific AWS role
     v
-AWS development account
+Target AWS account (development resources only)
     +-- VPC, subnet, route, security group
     +-- IAM instance role/profile
     +-- encrypted root and persistent data volumes
@@ -247,9 +256,14 @@ Configuration:
 - Shutdown behavior `stop`.
 - IMDS enabled, tokens required, hop limit 1.
 - cloud-init rendered through the cloud-init provider.
-- `user_data_replace_on_change = false`.
+- `user_data_replace_on_change = true`.
 
-AMI, architecture, subnet AZ, and data-volume AZ changes are replacement-class and require an explicit migration plan.
+AMI, architecture, subnet AZ, data-volume AZ, and rendered bootstrap changes are
+replacement-class and require an explicit migration plan. Replacing compute is
+preferred to silently accepting bootstrap drift; project data remains on the
+protected EBS volume. Before any replacement, the operator must snapshot or
+verify the project volume and place a fresh one-use Tailscale key in the existing
+secret.
 
 ### 5.7 Persistent storage
 
@@ -334,7 +348,7 @@ Plan gets only describe/get/list operations needed by refresh/data sources. Appl
 
 ### 6.3 GitHub-to-HCP
 
-This design strengthens SPEC-001's single-token minimum:
+This design implements SPEC-001's split GitHub-to-HCP credential boundary:
 
 | Secret | Location | HCP permission | Job |
 |---|---|---|---|
@@ -426,7 +440,8 @@ Idempotent phases:
 9. Harden OpenSSH/UFW.
 10. Install Codex for `forge`.
 11. Start log shipping.
-12. Write `/var/lib/gptclaw/bootstrap-complete.json` with version/time/status only.
+12. Write `/var/lib/gptclaw/bootstrap-complete.json` with the bootstrap version,
+    time, status, and installed non-secret component versions only.
 
 Phases log start/success/failure without environment dumps. Failures preserve SSM wherever possible.
 
@@ -476,12 +491,20 @@ Authentication is post-deployment:
 
 1. Enter through SSM or Tailscale.
 2. Switch to a `forge` login shell.
-3. Run `codex login --device-auth`.
-4. Complete the browser flow.
+3. Confirm device-code login is enabled in ChatGPT security or workspace settings.
+4. Run `codex login --device-auth` and complete the browser flow.
 5. Verify `codex login status`.
-6. Verify `~/.codex` is `0700` and credential files are `0600`.
+6. If device-code login is unavailable, forward the standard localhost callback
+   over SSH and run `codex login`; do not copy an authentication cache as the
+   normal fallback.
+7. If file-based credential storage is used, verify `~/.codex` is `0700` and
+   credential files are `0600`.
 
 Credentials never enter Terraform, cloud-init, Secrets Manager, Git, or evidence.
+
+The documented fallback starts a local forward from the desktop with
+`ssh -L 1455:localhost:1455 forge-dev`, then runs `codex login` in that SSH
+session and completes the browser flow on the desktop.
 
 ### 8.5 GitHub from EC2
 
@@ -540,7 +563,7 @@ Use the full `.ts.net` hostname if needed. Validate `ssh forge-dev`, then add it
 | Host compromise | No production role/sudo; consumed Tailscale key; narrow role. |
 | Compute replacement loss | Separate encrypted EBS and `prevent_destroy`. |
 | Secret leakage | ARN only; no plan artifacts, tracing, or environment dumps. |
-| Supply-chain change | Exact tool/action pins, lock file, reviewed updates. |
+| Supply-chain change | Exact Terraform/action pins, provider lock file, official package sources, captured installed versions, and reviewed updates. |
 
 ## 11. Operations and recovery
 
@@ -649,7 +672,10 @@ Each stage updates its runbook with its code.
 | Tailscale tailnet | Existing | Required |
 | Tailscale tag | `tag:gptclaw-dev` | Confirm |
 | Tailscale secret ARN | None | Required |
+| Desktop Tailscale enrollment | Existing tailnet | Verify |
 | Desktop SSH public key | New dedicated key | Required |
+| ChatGPT SSH connection feature | Current desktop app | Verify |
+| ChatGPT device-code login | Preferred; SSH callback fallback | Verify |
 
 These are configuration inputs, not architecture changes.
 
@@ -686,7 +712,9 @@ These are configuration inputs, not architecture changes.
 - [HCP Terraform AWS dynamic credentials](https://developer.hashicorp.com/terraform/cloud-docs/dynamic-provider-credentials/aws-configuration)
 - [HashiCorp setup-terraform](https://github.com/hashicorp/setup-terraform)
 - [Terraform installation](https://developer.hashicorp.com/terraform/install)
-- [Terraform AWS provider](https://registry.terraform.io/providers/hashicorp/aws/latest)
+- [Terraform 1.16.1 release](https://github.com/hashicorp/terraform/releases/tag/v1.16.1)
+- [Terraform AWS provider 6.62.0](https://github.com/hashicorp/terraform-provider-aws/releases/tag/v6.62.0)
+- [Terraform cloud-init provider 2.4.0](https://github.com/hashicorp/terraform-provider-cloudinit/releases/tag/v2.4.0)
 - [GitHub environments](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments)
 - [Canonical current Ubuntu AMIs](https://documentation.ubuntu.com/aws/aws-how-to/instances/build-cloudformation-templates/)
 - [AWS Ubuntu AMIs with SSM Agent](https://docs.aws.amazon.com/systems-manager/latest/userguide/ami-preinstalled-agent.html)

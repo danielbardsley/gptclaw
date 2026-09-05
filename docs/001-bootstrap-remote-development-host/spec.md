@@ -1,6 +1,6 @@
 # SPEC-001: Bootstrap the Remote Development Host
 
-- **Status:** Draft for review
+- **Status:** Ready for implementation
 - **Owner:** Daniel
 - **Implementation repository:** `git@github.com:danielbardsley/gptclaw.git`
 - **Technical design:** [TDD-001](./technical-design.md)
@@ -13,9 +13,20 @@ Provision one secure, persistent EC2 development host through a GitHub Actions p
 
 This is the first vertical slice of the development platform. It proves the remote control path before project scaffolding, application hosting, Expo, Slack, or production deployment are introduced.
 
+This slice intentionally stops at secure remote file and shell access. It must
+leave a clear path for later specifications to let the agent install project
+dependencies, operate isolated development services, publish Tailscale or Expo
+previews, and promote reviewed applications to production. System-wide package
+changes remain an administrative operation; normal project work will run as the
+unprivileged `forge` user.
+
 ## 2. Desired outcome
 
-The owner can deploy the host by reviewing a Terraform plan generated for a pull request, merging the approved change, and approving or explicitly dispatching the GitHub Actions deployment. The resulting apply runs remotely in HCP Terraform and is traceable to the deployed Git revision.
+The owner can deploy the host by reviewing a Terraform plan generated for a
+pull request, merging the approved change, manually dispatching the apply with
+the exact confirmation, and completing an environment approval when GitHub
+supports it. The resulting apply runs remotely in HCP Terraform and is
+traceable to the deployed Git revision.
 
 From the ChatGPT desktop app, the owner can then select the SSH-connected EC2 project and ask Codex to:
 
@@ -78,7 +89,7 @@ These are starting assumptions, not irrevocable platform decisions.
 | Normal network path | Tailscale |
 | Administrative fallback | AWS Systems Manager Session Manager |
 | Public inbound ports | None |
-| Codex authentication | ChatGPT device-code login for the initial personal environment |
+| Codex authentication | ChatGPT login; device code preferred, SSH-forwarded browser callback as fallback |
 | Infrastructure repository | `danielbardsley/gptclaw` |
 | Terraform code root | `infra/dev-host` |
 | Terraform execution | HCP Terraform remote execution |
@@ -128,10 +139,10 @@ The workflow must:
 
 - Run formatting, initialization, validation, and a speculative remote plan for pull requests that change infrastructure or workflow files.
 - Never apply infrastructure from a pull-request event.
-- Run an HCP Terraform remote plan and apply from the protected `development` GitHub environment after changes reach `main`.
+- Run speculative HCP Terraform remote plans with plan-only credentials and run applies from the protected `development` GitHub environment only after changes reach `main`.
 - Run Terraform from `infra/dev-host` and use `terraform apply -auto-approve` only after the GitHub deployment gate has passed.
-- Support a manually dispatched reconciliation run.
-- Require an explicit deployment approval when the repository's GitHub plan supports environment reviewers; otherwise require a manual workflow dispatch with an `apply` confirmation input.
+- Support manually dispatched plan and reconciliation runs.
+- Require a manual apply dispatch with an exact `gptclaw-dev-host` confirmation input, plus explicit environment approval when the repository's GitHub plan supports required reviewers.
 - Use a concurrency group so only one development-host deployment can run at a time.
 - Publish links to the GitHub Actions run and corresponding HCP Terraform run without copying sensitive output into GitHub logs.
 
@@ -156,11 +167,19 @@ The organization name remains an implementation input. Workspace creation is an 
 
 ### TFC-002: GitHub-to-HCP authentication
 
-GitHub Actions must authenticate to `app.terraform.io` using a narrowly scoped HCP Terraform team or service-account token stored as the `TF_API_TOKEN` secret in the protected `development` GitHub environment. The token must never be committed, printed, or stored on the EC2 host.
+GitHub Actions must authenticate to `app.terraform.io` with separate,
+narrowly scoped HCP Terraform team or service-account tokens. A plan-only token
+must be stored as the repository secret `TF_API_TOKEN_PLAN`; an apply-capable
+token must be stored as `TF_API_TOKEN_APPLY` only in the protected
+`development` GitHub environment. Each token must be exposed only to the job
+that needs it and must never be committed, printed, or stored on the EC2 host.
 
 ### AWS-001: HCP-to-AWS authentication
 
-HCP Terraform must authenticate to the target AWS account. The preferred implementation is HCP Terraform dynamic provider credentials using an AWS IAM OIDC trust and separate least-privilege plan and apply roles. Static AWS access keys are permitted only as a documented temporary bootstrap fallback; if used, they must be rotated, stored as sensitive HCP Terraform workspace environment variables, and removed after dynamic credentials are working.
+HCP Terraform must authenticate to the target AWS account with dynamic provider
+credentials using an AWS IAM OIDC trust and separate least-privilege plan and
+apply roles. Static AWS access keys are not an implementation fallback; an OIDC
+configuration or permission failure must stop the run and be repaired narrowly.
 
 Long-lived AWS credentials must not be copied into Terraform files, Terraform state, GitHub workflow files, or GitHub logs. GitHub-hosted runners do not require AWS credentials when HCP Terraform performs the remote run.
 
@@ -212,7 +231,7 @@ Normal remote work must run as the `forge` user. The account must:
 
 ### ACC-002: Host administration boundary
 
-System provisioning is performed through infrastructure bootstrap or an explicit administrator session. During this phase, Codex may request a missing host package but must not install it through unrestricted privilege escalation.
+System provisioning is performed through infrastructure bootstrap or an explicit administrator session. Codex may install dependencies inside a project or the `forge` user's home directory when they do not require elevated privileges. During this phase, Codex may request a missing system package but must not install it through unrestricted privilege escalation. A later specification will define the controlled software-installation and service-runtime path.
 
 ### CDX-001: Codex installation
 
@@ -220,7 +239,13 @@ The current supported Codex CLI must be installed so that `codex` is present in 
 
 ### CDX-002: Codex authentication
 
-Codex must be authenticated on the remote host using ChatGPT device-code authentication. Cached authentication material must:
+Codex must be authenticated on the remote host using ChatGPT authentication.
+Device-code authentication is preferred for the headless host and must be
+enabled in ChatGPT security or workspace settings before use. If it is not
+available, the supported browser flow may be completed through an SSH-forwarded
+localhost callback. Copying a local authentication cache is not part of the
+normal procedure and requires an explicit, documented exception. Cached
+authentication material must:
 
 - Be readable only by the `forge` user.
 - Never be committed to Git.
@@ -265,10 +290,10 @@ Secrets, access tokens, device codes, private keys, and complete environment dum
 ## 7. Security requirements
 
 - EC2 receives no production deployment permissions.
-- AWS credentials used by Terraform must come from the HCP Terraform workspace identity, preferably through short-lived OIDC credentials.
+- AWS credentials used by Terraform must come from the HCP Terraform workspace identity through short-lived OIDC credentials.
 - AWS credentials used by applications on EC2 must come from an instance role, not stored access keys.
 - The GitHub Actions runner must not receive AWS credentials when the Terraform run executes remotely in HCP Terraform.
-- The HCP Terraform API token must be stored only as a protected GitHub environment secret and must be rotated if the existing value is stale or its scope is excessive.
+- The plan-only HCP Terraform token must be stored as `TF_API_TOKEN_PLAN`; the apply-capable token must be stored only as `TF_API_TOKEN_APPLY` in the protected GitHub environment. Either token must be rotated if stale or excessively scoped.
 - Terraform state must remain in HCP Terraform and must never be committed to Git.
 - Saved plan files must not be committed or exposed as public workflow artifacts.
 - The instance role follows least privilege and is limited to resources needed by this host.
@@ -284,18 +309,18 @@ Secrets, access tokens, device codes, private keys, and complete environment dum
 
 1. Confirm the HCP Terraform organization, target AWS account ID, region, and development naming conventions.
 2. Create the `gptclaw-dev-host` HCP Terraform workspace in remote-execution mode.
-3. Configure HCP Terraform access to AWS, preferring OIDC-based dynamic provider credentials with separate plan and apply roles.
-4. Create the protected `development` GitHub environment and add or rotate its `TF_API_TOKEN` secret.
+3. Configure HCP Terraform access to AWS with OIDC-based dynamic provider credentials and separate plan and apply roles.
+4. Add or rotate the plan-only `TF_API_TOKEN_PLAN` repository secret, create the protected `development` GitHub environment, and add or rotate its `TF_API_TOKEN_APPLY` secret.
 5. Add Terraform code beneath `infra/dev-host` and the deployment workflow beneath `.github/workflows/`.
 6. Run the credential preflight and repair stale credentials or insufficient permissions without placing credentials in source control.
 7. Open a pull request and obtain a successful validation and speculative HCP Terraform plan.
-8. Merge the reviewed change to `main`, approve or manually dispatch the `development` deployment, and let the GitHub Actions workflow trigger the HCP Terraform apply.
+8. Merge the reviewed change to `main`, manually dispatch the `development` deployment with the exact confirmation, complete any environment approval, and let the GitHub Actions workflow trigger the HCP Terraform apply.
 9. Confirm the successful GitHub Actions run, HCP Terraform run, remote state, and expected AWS account and region.
 10. Confirm SSM access before configuring any alternative access path.
 11. Install Tailscale and enroll the host without placing the enrollment secret in Terraform state.
 12. Create and harden the `forge` account.
 13. Install Codex and confirm it is on the login-shell `PATH`.
-14. Authenticate Codex with `codex login --device-auth`.
+14. Authenticate Codex with `codex login --device-auth`, or use the documented SSH-forwarded browser callback if device-code login is unavailable.
 15. Clone `danielbardsley/gptclaw` beneath `/srv/forge/projects`.
 16. Add the `forge-dev` alias to the desktop SSH configuration and verify normal SSH access.
 17. Add the SSH host and remote project folder in the ChatGPT desktop app.
@@ -308,11 +333,11 @@ The work is complete only when all of the following pass:
 - [ ] The `gptclaw-dev-host` workspace exists in the approved HCP Terraform organization and uses remote execution.
 - [ ] Terraform state exists only in HCP Terraform and is not present in the Git repository.
 - [ ] A pull request produces formatting and validation results plus a speculative HCP Terraform plan, with no apply.
-- [ ] A protected or explicitly confirmed GitHub Actions run from `main` produces the successful HCP Terraform apply.
+- [ ] A manually dispatched and exactly confirmed GitHub Actions run from current `main`, protected by an environment approval when supported, produces the successful HCP Terraform apply.
 - [ ] The EC2 instance was created from committed Terraform code by that pipeline; no local `terraform apply` was used.
 - [ ] The GitHub Actions and HCP Terraform run records identify the same revision.
 - [ ] The deployment targets the approved AWS account ID and region.
-- [ ] The active HCP-to-AWS identity is least-privilege; dynamic credentials are used or the temporary static-credential exception is documented.
+- [ ] The active HCP-to-AWS identity uses least-privilege, phase-specific dynamic credentials; no static AWS access key is configured for Terraform.
 - [ ] No AWS access key, HCP Terraform token, Terraform state, or saved plan is committed or exposed in logs.
 - [ ] The instance security group has no public inbound rule.
 - [ ] An authorized administrator can connect through Session Manager.
@@ -333,12 +358,13 @@ The work is complete only when all of the following pass:
 - AWS account ID and target region.
 - An authorized bootstrap path for establishing HCP Terraform's AWS trust and least-privilege plan/apply roles.
 - HCP Terraform organization name and permission to create the `gptclaw-dev-host` workspace.
-- A valid HCP Terraform team or service-account token for the GitHub `development` environment; any existing token is assumed stale until verified.
-- Confirmation of whether GitHub environment required reviewers are available for this repository plan; otherwise the workflow will use explicit manual dispatch confirmation.
+- Valid, separately scoped HCP Terraform team or service-account tokens for repository plans and protected-environment applies; existing tokens are assumed stale until verified.
+- Confirmation of whether GitHub environment required reviewers are available for this repository plan; manual dispatch with exact confirmation remains required either way.
 - GitHub repository `danielbardsley/gptclaw` with `main` as the default branch.
-- Tailscale tailnet and desired device tag, if tags are used.
+- Tailscale tailnet, desired device tag, and a desktop already authenticated to that tailnet.
 - Public half of the desktop SSH key.
 - Confirmation that **Settings -> Connections -> SSH** is available in the owner's ChatGPT desktop app.
+- Confirmation that ChatGPT device-code login is enabled, or that the desktop can establish the documented SSH localhost-forwarding fallback.
 
 ## 11. Deliverables
 
@@ -358,11 +384,11 @@ The work is complete only when all of the following pass:
 
 Completing this specification should be followed by separate specs for:
 
-1. Remote development runtime and controlled software installation.
-2. Steering files, project specifications, and reusable templates.
-3. Private web-service previews through Tailscale Serve.
-4. Expo development and EAS preview workflows.
-5. GitHub pull-request and production-promotion workflow.
+1. Remote development runtime, rootless service management, and controlled system-software installation.
+2. Steering-file hierarchy, including `AGENTS.md`, reusable specification, design, task, and project templates, and a controlled authentication model for creating additional GitHub repositories.
+3. Private web-service lifecycle and previews through Tailscale Serve.
+4. Expo local-development, device-testing, and EAS preview workflows.
+5. Production AWS isolation, infrastructure, credentials, pull-request checks, and promotion workflows.
 6. Optional Slack control adapter.
 
 ## 13. References

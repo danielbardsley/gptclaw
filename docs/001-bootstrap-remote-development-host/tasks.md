@@ -18,6 +18,12 @@ A task is complete when its change is reviewed, its checks pass, supporting
 documentation is updated, and no secret or generated Terraform artifact is
 present in Git.
 
+This task list ends when ChatGPT can safely edit files and run commands on the
+remote host. Controlled system-software installation, rootless application
+services, Tailscale and Expo previews, reusable steering files, production AWS
+promotion, and Slack control remain follow-on work; this implementation must
+preserve a secure path to add them.
+
 ## Phase 0 — Confirm inputs and safety boundaries
 
 **Entry gate:** None.
@@ -35,8 +41,12 @@ present in Git.
   HCP Terraform input.
 - [ ] **0.5 Operator — Confirm Tailscale policy inputs.** Approve the hostname
   `forge-dev-01`, tag `tag:gptclaw-dev`, and the identity or device permitted to
-  reach tagged hosts on TCP 22.
-- [ ] **0.6 Repository — Record non-secret implementation decisions.** Update
+  reach tagged hosts on TCP 22. Confirm the ChatGPT desktop machine is already
+  authenticated to the same tailnet.
+- [ ] **0.6 Operator — Confirm the Codex login path.** Enable device-code login
+  in ChatGPT security or workspace settings, or verify that the desktop can use
+  SSH local port forwarding for the supported browser callback fallback.
+- [ ] **0.7 Repository — Record non-secret implementation decisions.** Update
   the spec or design if any approved input changes an architectural default.
 
 **Exit gate:** Every required input has an owner and a confirmed value; no
@@ -52,9 +62,11 @@ secret value has been committed.
 - [ ] **1.2 Repository — Add Terraform ignore rules.** Exclude `.terraform/`,
   state files, saved plans, crash logs, override files, and local variable files
   while retaining `terraform.tfvars.example` and `.terraform.lock.hcl`.
-- [ ] **1.3 Repository — Pin the toolchain.** Set Terraform `1.16.1`, AWS
-  provider `~> 6.62`, and cloud-init provider `~> 2.4` in the documented
-  locations.
+- [ ] **1.3 Repository — Pin the toolchain.** Confirm HCP Terraform supports
+  Terraform `1.16.1`, then set that version, AWS provider `~> 6.62`, and
+  cloud-init provider `~> 2.4` in every documented location. If HCP does not yet
+  support `1.16.1`, choose one supported `1.16.x` version and update the spec,
+  design, tasks, workflow, workspace, and `.terraform-version` together.
 - [ ] **1.4 Repository — Configure dependency updates.** Add weekly Dependabot
   checks for GitHub Actions and Terraform providers.
 - [ ] **1.5 Repository — Add safe example configuration.** Create
@@ -141,7 +153,9 @@ and region match the approved inputs.
 - [ ] **3.8 Repository — Implement compute.** Create the Ubuntu instance with no
   EC2 key pair, encrypted 30 GiB root disk, IMDSv2 required, hop limit 1,
   shutdown behavior `stop`, rendered cloud-init, and
-  `user_data_replace_on_change = false`.
+  `user_data_replace_on_change = true`. Treat a rendered-bootstrap change as an
+  expected, reviewable instance replacement while preserving the project EBS
+  volume.
 - [ ] **3.9 Repository — Implement non-secret outputs.** Output only the
   instance ID, availability zone, project volume ID, log-group name, SSM command,
   expected Tailscale hostname, and deployment revision.
@@ -189,7 +203,8 @@ stable.
   and authentication logs to the dedicated CloudWatch log group without
   capturing credentials.
 - [ ] **4.9 Repository — Publish sanitized bootstrap status.** Write
-  `/var/lib/gptclaw/bootstrap-complete.json` with version, time, and status only.
+  `/var/lib/gptclaw/bootstrap-complete.json` with bootstrap version, time,
+  status, and installed non-secret component versions only.
 - [ ] **4.10 Repository — Test rerun and failure behavior.** Confirm bootstrap
   can safely rerun, never reformats an existing filesystem, and leaves SSM
   usable when storage or enrollment fails.
@@ -257,9 +272,12 @@ has yet been applied from a pull-request event.
 **Entry gate:** The implementation revision is on current `main` and the apply
 role is configured.
 
-- [ ] **7.1 Operator — Run the protected manual apply.** Enter the exact
-  confirmation, approve the `development` environment when applicable, and let
-  GitHub Actions initiate the HCP Terraform remote apply.
+- [ ] **7.1 Operator — Refresh enrollment and run the protected manual apply.**
+  For a replacement, first verify a current project-volume snapshot and confirm
+  the plan retains the existing EBS volume. Store a fresh one-use Tailscale key
+  in the existing secret immediately before an initial creation or replacement.
+  Enter the exact workflow confirmation, approve the `development` environment
+  when applicable, and let GitHub Actions initiate the remote apply.
 - [ ] **7.2 Operator — Repair apply permissions narrowly if required.** Add only
   the denied action/resource needed by the declared plan, rerun the plan, and
   redispatch; do not perform manual resource creation.
@@ -295,9 +313,11 @@ AWS security/storage assertions pass.
 - [ ] **8.4 Operator — Clone the repository.** Use a repository-specific SSH
   alias with `IdentitiesOnly yes`, clone to
   `/srv/forge/projects/gptclaw`, select `main`, and confirm a clean worktree.
-- [ ] **8.5 Operator — Authenticate Codex as `forge`.** Run
-  `codex login --device-auth`, complete the browser flow, verify login status,
-  and enforce `0700`/`0600` permissions for Codex credential storage.
+- [ ] **8.5 Operator — Authenticate Codex as `forge`.** Prefer
+  `codex login --device-auth`. If it is unavailable, use the documented SSH
+  localhost-forwarding browser callback; do not copy a local authentication
+  cache as the normal fallback. Verify login status and, when file-based
+  credential storage is used, enforce `0700`/`0600` permissions.
 - [ ] **8.6 Operator — Verify non-interactive Codex startup.** Confirm ChatGPT's
   SSH launch context finds `codex` without loading credentials from the
   repository or a globally readable file.
@@ -377,7 +397,7 @@ SPEC-001 acceptance criterion has retained sanitized evidence.
 | ACC-001 | 3.6, 4.3–4.4, 4.6–4.7, 8.2–8.6 |
 | ACC-002 | 2.4, 3.6, 4.3, 7.5, 10.3 |
 | CDX-001 | 4.7, 7.6–7.7, 8.6 |
-| CDX-002 | 8.5–8.6, 10.2 |
+| CDX-002 | 0.6, 8.5–8.6, 10.2 |
 | GIT-001 | 8.3–8.4, 9.3–9.6 |
 | REM-001 | 0.4, 9.1–9.2, 10.2 |
 | REM-002 | 0.3, 9.3–9.6 |
