@@ -1,9 +1,10 @@
 # SPEC-001: Bootstrap the Remote Development Host
 
-**Status:** Draft for review  
-**Owner:** Daniel  
-**Implementation repository:** `git@github.com:danielbardsley/gptclaw.git`
-**Last updated:** 2026-09-05
+- **Status:** Draft for review
+- **Owner:** Daniel
+- **Implementation repository:** `git@github.com:danielbardsley/gptclaw.git`
+- **Technical design:** [TDD-001](./technical-design.md)
+- **Last updated:** 2026-09-05
 
 ## 1. Summary
 

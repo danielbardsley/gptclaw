@@ -2,7 +2,7 @@
 
 - **Status:** Proposed
 - **Owner:** Daniel
-- **Source:** [SPEC-001](../../specs/001-bootstrap-remote-development-host.md)
+- **Source:** [SPEC-001](./spec.md)
 - **Repository:** `danielbardsley/gptclaw`
 - **Last updated:** 2026-09-05
 
@@ -676,7 +676,7 @@ These are configuration inputs, not architecture changes.
 
 ## 16. References
 
-- [SPEC-001](../../specs/001-bootstrap-remote-development-host.md)
+- [SPEC-001](./spec.md)
 - [HCP Terraform CLI-driven remote runs](https://developer.hashicorp.com/terraform/cloud-docs/workspaces/run/cli)
 - [HCP Terraform AWS dynamic credentials](https://developer.hashicorp.com/terraform/cloud-docs/dynamic-provider-credentials/aws-configuration)
 - [HashiCorp setup-terraform](https://github.com/hashicorp/setup-terraform)
