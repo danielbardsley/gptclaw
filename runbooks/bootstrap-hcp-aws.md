@@ -50,22 +50,6 @@ planning documents in the same pull request.
 
 ## 3. Establish HCP-to-AWS OIDC trust
 
-The reviewed bootstrap resources are defined in
-`bootstrap/aws/hcp-terraform.yaml`. Deploy that stack from an authorized AWS
-administrator session in the approved region:
-
-```sh
-aws cloudformation deploy \
-  --region us-east-1 \
-  --stack-name gptclaw-hcp-bootstrap \
-  --template-file bootstrap/aws/hcp-terraform.yaml \
-  --capabilities CAPABILITY_NAMED_IAM
-```
-
-The stack creates the OIDC provider, phase-specific plan/apply roles, and an
-empty retained Secrets Manager secret. It does not create the development VPC,
-EC2 host, EBS project volume, or host runtime role.
-
 Create or reuse the AWS IAM OIDC provider with:
 
 - Provider URL: `https://app.terraform.io` without a trailing slash
