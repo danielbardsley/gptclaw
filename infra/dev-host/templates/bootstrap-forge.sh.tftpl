@@ -1,0 +1,279 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+umask 027
+
+readonly BOOTSTRAP_VERSION="1"
+readonly AWS_REGION=${jsonencode(aws_region)}
+readonly DATA_VOLUME_ID=${jsonencode(data_volume_id)}
+readonly INSTANCE_NAME=${jsonencode(instance_name)}
+readonly LOG_GROUP_NAME=${jsonencode(log_group_name)}
+readonly TAILSCALE_AUTH_SECRET_ARN=${jsonencode(tailscale_auth_secret_arn)}
+readonly TAILSCALE_TAG=${jsonencode(tailscale_tag)}
+readonly LOG_FILE="/var/log/gptclaw-bootstrap.log"
+
+install -d -m 0750 /var/lib/gptclaw
+touch "$LOG_FILE"
+chmod 0640 "$LOG_FILE"
+exec > >(tee -a "$LOG_FILE" | logger -t gptclaw-bootstrap) 2>&1
+
+current_phase="initialization"
+
+log() {
+  printf '%s phase=%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$current_phase" "$*"
+}
+
+on_error() {
+  local exit_code=$?
+  log "status=failed exit_code=$exit_code"
+  exit "$exit_code"
+}
+
+trap on_error ERR
+
+if [ "$(id -u)" -ne 0 ]; then
+  log "status=failed reason=root-required"
+  exit 1
+fi
+
+current_phase="base-packages"
+log "status=started"
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -y
+apt-get install -y --no-install-recommends \
+  ca-certificates \
+  curl \
+  e2fsprogs \
+  git \
+  jq \
+  nvme-cli \
+  openssh-server \
+  rsyslog \
+  sudo \
+  ufw \
+  unzip
+systemctl enable --now rsyslog
+log "status=succeeded"
+
+current_phase="ssm-agent"
+log "status=started"
+if systemctl list-unit-files amazon-ssm-agent.service >/dev/null 2>&1; then
+  systemctl enable --now amazon-ssm-agent.service
+elif systemctl list-unit-files snap.amazon-ssm-agent.amazon-ssm-agent.service >/dev/null 2>&1; then
+  systemctl enable --now snap.amazon-ssm-agent.amazon-ssm-agent.service
+else
+  snap install amazon-ssm-agent --classic
+  systemctl enable --now snap.amazon-ssm-agent.amazon-ssm-agent.service
+fi
+log "status=succeeded"
+
+current_phase="aws-cli"
+log "status=started"
+if ! command -v aws >/dev/null 2>&1; then
+  aws_cli_dir=$(mktemp -d)
+  curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$aws_cli_dir/awscliv2.zip"
+  unzip -q "$aws_cli_dir/awscliv2.zip" -d "$aws_cli_dir"
+  "$aws_cli_dir/aws/install" --update
+  case "$aws_cli_dir" in
+    /tmp/*) rm -rf -- "$aws_cli_dir" ;;
+    *) log "status=warning reason=unexpected-temporary-path" ;;
+  esac
+fi
+aws --version
+log "status=succeeded"
+
+current_phase="forge-user"
+log "status=started"
+if ! id forge >/dev/null 2>&1; then
+  useradd --create-home --shell /bin/bash forge
+fi
+passwd --lock forge >/dev/null
+deluser forge sudo >/dev/null 2>&1 || true
+install -d -o forge -g forge -m 0700 /home/forge/.ssh
+install -o forge -g forge -m 0600 /etc/gptclaw/forge_authorized_key /home/forge/.ssh/authorized_keys
+install -d -o forge -g forge -m 0755 /home/forge/.local/bin
+cat >/etc/profile.d/gptclaw-forge-path.sh <<'PROFILE'
+if [ "$USER" = "forge" ]; then
+  PATH="$HOME/.local/bin:$PATH"
+  export PATH
+fi
+PROFILE
+chmod 0644 /etc/profile.d/gptclaw-forge-path.sh
+log "status=succeeded"
+
+current_phase="project-volume"
+log "status=started"
+cat >/usr/local/sbin/gptclaw-mount-projects <<'MOUNT_SCRIPT'
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+readonly DATA_VOLUME_ID=${jsonencode(data_volume_id)}
+readonly DEVICE_LINK="/dev/disk/by-id/nvme-Amazon_Elastic_Block_Store_$(printf '%s' "$DATA_VOLUME_ID" | tr -d '-')"
+
+for _ in $(seq 1 120); do
+  if [ -e "$DEVICE_LINK" ]; then
+    break
+  fi
+  sleep 5
+done
+
+if [ ! -e "$DEVICE_LINK" ]; then
+  echo "Persistent volume $DATA_VOLUME_ID was not found" >&2
+  exit 1
+fi
+
+device=$(readlink -f "$DEVICE_LINK")
+if [ -z "$device" ] || [ ! -b "$device" ]; then
+  echo "Persistent volume link did not resolve to a block device" >&2
+  exit 1
+fi
+
+if ! blkid "$device" >/dev/null 2>&1; then
+  mkfs.ext4 -L FORGE_DATA "$device"
+fi
+
+filesystem_type=$(blkid -s TYPE -o value "$device")
+if [ "$filesystem_type" != "ext4" ]; then
+  echo "Persistent volume has unexpected filesystem type: $filesystem_type" >&2
+  exit 1
+fi
+
+uuid=$(blkid -s UUID -o value "$device")
+if [ -z "$uuid" ]; then
+  echo "Persistent volume does not have a filesystem UUID" >&2
+  exit 1
+fi
+
+install -d -m 0750 /srv/forge
+if ! grep -Eq "^[[:space:]]*UUID=$uuid[[:space:]]+/srv/forge[[:space:]]" /etc/fstab; then
+  printf 'UUID=%s /srv/forge ext4 defaults,nofail 0 2\n' "$uuid" >>/etc/fstab
+fi
+mountpoint -q /srv/forge || mount /srv/forge
+install -d -o forge -g forge -m 0750 /srv/forge/projects
+MOUNT_SCRIPT
+chmod 0750 /usr/local/sbin/gptclaw-mount-projects
+cat >/etc/systemd/system/gptclaw-projects-volume.service <<'UNIT'
+[Unit]
+Description=Mount the GptClaw persistent project volume
+Wants=network-online.target
+After=network-online.target
+Before=gptclaw-bootstrap.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/gptclaw-mount-projects
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+systemctl daemon-reload
+systemctl enable --now gptclaw-projects-volume.service
+mountpoint -q /srv/forge
+log "status=succeeded"
+
+current_phase="tailscale"
+log "status=started"
+if ! command -v tailscale >/dev/null 2>&1; then
+  curl -fsSL https://tailscale.com/install.sh | sh
+fi
+systemctl enable --now tailscaled
+if ! tailscale status >/dev/null 2>&1; then
+  set +x
+  tailscale_auth_key=$(aws secretsmanager get-secret-value \
+    --region "$AWS_REGION" \
+    --secret-id "$TAILSCALE_AUTH_SECRET_ARN" \
+    --query SecretString \
+    --output text)
+  if [ -z "$tailscale_auth_key" ] || [ "$tailscale_auth_key" = "None" ]; then
+    log "status=failed reason=empty-enrollment-secret"
+    exit 1
+  fi
+  tailscale up \
+    --auth-key="$tailscale_auth_key" \
+    --hostname="$INSTANCE_NAME" \
+    --advertise-tags="$TAILSCALE_TAG" \
+    --ssh=false
+  unset tailscale_auth_key
+fi
+tailscale status
+log "status=succeeded"
+
+current_phase="ssh-hardening"
+log "status=started"
+cat >/etc/ssh/sshd_config.d/60-gptclaw.conf <<'SSHD'
+PermitRootLogin no
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PubkeyAuthentication yes
+AuthenticationMethods publickey
+AllowUsers forge
+X11Forwarding no
+AllowTcpForwarding local
+SSHD
+sshd -t
+systemctl reload ssh.service
+ufw default deny incoming
+ufw default allow outgoing
+ufw allow in on tailscale0 proto tcp to any port 22 comment 'GptClaw SSH over Tailscale'
+ufw --force enable
+log "status=succeeded"
+
+current_phase="cloudwatch-agent"
+log "status=started"
+if ! dpkg-query -W -f='$Status' amazon-cloudwatch-agent 2>/dev/null | grep -q 'ok installed'; then
+  cloudwatch_deb=$(mktemp --suffix=.deb)
+  curl -fsSL "https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb" -o "$cloudwatch_deb"
+  dpkg -i "$cloudwatch_deb"
+  rm -f -- "$cloudwatch_deb"
+fi
+jq -n --arg group "$LOG_GROUP_NAME" '{
+  agent: {run_as_user: "root"},
+  logs: {
+    logs_collected: {
+      files: {
+        collect_list: [
+          {file_path: "/var/log/cloud-init-output.log", log_group_name: $group, log_stream_name: "{instance_id}/cloud-init"},
+          {file_path: "/var/log/auth.log", log_group_name: $group, log_stream_name: "{instance_id}/auth"},
+          {file_path: "/var/log/gptclaw-bootstrap.log", log_group_name: $group, log_stream_name: "{instance_id}/bootstrap"}
+        ]
+      }
+    }
+  }
+}' >/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+  -a fetch-config \
+  -m ec2 \
+  -s \
+  -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+log "status=succeeded"
+
+current_phase="codex"
+log "status=started"
+sudo -u forge -H env \
+  CODEX_NON_INTERACTIVE=1 \
+  CODEX_INSTALL_DIR=/home/forge/.local/bin \
+  sh -c 'curl -fsSL https://chatgpt.com/codex/install.sh | sh'
+sudo -iu forge command -v codex
+sudo -iu forge codex --version
+sudo -iu forge sh -lc 'command -v codex'
+log "status=succeeded"
+
+current_phase="completion"
+log "status=started"
+codex_version=$(sudo -iu forge codex --version | head -n 1)
+tailscale_version=$(tailscale version | head -n 1)
+aws_cli_version=$(aws --version 2>&1 | head -n 1)
+jq -n \
+  --arg bootstrap_version "$BOOTSTRAP_VERSION" \
+  --arg completed_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  --arg codex "$codex_version" \
+  --arg tailscale "$tailscale_version" \
+  --arg aws_cli "$aws_cli_version" \
+  '{
+    bootstrap_version: $bootstrap_version,
+    completed_at: $completed_at,
+    status: "succeeded",
+    components: {codex: $codex, tailscale: $tailscale, aws_cli: $aws_cli}
+  }' >/var/lib/gptclaw/bootstrap-complete.json
+chmod 0644 /var/lib/gptclaw/bootstrap-complete.json
+log "status=succeeded"

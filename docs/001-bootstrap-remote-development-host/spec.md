@@ -1,6 +1,6 @@
 # SPEC-001: Bootstrap the Remote Development Host
 
-- **Status:** Ready for implementation
+- **Status:** Implementation in progress
 - **Owner:** Daniel
 - **Implementation repository:** `git@github.com:danielbardsley/gptclaw.git`
 - **Technical design:** [TDD-001](./technical-design.md)

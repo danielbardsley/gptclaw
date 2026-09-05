@@ -1,6 +1,6 @@
 # TASKS-001: Bootstrap the Remote Development Host
 
-- **Status:** Not started
+- **Status:** In progress
 - **Owner:** Daniel
 - **Specification:** [SPEC-001](./spec.md)
 - **Technical design:** [TDD-001](./technical-design.md)
@@ -36,7 +36,7 @@ preserve a secure path to add them.
   reviewers on the `development` environment.
 - [ ] **0.3 Operator — Confirm the desktop connection capability.** Verify the
   ChatGPT desktop app exposes **Settings -> Connections -> SSH**.
-- [ ] **0.4 Operator — Create a dedicated desktop-to-host SSH key pair.** Keep
+- [x] **0.4 Operator — Create a dedicated desktop-to-host SSH key pair.** Keep
   the private key on the desktop and make only the public key available as an
   HCP Terraform input.
 - [ ] **0.5 Operator — Confirm Tailscale policy inputs.** Approve the hostname
@@ -46,7 +46,7 @@ preserve a secure path to add them.
 - [ ] **0.6 Operator — Confirm the Codex login path.** Enable device-code login
   in ChatGPT security or workspace settings, or verify that the desktop can use
   SSH local port forwarding for the supported browser callback fallback.
-- [ ] **0.7 Repository — Record non-secret implementation decisions.** Update
+- [x] **0.7 Repository — Record non-secret implementation decisions.** Update
   the spec or design if any approved input changes an architectural default.
 
 **Exit gate:** Every required input has an owner and a confirmed value; no
@@ -56,23 +56,23 @@ secret value has been committed.
 
 **Entry gate:** Phase 0 complete.
 
-- [ ] **1.1 Repository — Create the planned source layout.** Add
+- [x] **1.1 Repository — Create the planned source layout.** Add
   `.github/workflows`, `infra/dev-host/templates`, `infra/dev-host/tests`,
   `runbooks`, and `scripts`.
-- [ ] **1.2 Repository — Add Terraform ignore rules.** Exclude `.terraform/`,
+- [x] **1.2 Repository — Add Terraform ignore rules.** Exclude `.terraform/`,
   state files, saved plans, crash logs, override files, and local variable files
   while retaining `terraform.tfvars.example` and `.terraform.lock.hcl`.
-- [ ] **1.3 Repository — Pin the toolchain.** Confirm HCP Terraform supports
+- [x] **1.3 Repository — Pin the toolchain.** Confirm HCP Terraform supports
   Terraform `1.16.1`, then set that version, AWS provider `~> 6.62`, and
   cloud-init provider `~> 2.4` in every documented location. If HCP does not yet
   support `1.16.1`, choose one supported `1.16.x` version and update the spec,
   design, tasks, workflow, workspace, and `.terraform-version` together.
-- [ ] **1.4 Repository — Configure dependency updates.** Add weekly Dependabot
+- [x] **1.4 Repository — Configure dependency updates.** Add weekly Dependabot
   checks for GitHub Actions and Terraform providers.
-- [ ] **1.5 Repository — Add safe example configuration.** Create
+- [x] **1.5 Repository — Add safe example configuration.** Create
   `terraform.tfvars.example` containing variable names and non-sensitive sample
   values only.
-- [ ] **1.6 Repository — Document local validation commands.** Include format,
+- [x] **1.6 Repository — Document local validation commands.** Include format,
   initialization, validation, and test commands; state explicitly that local
   `terraform apply` is unsupported.
 
@@ -118,7 +118,7 @@ HCP Terraform administrator are available for one-time setup.
 - [ ] **2.11 Operator — Prepare Tailscale enrollment.** Configure tag ownership
   and TCP 22 access, create a tagged pre-authorized non-ephemeral one-use key,
   and store it in AWS Secrets Manager.
-- [ ] **2.12 Repository — Write `runbooks/bootstrap-hcp-aws.md`.** Document the
+- [x] **2.12 Repository — Write `runbooks/bootstrap-hcp-aws.md`.** Document the
   one-time trust boundary, configuration names, validation steps, rotation, and
   least-privilege repair process without recording secret values.
 
@@ -130,36 +130,36 @@ and region match the approved inputs.
 
 **Entry gate:** The HCP workspace and identity names are known.
 
-- [ ] **3.1 Repository — Implement Terraform and provider configuration.** Add
+- [x] **3.1 Repository — Implement Terraform and provider configuration.** Add
   `versions.tf`, `providers.tf`, the HCP `cloud {}` block, exact CLI constraint,
   provider constraints, account allowlist, and default tags.
-- [ ] **3.2 Repository — Implement validated inputs and locals.** Add every
+- [x] **3.2 Repository — Implement validated inputs and locals.** Add every
   variable from TDD section 5.2, validation rules, common names, common tags,
   and deployment-revision handling.
-- [ ] **3.3 Repository — Add account and AMI data sources.** Assert the caller
+- [x] **3.3 Repository — Add account and AMI data sources.** Assert the caller
   account and resolve the Canonical Ubuntu 24.04 x86-64 gp3 AMI from its regional
   SSM parameter.
-- [ ] **3.4 Repository — Implement networking.** Create the VPC, internet
+- [x] **3.4 Repository — Implement networking.** Create the VPC, internet
   gateway, fixed-AZ public subnet, route table, association, and a host security
   group with zero ingress and initial unrestricted egress.
-- [ ] **3.5 Repository — Implement logging.** Create the host CloudWatch log
+- [x] **3.5 Repository — Implement logging.** Create the host CloudWatch log
   group with the configured retention and resource tags.
-- [ ] **3.6 Repository — Implement the host IAM boundary.** Create the EC2 role
+- [x] **3.6 Repository — Implement the host IAM boundary.** Create the EC2 role
   and instance profile with SSM access, log permissions limited to the host log
   group, and read access limited to the exact Tailscale secret ARN.
-- [ ] **3.7 Repository — Implement persistent storage.** Create the encrypted
+- [x] **3.7 Repository — Implement persistent storage.** Create the encrypted
   gp3 project volume in the fixed availability zone, apply `prevent_destroy`,
   and attach it without forced detach.
-- [ ] **3.8 Repository — Implement compute.** Create the Ubuntu instance with no
+- [x] **3.8 Repository — Implement compute.** Create the Ubuntu instance with no
   EC2 key pair, encrypted 30 GiB root disk, IMDSv2 required, hop limit 1,
   shutdown behavior `stop`, rendered cloud-init, and
   `user_data_replace_on_change = true`. Treat a rendered-bootstrap change as an
   expected, reviewable instance replacement while preserving the project EBS
   volume.
-- [ ] **3.9 Repository — Implement non-secret outputs.** Output only the
+- [x] **3.9 Repository — Implement non-secret outputs.** Output only the
   instance ID, availability zone, project volume ID, log-group name, SSM command,
   expected Tailscale hostname, and deployment revision.
-- [ ] **3.10 Repository — Add Terraform tests.** Test defaults, input rejection,
+- [x] **3.10 Repository — Add Terraform tests.** Test defaults, input rejection,
   account guardrails, zero ingress, encrypted volumes, project-volume
   protection, IMDSv2, absence of an EC2 key pair, same-AZ placement, tags, and
   expected outputs.
@@ -175,34 +175,34 @@ and region match the approved inputs.
 **Entry gate:** Terraform resource interfaces and volume identifiers are
 stable.
 
-- [ ] **4.1 Repository — Create the cloud-init template.** Make phases
+- [x] **4.1 Repository — Create the cloud-init template.** Make phases
   idempotent and log phase start, success, and failure without dumping the
   environment.
-- [ ] **4.2 Repository — Install base services.** Install Git, curl, jq, unzip,
+- [x] **4.2 Repository — Install base services.** Install Git, curl, jq, unzip,
   certificates, AWS CLI, UFW, CloudWatch Agent, Tailscale, and required support
   packages; verify or start SSM Agent.
-- [ ] **4.3 Repository — Create and constrain `forge`.** Create the non-root
+- [x] **4.3 Repository — Create and constrain `forge`.** Create the non-root
   account without password login or unrestricted passwordless sudo, install the
   desktop public key, and enforce SSH directory and file modes.
-- [ ] **4.4 Repository — Implement persistent-volume mounting.** Resolve the
+- [x] **4.4 Repository — Implement persistent-volume mounting.** Resolve the
   Nitro device by EBS volume ID, format only when no filesystem exists, label it
   `FORGE_DATA`, persist its UUID in `/etc/fstab`, mount `/srv/forge`, and create
   `/srv/forge/projects` as `forge:forge` mode `0750`.
-- [ ] **4.5 Repository — Implement one-time Tailscale enrollment.** Retrieve the
+- [x] **4.5 Repository — Implement one-time Tailscale enrollment.** Retrieve the
   key directly from the exact Secrets Manager ARN, keep it out of Terraform
   state and logs, enroll with the approved hostname/tag, clear the value, and
   reuse node state on reboot.
-- [ ] **4.6 Repository — Harden SSH and the host firewall.** Disable root,
+- [x] **4.6 Repository — Harden SSH and the host firewall.** Disable root,
   password, and keyboard-interactive login; allow only `forge` with public-key
   authentication; restrict forwarding to local forwarding; permit TCP 22 only
   on `tailscale0` in UFW.
-- [ ] **4.7 Repository — Install Codex for `forge`.** Use the official
+- [x] **4.7 Repository — Install Codex for `forge`.** Use the official
   noninteractive installation path and verify `codex` is available in both the
   interactive and non-interactive login-shell `PATH`.
-- [ ] **4.8 Repository — Configure log shipping.** Send cloud-init, bootstrap,
+- [x] **4.8 Repository — Configure log shipping.** Send cloud-init, bootstrap,
   and authentication logs to the dedicated CloudWatch log group without
   capturing credentials.
-- [ ] **4.9 Repository — Publish sanitized bootstrap status.** Write
+- [x] **4.9 Repository — Publish sanitized bootstrap status.** Write
   `/var/lib/gptclaw/bootstrap-complete.json` with bootstrap version, time,
   status, and installed non-secret component versions only.
 - [ ] **4.10 Repository — Test rerun and failure behavior.** Confirm bootstrap
@@ -217,29 +217,29 @@ no public administration path.
 **Entry gate:** Terraform validation and bootstrap tests pass locally without
 an apply.
 
-- [ ] **5.1 Repository — Add the workflow triggers.** Run quality and remote
+- [x] **5.1 Repository — Add the workflow triggers.** Run quality and remote
   speculative plan jobs for relevant pull requests, pushes to `main`, and manual
   plan dispatches; allow apply only through manual dispatch from current `main`.
-- [ ] **5.2 Repository — Enforce minimal workflow permissions.** Set
+- [x] **5.2 Repository — Enforce minimal workflow permissions.** Set
   `contents: read`, disable persisted checkout credentials, and do not request a
   GitHub OIDC token because AWS authentication occurs in HCP Terraform.
-- [ ] **5.3 Repository — Pin third-party actions.** Pin checkout and Terraform
+- [x] **5.3 Repository — Pin third-party actions.** Pin checkout and Terraform
   setup actions to full immutable commit SHAs with nearby release comments.
-- [ ] **5.4 Repository — Implement the quality job.** Run format checking,
+- [x] **5.4 Repository — Implement the quality job.** Run format checking,
   remote initialization, validation, Terraform tests, action-pin checks, and a
   secret-pattern scan.
-- [ ] **5.5 Repository — Implement the plan job.** Use only
+- [x] **5.5 Repository — Implement the plan job.** Use only
   `TF_API_TOKEN_PLAN`, fail if HCP remote execution cannot initialize, and run a
   speculative plan without saving or uploading plan artifacts.
-- [ ] **5.6 Repository — Implement the apply gate.** Require the
+- [x] **5.6 Repository — Implement the apply gate.** Require the
   `development` environment, current `main`, a non-stale SHA, and exact
   confirmation `gptclaw-dev-host` before using `TF_API_TOKEN_APPLY`.
-- [ ] **5.7 Repository — Implement the remote apply.** Run
+- [x] **5.7 Repository — Implement the remote apply.** Run
   `terraform apply -input=false -auto-approve` only after the GitHub deployment
   gate and fail instead of falling back to local execution.
-- [ ] **5.8 Repository — Serialize deployments.** Use concurrency group
+- [x] **5.8 Repository — Serialize deployments.** Use concurrency group
   `terraform-gptclaw-dev-host` with cancellation disabled.
-- [ ] **5.9 Repository — Add revision traceability.** Pass the exact 40-character
+- [x] **5.9 Repository — Add revision traceability.** Pass the exact 40-character
   Git SHA as `TF_VAR_deployment_revision` and summarize only the actor, event,
   workspace, revision, and HCP run URL.
 
@@ -288,7 +288,7 @@ role is configured.
   IMDSv2 enforcement, intended instance profile, and absence of an EC2 key pair.
 - [ ] **7.5 Operator — Verify SSM first.** Establish a Session Manager shell and
   inspect cloud-init/bootstrap status before relying on Tailscale or SSH.
-- [ ] **7.6 Repository — Add `scripts/verify-dev-host.sh`.** Check cloud-init,
+- [x] **7.6 Repository — Add `scripts/verify-dev-host.sh`.** Check cloud-init,
   SSM Agent, Tailscale, mounted storage, Codex path/version, repository status,
   and sanitized bootstrap status without printing credentials.
 - [ ] **7.7 Operator — Run the host verification script.** Retain sanitized
@@ -355,10 +355,10 @@ changes on the EC2 host through the private SSH connection.
 
 - [ ] **10.1 Operator — Prove idempotence.** Run a new pipeline plan without
   code or variable changes and confirm it reports no infrastructure changes.
-- [ ] **10.2 Repository — Write `runbooks/connect-chatgpt.md`.** Document key
+- [x] **10.2 Repository — Write `runbooks/connect-chatgpt.md`.** Document key
   creation, Tailscale prerequisites, SSH alias setup, ChatGPT connection, Codex
   authentication, and troubleshooting without secret values.
-- [ ] **10.3 Repository — Write `runbooks/recover-dev-host.md`.** Document SSM
+- [x] **10.3 Repository — Write `runbooks/recover-dev-host.md`.** Document SSM
   break-glass access, snapshot validation, same-AZ volume recovery, fresh
   Tailscale enrollment, instance replacement, GitHub key recreation, Codex
   reauthentication, and reconciliation through Terraform.

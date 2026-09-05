@@ -662,8 +662,8 @@ Each stage updates its runbook with its code.
 
 | Input | Proposed | Status |
 |---|---|---|
-| AWS account ID | None | Required |
-| AWS region | None | Required |
+| AWS account ID | `571748613148` | Confirmed from the active AWS identity |
+| AWS region | `us-east-1` | Confirmed from the active AWS configuration |
 | Availability Zone | None | Required/sticky |
 | HCP organization | Existing | Required |
 | HCP project | Existing or new `gptclaw` | Required |
@@ -672,9 +672,9 @@ Each stage updates its runbook with its code.
 | Tailscale tailnet | Existing | Required |
 | Tailscale tag | `tag:gptclaw-dev` | Confirm |
 | Tailscale secret ARN | None | Required |
-| Desktop Tailscale enrollment | Existing tailnet | Verify |
-| Desktop SSH public key | New dedicated key | Required |
-| ChatGPT SSH connection feature | Current desktop app | Verify |
+| Desktop Tailscale enrollment | Existing tailnet | Sign-in required |
+| Desktop SSH public key | Dedicated `id_ed25519_forge_dev` key | Generated locally; public half pending HCP configuration |
+| ChatGPT SSH connection feature | Current desktop app | Supported by current OpenAI documentation; connection pending host deployment |
 | ChatGPT device-code login | Preferred; SSH callback fallback | Verify |
 
 These are configuration inputs, not architecture changes.
