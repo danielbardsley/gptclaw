@@ -665,8 +665,8 @@ Each stage updates its runbook with its code.
 | AWS account ID | `571748613148` | Confirmed from the active AWS identity |
 | AWS region | `us-east-1` | Confirmed from the active AWS configuration |
 | Availability Zone | None | Required/sticky |
-| HCP organization | Existing | Required |
-| HCP project | Existing or new `gptclaw` | Required |
+| HCP organization | `Bardsley` | Confirmed |
+| HCP project | `gptclaw` | Created with dedicated `gptclaw-dev-host` workspace |
 | HCP token capability | Separate plan/apply | Verify |
 | GitHub environment reviewers | Existing plan | Verify |
 | Tailscale tailnet | Existing | Required |

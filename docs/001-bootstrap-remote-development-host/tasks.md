@@ -84,7 +84,7 @@ are committed and a secret scan finds no credentials or Terraform artifacts.
 **Entry gate:** Phases 0–1 complete. An existing authorized AWS identity and
 HCP Terraform administrator are available for one-time setup.
 
-- [ ] **2.1 Operator — Create the HCP Terraform workspace.** Create
+- [x] **2.1 Operator — Create the HCP Terraform workspace.** Create
   `gptclaw-dev-host` in the approved project with remote execution, no VCS
   connection, no working-directory prefix, auto-apply disabled, and Terraform
   `1.16.1`.

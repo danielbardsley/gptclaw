@@ -12,6 +12,7 @@ The first implementation slice is documented in
 
 ```text
 .github/        GitHub Actions and dependency automation
+bootstrap/aws/  Auditable one-time HCP-to-AWS trust boundary
 docs/           Specifications, designs, and implementation task lists
 infra/dev-host/ Terraform for the first remote development host
 runbooks/       Operator setup, connection, and recovery procedures
