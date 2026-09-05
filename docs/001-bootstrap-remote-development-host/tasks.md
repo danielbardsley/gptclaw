@@ -107,12 +107,12 @@ for one-time setup. No AWS resource is changed outside the pipeline.
 - [ ] **2.6 Operator — Configure HCP Terraform variables.** Add the approved
   account, region, availability zone, desktop SSH public key, ephemeral
   `tailscale_auth_key`, and other non-default inputs. Mark the key sensitive.
-- [ ] **2.7 Operator — Create separate HCP tokens.** Create or rotate a
-  workspace-scoped plan token and apply-capable token, preferring team or
-  service-account tokens over personal tokens.
-- [ ] **2.8 Operator — Configure GitHub Actions settings.** Add
-  `TF_API_TOKEN_PLAN` as a repository secret; create the protected
-  `development` environment and add `TF_API_TOKEN_APPLY` there.
+- [ ] **2.7 Operator — Create separate HCP tokens.** On HCP Free, create two
+  owners-team tokens for independent rotation. Record that both have owner
+  capability and use short expirations.
+- [ ] **2.8 Operator — Configure GitHub Actions settings.** Add both
+  `TF_API_TOKEN_PLAN` and `TF_API_TOKEN_APPLY` only to the protected
+  `development` environment. Remove any repository-level copy.
 - [ ] **2.9 Operator — Configure GitHub variables.** Add
   `HCP_TERRAFORM_ORGANIZATION`, `HCP_TERRAFORM_WORKSPACE`, and
   `TERRAFORM_VERSION` with the approved values.
@@ -222,9 +222,9 @@ no public administration path.
 **Entry gate:** Terraform validation and bootstrap tests pass locally without
 an apply.
 
-- [x] **5.1 Repository — Add the workflow triggers.** Run quality and remote
-  speculative plan jobs for relevant pull requests, pushes to `main`, and manual
-  plan dispatches; allow apply only through manual dispatch from current `main`.
+- [x] **5.1 Repository — Add the workflow triggers.** Run credential-free quality
+  checks for relevant pull requests and pushes to `main`; allow remote plan and
+  apply only through manual dispatch from current `main`.
 - [x] **5.2 Repository — Enforce minimal workflow permissions.** Set
   `contents: read`, disable persisted checkout credentials, and do not request a
   GitHub OIDC token because AWS authentication occurs in HCP Terraform.
@@ -234,8 +234,8 @@ an apply.
   remote initialization, validation, Terraform tests, action-pin checks, and a
   secret-pattern scan.
 - [x] **5.5 Repository — Implement the plan job.** Use only
-  `TF_API_TOKEN_PLAN`, fail if HCP remote execution cannot initialize, and run a
-  speculative plan without saving or uploading plan artifacts.
+  environment-protected `TF_API_TOKEN_PLAN`, fail if HCP remote execution cannot
+  initialize, and run a speculative plan without saving or uploading artifacts.
 - [x] **5.6 Repository — Implement the apply gate.** Require the
   `development` environment, current `main`, a non-stale SHA, and exact
   confirmation `gptclaw-dev-host` before using `TF_API_TOKEN_APPLY`.
@@ -263,11 +263,11 @@ an apply.
 - [ ] **6.3 Operator — Repair stale credentials narrowly.** Rotate the failed
   token or add only the smallest missing AWS read permission; never broaden to
   administrator access.
-- [ ] **6.4 Operator — Review the speculative plan.** Confirm expected resource
+- [ ] **6.4 Operator — Review the protected post-merge plan.** Confirm expected resource
   count/types, zero security-group ingress, encrypted storage, protected project
   volume, intended account/region/AZ, and no secret-bearing output.
-- [ ] **6.5 Operator — Merge only after all checks pass.** Preserve the final
-  reviewed HCP plan link and merged Git revision.
+- [ ] **6.5 Operator — Apply only after plan review.** Preserve the protected
+  HCP plan link and merged Git revision before dispatching apply.
 
 **Exit gate:** The reviewed pull request is merged to `main`; no infrastructure
 has yet been applied from a pull-request event.

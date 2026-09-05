@@ -27,9 +27,9 @@ boundary.
 |---|---|---|
 | D-001 | GitHub Actions is the only Terraform client. | Every plan and apply is tied to an auditable revision. |
 | D-002 | HCP workspace `gptclaw-dev-host` performs remote execution and stores state. | AWS credentials stay at the execution boundary. |
-| D-003 | PRs plan; a manual dispatch from `main` applies. | Safe even without GitHub environment reviewers. |
+| D-003 | PRs run credential-free checks; manual dispatches from `main` plan and apply. | HCP Free owners tokens are never exposed to pull-request code. |
 | D-004 | HCP uses separate plan/apply AWS roles through OIDC. | Credentials are temporary and phase-specific. |
-| D-005 | GitHub uses separate HCP plan/apply tokens. | PR code never receives apply capability. |
+| D-005 | GitHub stores separate HCP plan/apply tokens only in the `development` environment. | HCP Free cannot scope teams; separation still supports independent rotation and per-job exposure. |
 | D-006 | EC2 uses a public subnet/public IPv4 with zero security-group ingress. | Outbound services work without NAT gateway cost; the public address is not an access path. |
 | D-007 | Project data uses a separate encrypted EBS volume with destruction protection. | Compute replacement cannot silently delete repositories. |
 | D-008 | Tailscale uses a tagged, pre-authorized, one-use key written to Secrets Manager through an ephemeral Terraform variable and a write-only provider argument. | The value stays out of Git, GitHub, user data, and Terraform state. |
@@ -44,12 +44,13 @@ boundary.
 ### 3.1 Deployment
 
 ~~~text
-Developer -> branch / pull request
+Developer -> branch / pull request -> credential-free GitHub checks
     |
+    | merge reviewed change
     v
-GitHub: danielbardsley/gptclaw
+GitHub: current main + manual plan/apply dispatch
     |
-    | plan token or protected apply token
+    | environment-protected HCP token
     v
 GitHub Actions
     |
@@ -365,14 +366,17 @@ provider, preventing a normal run from expanding its own authority.
 
 ### 6.3 GitHub-to-HCP
 
-This design implements SPEC-001's split GitHub-to-HCP credential boundary:
+HCP Terraform Free provides only the owners team, so token permission cannot be
+reduced to Plan on this subscription. The design compensates by exposing no HCP
+token to pull requests and requiring manual `main` dispatches through the
+`development` environment:
 
 | Secret | Location | HCP permission | Job |
 |---|---|---|---|
-| `TF_API_TOKEN_PLAN` | Repository secret | Plan-only on workspace | PR/main plan |
-| `TF_API_TOKEN_APPLY` | `development` environment | Apply on workspace | Manual apply |
+| `TF_API_TOKEN_PLAN` | `development` environment | Owners team | Manual `main` plan |
+| `TF_API_TOKEN_APPLY` | `development` environment | Owners team | Manual `main` apply |
 
-Each secret is passed only to the `cli_config_credentials_token` input of `hashicorp/setup-terraform` for its job. The action writes an ephemeral Terraform CLI credential configuration; the workflow does not export the token as a general-purpose environment variable. Team-scoped tokens are preferred over personal tokens.
+Each secret is passed only to the `cli_config_credentials_token` input of `hashicorp/setup-terraform` for its job. The action writes an ephemeral Terraform CLI credential configuration; the workflow does not export the token as a general-purpose environment variable. Separate owners-team tokens permit independent rotation, but do not represent separate HCP capabilities.
 
 | GitHub variable | Value |
 |---|---|
@@ -401,9 +405,9 @@ No AWS credential exists in this workflow. Stale AWS secrets are ignored and rem
 
 | Event | Ref | Behavior |
 |---|---|---|
-| PR changing infrastructure/workflow | PR head | Format, validate, test, speculative plan |
-| Push changing those paths | `main` | Format, validate, test, speculative plan |
-| Manual `plan` | Current `main` | Speculative plan |
+| PR changing infrastructure/workflow | PR head | Format, validate, test, and scan; no HCP token |
+| Push changing those paths | `main` | Format, validate, test, and scan; no HCP token |
+| Manual `plan` | Current `main` | Protected speculative plan |
 | Manual `apply` plus confirmation `gptclaw-dev-host` | Current `main` only | Validate and remote apply |
 
 Apply rejects non-main refs, tags, stale SHAs, and wrong confirmation. It uses the `development` environment. Required reviewers are enabled when supported; manual dispatch and exact confirmation remain mandatory.
@@ -566,7 +570,7 @@ Use the full `.ts.net` hostname if needed. Validate `ssh forge-dev`, then add it
 
 | Boundary | Credential | Control |
 |---|---|---|
-| GitHub -> HCP | Plan/apply token | Split capability; apply secret protected |
+| GitHub -> HCP | Separate owners-team tokens | Both environment-protected; no PR exposure; independent rotation |
 | HCP -> AWS | OIDC identity | Exact audience/subject; short-lived STS |
 | EC2 -> AWS | Instance profile | SSM, one log group, one Tailscale secret |
 | Windows -> EC2 | Dedicated SSH key | Tailscale policy, UFW, public-key-only SSH |
@@ -576,8 +580,8 @@ Use the full `.ts.net` hostname if needed. Validate `ssh forge-dev`, then add it
 | Threat | Controls |
 |---|---|
 | Internet SSH scan | Zero SG ingress; UFW limits SSH to `tailscale0`. |
-| Workflow compromise | Read-only GitHub token, SHA-pinned actions, plan-only PR token, no AWS secrets. |
-| HCP token theft | Workspace-scoped split tokens and rotation. |
+| Workflow compromise | Read-only GitHub token, SHA-pinned actions, no HCP/AWS secrets in PR jobs. |
+| HCP token theft | Tokens only in manual environment jobs; separate rotation and short expiry. |
 | Cross-account apply | Account allowlist plus caller assertion. |
 | HCP tenant confusion | Exact org/project/workspace/phase trust. |
 | Host compromise | No production role/sudo; consumed Tailscale key; narrow role. |
@@ -590,9 +594,9 @@ Use the full `.ts.net` hostname if needed. Validate `ssh forge-dev`, then add it
 ### 11.1 Normal change
 
 1. Branch and change code.
-2. Review PR remote plan.
+2. Review credential-free PR checks.
 3. Merge to `main`.
-4. Review main plan.
+4. Manually dispatch and review the protected remote plan.
 5. Dispatch `apply` with `gptclaw-dev-host`.
 6. Verify GitHub, HCP, AWS, SSM, and Tailscale evidence.
 
@@ -687,11 +691,11 @@ Each stage updates its runbook with its code.
 | Availability Zone | None | Required/sticky |
 | HCP organization | `Bardsley` | Confirmed |
 | HCP project | `gptclaw` | Created with dedicated `gptclaw-dev-host` workspace |
-| HCP token capability | Separate plan/apply | Verify |
+| HCP token capability | HCP Free owners-team tokens; environment-protected | One plan token created; relocate to environment |
 | GitHub environment reviewers | Existing plan | Verify |
 | Tailscale tailnet | Existing | Required |
 | Tailscale tag | `tag:gptclaw-dev` | Confirm |
-| Tailscale secret ARN | None | Required |
+| Tailscale secret | Terraform-created from ephemeral write-only input | Key required |
 | Desktop Tailscale enrollment | Existing tailnet | Sign-in required |
 | Desktop SSH public key | Dedicated `id_ed25519_forge_dev` key | Generated locally; public half pending HCP configuration |
 | ChatGPT SSH connection feature | Current desktop app | Supported by current OpenAI documentation; connection pending host deployment |

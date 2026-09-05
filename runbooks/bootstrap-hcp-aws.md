@@ -136,12 +136,17 @@ on reboot.
 
 ## 6. Configure GitHub
 
-Create HCP team or service-account tokens with workspace-specific permissions:
+HCP Terraform Free exposes only the owners team. Create two short-lived owners
+team tokens for independent rotation, then store both only in the protected
+GitHub `development` environment:
 
 | GitHub location | Name | Capability |
 |---|---|---|
-| Repository secret | `TF_API_TOKEN_PLAN` | Queue/read plans only |
-| `development` environment secret | `TF_API_TOKEN_APPLY` | Queue/apply runs |
+| `development` environment secret | `TF_API_TOKEN_PLAN` | Manual `main` plan |
+| `development` environment secret | `TF_API_TOKEN_APPLY` | Manual `main` apply |
+
+Both tokens have owner capability on the Free tier. Never store either as a
+repository secret or expose either to pull-request jobs.
 
 Create repository variables:
 
@@ -158,7 +163,8 @@ plan supports them. The exact manual confirmation remains mandatory either way.
 
 Before the first apply, confirm:
 
-- The plan token can queue a speculative run only in `gptclaw-dev-host`.
+- The plan token is present only in the GitHub `development` environment; its
+  owners-team scope is an accepted HCP Free limitation.
 - The temporary bootstrap AWS variables are sensitive HCP environment variables.
 - The plan reports the approved region and fixed availability zone.
 - The apply token is unavailable to pull-request jobs.

@@ -22,11 +22,11 @@ unprivileged `forge` user.
 
 ## 2. Desired outcome
 
-The owner can deploy the host by reviewing a Terraform plan generated for a
-pull request, merging the approved change, manually dispatching the apply with
-the exact confirmation, and completing an environment approval when GitHub
-supports it. The resulting apply runs remotely in HCP Terraform and is
-traceable to the deployed Git revision.
+The owner can deploy the host by obtaining passing local checks on a pull
+request, merging the approved change, manually dispatching and reviewing a
+protected remote plan from `main`, then manually dispatching the apply with the
+exact confirmation. The resulting plan and apply run remotely in HCP Terraform
+and are traceable to the deployed Git revision.
 
 From the ChatGPT desktop app, the owner can then select the SSH-connected EC2 project and ask Codex to:
 
@@ -137,9 +137,9 @@ The EC2 host and its supporting resources must be deployed from a workflow commi
 
 The workflow must:
 
-- Run formatting, initialization, validation, and a speculative remote plan for pull requests that change infrastructure or workflow files.
+- Run formatting, initialization, validation, tests, and security checks for pull requests without exposing an HCP token.
 - Never apply infrastructure from a pull-request event.
-- Run speculative HCP Terraform remote plans with plan-only credentials and run applies from the protected `development` GitHub environment only after changes reach `main`.
+- Run both HCP Terraform remote plans and applies from the protected `development` GitHub environment only after changes reach `main`.
 - Run Terraform from `infra/dev-host` and use `terraform apply -auto-approve` only after the GitHub deployment gate has passed.
 - Support manually dispatched plan and reconciliation runs.
 - Require a manual apply dispatch with an exact `gptclaw-dev-host` confirmation input, plus explicit environment approval when the repository's GitHub plan supports required reviewers.
@@ -167,12 +167,13 @@ The organization name remains an implementation input. Workspace creation is an 
 
 ### TFC-002: GitHub-to-HCP authentication
 
-GitHub Actions must authenticate to `app.terraform.io` with separate,
-narrowly scoped HCP Terraform team or service-account tokens. A plan-only token
-must be stored as the repository secret `TF_API_TOKEN_PLAN`; an apply-capable
-token must be stored as `TF_API_TOKEN_APPLY` only in the protected
-`development` GitHub environment. Each token must be exposed only to the job
-that needs it and must never be committed, printed, or stored on the EC2 host.
+HCP Terraform Free exposes only the owners team, so its team tokens have owner
+capability. Separate tokens named `TF_API_TOKEN_PLAN` and
+`TF_API_TOKEN_APPLY` are retained for independent rotation and job isolation,
+but neither is represented as least-privilege. Both must be stored only in the
+protected `development` GitHub environment, exposed only to manually dispatched
+jobs from current `main`, and never made available to pull-request jobs. Neither
+token may be committed, printed, or stored on the EC2 host.
 
 ### AWS-001: HCP-to-AWS authentication
 
@@ -298,7 +299,7 @@ Secrets, access tokens, device codes, private keys, and complete environment dum
 - Temporary bootstrap AWS credentials may exist only as sensitive HCP workspace environment variables and must be deleted after OIDC is verified.
 - AWS credentials used by applications on EC2 must come from an instance role, not stored access keys.
 - The GitHub Actions runner must not receive AWS credentials when the Terraform run executes remotely in HCP Terraform.
-- The plan-only HCP Terraform token must be stored as `TF_API_TOKEN_PLAN`; the apply-capable token must be stored only as `TF_API_TOKEN_APPLY` in the protected GitHub environment. Either token must be rotated if stale or excessively scoped.
+- Both HCP Terraform team tokens must be stored only in the protected `development` GitHub environment. Pull-request jobs must receive neither token.
 - Terraform state must remain in HCP Terraform and must never be committed to Git.
 - Saved plan files must not be committed or exposed as public workflow artifacts.
 - The instance role follows least privilege and is limited to resources needed by this host.
@@ -316,21 +317,21 @@ Secrets, access tokens, device codes, private keys, and complete environment dum
 2. Create the `gptclaw-dev-host` HCP Terraform workspace in remote-execution mode.
 3. Add Terraform code beneath `infra/dev-host`, including the AWS OIDC provider and phase-specific roles, and add the deployment workflow beneath `.github/workflows/`.
 4. Add the temporary bootstrap AWS credential only to the HCP workspace as sensitive environment variables.
-5. Add or rotate the plan-only `TF_API_TOKEN_PLAN` repository secret, create the protected `development` GitHub environment, and add or rotate its `TF_API_TOKEN_APPLY` secret.
+5. Create the protected `development` GitHub environment and add or rotate both owners-team tokens there as `TF_API_TOKEN_PLAN` and `TF_API_TOKEN_APPLY`.
 6. Run the credential preflight and repair stale credentials or insufficient permissions without placing credentials in source control.
-7. Open a pull request and obtain a successful validation and speculative HCP Terraform plan.
-8. Merge the reviewed change to `main`, manually dispatch the `development` deployment with the exact confirmation, complete any environment approval, and let the GitHub Actions workflow trigger the first HCP Terraform apply.
+7. Open a pull request and obtain successful formatting, validation, test, and security checks without an HCP token.
+8. Merge the reviewed change to `main`, manually dispatch and review the protected HCP plan, then manually dispatch the `development` apply with the exact confirmation.
 9. Configure the HCP dynamic provider variables with the Terraform-created role ARNs, remove both static AWS credential variables, and run a no-change pipeline plan to prove OIDC access.
-9. Confirm the successful GitHub Actions run, HCP Terraform run, remote state, and expected AWS account and region.
-10. Confirm SSM access before configuring any alternative access path.
-11. Install Tailscale and enroll the host without placing the enrollment secret in Terraform state.
-12. Create and harden the `forge` account.
-13. Install Codex and confirm it is on the login-shell `PATH`.
-14. Authenticate Codex with `codex login --device-auth`, or use the documented SSH-forwarded browser callback if device-code login is unavailable.
-15. Clone `danielbardsley/gptclaw` beneath `/srv/forge/projects`.
-16. Add the `forge-dev` alias to the desktop SSH configuration and verify normal SSH access.
-17. Add the SSH host and remote project folder in the ChatGPT desktop app.
-18. Run the acceptance test and retain sanitized evidence with links to the GitHub and HCP Terraform runs.
+10. Confirm the successful GitHub Actions run, HCP Terraform run, remote state, and expected AWS account and region.
+11. Confirm SSM access before configuring any alternative access path.
+12. Install Tailscale and enroll the host without placing the enrollment secret in Terraform state.
+13. Create and harden the `forge` account.
+14. Install Codex and confirm it is on the login-shell `PATH`.
+15. Authenticate Codex with `codex login --device-auth`, or use the documented SSH-forwarded browser callback if device-code login is unavailable.
+16. Clone `danielbardsley/gptclaw` beneath `/srv/forge/projects`.
+17. Add the `forge-dev` alias to the desktop SSH configuration and verify normal SSH access.
+18. Add the SSH host and remote project folder in the ChatGPT desktop app.
+19. Run the acceptance test and retain sanitized evidence with links to the GitHub and HCP Terraform runs.
 
 ## 9. Acceptance test
 
@@ -338,7 +339,8 @@ The work is complete only when all of the following pass:
 
 - [ ] The `gptclaw-dev-host` workspace exists in the approved HCP Terraform organization and uses remote execution.
 - [ ] Terraform state exists only in HCP Terraform and is not present in the Git repository.
-- [ ] A pull request produces formatting and validation results plus a speculative HCP Terraform plan, with no apply.
+- [ ] A pull request produces formatting, validation, test, and security results without receiving an HCP token or applying infrastructure.
+- [ ] A protected manual plan from current `main` produces a reviewed HCP Terraform plan before apply.
 - [ ] A manually dispatched and exactly confirmed GitHub Actions run from current `main`, protected by an environment approval when supported, produces the successful HCP Terraform apply.
 - [ ] The EC2 instance was created from committed Terraform code by that pipeline; no local `terraform apply` was used.
 - [ ] The GitHub Actions and HCP Terraform run records identify the same revision.
@@ -364,7 +366,7 @@ The work is complete only when all of the following pass:
 - AWS account ID and target region.
 - An authorized AWS bootstrap credential stored temporarily and sensitively in HCP Terraform; it is used only by a GitHub-triggered remote apply and removed after OIDC verification.
 - HCP Terraform organization name and permission to create the `gptclaw-dev-host` workspace.
-- Valid, separately scoped HCP Terraform team or service-account tokens for repository plans and protected-environment applies; existing tokens are assumed stale until verified.
+- Two HCP owners-team tokens for independent rotation, both stored only in the protected `development` environment; existing tokens are assumed stale until verified.
 - Confirmation of whether GitHub environment required reviewers are available for this repository plan; manual dispatch with exact confirmation remains required either way.
 - GitHub repository `danielbardsley/gptclaw` with `main` as the default branch.
 - Tailscale tailnet, desired device tag, and a desktop already authenticated to that tailnet.

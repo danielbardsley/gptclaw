@@ -82,10 +82,11 @@ jobs:
         run: terraform test
 
   plan:
-    name: Remote speculative plan
-    if: github.event_name != 'workflow_dispatch' || inputs.operation == 'plan'
+    name: Protected remote plan
+    if: github.event_name == 'workflow_dispatch' && inputs.operation == 'plan'
     needs: quality
     runs-on: ubuntu-latest
+    environment: development
     steps:
       - name: Check out the reviewed revision
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -93,19 +94,18 @@ jobs:
           persist-credentials: false
 
       - name: Require main for a manually dispatched plan
-        if: github.event_name == 'workflow_dispatch'
         run: |
           if [ "$GITHUB_REF" != "refs/heads/main" ]; then
             echo "A manually dispatched plan is allowed only from main." >&2
             exit 1
           fi
 
-      - name: Require the plan-only HCP credential
+      - name: Require the protected HCP plan credential
         env:
           TF_API_TOKEN_PLAN: ${{ secrets.TF_API_TOKEN_PLAN }}
         run: |
           if [ -z "$TF_API_TOKEN_PLAN" ]; then
-            echo "TF_API_TOKEN_PLAN is unavailable. Forked pull requests do not receive repository secrets." >&2
+            echo "TF_API_TOKEN_PLAN is unavailable in the development environment." >&2
             exit 1
           fi
 
