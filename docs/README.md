@@ -13,11 +13,14 @@ docs/
   NNN-kebab-case-name/
     spec.md
     technical-design.md
+    tasks.md
 ```
 
 - `spec.md` defines the outcome, scope, requirements, and acceptance criteria.
 - `technical-design.md` defines the implementation architecture and maps it
   back to the specification.
+- `tasks.md` provides the dependency-ordered implementation checklist and
+  acceptance gates.
 - Additional supporting documents may be added to the same initiative folder
   when needed.
 - Cross-references within an initiative use relative links.
@@ -28,4 +31,5 @@ docs/
 
 - **001 — Bootstrap the remote development host:**
   [Specification](./001-bootstrap-remote-development-host/spec.md) ·
-  [Technical design](./001-bootstrap-remote-development-host/technical-design.md)
+  [Technical design](./001-bootstrap-remote-development-host/technical-design.md) ·
+  [Tasks](./001-bootstrap-remote-development-host/tasks.md)

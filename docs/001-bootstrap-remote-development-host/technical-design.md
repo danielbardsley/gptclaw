@@ -3,6 +3,7 @@
 - **Status:** Proposed
 - **Owner:** Daniel
 - **Source:** [SPEC-001](./spec.md)
+- **Implementation tasks:** [TASKS-001](./tasks.md)
 - **Repository:** `danielbardsley/gptclaw`
 - **Last updated:** 2026-09-05
 
@@ -82,7 +83,12 @@ ChatGPT starts the remote Codex app server through SSH. No app-server listener i
 .github/
   dependabot.yml
   workflows/terraform-dev-host.yml
-docs/design/001-bootstrap-remote-development-host.md
+docs/
+  README.md
+  001-bootstrap-remote-development-host/
+    spec.md
+    technical-design.md
+    tasks.md
 infra/dev-host/
   .terraform-version
   .terraformignore
@@ -110,7 +116,6 @@ runbooks/
   connect-chatgpt.md
   recover-dev-host.md
 scripts/verify-dev-host.sh
-specs/001-bootstrap-remote-development-host.md
 .gitignore
 ~~~
 

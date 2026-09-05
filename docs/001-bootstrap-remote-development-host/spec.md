@@ -4,6 +4,7 @@
 - **Owner:** Daniel
 - **Implementation repository:** `git@github.com:danielbardsley/gptclaw.git`
 - **Technical design:** [TDD-001](./technical-design.md)
+- **Implementation tasks:** [TASKS-001](./tasks.md)
 - **Last updated:** 2026-09-05
 
 ## 1. Summary
