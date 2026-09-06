@@ -1,0 +1,42 @@
+#cloud-config
+hostname: ${instance_name}
+manage_etc_hosts: true
+ssh_pwauth: false
+disable_root: true
+
+write_files:
+  - path: /etc/gptclaw/forge_authorized_key
+    owner: root:root
+    permissions: "0600"
+    content: |
+      ${desktop_ssh_public_key}
+  - path: /usr/local/sbin/gptclaw-bootstrap
+    owner: root:root
+    permissions: "0750"
+    encoding: b64
+    content: ${base64encode(bootstrap_script)}
+  - path: /etc/systemd/system/gptclaw-bootstrap.service
+    owner: root:root
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Bootstrap the GptClaw development host
+      Wants=network-online.target
+      After=network-online.target
+      ConditionPathExists=!/var/lib/gptclaw/bootstrap-complete.json
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/sbin/gptclaw-bootstrap
+      RemainAfterExit=yes
+      StandardOutput=journal
+      StandardError=journal
+
+      [Install]
+      WantedBy=multi-user.target
+
+runcmd:
+  - [systemctl, daemon-reload]
+  - [systemctl, enable, --now, gptclaw-bootstrap.service]
+
+final_message: "GptClaw cloud-init completed after $UPTIME seconds"
