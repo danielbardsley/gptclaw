@@ -104,7 +104,7 @@ for one-time setup. No AWS resource is changed outside the pipeline.
   `TFC_AWS_PROVIDER_AUTH`, `TFC_AWS_PLAN_ROLE_ARN`, and
   `TFC_AWS_APPLY_ROLE_ARN`, delete both static AWS variables, and prove the
   dynamic identities with a no-change pipeline plan.
-- [ ] **2.6 Operator — Configure HCP Terraform variables.** Add the approved
+- [x] **2.6 Operator — Configure HCP Terraform variables.** Add the approved
   account, region, availability zone, desktop SSH public key, ephemeral
   `tailscale_auth_key`, and other non-default inputs. Mark the key sensitive.
 - [x] **2.7 Operator — Create separate HCP tokens.** On HCP Free, create two
@@ -116,10 +116,10 @@ for one-time setup. No AWS resource is changed outside the pipeline.
 - [x] **2.9 Operator — Configure GitHub variables.** Add
   `HCP_TERRAFORM_ORGANIZATION`, `HCP_TERRAFORM_WORKSPACE`, and
   `TERRAFORM_VERSION` with the approved values.
-- [ ] **2.10 Operator — Configure the deployment gate.** Enable required
+- [x] **2.10 Operator — Configure the deployment gate.** Enable required
   reviewers when supported; retain manual dispatch and exact workspace-name
   confirmation in all cases.
-- [ ] **2.11 Operator — Prepare Tailscale enrollment.** Configure tag ownership
+- [x] **2.11 Operator — Prepare Tailscale enrollment.** Configure tag ownership
   and TCP 22 access, create a tagged pre-authorized non-ephemeral one-use key,
   and store it only as the sensitive HCP variable `tailscale_auth_key`.
 - [x] **2.12 Repository — Write `runbooks/bootstrap-hcp-aws.md`.** Document the
@@ -168,7 +168,7 @@ Tailscale secret exists, and account/region match the approved inputs.
   account guardrails, zero ingress, encrypted volumes, project-volume
   protection, IMDSv2, absence of an EC2 key pair, same-AZ placement, tags, and
   expected outputs.
-- [ ] **3.11 Repository — Initialize providers and commit the lock file.** Run
+- [x] **3.11 Repository — Initialize providers and commit the lock file.** Run
   initialization through the intended HCP configuration and commit the reviewed
   `.terraform.lock.hcl`; do not commit state or a plan.
 
