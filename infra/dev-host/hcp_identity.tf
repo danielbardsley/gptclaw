@@ -11,6 +11,11 @@ resource "aws_iam_openid_connect_provider" "hcp_terraform" {
 
   lifecycle {
     prevent_destroy = true
+
+    # This provider is the trust anchor used to obtain the apply role itself.
+    # Keep its creation-time tags stable so routine deployment-revision changes
+    # do not require the apply role to mutate its own authentication bootstrap.
+    ignore_changes = [tags]
   }
 
   tags = {
