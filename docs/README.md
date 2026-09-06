@@ -4,6 +4,10 @@ Project and feature planning documents are grouped by initiative so that each
 specification stays beside its technical design and any later implementation
 notes.
 
+Platform-level handover documents live together under `docs/platform/`. They
+describe direction and the candidate feature backlog, but they are not
+specifications and do not authorize implementation.
+
 ## Folder convention
 
 Each initiative uses a numbered, descriptive folder:
@@ -28,6 +32,10 @@ docs/
   `specs` or `docs/design` folders.
 
 ## Initiatives
+
+- **Platform direction:**
+  [Architecture](./platform/architecture.md) ·
+  [Feature catalogue](./platform/features.md)
 
 - **001 — Bootstrap the remote development host:**
   [Specification](./001-bootstrap-remote-development-host/spec.md) ·

@@ -8,6 +8,11 @@ from a developer workstation.
 The first implementation slice is documented in
 [`docs/001-bootstrap-remote-development-host`](./docs/001-bootstrap-remote-development-host/).
 
+The intended platform shape and candidate feature backlog are documented in
+the [platform architecture](./docs/platform/architecture.md) and
+[feature catalogue](./docs/platform/features.md). Catalogue entries are not
+implementation specifications; each selected feature is specified separately.
+
 ## Repository layout
 
 ```text
