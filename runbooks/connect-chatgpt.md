@@ -7,14 +7,26 @@ AWS Systems Manager access has been verified.
 
 1. Sign the Windows desktop into the approved Tailscale tailnet.
 2. Confirm ChatGPT exposes **Settings -> Connections -> SSH**.
-3. Create a dedicated desktop-to-host key if it does not already exist:
+3. Create a dedicated desktop-to-host key if it does not already exist. This
+   key is used by unattended ChatGPT SSH connections, so create it without a
+   passphrase and rely on the Windows account ACL plus the host-side Tailscale
+   and SSH restrictions:
 
    ```powershell
-   ssh-keygen -t ed25519 -f C:\Users\danie\.ssh\id_ed25519_forge_dev -C forge-dev
+   ssh-keygen -t ed25519 -N "" -f C:\Users\danie\.ssh\id_ed25519_forge_dev -C forge-dev
    ```
+
+   Before rotating an existing key, move both halves to explicit backup names;
+   never overwrite or delete the old private key until the replacement is
+   verified. Confirm the new private key grants access only to the Windows
+   account, `SYSTEM`, and local administrators.
 
 4. Store only the `.pub` value in the HCP Terraform variable
    `desktop_ssh_public_key`. The private key remains on the desktop.
+   Because the public key is rendered into cloud-init and
+   `user_data_replace_on_change` is enabled, rotating it replaces the EC2
+   instance while retaining the protected project volume. Store a fresh
+   one-use Tailscale enrollment key before planning the replacement.
 5. Deploy through the protected GitHub workflow; do not run Terraform locally.
 
 ## 2. Verify Tailscale and SSH
