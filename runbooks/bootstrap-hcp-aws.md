@@ -184,3 +184,45 @@ After the first apply, confirm:
 
 Retain links to the GitHub and HCP runs. Do not retain raw credentials or full
 environment output.
+
+## Later deployment-policy maintenance
+
+For an approved feature that needs new deployment permissions, first deliver a
+separate PR changing only the two HCP inline policies, their tests, and this
+procedure. The normal apply role cannot modify itself, the plan role, or OIDC.
+Do not grant it self-administration.
+
+1. Review the prerequisite code and passing checks, then merge to `main`.
+2. Use an already-authorized, short-lived AWS session that can refresh this
+   Terraform root and update only the two named HCP inline policies. No new
+   access key or IAM role may be created out of band.
+3. Place `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`
+   only in sensitive HCP environment variables. Record the original dynamic
+   provider configuration without recording credentials. Disable
+   `TFC_AWS_PROVIDER_AUTH` temporarily and check for inherited variable-set
+   conflicts. The session must last through the remote plan and apply.
+4. Dispatch the protected GitHub plan from current `main`. Confirm the correct
+   account/Region and only the two intended inline-policy changes. Stop on any
+   compute, storage, attachment, trust, or other unexpected change. Do not use
+   `-target` to bypass the review.
+5. Dispatch the exact-confirmation apply through GitHub Actions and HCP.
+   Retain the revision and both run links.
+6. On success or failure, immediately remove all three temporary session
+   variables and restore `TFC_AWS_PROVIDER_AUTH=true` and the original
+   phase-specific role ARNs. Verify no other static AWS variables remain.
+7. Run a new protected remote plan using OIDC. Confirm the plan role and
+   expected result, then verify the ordinary apply role on the later feature
+   apply. Never leave the maintenance session configured during development.
+
+This is the explicit maintenance exception reviewed with TDD-002. It does not
+permit direct AWS mutations, local applies, or credentials in GitHub, the host,
+Terraform input variables/state, prompts, or logs. If no authorized session
+exists, deployment waits; local coding and checks can continue.
+
+### RES-001 permission scope
+
+The backup prerequisite adds DLM policy creation constrained by request tags
+and Region, management constrained by policy tags and account/Region, and one
+named DLM service role. EC2 metadata reads and DLM creation require wildcard resources;
+the latter retains request-tag and Region conditions. No backup mutation
+permission is added to the host or deployment roles themselves.
