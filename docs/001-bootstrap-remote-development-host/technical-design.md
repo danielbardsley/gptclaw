@@ -181,7 +181,7 @@ The workflow supplies `TF_CLOUD_ORGANIZATION` and `TF_WORKSPACE=gptclaw-dev-host
 | `data_volume_size_gib` | `80` | Minimum 40; shrinking rejected. |
 | `desktop_ssh_public_key` | Required HCP variable | Approved public key; private-key markers rejected. |
 | `tailscale_auth_key` | Required sensitive HCP variable | Ephemeral Terraform input; must start with `tskey-auth-`; never stored in state. |
-| `tailscale_auth_key_version` | `1` | Positive integer; increment whenever the key value changes. |
+| `tailscale_auth_key_version` | Committed Terraform default | Positive integer; increment in a reviewed commit whenever the key value changes. |
 | `hcp_terraform_organization` | `Bardsley` | Exact OIDC subject component. |
 | `hcp_terraform_project` | `gptclaw` | Exact OIDC subject component. |
 | `hcp_terraform_workspace` | `gptclaw-dev-host` | Exact OIDC subject component. |
@@ -482,7 +482,7 @@ tailscale up --auth-key=<in-memory-value> \
   --ssh=false
 ~~~
 
-The shell variable is cleared. Reboots reuse node state and do not retrieve the key. Before replacement, store a fresh one-use key in HCP and increment `tailscale_auth_key_version` in the same approved change.
+The shell variable is cleared. Reboots reuse node state and do not retrieve the key. Before replacement, store a fresh one-use key in HCP and increment the committed `tailscale_auth_key_version` default in the same approved change. The version is rendered into user data so Terraform replaces the host and the replacement consumes the matching secret version.
 
 ### 8.3 SSH
 

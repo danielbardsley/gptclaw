@@ -146,9 +146,9 @@ variable "tailscale_auth_key" {
 }
 
 variable "tailscale_auth_key_version" {
-  description = "Monotonic version used to rotate the write-only Tailscale secret value. Increment whenever tailscale_auth_key changes."
+  description = "Code-managed monotonic version used to rotate the write-only Tailscale secret value and replace the host. Increment whenever tailscale_auth_key changes."
   type        = number
-  default     = 1
+  default     = 2
 
   validation {
     condition     = var.tailscale_auth_key_version >= 1 && floor(var.tailscale_auth_key_version) == var.tailscale_auth_key_version

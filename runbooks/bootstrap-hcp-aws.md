@@ -111,8 +111,10 @@ Terraform variables:
 
 `tailscale_auth_key` is an ephemeral Terraform variable and is written through
 the AWS provider's write-only secret argument, so its value is not stored in
-Terraform state. Set `tailscale_auth_key_version` to `1`; increment it whenever
-the key is rotated.
+Terraform state. The committed `tailscale_auth_key_version` default is the
+non-secret rotation counter; increment it in the same reviewed commit whenever
+the key is rotated. That publishes a new write-only secret version and replaces
+the host so it consumes the matching key.
 
 The workflow supplies `deployment_revision`; the remaining variables have safe
 defaults documented in `infra/dev-host/terraform.tfvars.example`.

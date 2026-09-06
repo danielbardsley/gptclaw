@@ -1,11 +1,12 @@
 locals {
   bootstrap_script = templatefile("${path.module}/templates/bootstrap-forge.sh.tftpl", {
-    aws_region                = var.aws_region
-    data_volume_id            = aws_ebs_volume.projects.id
-    instance_name             = var.instance_name
-    log_group_name            = aws_cloudwatch_log_group.dev_host.name
-    tailscale_auth_secret_arn = aws_secretsmanager_secret.tailscale_enrollment.arn
-    tailscale_tag             = var.tailscale_tag
+    aws_region                 = var.aws_region
+    data_volume_id             = aws_ebs_volume.projects.id
+    instance_name              = var.instance_name
+    log_group_name             = aws_cloudwatch_log_group.dev_host.name
+    tailscale_auth_secret_arn  = aws_secretsmanager_secret.tailscale_enrollment.arn
+    tailscale_auth_key_version = var.tailscale_auth_key_version
+    tailscale_tag              = var.tailscale_tag
   })
 }
 

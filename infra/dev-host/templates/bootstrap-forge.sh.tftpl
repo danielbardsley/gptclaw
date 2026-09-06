@@ -8,6 +8,7 @@ readonly DATA_VOLUME_ID=${jsonencode(data_volume_id)}
 readonly INSTANCE_NAME=${jsonencode(instance_name)}
 readonly LOG_GROUP_NAME=${jsonencode(log_group_name)}
 readonly TAILSCALE_AUTH_SECRET_ARN=${jsonencode(tailscale_auth_secret_arn)}
+readonly TAILSCALE_AUTH_KEY_VERSION=${jsonencode(tailscale_auth_key_version)}
 readonly TAILSCALE_TAG=${jsonencode(tailscale_tag)}
 readonly LOG_FILE="/var/log/gptclaw-bootstrap.log"
 
@@ -172,12 +173,12 @@ mountpoint -q /srv/forge
 log "status=succeeded"
 
 current_phase="tailscale"
-log "status=started"
+log "status=started auth_key_version=$TAILSCALE_AUTH_KEY_VERSION"
 if ! command -v tailscale >/dev/null 2>&1; then
   curl -fsSL https://tailscale.com/install.sh | sh
 fi
 systemctl enable --now tailscaled
-if ! tailscale status >/dev/null 2>&1; then
+if ! tailscale status --json | jq -e '.BackendState == "Running"' >/dev/null; then
   set +x
   tailscale_auth_key=$(aws secretsmanager get-secret-value \
     --region "$AWS_REGION" \
