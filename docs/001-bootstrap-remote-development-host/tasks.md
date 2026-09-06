@@ -4,7 +4,7 @@
 - **Owner:** Daniel
 - **Specification:** [SPEC-001](./spec.md)
 - **Technical design:** [TDD-001](./technical-design.md)
-- **Last updated:** 2026-09-05
+- **Last updated:** 2026-09-06
 
 ## How to use this list
 
@@ -23,6 +23,21 @@ remote host. Controlled system-software installation, rootless application
 services, Tailscale and Expo previews, reusable steering files, production AWS
 promotion, and Slack control remain follow-on work; this implementation must
 preserve a secure path to add them.
+
+## Deployment evidence
+
+- Initial protected apply: GitHub Actions
+  [run 12](https://github.com/danielbardsley/gptclaw/actions/runs/34041671869),
+  HCP Terraform
+  [run-XjxRAWVmg8vrhsgi](https://app.terraform.io/app/Bardsley/gptclaw-dev-host/runs/run-XjxRAWVmg8vrhsgi),
+  revision `a9862dcc28d11af700d9f50dee6a254eb3b022dc`; 22 resources
+  added, 0 changed, 0 destroyed.
+- Dynamic-credential proof: GitHub Actions
+  [run 13](https://github.com/danielbardsley/gptclaw/actions/runs/34042402349),
+  HCP Terraform
+  [run-UXJf582YaP5kcfwa](https://app.terraform.io/app/Bardsley/gptclaw-dev-host/runs/run-UXJf582YaP5kcfwa),
+  same revision; speculative plan reported 0 add, 0 change, 0 destroy after
+  both static AWS credential variables were deleted.
 
 ## Phase 0 — Confirm inputs and safety boundaries
 
@@ -100,7 +115,7 @@ for one-time setup. No AWS resource is changed outside the pipeline.
   `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` only as sensitive HCP workspace
   environment variables. They may be used only by the first GitHub-triggered
   remote apply.
-- [ ] **2.5 Operator — Complete the OIDC cutover.** After the first apply, set
+- [x] **2.5 Operator — Complete the OIDC cutover.** After the first apply, set
   `TFC_AWS_PROVIDER_AUTH`, `TFC_AWS_PLAN_ROLE_ARN`, and
   `TFC_AWS_APPLY_ROLE_ARN`, delete both static AWS variables, and prove the
   dynamic identities with a no-change pipeline plan.
@@ -257,16 +272,16 @@ an apply.
 
 - [x] **6.1 Repository — Open the implementation pull request.** Link SPEC-001,
   TDD-001, and this task list; describe all one-time external configuration.
-- [ ] **6.2 Operator — Verify the credential preflight.** Confirm the plan token
+- [x] **6.2 Operator — Verify the credential preflight.** Confirm the plan token
   can reach the intended HCP organization/workspace and the plan role sees the
   approved AWS account and region.
 - [ ] **6.3 Operator — Repair stale credentials narrowly.** Rotate the failed
   token or add only the smallest missing AWS read permission; never broaden to
   administrator access.
-- [ ] **6.4 Operator — Review the protected post-merge plan.** Confirm expected resource
+- [x] **6.4 Operator — Review the protected post-merge plan.** Confirm expected resource
   count/types, zero security-group ingress, encrypted storage, protected project
   volume, intended account/region/AZ, and no secret-bearing output.
-- [ ] **6.5 Operator — Apply only after plan review.** Preserve the protected
+- [x] **6.5 Operator — Apply only after plan review.** Preserve the protected
   HCP plan link and merged Git revision before dispatching apply.
 
 **Exit gate:** The reviewed pull request is merged to `main`; no infrastructure
@@ -277,7 +292,7 @@ has yet been applied from a pull-request event.
 **Entry gate:** The implementation revision is on current `main` and the apply
 role is configured.
 
-- [ ] **7.1 Operator — Refresh enrollment and run the protected manual apply.**
+- [x] **7.1 Operator — Refresh enrollment and run the protected manual apply.**
   For a replacement, first verify a current project-volume snapshot and confirm
   the plan retains the existing EBS volume. Store a fresh one-use Tailscale key
   in the existing secret immediately before an initial creation or replacement.
@@ -286,9 +301,9 @@ role is configured.
 - [ ] **7.2 Operator — Repair apply permissions narrowly if required.** Add only
   the denied action/resource needed by the declared plan, rerun the plan, and
   redispatch; do not perform manual resource creation.
-- [ ] **7.3 Operator — Verify deployment provenance.** Confirm GitHub and HCP run
+- [x] **7.3 Operator — Verify deployment provenance.** Confirm GitHub and HCP run
   records identify the same Git revision, workspace, AWS account, and region.
-- [ ] **7.4 Operator — Verify the AWS controls.** Confirm no security-group
+- [x] **7.4 Operator — Verify the AWS controls.** Confirm no security-group
   ingress, encrypted root/data volumes, project-volume deletion protection,
   IMDSv2 enforcement, intended instance profile, and absence of an EC2 key pair.
 - [ ] **7.5 Operator — Verify SSM first.** Establish a Session Manager shell and
@@ -358,7 +373,7 @@ changes on the EC2 host through the private SSH connection.
 
 **Entry gate:** The end-to-end acceptance test passes.
 
-- [ ] **10.1 Operator — Prove idempotence.** Run a new pipeline plan without
+- [x] **10.1 Operator — Prove idempotence.** Run a new pipeline plan without
   code or variable changes and confirm it reports no infrastructure changes.
 - [x] **10.2 Repository — Write `runbooks/connect-chatgpt.md`.** Document key
   creation, Tailscale prerequisites, SSH alias setup, ChatGPT connection, Codex
