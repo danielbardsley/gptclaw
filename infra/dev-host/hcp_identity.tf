@@ -42,6 +42,9 @@ resource "aws_iam_role" "hcp_plan" {
 
   lifecycle {
     prevent_destroy = true
+
+    # This bootstrap role cannot safely require permission to retag itself.
+    ignore_changes = [tags]
   }
 
   tags = {
@@ -68,6 +71,9 @@ resource "aws_iam_role" "hcp_apply" {
 
   lifecycle {
     prevent_destroy = true
+
+    # This bootstrap role cannot safely require permission to retag itself.
+    ignore_changes = [tags]
   }
 
   tags = {
