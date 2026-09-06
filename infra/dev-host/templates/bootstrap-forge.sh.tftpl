@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 umask 027
 
-readonly BOOTSTRAP_VERSION="1"
+readonly BOOTSTRAP_VERSION="2"
 readonly AWS_REGION=${jsonencode(aws_region)}
 readonly DATA_VOLUME_ID=${jsonencode(data_volume_id)}
 readonly INSTANCE_NAME=${jsonencode(instance_name)}
@@ -99,6 +99,9 @@ if [ "$USER" = "forge" ]; then
 fi
 PROFILE
 chmod 0644 /etc/profile.d/gptclaw-forge-path.sh
+chgrp forge /var/lib/gptclaw "$LOG_FILE"
+chmod 0750 /var/lib/gptclaw
+chmod 0640 "$LOG_FILE"
 log "status=succeeded"
 
 current_phase="project-volume"
@@ -211,6 +214,7 @@ AllowUsers forge
 X11Forwarding no
 AllowTcpForwarding local
 SSHD
+install -d -m 0755 /run/sshd
 sshd -t
 systemctl reload ssh.service
 ufw default deny incoming
@@ -254,14 +258,13 @@ sudo -u forge -H env \
   CODEX_NON_INTERACTIVE=1 \
   CODEX_INSTALL_DIR=/home/forge/.local/bin \
   sh -c 'curl -fsSL https://chatgpt.com/codex/install.sh | sh'
-sudo -iu forge command -v codex
-sudo -iu forge codex --version
 sudo -iu forge sh -lc 'command -v codex'
+sudo -iu forge sh -lc 'codex --version'
 log "status=succeeded"
 
 current_phase="completion"
 log "status=started"
-codex_version=$(sudo -iu forge codex --version | head -n 1)
+codex_version=$(sudo -iu forge sh -lc 'codex --version' | head -n 1)
 tailscale_version=$(tailscale version | head -n 1)
 aws_cli_version=$(aws --version 2>&1 | head -n 1)
 jq -n \

@@ -28,6 +28,14 @@ check_any_service() {
   failures=$((failures + 1))
 }
 
+run_as_forge() {
+  if [ "$(id -un)" = "forge" ]; then
+    "$@"
+  else
+    sudo -iu forge "$@"
+  fi
+}
+
 printf 'GptClaw development host verification\n'
 printf 'UTC %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 printf 'Host %s\n' "$(hostname)"
@@ -41,12 +49,15 @@ check "Tailscale connected" tailscale status
 check "project volume mounted" mountpoint -q /srv/forge
 check "project directory ownership" bash -c '[ "$(stat -c "%U:%G:%a" /srv/forge/projects)" = "forge:forge:750" ]'
 check "bootstrap evidence present" test -r /var/lib/gptclaw/bootstrap-complete.json
-check "SSH configuration valid" sshd -t
-check "Codex in forge login PATH" sudo -iu forge sh -lc 'command -v codex'
-check "Codex executable" sudo -iu forge sh -lc 'codex --version'
+check "SSH service active" systemctl is-active --quiet ssh.service
+if [ "$(id -u)" -eq 0 ]; then
+  check "SSH configuration valid" sshd -t
+fi
+check "Codex in forge login PATH" run_as_forge sh -lc 'command -v codex'
+check "Codex executable" run_as_forge sh -lc 'codex --version'
 
 if [ -d /srv/forge/projects/gptclaw/.git ]; then
-  check "GptClaw repository readable" sudo -iu forge git -C /srv/forge/projects/gptclaw status --short --branch
+  check "GptClaw repository readable" run_as_forge git -C /srv/forge/projects/gptclaw status --short --branch
 else
   printf 'SKIP GptClaw repository not cloned yet\n'
 fi

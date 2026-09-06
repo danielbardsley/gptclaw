@@ -504,9 +504,8 @@ UFW denies incoming, allows outgoing, and permits TCP 22 only on `tailscale0`. A
 The official standalone Linux installer runs as `forge` noninteractively. Bootstrap verifies:
 
 ~~~text
-sudo -iu forge command -v codex
-sudo -iu forge codex --version
 sudo -iu forge sh -lc 'command -v codex'
+sudo -iu forge sh -lc 'codex --version'
 ~~~
 
 The login-shell check matters because ChatGPT launches the remote app server through that shell.
