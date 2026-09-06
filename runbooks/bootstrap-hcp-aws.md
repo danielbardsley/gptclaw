@@ -222,9 +222,7 @@ exists, deployment waits; local coding and checks can continue.
 ### RES-001 permission scope
 
 The backup prerequisite adds DLM policy creation constrained by request tags
-and Region, management constrained by policy tags and account/Region, one named
-DLM service role, one SNS topic, named CloudWatch alarms, and one EventBridge
-rule. SNS subscription actions authorize against the topic ARN, not a
-subscription ARN. EC2 metadata reads and DLM creation require wildcard resources;
+and Region, management constrained by policy tags and account/Region, and one
+named DLM service role. EC2 metadata reads and DLM creation require wildcard resources;
 the latter retains request-tag and Region conditions. No backup mutation
 permission is added to the host or deployment roles themselves.

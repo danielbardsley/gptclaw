@@ -50,7 +50,8 @@ run "backup_deployment_boundaries" {
       for statement in data.aws_iam_policy_document.hcp_apply.statement :
       statement.resources == toset([local.backup_role_arn]) &&
       anytrue([for condition in statement.condition :
-        condition.variable == "iam:PassedToService" && condition.values == toset(["dlm.amazonaws.com"])
+        condition.variable == "iam:PassedToService" &&
+        length(condition.values) == 1 && contains(condition.values, "dlm.amazonaws.com")
       ])
       if statement.sid == "PassBackupRoleToDlm"
     ])
@@ -77,23 +78,13 @@ run "backup_deployment_boundaries" {
     error_message = "Wildcard DLM creation must be constrained by Region and request tags."
   }
   assert {
-    condition = alltrue([
-      for statement in concat(
-        tolist(data.aws_iam_policy_document.hcp_plan.statement),
-        tolist(data.aws_iam_policy_document.hcp_apply.statement)
-      ) :
-      !anytrue([for action in statement.actions : startswith(action, "sns:")]) ||
-      statement.resources == toset([local.backup_topic_arn])
-    ])
-    error_message = "SNS actions, including subscription operations, must use the exact topic ARN."
-  }
-  assert {
     condition = !anytrue([
       for statement in data.aws_iam_policy_document.hcp_apply.statement :
       anytrue([for action in statement.actions :
-        contains(["ec2:CreateSnapshot", "ec2:DeleteSnapshot", "cloudwatch:PutMetricData", "lambda:CreateFunction"], action)
+        contains(["ec2:CreateSnapshot", "ec2:DeleteSnapshot"], action) ||
+        can(regex("^(sns|cloudwatch|lambda|events):", action))
       ])
     ])
-    error_message = "Snapshot lifecycle belongs to DLM; no custom monitor permissions may be added."
+    error_message = "Snapshot lifecycle belongs to DLM; no notification or monitor permissions may be added."
   }
 }
