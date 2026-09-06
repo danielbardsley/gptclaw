@@ -68,8 +68,8 @@ resources.
   SPEC-001 acceptance facts.
 - [x] **3.3 Repository:** Run repository checks, Terraform formatting,
   backend-free validation and mocked tests; review the complete diff.
-- [ ] **3.4 Repository:** Push feature PR with the prerequisite dependency and
-  precise validation evidence.
+- [x] **3.4 Repository:** Push feature PR with the prerequisite dependency and
+  precise validation evidence: [PR #4](https://github.com/danielbardsley/gptclaw/pull/4).
 
 **Gate:** Reviewable code and operational documentation with passing CI.
 

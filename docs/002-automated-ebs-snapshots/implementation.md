@@ -23,6 +23,10 @@ silent DLM failures are accepted.
   [CI run 34](https://github.com/danielbardsley/gptclaw/actions/runs/34054724248).
 - No live Terraform apply, snapshot creation/deletion, or host change was made.
 
+The implementation is available in
+[PR #4](https://github.com/danielbardsley/gptclaw/pull/4), stacked on the
+prerequisite. The pull request's checks record CI results for its current head.
+
 ## Deployment handoff
 
 The prerequisite must be applied using the temporary authorized HCP maintenance
