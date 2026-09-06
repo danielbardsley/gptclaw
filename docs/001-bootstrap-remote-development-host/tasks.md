@@ -1,6 +1,6 @@
 # TASKS-001: Bootstrap the Remote Development Host
 
-- **Status:** In progress
+- **Status:** Complete
 - **Owner:** Daniel
 - **Specification:** [SPEC-001](./spec.md)
 - **Technical design:** [TDD-001](./technical-design.md)
@@ -38,27 +38,40 @@ preserve a secure path to add them.
   [run-UXJf582YaP5kcfwa](https://app.terraform.io/app/Bardsley/gptclaw-dev-host/runs/run-UXJf582YaP5kcfwa),
   same revision; speculative plan reported 0 add, 0 change, 0 destroy after
   both static AWS credential variables were deleted.
+- Final replacement plan: GitHub Actions
+  [run 31](https://github.com/danielbardsley/gptclaw/actions/runs/34049219829),
+  HCP Terraform
+  [run-pTp7HavLfKneGa1D](https://app.terraform.io/app/Bardsley/gptclaw-dev-host/runs/run-pTp7HavLfKneGa1D),
+  revision `ca52f894cd7955969841a0c056d58dfc9a27494d`; the protected
+  project volume was retained.
+- Final apply: GitHub Actions
+  [run 32](https://github.com/danielbardsley/gptclaw/actions/runs/34049368432),
+  HCP Terraform
+  [run-UZML5XNdmce21b6T](https://app.terraform.io/app/Bardsley/gptclaw-dev-host/runs/run-UZML5XNdmce21b6T),
+  revision `ca52f894cd7955969841a0c056d58dfc9a27494d`.
+- Sanitized verification details and the remote ChatGPT test are retained in
+  [the acceptance record](./acceptance.md).
 
 ## Phase 0 — Confirm inputs and safety boundaries
 
 **Entry gate:** None.
 
-- [ ] **0.1 Operator — Confirm the target environment inputs.** Record the AWS
+- [x] **0.1 Operator — Confirm the target environment inputs.** Record the AWS
   account ID, AWS region, fixed availability zone, HCP Terraform organization,
   HCP project, and Tailscale tailnet in an approved administrative location.
-- [ ] **0.2 Operator — Confirm repository controls.** Verify `main` is the
+- [x] **0.2 Operator — Confirm repository controls.** Verify `main` is the
   default branch and determine whether the GitHub plan supports required
   reviewers on the `development` environment.
-- [ ] **0.3 Operator — Confirm the desktop connection capability.** Verify the
+- [x] **0.3 Operator — Confirm the desktop connection capability.** Verify the
   ChatGPT desktop app exposes **Settings -> Connections -> SSH**.
 - [x] **0.4 Operator — Create a dedicated desktop-to-host SSH key pair.** Keep
   the private key on the desktop and make only the public key available as an
   HCP Terraform input.
-- [ ] **0.5 Operator — Confirm Tailscale policy inputs.** Approve the hostname
+- [x] **0.5 Operator — Confirm Tailscale policy inputs.** Approve the hostname
   `forge-dev-01`, tag `tag:gptclaw-dev`, and the identity or device permitted to
   reach tagged hosts on TCP 22. Confirm the ChatGPT desktop machine is already
   authenticated to the same tailnet.
-- [ ] **0.6 Operator — Confirm the Codex login path.** Enable device-code login
+- [x] **0.6 Operator — Confirm the Codex login path.** Enable device-code login
   in ChatGPT security or workspace settings, or verify that the desktop can use
   SSH local port forwarding for the supported browser callback fallback.
 - [x] **0.7 Repository — Record non-secret implementation decisions.** Update
@@ -225,7 +238,7 @@ stable.
 - [x] **4.9 Repository — Publish sanitized bootstrap status.** Write
   `/var/lib/gptclaw/bootstrap-complete.json` with bootstrap version, time,
   status, and installed non-secret component versions only.
-- [ ] **4.10 Repository — Test rerun and failure behavior.** Confirm bootstrap
+- [x] **4.10 Repository — Test rerun and failure behavior.** Confirm bootstrap
   can safely rerun, never reformats an existing filesystem, and leaves SSM
   usable when storage or enrollment fails.
 
@@ -275,7 +288,7 @@ an apply.
 - [x] **6.2 Operator — Verify the credential preflight.** Confirm the plan token
   can reach the intended HCP organization/workspace and the plan role sees the
   approved AWS account and region.
-- [ ] **6.3 Operator — Repair stale credentials narrowly.** Rotate the failed
+- [x] **6.3 Operator — Repair stale credentials narrowly.** Rotate the failed
   token or add only the smallest missing AWS read permission; never broaden to
   administrator access.
 - [x] **6.4 Operator — Review the protected post-merge plan.** Confirm expected resource
@@ -298,7 +311,7 @@ role is configured.
   in the existing secret immediately before an initial creation or replacement.
   Enter the exact workflow confirmation, approve the `development` environment
   when applicable, and let GitHub Actions initiate the remote apply.
-- [ ] **7.2 Operator — Repair apply permissions narrowly if required.** Add only
+- [x] **7.2 Operator — Repair apply permissions narrowly if required.** Add only
   the denied action/resource needed by the declared plan, rerun the plan, and
   redispatch; do not perform manual resource creation.
 - [x] **7.3 Operator — Verify deployment provenance.** Confirm GitHub and HCP run
@@ -306,12 +319,12 @@ role is configured.
 - [x] **7.4 Operator — Verify the AWS controls.** Confirm no security-group
   ingress, encrypted root/data volumes, project-volume deletion protection,
   IMDSv2 enforcement, intended instance profile, and absence of an EC2 key pair.
-- [ ] **7.5 Operator — Verify SSM first.** Establish a Session Manager shell and
+- [x] **7.5 Operator — Verify SSM first.** Establish a Session Manager shell and
   inspect cloud-init/bootstrap status before relying on Tailscale or SSH.
 - [x] **7.6 Repository — Add `scripts/verify-dev-host.sh`.** Check cloud-init,
   SSM Agent, Tailscale, mounted storage, Codex path/version, repository status,
   and sanitized bootstrap status without printing credentials.
-- [ ] **7.7 Operator — Run the host verification script.** Retain sanitized
+- [x] **7.7 Operator — Run the host verification script.** Retain sanitized
   results and relevant GitHub/HCP run links.
 
 **Exit gate:** Pipeline-created infrastructure is healthy, SSM works, and all
@@ -321,24 +334,24 @@ AWS security/storage assertions pass.
 
 **Entry gate:** Phase 7 complete and Session Manager access is confirmed.
 
-- [ ] **8.1 Operator — Verify Tailscale enrollment.** Confirm
+- [x] **8.1 Operator — Verify Tailscale enrollment.** Confirm
   `forge-dev-01` appears with the approved tag and is reachable only according
   to the tailnet policy; replace the one-use secret if it was consumed early.
-- [ ] **8.2 Operator — Verify hardened SSH.** Confirm public-key login works as
+- [x] **8.2 Operator — Verify hardened SSH.** Confirm public-key login works as
   `forge` over Tailscale and that root, password, and public-network SSH paths do
   not work.
-- [ ] **8.3 Operator — Create the EC2-to-GitHub key as `forge`.** Generate a
+- [x] **8.3 Operator — Create the EC2-to-GitHub key as `forge`.** Generate a
   separate key on the host, verify GitHub's published host fingerprint, and add
   its public half as the write-enabled deploy key `GptClaw forge-dev-01`.
-- [ ] **8.4 Operator — Clone the repository.** Use a repository-specific SSH
+- [x] **8.4 Operator — Clone the repository.** Use a repository-specific SSH
   alias with `IdentitiesOnly yes`, clone to
   `/srv/forge/projects/gptclaw`, select `main`, and confirm a clean worktree.
-- [ ] **8.5 Operator — Authenticate Codex as `forge`.** Prefer
+- [x] **8.5 Operator — Authenticate Codex as `forge`.** Prefer
   `codex login --device-auth`. If it is unavailable, use the documented SSH
   localhost-forwarding browser callback; do not copy a local authentication
   cache as the normal fallback. Verify login status and, when file-based
   credential storage is used, enforce `0700`/`0600` permissions.
-- [ ] **8.6 Operator — Verify non-interactive Codex startup.** Confirm ChatGPT's
+- [x] **8.6 Operator — Verify non-interactive Codex startup.** Confirm ChatGPT's
   SSH launch context finds `codex` without loading credentials from the
   repository or a globally readable file.
 
@@ -350,20 +363,20 @@ and Codex is authenticated under the constrained `forge` identity.
 **Entry gate:** Phase 8 complete and the desktop is connected to the same
 Tailscale network.
 
-- [ ] **9.1 Operator — Add the desktop SSH alias.** Configure `forge-dev` with
+- [x] **9.1 Operator — Add the desktop SSH alias.** Configure `forge-dev` with
   the Tailscale hostname, user `forge`, dedicated desktop key,
   `IdentitiesOnly yes`, and keepalive settings.
-- [ ] **9.2 Operator — Verify desktop SSH.** Run `ssh forge-dev`; confirm the
+- [x] **9.2 Operator — Verify desktop SSH.** Run `ssh forge-dev`; confirm the
   session is `forge`, lands on the intended host, and reaches no public SSH
   endpoint.
-- [ ] **9.3 Operator — Add the ChatGPT SSH connection.** Register `forge-dev` in
+- [x] **9.3 Operator — Add the ChatGPT SSH connection.** Register `forge-dev` in
   the desktop app and open `/srv/forge/projects/gptclaw` as the remote project.
-- [ ] **9.4 Operator — Exercise remote filesystem access.** From one remote
+- [x] **9.4 Operator — Exercise remote filesystem access.** From one remote
   Codex task, create `connection-test.md` containing the remote hostname and
   current UTC timestamp.
-- [ ] **9.5 Operator — Exercise remote command execution.** In the same task,
+- [x] **9.5 Operator — Exercise remote command execution.** In the same task,
   run harmless hostname/time verification and display the resulting Git diff.
-- [ ] **9.6 Operator — Restore the repository.** Remove `connection-test.md` and
+- [x] **9.6 Operator — Restore the repository.** Remove `connection-test.md` and
   confirm the remote worktree is clean.
 
 **Exit gate:** ChatGPT can manipulate files, execute commands, and show Git
@@ -382,15 +395,15 @@ changes on the EC2 host through the private SSH connection.
   break-glass access, snapshot validation, same-AZ volume recovery, fresh
   Tailscale enrollment, instance replacement, GitHub key recreation, Codex
   reauthentication, and reconciliation through Terraform.
-- [ ] **10.4 Operator — Test the documented recovery entry points.** Confirm an
+- [x] **10.4 Operator — Test the documented recovery entry points.** Confirm an
   authorized operator can find the SSM session command, volume/snapshot IDs,
   log group, and exact pipeline workflow without relying on undocumented local
   knowledge.
-- [ ] **10.5 Repository — Create a sanitized acceptance record.** Record pass or
+- [x] **10.5 Repository — Create a sanitized acceptance record.** Record pass or
   fail for every SPEC-001 acceptance criterion plus resource IDs, deployment
   revision, and GitHub/HCP run URLs; include no tokens, keys, environment dumps,
   or saved plans.
-- [ ] **10.6 Repository — Close the implementation.** Mark this task list and
+- [x] **10.6 Repository — Close the implementation.** Mark this task list and
   SPEC-001 complete only after all acceptance criteria pass and the final
   worktree and no-change plan are clean.
 

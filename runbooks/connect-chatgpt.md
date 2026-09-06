@@ -31,20 +31,24 @@ AWS Systems Manager access has been verified.
 
 ## 2. Verify Tailscale and SSH
 
-Confirm `forge-dev-01` is online with the approved tag. Use its full MagicDNS
-name if the short hostname does not resolve.
+Confirm `forge-dev-01` is online with the approved tag. Use its exact full
+MagicDNS name if the short hostname does not resolve. Tailscale may add a
+numeric suffix while an older node with the same name remains registered.
 
 Add a concrete entry to `C:\Users\danie\.ssh\config`:
 
 ```sshconfig
 Host forge-dev
-    HostName forge-dev-01
+    HostName forge-dev-01-3.tail8c3304.ts.net
     User forge
     IdentityFile C:/Users/danie/.ssh/id_ed25519_forge_dev
     IdentitiesOnly yes
     ServerAliveInterval 30
     ServerAliveCountMax 3
 ```
+
+The `HostName` above is the value verified on 2026-09-06. Replace it with the
+current node's full MagicDNS name after an instance replacement.
 
 Verify the host key out of band on first connection, then run:
 

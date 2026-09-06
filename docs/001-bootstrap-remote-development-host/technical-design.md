@@ -1,11 +1,11 @@
 # TDD-001: Bootstrap the Remote Development Host
 
-- **Status:** Ready for implementation
+- **Status:** Implemented
 - **Owner:** Daniel
 - **Source:** [SPEC-001](./spec.md)
 - **Implementation tasks:** [TASKS-001](./tasks.md)
 - **Repository:** `danielbardsley/gptclaw`
-- **Last updated:** 2026-09-05
+- **Last updated:** 2026-09-06
 
 ## 1. Purpose
 
@@ -690,18 +690,18 @@ Each stage updates its runbook with its code.
 |---|---|---|
 | AWS account ID | `571748613148` | Confirmed from the active AWS identity |
 | AWS region | `us-east-1` | Confirmed from the active AWS configuration |
-| Availability Zone | None | Required/sticky |
+| Availability Zone | `us-east-1a` | Confirmed and sticky with the project volume |
 | HCP organization | `Bardsley` | Confirmed |
 | HCP project | `gptclaw` | Created with dedicated `gptclaw-dev-host` workspace |
 | HCP token capability | HCP Free owners-team tokens; environment-protected | Both configured; no repository-level copy |
-| GitHub environment reviewers | Existing plan | Verify |
-| Tailscale tailnet | Existing | Required |
-| Tailscale tag | `tag:gptclaw-dev` | Confirm |
-| Tailscale secret | Terraform-created from ephemeral write-only input | Key required |
-| Desktop Tailscale enrollment | Existing tailnet | Sign-in required |
-| Desktop SSH public key | Dedicated `id_ed25519_forge_dev` key | Generated locally; public half pending HCP configuration |
-| ChatGPT SSH connection feature | Current desktop app | Supported by current OpenAI documentation; connection pending host deployment |
-| ChatGPT device-code login | Preferred; SSH callback fallback | Verify |
+| GitHub environment reviewers | Existing plan | Development environment and explicit confirmation gate configured |
+| Tailscale tailnet | Existing | Desktop and host enrollment verified |
+| Tailscale tag | `tag:gptclaw-dev` | Configured and verified |
+| Tailscale secret | Terraform-created from ephemeral write-only input | One-use enrollment completed; value remains sensitive |
+| Desktop Tailscale enrollment | Existing tailnet | Verified |
+| Desktop SSH public key | Dedicated `id_ed25519_forge_dev` key | Public half configured in HCP; private half remains local |
+| ChatGPT SSH connection feature | Current desktop app | `forge-dev` connection and remote project verified |
+| ChatGPT device-code login | Preferred; SSH callback fallback | Device-code login completed and verified |
 
 These are configuration inputs, not architecture changes.
 

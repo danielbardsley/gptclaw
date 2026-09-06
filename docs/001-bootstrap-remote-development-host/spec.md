@@ -1,11 +1,11 @@
 # SPEC-001: Bootstrap the Remote Development Host
 
-- **Status:** Implementation in progress
+- **Status:** Complete
 - **Owner:** Daniel
 - **Implementation repository:** `git@github.com:danielbardsley/gptclaw.git`
 - **Technical design:** [TDD-001](./technical-design.md)
 - **Implementation tasks:** [TASKS-001](./tasks.md)
-- **Last updated:** 2026-09-05
+- **Last updated:** 2026-09-06
 
 ## 1. Summary
 
@@ -337,29 +337,32 @@ Secrets, access tokens, device codes, private keys, and complete environment dum
 
 The work is complete only when all of the following pass:
 
-- [ ] The `gptclaw-dev-host` workspace exists in the approved HCP Terraform organization and uses remote execution.
-- [ ] Terraform state exists only in HCP Terraform and is not present in the Git repository.
-- [ ] A pull request produces formatting, validation, test, and security results without receiving an HCP token or applying infrastructure.
-- [ ] A protected manual plan from current `main` produces a reviewed HCP Terraform plan before apply.
-- [ ] A manually dispatched and exactly confirmed GitHub Actions run from current `main`, protected by an environment approval when supported, produces the successful HCP Terraform apply.
-- [ ] The EC2 instance was created from committed Terraform code by that pipeline; no local `terraform apply` was used.
-- [ ] The GitHub Actions and HCP Terraform run records identify the same revision.
-- [ ] The deployment targets the approved AWS account ID and region.
-- [ ] The active HCP-to-AWS identity uses least-privilege, phase-specific dynamic credentials; no static AWS access key is configured for Terraform.
-- [ ] No AWS access key, HCP Terraform token, Terraform state, or saved plan is committed or exposed in logs.
-- [ ] The instance security group has no public inbound rule.
-- [ ] An authorized administrator can connect through Session Manager.
-- [ ] The desktop can resolve and reach `forge-dev` over Tailscale.
-- [ ] `ssh forge-dev` opens a shell as the `forge` user.
-- [ ] `codex` is available in that user's non-interactive login-shell `PATH`.
-- [ ] Codex is authenticated without storing credentials in the repository.
-- [ ] ChatGPT can open the remote repository as a project.
-- [ ] From a remote Codex chat, ChatGPT can create `connection-test.md` containing the remote hostname and current UTC timestamp.
-- [ ] The same chat can run a harmless verification command on EC2.
-- [ ] ChatGPT displays the new file in the remote Git diff.
-- [ ] Removing `connection-test.md` returns the repository to a clean state.
-- [ ] The implementation records setup and recovery instructions without recording secrets.
-- [ ] Re-running the deployment workflow with no code or variable changes produces no infrastructure changes.
+- [x] The `gptclaw-dev-host` workspace exists in the approved HCP Terraform organization and uses remote execution.
+- [x] Terraform state exists only in HCP Terraform and is not present in the Git repository.
+- [x] A pull request produces formatting, validation, test, and security results without receiving an HCP token or applying infrastructure.
+- [x] A protected manual plan from current `main` produces a reviewed HCP Terraform plan before apply.
+- [x] A manually dispatched and exactly confirmed GitHub Actions run from current `main`, protected by an environment approval when supported, produces the successful HCP Terraform apply.
+- [x] The EC2 instance was created from committed Terraform code by that pipeline; no local `terraform apply` was used.
+- [x] The GitHub Actions and HCP Terraform run records identify the same revision.
+- [x] The deployment targets the approved AWS account ID and region.
+- [x] The active HCP-to-AWS identity uses least-privilege, phase-specific dynamic credentials; no static AWS access key is configured for Terraform.
+- [x] No AWS access key, HCP Terraform token, Terraform state, or saved plan is committed or exposed in logs.
+- [x] The instance security group has no public inbound rule.
+- [x] An authorized administrator can connect through Session Manager.
+- [x] The desktop can resolve and reach `forge-dev` over Tailscale.
+- [x] `ssh forge-dev` opens a shell as the `forge` user.
+- [x] `codex` is available in that user's non-interactive login-shell `PATH`.
+- [x] Codex is authenticated without storing credentials in the repository.
+- [x] ChatGPT can open the remote repository as a project.
+- [x] From a remote Codex chat, ChatGPT can create `connection-test.md` containing the remote hostname and current UTC timestamp.
+- [x] The same chat can run a harmless verification command on EC2.
+- [x] ChatGPT displays the new file in the remote Git diff.
+- [x] Removing `connection-test.md` returns the repository to a clean state.
+- [x] The implementation records setup and recovery instructions without recording secrets.
+- [x] Re-running the deployment workflow with no code or variable changes produces no infrastructure changes.
+
+The sanitized evidence for these results is retained in
+[the acceptance record](./acceptance.md).
 
 ## 10. Required inputs before implementation
 

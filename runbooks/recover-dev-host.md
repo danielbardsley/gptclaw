@@ -27,7 +27,11 @@ Do not print the Tailscale secret or dump the process environment.
 1. Quiesce writes beneath `/srv/forge/projects`.
 2. Confirm the Terraform plan retains `aws_ebs_volume.projects` and changes only
    the expected compute/attachment resources.
-3. Create and verify an EBS snapshot of the project volume.
+3. Create and verify an EBS snapshot of the project volume through reviewed
+   repository code, GitHub Actions, and HCP Terraform. Do not create it with a
+   direct AWS CLI or console mutation. If the current platform does not yet
+   implement that path, stop and implement the backup workflow before replacing
+   a volume that contains non-reproducible data.
 4. Store a fresh tagged one-use Tailscale auth key in the existing Secrets
    Manager secret.
 5. Merge the reviewed change to `main`.
@@ -55,6 +59,11 @@ request and explicit data-destruction review.
 
 Do not create a long-lived manual attachment or other infrastructure drift. Any
 emergency change must be reconciled into Terraform immediately.
+
+As of the SPEC-001 acceptance on 2026-09-06, the protected project volume had
+no snapshot. Its content was limited to the reproducible repository clone.
+Implement the backup workflow before treating the host as storage for
+irreplaceable project data.
 
 ## Common failures
 
