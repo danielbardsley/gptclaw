@@ -28,6 +28,7 @@ Feature IDs remain stable even if names, grouping, or delivery order changes.
 | Delivered | Implemented and accepted by a numbered specification. |
 | Candidate | Intended direction but not yet specified. |
 | Draft | Selected for a numbered specification under review; not approved for implementation. |
+| Planned | Specification approved; design/tasks under review or awaiting implementation authorization. |
 | Optional | Useful capability that should be implemented only when demanded. |
 | Deferred | Deliberately postponed until its dependencies or use case exist. |
 
@@ -48,7 +49,7 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| RES-001 | Automated EBS snapshots | 1 | Draft | Terraform creates a tagged lifecycle policy for the project volume with retention and failure visibility. See [SPEC-002](../002-automated-ebs-snapshots/spec.md). |
+| RES-001 | Automated EBS snapshots | 1 | Planned | Terraform creates a tagged lifecycle policy for the project volume with retention and failure visibility. See [SPEC-002](../002-automated-ebs-snapshots/spec.md). |
 | RES-002 | Restore drill | 1 | Candidate | Periodically prove that a recent recovery point can create an inspectable replacement volume without risking the live volume. |
 | RES-003 | Backup freshness indicator | 2 | Candidate | Dashboard shows last successful recovery point, age, retention class, and restore-test result. |
 | RES-004 | Host replacement rehearsal | 3 | Candidate | Exercise compute replacement, Tailscale re-enrollment, Git credential recreation, and Codex reauthentication. |

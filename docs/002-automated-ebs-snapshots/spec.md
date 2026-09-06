@@ -1,6 +1,8 @@
 # SPEC-002: Automated EBS Snapshots
 
-- **Status:** Draft
+- **Status:** Approved for planning; implementation not started
+- **Technical design:** [TDD-002](./technical-design.md)
+- **Implementation tasks:** [TASKS-002](./tasks.md)
 - **Owner:** Daniel
 - **Feature catalogue:** RES-001
 - **Dependency:** [SPEC-001](../001-bootstrap-remote-development-host/spec.md), complete
@@ -16,8 +18,8 @@ policy, permissions, and monitoring through GitHub Actions and HCP Terraform.
 This covers RES-001 and the missing automated-backup capability recorded in
 [ACCEPTANCE-001](../001-bootstrap-remote-development-host/acceptance.md).
 A completed snapshot is a candidate recovery point; proving a restore belongs
-to RES-002. This draft does not authorize infrastructure implementation.
-Technical design and implementation tasks follow specification review.
+to RES-002. The owner approved this specification on 2026-09-06 and requested
+technical design and tasks. Infrastructure implementation is not yet authorized.
 
 ## 2. Desired outcome
 
