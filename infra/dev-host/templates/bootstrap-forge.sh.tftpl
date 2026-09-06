@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 umask 027
 
-readonly BOOTSTRAP_VERSION="2"
+readonly BOOTSTRAP_VERSION="3"
 readonly AWS_REGION=${jsonencode(aws_region)}
 readonly DATA_VOLUME_ID=${jsonencode(data_volume_id)}
 readonly INSTANCE_NAME=${jsonencode(instance_name)}
@@ -216,7 +216,7 @@ AllowTcpForwarding local
 SSHD
 install -d -m 0755 /run/sshd
 sshd -t
-systemctl reload ssh.service
+systemctl reload-or-restart ssh.service
 ufw default deny incoming
 ufw default allow outgoing
 ufw allow in on tailscale0 proto tcp to any port 22 comment 'GptClaw SSH over Tailscale'

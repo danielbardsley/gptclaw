@@ -49,7 +49,9 @@ check "Tailscale connected" tailscale status
 check "project volume mounted" mountpoint -q /srv/forge
 check "project directory ownership" bash -c '[ "$(stat -c "%U:%G:%a" /srv/forge/projects)" = "forge:forge:750" ]'
 check "bootstrap evidence present" test -r /var/lib/gptclaw/bootstrap-complete.json
-check "SSH service active" systemctl is-active --quiet ssh.service
+check_any_service "SSH listener active" \
+  ssh.service \
+  ssh.socket
 if [ "$(id -u)" -eq 0 ]; then
   check "SSH configuration valid" sshd -t
 fi

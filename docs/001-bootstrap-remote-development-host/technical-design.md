@@ -498,6 +498,9 @@ The SSH drop-in sets:
 - `AllowTcpForwarding local`
 
 UFW denies incoming, allows outgoing, and permits TCP 22 only on `tailscale0`. AWS ingress remains empty. `forge` SSH directory/file modes are `0700`/`0600`.
+Bootstrap creates the volatile `/run/sshd` directory before validation and uses
+`systemctl reload-or-restart ssh.service`, which works whether Ubuntu has
+already started the daemon or is still using socket activation.
 
 ### 8.4 Codex
 
