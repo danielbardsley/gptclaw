@@ -3,6 +3,12 @@ locals {
   hcp_oidc_audience     = "aws.workload.identity"
   hcp_subject_prefix    = "organization:${var.hcp_terraform_organization}:project:${var.hcp_terraform_project}:workspace:${var.hcp_terraform_workspace}:run_phase"
 
+  backup_name      = "${local.name_prefix}-projects-backup"
+  backup_role_arn  = "arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:role/${local.backup_name}"
+  backup_topic_arn = "arn:${data.aws_partition.current.partition}:sns:${var.aws_region}:${var.aws_account_id}:${local.backup_name}"
+  backup_alarm_arn = "arn:${data.aws_partition.current.partition}:cloudwatch:${var.aws_region}:${var.aws_account_id}:alarm:${local.backup_name}-*"
+  backup_rule_arn  = "arn:${data.aws_partition.current.partition}:events:${var.aws_region}:${var.aws_account_id}:rule/${local.backup_name}-policy-error"
+  backup_dlm_arn   = "arn:${data.aws_partition.current.partition}:dlm:${var.aws_region}:${var.aws_account_id}:policy/*"
 }
 
 resource "aws_iam_openid_connect_provider" "hcp_terraform" {
@@ -119,6 +125,7 @@ data "aws_iam_policy_document" "hcp_plan" {
       aws_iam_openid_connect_provider.hcp_terraform.arn,
       aws_iam_role.hcp_plan.arn,
       aws_iam_role.hcp_apply.arn,
+      local.backup_role_arn,
       "arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:role/${local.name_prefix}-host",
       "arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:instance-profile/${local.name_prefix}-host",
     ]
@@ -137,6 +144,36 @@ data "aws_iam_policy_document" "hcp_plan" {
       aws_cloudwatch_log_group.dev_host.arn,
       aws_secretsmanager_secret.tailscale_enrollment.arn,
     ]
+  }
+
+  statement {
+    sid       = "ReadBackupPolicies"
+    actions   = ["dlm:GetLifecyclePolicy", "dlm:ListTagsForResource"]
+    resources = [local.backup_dlm_arn]
+  }
+
+  statement {
+    sid       = "ReadBackupAlarms"
+    actions   = ["cloudwatch:DescribeAlarms", "cloudwatch:DescribeAlarmHistory", "cloudwatch:ListTagsForResource"]
+    resources = [local.backup_alarm_arn]
+  }
+
+  statement {
+    sid       = "ReadBackupNotifications"
+    actions   = ["sns:GetTopicAttributes", "sns:ListSubscriptionsByTopic", "sns:ListTagsForResource"]
+    resources = [local.backup_topic_arn]
+  }
+
+  statement {
+    sid       = "ReadBackupSubscription"
+    actions   = ["sns:GetSubscriptionAttributes"]
+    resources = [local.backup_topic_arn]
+  }
+
+  statement {
+    sid       = "ReadBackupEventRule"
+    actions   = ["events:DescribeRule", "events:ListTargetsByRule", "events:ListTagsForResource"]
+    resources = [local.backup_rule_arn]
   }
 }
 
@@ -270,6 +307,98 @@ data "aws_iam_policy_document" "hcp_apply" {
     resources = [aws_secretsmanager_secret.tailscale_enrollment.arn]
   }
 
+
+  statement {
+    sid       = "CreateTaggedBackupPolicy"
+    actions   = ["dlm:CreateLifecyclePolicy"]
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestedRegion"
+      values   = [var.aws_region]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/BackupSet"
+      values   = ["${var.environment}-projects"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = ["GptClaw"]
+    }
+  }
+
+  statement {
+    sid       = "ManageBackupPolicy"
+    actions   = ["dlm:UpdateLifecyclePolicy", "dlm:DeleteLifecyclePolicy", "dlm:TagResource", "dlm:UntagResource"]
+    resources = [local.backup_dlm_arn]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/BackupSet"
+      values   = ["${var.environment}-projects"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Project"
+      values   = ["GptClaw"]
+    }
+  }
+
+  statement {
+    sid = "ManageBackupRole"
+    actions = [
+      "iam:CreateRole", "iam:DeleteRole", "iam:PutRolePolicy",
+      "iam:DeleteRolePolicy", "iam:TagRole", "iam:UntagRole",
+      "iam:UpdateAssumeRolePolicy",
+    ]
+    resources = [local.backup_role_arn]
+  }
+
+  statement {
+    sid       = "PassBackupRoleToDlm"
+    actions   = ["iam:PassRole"]
+    resources = [local.backup_role_arn]
+
+    condition {
+      test     = "StringEquals"
+      variable = "iam:PassedToService"
+      values   = ["dlm.amazonaws.com"]
+    }
+  }
+
+  statement {
+    sid       = "ManageBackupAlarms"
+    actions   = ["cloudwatch:PutMetricAlarm", "cloudwatch:DeleteAlarms", "cloudwatch:TagResource", "cloudwatch:UntagResource"]
+    resources = [local.backup_alarm_arn]
+  }
+
+  statement {
+    sid = "ManageBackupNotifications"
+    actions = [
+      "sns:CreateTopic", "sns:DeleteTopic", "sns:SetTopicAttributes",
+      "sns:Subscribe", "sns:TagResource", "sns:UntagResource",
+    ]
+    resources = [local.backup_topic_arn]
+  }
+
+  statement {
+    sid       = "ManageBackupSubscription"
+    actions   = ["sns:Unsubscribe", "sns:SetSubscriptionAttributes"]
+    resources = [local.backup_topic_arn]
+  }
+
+  statement {
+    sid = "ManageBackupEventRule"
+    actions = [
+      "events:PutRule", "events:DeleteRule", "events:EnableRule",
+      "events:DisableRule", "events:PutTargets", "events:RemoveTargets",
+      "events:TagResource", "events:UntagResource",
+    ]
+    resources = [local.backup_rule_arn]
+  }
 }
 
 resource "aws_iam_role_policy" "hcp_apply" {
