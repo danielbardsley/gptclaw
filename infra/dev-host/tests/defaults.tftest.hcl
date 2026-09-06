@@ -75,7 +75,7 @@ run "planned_defaults" {
   }
 
   assert {
-    condition     = aws_secretsmanager_secret_version.tailscale_enrollment.secret_string_wo_version == 1
-    error_message = "The default Tailscale secret version must begin at one."
+    condition     = aws_secretsmanager_secret_version.tailscale_enrollment.secret_string_wo_version == 2
+    error_message = "The default Tailscale secret version must match the committed rotation counter."
   }
 }
