@@ -27,11 +27,12 @@ Do not print the Tailscale secret or dump the process environment.
 1. Quiesce writes beneath `/srv/forge/projects`.
 2. Confirm the Terraform plan retains `aws_ebs_volume.projects` and changes only
    the expected compute/attachment resources.
-3. Create and verify an EBS snapshot of the project volume through reviewed
-   repository code, GitHub Actions, and HCP Terraform. Do not create it with a
-   direct AWS CLI or console mutation. If the current platform does not yet
-   implement that path, stop and implement the backup workflow before replacing
-   a volume that contains non-reproducible data.
+3. Use the [backup inspection runbook](./inspect-backups.md) to select a completed
+   snapshot from the Terraform-managed DLM policy. Verify its source, encryption,
+   and timestamp against the writes being protected. A scheduled snapshot may
+   predate recent work; wait for an appropriate scheduled recovery point or
+   design an explicitly reviewed pipeline backup before risking that work.
+   Do not create snapshots with direct AWS CLI or console mutations.
 4. Store a fresh tagged one-use Tailscale auth key in the existing Secrets
    Manager secret.
 5. Merge the reviewed change to `main`.
@@ -48,10 +49,12 @@ request and explicit data-destruction review.
 
 ## Restore from snapshot
 
-1. Select a verified snapshot and create a gp3 encrypted volume in the same
-   availability zone as the replacement instance.
-2. Represent the recovered volume in reviewed Terraform configuration and
-   import it into the HCP Terraform state before attachment.
+1. Select a completed snapshot using the backup inspection runbook. An actual
+   restore drill is separate RES-002 work; metadata alone does not prove it.
+2. Declare the recovered gp3 encrypted volume and controlled attachment in
+   reviewed Terraform, using the snapshot ID and the intended instance's
+   availability zone. Create both through GitHub Actions/HCP Terraform, leaving
+   the live volume untouched. Do not give a test volume the active backup tag.
 3. Mount it read-only through an administrator session and inspect the expected
    filesystem and repositories.
 4. Return it to normal service only after validation.
@@ -62,8 +65,8 @@ emergency change must be reconciled into Terraform immediately.
 
 As of the SPEC-001 acceptance on 2026-09-06, the protected project volume had
 no snapshot. Its content was limited to the reproducible repository clone.
-Implement the backup workflow before treating the host as storage for
-irreplaceable project data.
+SPEC-002 adds the backup policy in code. Confirm its deployed acceptance and
+an appropriate completed snapshot before treating the host as protected storage.
 
 ## Common failures
 

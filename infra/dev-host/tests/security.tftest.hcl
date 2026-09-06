@@ -32,6 +32,11 @@ mock_provider "aws" {
 
 mock_provider "cloudinit" {}
 
+override_resource {
+  target = aws_iam_role.project_backups
+  values = { arn = "arn:aws:iam::123456789012:role/gptclaw-dev-projects-backup" }
+}
+
 variables {
   aws_account_id         = "123456789012"
   aws_region             = "us-east-1"

@@ -1,6 +1,6 @@
 # SPEC-002: Automated EBS Snapshots
 
-- **Status:** Approved for planning; implementation not started
+- **Status:** Implementation in progress
 - **Technical design:** [TDD-002](./technical-design.md)
 - **Implementation tasks:** [TASKS-002](./tasks.md)
 - **Owner:** Daniel
@@ -12,21 +12,21 @@
 ## 1. Summary
 
 Protect the persistent project volume mounted at `/srv/forge` with automated,
-encrypted EBS snapshots, bounded retention, and visible failures. Manage the
-policy, permissions, and monitoring through GitHub Actions and HCP Terraform.
+encrypted EBS snapshots and bounded retention. Manage the policy and permissions
+through GitHub Actions and HCP Terraform.
 
 This covers RES-001 and the missing automated-backup capability recorded in
 [ACCEPTANCE-001](../001-bootstrap-remote-development-host/acceptance.md).
 A completed snapshot is a candidate recovery point; proving a restore belongs
 to RES-002. The owner approved this specification on 2026-09-06 and requested
-technical design and tasks. Infrastructure implementation is not yet authorized.
+technical design and tasks, then authorized implementation. The owner explicitly
+accepted silent DLM failures; no monitoring or notification service is included.
 
 ## 2. Desired outcome
 
 The owner can leave the host unattended and have its project volume backed up
 without an active SSH session or host process. The owner can identify the latest
-completed snapshot, understand retention, and receive notifications of failures
-reported by DLM.
+completed snapshot and understand retention through manual inspection.
 
 Preserve the live volume, attachment, deletion protection, and access paths.
 This feature requires no compute replacement or filesystem interruption.
@@ -40,7 +40,6 @@ This feature requires no compute replacement or filesystem interruption.
 - Configurable schedule and retention with validated inputs.
 - Dedicated service role and narrowly scoped deployment permissions.
 - Encrypted, private snapshots with traceable non-secret metadata.
-- Alerts from native DLM failure metrics and policy-error events.
 - Read-only inspection instructions, rollback guidance, and acceptance evidence.
 
 ### 3.2 Excluded
@@ -48,6 +47,7 @@ This feature requires no compute replacement or filesystem interruption.
 - RES-002 restore drills, restored-volume creation, and live-volume replacement.
 - RES-003 and DSH-008 dashboard UI or a general platform status collector.
 - Automated backup freshness checks or independent verification of DLM scheduling.
+- Failure notifications, SNS subscriptions, alarms, and alert-routing rules.
 - Root-volume backups, AMIs, and home-directory authentication-state recovery.
 - Database-native backups, write quiescing, and application-consistent snapshots.
 - Cross-account/Region copies, archive tiers, and immutable retention.
@@ -71,7 +71,6 @@ These are proposals for review, not previously approved operating settings.
 | Storage | Standard snapshot tier |
 | Encryption | Preserve source-volume encryption and key relationship |
 | Sharing | Private to the development AWS account |
-| Notification | Owner-confirmed email subscription |
 | Consistency | Crash-consistent block storage; no application-consistency guarantee |
 
 Daily scheduling is a nominal cadence, not a guaranteed 24-hour recovery point
@@ -83,7 +82,7 @@ fixed storage bill. This feature relies on DLM to execute its configured policy.
 
 ### BAK-001: Pipeline-managed policy
 
-Declare the policy, tags, role, monitoring, and notification resources in
+Declare the policy, tags, and role in
 `infra/dev-host`. Provision and change them only through committed code ->
 GitHub Actions -> HCP Terraform -> AWS, preserving the protected workflow,
 dynamic credentials, and revision traceability. Scheduled creation and expiry
@@ -118,7 +117,7 @@ Do not rotate/replace the volume key or enable public/cross-account sharing.
 Snapshots contain full volume contents, potentially including uncommitted work,
 secrets, and runtime data; treat access as access to that data. Copy only reviewed
 non-secret tags. Do not include file contents, credentials, or environment dumps
-in outputs, alerts, logs, or evidence.
+in outputs, logs, or evidence.
 
 ### BAK-005: Least-privilege identities
 
@@ -126,32 +125,17 @@ Use a dedicated DLM role with only required lifecycle permissions, scoped to
 resources/tags where AWS supports it. Restrict role passing to the intended
 service and role. Explain actions requiring wildcard resource scope.
 
-Use service resource policies for native alert delivery. Grant no new snapshot
-mutation or infrastructure privileges to the EC2 role or `forge`.
+Grant no new snapshot mutation or infrastructure privileges to the EC2 role
+or `forge`.
 
 Resolve deployment-permission prerequisites in the design: the existing HCP
 apply role cannot modify itself. Use an explicit reviewed repository/pipeline
 path; do not grant self-administration or edit IAM out of band.
 
-### BAK-006: DLM failure visibility
-
-Notify the owner when native DLM metrics report snapshot creation/deletion
-failures or DLM emits a policy-error event. Route these signals using AWS-managed
-alarms/events and an owner-confirmed email subscription.
-
-Rely on DLM to execute the schedule and retention policy. There is no independent
-polling for missing/stale snapshots, disabled policies, or missing targets.
-Read-only inspection remains available for diagnosis and acceptance.
-
-Alerts identify environment, Region, policy, volume, category, observed time,
-and diagnostic route without exposing data. Confirm the email subscription and
-verify delivery before acceptance. Document native signal and notification
-semantics, including that absence of a failure signal is not a verified backup.
-
 ### BAK-007: Inspection and recovery handoff
 
 Provide non-secret outputs and read-only runbook steps to find policy, target,
-retention, notification status, and latest completed snapshot with ID, state,
+retention, and latest completed snapshot with ID, state,
 timestamp, encryption, and age. Distinguish configured policy, completed
 snapshot, and tested restore.
 
@@ -169,10 +153,7 @@ must not be presented as a successful restore or recovery-time guarantee.
 - Document retention after disablement/removal, retained-snapshot inventory,
   and cleanup ownership. Removing Terraform configuration must not be assumed
   to remove policy-created snapshots.
-- Test failures with fixtures and an isolated/synthetic notification path. Do
-  not break live IAM, delete backups, or disable protection to trigger an alarm.
-  Label synthetic evidence clearly.
-- Document snapshot/monitoring cost drivers and usage inspection. Retention
+- Document snapshot cost drivers and usage inspection. Retention
   bounds count, not changed bytes or total cost.
 
 ## 7. Acceptance criteria
@@ -181,32 +162,27 @@ All criteria require evidence before SPEC-002 is marked complete.
 
 | ID | Acceptance condition |
 |---|---|
-| AC-001 | Repository checks and Terraform formatting, validation, and focused tests pass for selection, enabled state, schedule/retention validation, IAM, encryption/privacy, and monitoring. |
+| AC-001 | Repository checks and Terraform formatting, validation, and focused tests pass for selection, enabled state, schedule/retention validation, IAM, and encryption/privacy. |
 | AC-002 | Reviewed GitHub/HCP plan and apply identify the revision and add backups without replacing compute, altering attachment, removing protection, or opening inbound access. |
 | AC-003 | Read-only inspection confirms the enabled policy selects exactly the live project volume, excluding root and unrelated volumes. |
 | AC-004 | At least one naturally scheduled snapshot completes with expected source, policy attribution, timestamp, retention metadata, encryption, and private sharing state. Policy creation alone does not pass. |
 | AC-005 | Retention matches the approved count; tests verify mapping and cleanup scope. If live expiration has not occurred, record that limitation and a dated follow-up check. |
-| AC-006 | Tests verify DLM failure metric names/dimensions, policy-error event filtering, scoped SNS permissions, and notification configuration. Unrelated policy events must not match. |
-| AC-007 | A notification test reaches the confirmed owner through the deployed alarm/SNS path. Evidence distinguishes synthetic input from observed failures and records delivery timing; policy-error rule matching is verified separately. |
 | AC-009 | A same-configuration follow-up pipeline plan has no unexpected changes; generated snapshots do not cause Terraform drift. |
 | AC-010 | Runbook and sanitized evidence cover inspection, diagnosis, retention changes, rollback, costs, and RES-002 handoff without claiming a successful restore. |
 
 ## 8. Inputs and decisions before implementation
 
 - Review schedule and retention against acceptable loss of work/data.
-- Supply notification email through the appropriate configuration channel and
-  confirm the subscription; omit contact details from spec and evidence.
 - Verify current volume, key, account, and Region from deployed outputs and
   read-only inspection rather than historical IDs.
 - Resolve deployment-role permissions, including self-management restrictions.
-- Confirm native DLM failure notifications and their delivery expectations.
 
 ## 9. Deliverables and follow-on work
 
 After spec review, create `technical-design.md` mapping requirements to resources,
 then `tasks.md` with ordered checks and deployment gates in this folder.
 Implementation delivers Terraform, focused tests, operational documentation,
-and `acceptance.md` with sanitized GitHub/HCP links and snapshot/alert evidence.
+and `acceptance.md` with sanitized GitHub/HCP links and snapshot evidence.
 
 RES-002 proves recovery by creating and inspecting a replacement volume without
 risking the live volume. RES-003 and DSH-008 can later consume backup metadata
@@ -219,5 +195,3 @@ recovery objectives require separate specifications.
 - [Recovery runbook](../../runbooks/recover-dev-host.md)
 - [AWS: Snapshot lifecycle automation](https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-lifecycle.html)
 - [AWS: Custom policies and timing](https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-ami-policy.html)
-- [AWS: DLM metrics](https://docs.aws.amazon.com/ebs/latest/userguide/monitor-dlm-cw-metrics.html)
-- [AWS: DLM events and best-effort delivery](https://docs.aws.amazon.com/ebs/latest/userguide/monitor-cloudwatch-events.html)

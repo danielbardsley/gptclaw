@@ -1,105 +1,91 @@
 # TDD-002: Automated EBS Snapshots
 
-- **Status:** Draft for review
+- **Status:** Approved; implementation in progress
 - **Owner:** Daniel
-- **Source:** [SPEC-002](./spec.md), approved for planning
+- **Source:** [SPEC-002](./spec.md)
 - **Implementation tasks:** [TASKS-002](./tasks.md)
 - **Repository:** `danielbardsley/gptclaw`
 - **Last updated:** 2026-09-06
 
 ## 1. Purpose and baseline
 
-Implement RES-001 in the existing `infra/dev-host` root module. The current
-project EBS volume is separately managed, encrypted, and protected with
-`prevent_destroy`. Its ID comes from Terraform, not historical acceptance
-evidence. No host bootstrap, instance, attachment, filesystem, or network change
-is required. Review plans for incidental replacement caused by unrelated AMI
-or bootstrap drift and stop if one appears.
+Implement RES-001 in the existing `infra/dev-host` root module. The project
+volume is separately managed, encrypted, and protected by `prevent_destroy`.
+Its ID comes from Terraform, not historical acceptance evidence. Preserve
+compute, bootstrap, attachment, filesystem, keys, and networking.
 
-This document and the task list remain on the feature branch for review.
-They do not authorize deployment. The existing workflow permits remote plans
-and applies only after a reviewed merge to current `main`.
+The owner authorized implementation and explicitly accepts silent DLM failures.
+DLM owns scheduling and retention; manual inspection provides diagnosis and
+acceptance evidence. Remote plans/applies still require reviewed code on current
+`main` through the protected GitHub/HCP workflow.
 
 ## 2. Decisions
 
 | ID | Decision | Reason |
 |---|---|---|
-| D-001 | Use a custom DLM volume snapshot policy. | Implements tagged scheduling and count retention. |
-| D-002 | One daily schedule at 03:00 UTC, seven retained snapshots. | Matches the specification's starting settings. |
-| D-003 | Rely on DLM to execute the configured policy. | No custom freshness checker or scheduled inspection service is needed. |
-| D-004 | Native DLM failure alarms and policy-error events publish to SNS email. | Retains failure visibility through AWS-managed services. |
-| D-005 | Use a dedicated DLM role, separate from host and deployment identities. | Snapshot lifecycle permissions stay with DLM. |
-| D-006 | Test delivery with a temporary Terraform-managed test alarm. | Exercises the alarm/SNS path without disrupting backups. |
-| D-007 | Use the existing controlled identity-maintenance procedure as a separately reviewed prerequisite. | Normal HCP identities cannot expand their own permissions. |
+| D-001 | Custom DLM VOLUME snapshot policy. | Implements tagged scheduling and count retention. |
+| D-002 | Daily at 03:00 UTC; retain seven snapshots. | Matches the specification's defaults. |
+| D-003 | Rely on DLM; allow silent failures. | The owner excluded custom monitoring and failure notifications. |
+| D-004 | Dedicated DLM role, separate from host/deployment roles. | Snapshot lifecycle privileges belong only to the service. |
+| D-005 | Deliver deployment-role maintenance as a prerequisite. | Ordinary HCP roles cannot expand their own permissions. |
 
 ## 3. Architecture
 
 ~~~text
-Reviewed code -> GitHub Actions -> HCP Terraform -> AWS resources
-                                                    |
-                          +-------------------------+----------------+
-                          |                         |                |
-                     DLM policy                DLM failure      DLM policy
-                          |                      metrics        error events
-                    DLM service role                |                |
-                          |                    CloudWatch       EventBridge
-                tagged project volume             alarms        event rule
-                          |                         |                |
-                   private snapshots                +-------+--------+
-                   automatic retention                      |
-                                                        SNS topic
-                                                            |
-                                                   confirmed owner email
+Reviewed code -> GitHub Actions -> HCP Terraform
+                                      |
+                                 DLM policy
+                                      |
+                                DLM service role
+                                      |
+                            tagged project volume
+                                      |
+                         encrypted private snapshots
+                            automatic count retention
 ~~~
 
-There is no dependency on EC2 uptime or an SSH session. DLM owns scheduling and
-retention; the notification path consumes its native failure signals. No
-scheduled polling, application runtime, custom metrics, or status database is
-introduced. Individual DLM-created snapshots remain service-managed and outside
-Terraform state.
+There is no host process, notification system, or status database. Individual
+snapshots remain service-managed and outside Terraform state.
 
 ## 4. Resource and file ownership
 
-| File under `infra/dev-host` | Planned responsibility |
+| File | Responsibility |
 |---|---|
-| `storage.tf` | Add only the dedicated selection tag to the project volume. |
-| `backups.tf` | DLM policy, schedule, service role, and lifecycle permissions. |
-| `backup-notifications.tf` | DLM failure alarms, policy-error event rule/target, SNS topic/subscription, and optional test alarm. |
-| `tests/backups.tftest.hcl` | Terraform mock-provider assertions and invalid-input tests. |
-| `variables.tf`, `outputs.tf` | Validated settings and non-secret discovery outputs. |
-| `hcp_identity.tf` | Narrow additional plan/apply permissions, delivered through the prerequisite stage. |
+| `infra/dev-host/storage.tf` | Add the dedicated selection tag to the existing volume. |
+| `infra/dev-host/backups.tf` | DLM policy, role, and lifecycle permissions. |
+| `infra/dev-host/variables.tf`, `outputs.tf` | Validated settings and non-secret discovery. |
+| `infra/dev-host/hcp_identity.tf` | Narrow deployment-role permission additions. |
+| `infra/dev-host/tests/backup-permissions.tftest.hcl` | Prerequisite permission boundary tests. |
+| `infra/dev-host/tests/backups.tftest.hcl` | Policy configuration and validation tests. |
+| `runbooks/inspect-backups.md` | Manual inspection, diagnosis, retention, rollback, and costs. |
 
-Use the existing Terraform/AWS provider and credential-free quality job.
-There are no runtime sources, language dependencies, ZIP packaging, or archive
-provider additions.
+Use the existing pinned Terraform/AWS provider and credential-free quality job.
+No new runtime or packaging dependencies are needed.
 
 ## 5. Inputs and policy contract
 
 | Input | Default / validation |
 |---|---|
-| `backup_policy_enabled` | `true`; disabling requires reviewed operational intent. |
-| `backup_interval_hours` | `24`; supported slice permits only 12 or 24. |
-| `backup_start_time_utc` | `03:00`; validate actual 00:00-23:59 range. |
+| `backup_policy_enabled` | `true`; disabling is a reviewed operating change. |
+| `backup_interval_hours` | `24`; supported values 12 or 24. |
+| `backup_start_time_utc` | `03:00`; validate 00:00-23:59. |
 | `backup_retention_count` | `7`; integer 1-1000. |
-| `backup_notification_email` | Required nonempty email; sensitive Terraform input. |
-| `backup_notification_test_enabled` | `false`; enables only a temporary TEST-labeled alarm. |
 
-Use the single volume tag `GptClawBackup = development-projects` (derive the
-environment component from the existing variable). Do not reuse common
-`Project` or `DeploymentRevision` tags as selectors. Configure
-`EBS_SNAPSHOT_MANAGEMENT`, `resource_types = ["VOLUME"]`, one schedule named
-`projects-daily`, `interval_unit = "HOURS"`, and count-based retention.
+Use the sole selector `GptClawBackup=development-projects`, deriving its
+environment component from the existing variable. Do not select by general
+project tags or deployment revision. Use `EBS_SNAPSHOT_MANAGEMENT`,
+`resource_types=["VOLUME"]`, one schedule named `projects-daily`, hours-based
+creation, and count-based retention.
 
-Set `copy_tags = false`. Add an explicit snapshot allowlist: `Project`,
-`Environment`, `Repository`, `BackupSet`, and `RetentionClass=daily`.
-Do not put the volume selection tag on snapshots. DLM's system policy/schedule
-tags provide attribution. Do not configure sharing, archive, fast restore,
-cross-Region copy, or pre/post scripts.
+Set `copy_tags=false` and explicitly add non-secret `Project`, `Environment`,
+`Repository`, `BackupSet`, and `RetentionClass=daily` tags. Do not copy the
+volume-selection tag to snapshots. DLM's system policy/schedule tags identify
+ownership. No sharing, copying, archive, fast restore, or application scripts.
 
-DLM may start within an hour of the scheduled time; completion is asynchronous.
+DLM starts within an hour of the scheduled time; completion is asynchronous.
 Removing target tags stops management of existing snapshots. Count retention
-allows 1-1000 snapshots. Account for these behaviors during deployment and
-rollback. [AWS custom snapshot policy documentation](https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-ami-policy.html)
+supports 1-1000 snapshots. Account for these behaviors during rollout/rollback.
+[AWS custom policies](https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-ami-policy.html)
 
 ## 6. Identity design and prerequisite
 
@@ -135,154 +121,83 @@ planning and local implementation can continue.
 
 ### 6.2 Permission boundaries
 
-| Identity | Required scope |
+| Identity | Additional scope |
 |---|---|
-| HCP plan | Existing reads plus DLM get/list/tags, EventBridge rule/target reads, CloudWatch alarm reads, SNS topic/subscription reads, and the named DLM role/policy reads. No mutations or snapshot contents. |
-| HCP apply | Plan reads plus lifecycle CRUD/tagging for named backup and notification resources and inline policies on the DLM role. Pass only that new role to `dlm.amazonaws.com`. |
-| DLM role | Trust only DLM; describe necessary EC2 metadata, create snapshots of the exact Terraform project-volume ARN, tag owned snapshots, and delete snapshots belonging to this policy. |
+| HCP plan | DLM policy/tag reads and the named DLM role/policy reads. |
+| HCP apply | Tagged DLM policy creation/management, management of one named DLM role, and passing that role only to DLM. |
+| DLM role | Read EC2 metadata, create snapshots of the exact project-volume ARN, tag new/owned snapshots, and delete only this policy's snapshots. |
 
-The apply role remains unable to mutate itself, the plan role, or OIDC provider.
-Add no runtime permissions to the host role. SNS resource policies permit
-CloudWatch to publish from the named alarms in this account and EventBridge to
-publish policy-error notifications. Use service-supported source conditions;
-test the EventBridge-to-SNS resource policy against AWS's supported policy
-shape rather than reusing CloudWatch conditions blindly. The rule itself must
-match the exact account, Region, and policy ARN. No extra execution role is
-needed for direct SNS delivery.
+The apply role remains unable to mutate itself, the plan role, or OIDC. The
+host role remains unchanged. DLM trust requires the service principal, source
+account, and a source policy ARN limited to the approved account/Region.
 
-Avoid a Terraform dependency cycle: create the DLM role and base create/read
-policy first, then the DLM policy referencing the role. Attach a separate
-snapshot-management inline policy referencing the resulting DLM policy ID,
-with `ec2:ResourceTag/aws:dlm:lifecycle-policy-id` equal to that ID on deletion
-and post-creation tagging. Constrain create-time tagging to `CreateSnapshot`;
-test the service's actual tag-on-create/post-create path. Initial deployment
-must finish all permissions before the first schedule; otherwise fail
-acceptance and repair through the pipeline. Never solve tagging denial by
-allowing mutation of arbitrary snapshots.
+Avoid dependency cycles by creating the role/base permissions before the DLM
+policy. Attach a separate lifecycle policy referencing the resulting policy ID
+for deletion and post-creation tagging, conditioned on
+`ec2:ResourceTag/aws:dlm:lifecycle-policy-id`. Create-time tagging is restricted
+to `ec2:CreateAction=CreateSnapshot`. Complete permissions before the first
+scheduled run and verify actual service tagging through snapshot evidence.
+Do not resolve denial by allowing mutation of arbitrary snapshots.
 
-Document each action and its supported resource/condition keys during coding.
-EC2 describe APIs and some list/create APIs require `Resource="*"`; constrain
-by Region, request tags, or naming where supported. Do not attach the broad
-AWS-managed DLM policy. Confirm the deployed EBS KMS key read-only; do not add
-speculative KMS decrypt, key-admin, or grant permissions. If its key policy
-requires additional service access, review the exact key-scoped addition.
+EC2 describe operations require wildcard resources. New snapshot IDs require
+a regional snapshot wildcard, but source-volume creation permissions use the
+exact volume ARN. DLM policy creation requires a wildcard constrained by
+Region/request tags; management is account/Region/tag scoped. No AWS-managed
+broad DLM policy, host privileges, or speculative KMS permissions are added.
+Inspect the existing encryption key read-only; review any required key-scoped
+service access separately.
 [AWS DLM service roles](https://docs.aws.amazon.com/ebs/latest/userguide/service-role.html),
-[AWS DLM authorization reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_dlm.html)
+[AWS DLM authorization](https://docs.aws.amazon.com/service-authorization/latest/reference/list_dlm.html)
 
-## 7. Native failure notifications
+## 7. Verification
 
-### 7.1 Snapshot failures
+Terraform tests cover defaults, allowed overrides, invalid schedule/retention,
+stable exact-volume selection, private snapshot options, encryption preservation,
+DLM trust, create/tag/delete permission scope, and unchanged host/deployment
+boundaries. Existing repository and Terraform checks remain required.
 
-Create two CloudWatch alarms in namespace `AWS/EBS`, dimension
-`DLMPolicyId=<policy ID>`: `SnapshotsCreateFailed` and
-`SnapshotsDeleteFailed`. Use Sum > 0 over 300 seconds, one evaluation period,
-one datapoint to alarm, and missing data treated as not breaching. These are
-sparse failure metrics; absence of datapoints must not trigger an alert.
-[AWS DLM metrics](https://docs.aws.amazon.com/ebs/latest/userguide/monitor-dlm-cw-metrics.html)
+After pipeline deployment, manually verify the actual matching volume set and
+policy settings, then observe one naturally scheduled snapshot reach
+`completed`. Record source volume, policy attribution, timestamp, encryption,
+key relationship, and private permissions. Policy creation alone is not
+acceptance. No failure injection or notification testing is required.
 
-Send ALARM and OK transitions to the SNS topic. A persistent alarm notifies
-again only after clearing and recurring; there is no reminder service. OK means
-the recent failure signal cleared, not that a new backup completed. Alarm
-descriptions include environment, Region, policy, volume, category, and a
-runbook/console diagnostic route; native messages include transition time.
+## 8. Deployment, rollback, and operations
 
-### 7.2 Policy errors
+1. Apply the reviewed identity prerequisite and restore OIDC.
+2. Review/merge feature code and inspect a protected remote plan.
+3. Apply using the exact-confirmation workflow. Stop for unexpected compute,
+   attachment, deletion-protection, key, or inbound-access changes.
+4. Verify target, permissions, policy, and scheduled completed snapshot.
+5. Run a same-revision/variable plan and confirm no unexpected changes.
 
-Use an EventBridge event-pattern rule, with no schedule expression, matching
-`source=aws.dlm`, `detail-type=DLM Policy State Change`, `detail.state=ERROR`,
-the approved account/Region, and the exact policy ARN in `resources`. Route
-directly to the same SNS topic. Use an input transformer with allowlisted event
-ID/time/state and Terraform-supplied environment, policy, volume, and diagnostic
-link. Do not forward the whole event or arbitrary error text.
+Expose policy ID/ARN, source volume ID, and schedule/retention settings.
+The inspection runbook provides read-only discovery and manual latest-snapshot
+inspection. Update recovery guidance to select a completed snapshot and perform
+any restore-volume creation/attachment through the pipeline under RES-002.
 
-These events report policy errors on a best-effort basis. They do not provide
-independent detection of a disabled policy, removed target tag, or missing
-snapshot. This design relies on DLM scheduling; manual inspection is available
-when needed. [AWS DLM event delivery](https://docs.aws.amazon.com/ebs/latest/userguide/monitor-cloudwatch-events.html)
+Rollback disables or repairs the policy through Terraform while preserving
+existing snapshots and the live volume. Record disablement explicitly because
+there are no alerts. Policy deletion stops lifecycle management and leaves
+snapshots; replacement does not adopt old snapshots. Later cleanup requires a
+reviewed inventory and pipeline procedure.
+[AWS policy deletion](https://docs.aws.amazon.com/service-authorization/latest/reference/list_dlm.html)
 
-### 7.3 Subscription and timing
+Record observed expiry or a dated follow-up after at least eight daily runs.
+Inspect policy-attributed inventory and snapshot costs; seven recovery points
+does not bound changed bytes or cost. This feature does not prove restoration.
 
-Create the SNS email subscription in Terraform; the owner confirms the email.
-The address is sensitive input but will exist in restricted Terraform state
-and SNS, since no write-only subscription endpoint exists. Never output it or
-include it in committed examples/evidence. Inspect confirmation without
-printing the endpoint.
+## 9. Traceability
 
-Under normal AWS availability, target alarm/SNS publication within ten minutes
-of a failure metric becoming available and email receipt within fifteen minutes
-of an alarm transition during acceptance. Record actual timings. These are
-acceptance expectations, not guarantees of upstream DLM signal or email
-delivery. The policy-error path depends on event arrival and AWS delivery
-retries. No custom service is introduced to supervise this notification path.
-
-## 8. Verification
-
-Terraform tests cover input validation, selection, IAM positive/negative scope,
-encryption/privacy, failure metric names/dimensions, sparse missing-data handling,
-alarm actions, event filtering, and SNS permissions. Verify matching policy-error
-fixtures and nonmatching policy/account/Region/state fixtures with EventBridge's
-read-only event-pattern test API. Keep fixtures sanitized.
-
-For end-to-end alarm/SNS delivery, enable a temporary TEST-labeled CloudWatch
-alarm through Terraform. It references a unique unused metric in
-`GptClaw/NotificationTest`, with a 60-second period, one evaluation period,
-and missing data treated as breaching. It therefore enters ALARM without a
-metric publisher or a real backup failure. Use the same SNS topic and service
-policy construction as the DLM alarms. No custom metric is published.
-
-Confirm receipt, record the transition/arrival times, then remove the test alarm
-through the pipeline by restoring `backup_notification_test_enabled=false`.
-Its evidence proves the alarm/SNS path, not real DLM failure emission.
-Event-pattern matching and deployed target/policy inspection are separate
-evidence for the EventBridge path. Do not break live IAM, disable protection,
-delete backups, or mutate live alarm state to produce a test failure.
-
-## 9. Deployment, rollback, and operations
-
-1. Complete the reviewed identity-maintenance prerequisite and restore OIDC.
-2. Merge implementation after checks and design review. Supply the email in
-   HCP and inspect a protected remote plan.
-3. Apply through the existing exact-confirmation workflow. Confirm no compute,
-   attachment, deletion-protection, or inbound-access regression.
-4. Confirm subscription, exact target matching, all DLM permissions, and native
-   alert configuration. Observe one naturally scheduled completed snapshot.
-5. Test notifications and remove the test alarm. Repeat a plan with the same
-   revision/variables and record no unexpected changes.
-
-Expose policy ID/ARN, source volume ID, schedule/retention settings, alarm names,
-event-rule name, and SNS topic ARN. Provide `runbooks/inspect-backups.md` with
-read-only DLM/EC2/CloudWatch/SNS discovery and safe redaction. An operator can
-inspect the latest completed snapshot's timestamp and age; no scheduled process
-performs this inspection. Update recovery guidance for snapshot selection and
-pipeline-only restore handoff, preserving historical SPEC-001 evidence.
-
-Rollback disables/repairs the policy through Terraform and preserves existing
-snapshots and the live volume. Record deliberate disablement explicitly; native
-failure alerts are not a check for disabled protection. A deleted DLM policy
-stops creation/deletion management and leaves snapshots behind; inventory before
-deletion. Replacement changes attribution and does not automatically adopt old
-snapshots. Any later cleanup needs a reviewed inventory and pipeline procedure.
-[AWS policy deletion semantics](https://docs.aws.amazon.com/service-authorization/latest/reference/list_dlm.html)
-
-Record observed retention expiry or a dated follow-up after at least eight daily
-runs, using policy-attributed inventory and delete metrics. If failures prevent
-expiry, retain the limitation and follow-up owner. Cost inspection covers
-incremental snapshot storage, CloudWatch alarms, event delivery, SNS, and the
-temporary test alarm. Seven recovery points does not cap changed bytes or cost.
-
-## 10. Traceability
-
-| Specification | Design sections | Acceptance |
+| Requirement | Design | Acceptance |
 |---|---|---|
-| BAK-001 | 3, 4, 6, 9 | AC-001, AC-002, AC-009 |
-| BAK-002 | 5, 6, 9 | AC-001, AC-003 |
-| BAK-003 | 5, 9 | AC-004, AC-005 |
-| BAK-004 | 5, 6.2, 9 | AC-001, AC-004 |
-| BAK-005 | 6 | AC-001, AC-002 |
-| BAK-006 | 7, 8 | AC-006, AC-007 |
-| BAK-007 | 9 | AC-004, AC-010 |
-| Safety and rollback | 6, 8, 9 | AC-002, AC-009, AC-010 |
+| BAK-001 | 3, 4, 6, 8 | AC-001, AC-002, AC-009 |
+| BAK-002 | 5, 6, 7 | AC-001, AC-003 |
+| BAK-003 | 5, 7, 8 | AC-004, AC-005 |
+| BAK-004 | 5, 6, 7 | AC-001, AC-004 |
+| BAK-005 | 6, 7 | AC-001, AC-002 |
+| BAK-007 | 7, 8 | AC-004, AC-010 |
+| Safety/rollback | 6, 8 | AC-002, AC-009, AC-010 |
 
-Before coding, review the explicit identity-maintenance exception and native
-notification decisions. Verify provider schema and service IAM conditions with
-the pinned versions; changes to scope or safety boundaries require review.
+BAK-006 and AC-006 through AC-008 were removed with monitoring/notifications.
+Remaining identifiers are preserved for traceability.
