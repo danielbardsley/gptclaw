@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 umask 027
 
-readonly BOOTSTRAP_VERSION="3"
+readonly BOOTSTRAP_VERSION="4"
 readonly AWS_REGION=${jsonencode(aws_region)}
 readonly DATA_VOLUME_ID=${jsonencode(data_volume_id)}
 readonly INSTANCE_NAME=${jsonencode(instance_name)}
@@ -48,6 +48,7 @@ apt-get install -y --no-install-recommends \
   jq \
   nvme-cli \
   openssh-server \
+  python3 \
   rsyslog \
   sudo \
   ufw \
@@ -250,6 +251,11 @@ jq -n --arg group "$LOG_GROUP_NAME" '{
   -m ec2 \
   -s \
   -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+log "status=succeeded"
+
+current_phase="host-policy"
+log "status=started"
+sudo -iu forge /usr/local/libexec/gptclaw-install-host-policy
 log "status=succeeded"
 
 current_phase="codex"

@@ -79,4 +79,8 @@ if ! ./scripts/tests/install-host-agents.sh; then
   status=1
 fi
 
+if ! python3 ./scripts/tests/test_host_policy_bootstrap.py; then
+  status=1
+fi
+
 exit "$status"

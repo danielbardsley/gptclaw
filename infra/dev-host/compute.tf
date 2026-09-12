@@ -1,4 +1,8 @@
 locals {
+  host_policy_script = templatefile("${path.module}/templates/install-host-policy.sh.tftpl", {
+    host_policy_revision = var.host_policy_revision
+  })
+
   bootstrap_script = templatefile("${path.module}/templates/bootstrap-forge.sh.tftpl", {
     aws_region                 = var.aws_region
     data_volume_id             = aws_ebs_volume.projects.id
@@ -19,6 +23,7 @@ data "cloudinit_config" "dev_host" {
     filename     = "cloud-init.yaml"
     content = templatefile("${path.module}/templates/cloud-init.yaml.tftpl", {
       bootstrap_script       = local.bootstrap_script
+      host_policy_script     = local.host_policy_script
       desktop_ssh_public_key = trimspace(var.desktop_ssh_public_key)
       instance_name          = var.instance_name
     })

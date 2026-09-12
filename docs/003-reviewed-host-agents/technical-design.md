@@ -9,15 +9,16 @@
 ## 1. Design and existing baseline
 
 Store a small plain-Markdown policy in the platform repository and install an
-explicitly reviewed snapshot as user configuration. No service, database, cloud
-resource, or external API is introduced.
+explicitly reviewed snapshot as user configuration. The original installer introduces no service or database. Section 10 adds
+Terraform-managed first-boot integration using the existing public Git repository.
 
 Before AGT-001 implementation, the repository had no tracked `AGENTS.md`. SPEC-001 installs Codex
 as `forge`; the connection runbook authenticates that user and opens
 `/srv/forge/projects/gptclaw`. The bootstrap templates do not install policy.
 Changing bootstrap can replace compute because `user_data_replace_on_change`
-is enabled. This feature therefore uses a user-scoped installation and adds a
-manual policy-restoration step to the existing recovery process.
+is enabled. The initial implementation used a user-scoped installation and manual
+restoration. The approved extension in section 10 automates first installation
+and retains user-scoped updates.
 
 ```text
 Reviewed GptClaw commit
@@ -292,3 +293,56 @@ the retained staging directory. Explicit recovery is documented in the runbook.
 The implementation does not defend against a hostile process with the same user
 identity racing directory replacements, nor provide a power-loss transaction
 across policy, metadata, and backup. Existing OS controls remain essential.
+
+## 10. Terraform-managed first installation
+
+`host_policy_revision` defaults to reviewed commit
+`a287d7c9712817fd9f318a11f28041cfc6b5ad06`, validated as a full lowercase Git SHA.
+It is deliberately independent of the changing deployment-revision tag.
+Terraform renders `templates/install-host-policy.sh.tftpl` into cloud-init as
+`/usr/local/libexec/gptclaw-install-host-policy`, root-owned and mode `0755`.
+All templates live inside `infra/dev-host`, so remote configuration packaging
+needs no parent-directory source files.
+
+Bootstrap version 4 explicitly installs Python 3, then runs the helper via
+`sudo -iu forge` after user/network setup and before Codex installation and the
+bootstrap-complete marker. The helper makes a private temporary checkout,
+fetches the exact revision from the fixed public HTTPS GitHub repository,
+verifies `FETCH_HEAD^{commit}`, and checks out the pinned commit. It disables
+stored global/system Git configuration, credential helpers, and terminal
+credential prompts. It then invokes that revision's installer and verification
+commands against `/home/forge/.codex`. An EXIT trap cleans only its own checkout.
+No repository credentials, root execution of fetched installer code, or remote
+branch-head resolution are introduced.
+
+A missing Codex home is created by the installer at `0700`; managed policy and
+metadata are `0600` and owned by `forge`. Existing unsafe modes, overrides,
+unmanaged content, drift, or a different installed revision fail explicitly.
+A repeat of the same revision is a no-op. The bootstrap error trap records a
+failed `host-policy` phase and prevents the completion marker on failure.
+
+The pin and helper enter EC2 user data. Introducing this feature or changing the
+pin/helper can replace the existing instance under the retained replacement
+setting. Ordinary edits to `config/codex/AGENTS.md` and deployment revision tags
+do not change the pin or generated policy helper. The `host_policy_revision`
+output is desired first-boot configuration, not an observation of live policy.
+
+Use the existing installer for running-host policy updates. Refresh the pin only
+through a reviewed infrastructure PR with replacement impact called out. At a
+planned replacement, select the intended reviewed pin beforehand; otherwise a
+new host receives the older pinned baseline even if the previous host had been
+updated in place. Reverting a pin is also a potential replacement, not an
+in-place rollback mechanism.
+
+The public GitHub fetch is a new first-boot availability dependency; failure
+leaves bootstrap incomplete for diagnosis/retry. If the repository becomes
+private, design reviewed artifact distribution instead of granting persistent
+Git credentials to bootstrap. No background synchronizer or AWS API mutation
+outside the existing pipeline is added.
+
+Five offline tests execute the actual helper with a temporary Git source and
+profile, simulating the `forge` account name for CI. Terraform tests mock AWS
+but use the real local cloud-init provider, including a conservative base64
+length bound for EC2 user data. Initial EC2 execution remains pending a reviewed
+creation/replacement; HAG-008/009 map to AC-008/009, and HAG-010 maps to AC-008
+plus the replacement-plan review required by AC-009.

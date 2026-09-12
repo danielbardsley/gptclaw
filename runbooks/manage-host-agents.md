@@ -3,7 +3,24 @@
 This runbook implements [SPEC-003](../docs/003-reviewed-host-agents/spec.md).
 Daniel owns policy review, updates, temporary-exception removal, and restoration
 following root-volume replacement. Policy is user configuration, not a security
-enforcement mechanism. No AWS changes or app-server restart are required.
+enforcement mechanism. In-place installation needs no AWS change or app-server
+restart. Automatic first installation is part of Terraform-managed provisioning.
+
+## Automatic installation on new hosts
+
+Bootstrap version 4 installs the policy before Codex setup completes. Terraform
+pins `host_policy_revision` to the reviewed PR #6 commit, independently of
+`deployment_revision`. The helper fetches that exact commit from public GitHub,
+verifies it, and runs its installer as `forge` without Git credentials. No clone
+or project volume content is required beforehand. GitHub must be reachable and
+the repository publicly readable; a failed fetch/install keeps bootstrap failed.
+
+Changing the pin or adding this bootstrap step can replace EC2 because user-data
+replacement remains enabled. Review the protected pipeline plan and follow the
+existing replacement runbook. Use in-place installation below for routine policy
+updates. A future replacement receives the pinned baseline, so review the pin
+against the desired version before replacement. The Terraform output describes
+first-boot configuration only; verify the live policy separately.
 
 ## Review and preflight
 
@@ -171,7 +188,8 @@ at expiry and repeats fresh-task checks. Expiry is not automated by AGT-001.
 
 After restoring access, fetching the reviewed platform repository, and
 reauthenticating Codex as described in the existing recovery runbook, repeat
-preflight and installation from the recorded reviewed revision. Verify the actual
+preflight and verify the automatically installed revision. For an older bootstrap
+without this feature, install from the recorded reviewed revision manually. Verify the actual
 remote profile again. Reconstruct policy from Git, not a copy of the entire
 Codex home. Do not treat the project-volume snapshot policy as a backup of
 home-directory policy or authentication.

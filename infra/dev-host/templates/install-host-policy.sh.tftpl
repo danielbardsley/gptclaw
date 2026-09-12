@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+umask 077
+
+readonly policy_revision=${jsonencode(host_policy_revision)}
+readonly policy_repository="https://github.com/danielbardsley/gptclaw.git"
+readonly policy_home="/home/forge/.codex"
+
+if [ "$(id -un)" != forge ] || [ "$(id -u)" -eq 0 ]; then
+  echo 'Host policy bootstrap must run as unprivileged forge.' >&2
+  exit 1
+fi
+
+# Fetch public, immutable source without consulting stored Git credentials/config.
+export GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 GIT_TERMINAL_PROMPT=0
+policy_checkout=$(mktemp -d /tmp/gptclaw-host-policy.XXXXXXXX)
+cleanup() {
+  rm -rf -- "$policy_checkout"
+}
+trap cleanup EXIT
+
+git -C "$policy_checkout" init --quiet
+git -C "$policy_checkout" -c credential.helper= -c http.lowSpeedLimit=1 -c http.lowSpeedTime=60 \
+  fetch --quiet --no-tags --depth=1 "$policy_repository" "$policy_revision"
+if [ "$(git -C "$policy_checkout" rev-parse --verify 'FETCH_HEAD^{commit}')" != "$policy_revision" ]; then
+  echo 'Fetched host policy revision does not match the bootstrap pin.' >&2
+  exit 1
+fi
+git -C "$policy_checkout" -c core.hooksPath=/dev/null checkout --quiet --detach "$policy_revision"
+
+# The reviewed installer creates a missing home at 0700 and managed files at 0600.
+# It refuses unknown policies, drift, overrides and unsafe paths/modes on retries.
+bash "$policy_checkout/scripts/install-host-agents.sh" install \
+  --revision "$policy_revision" --codex-home "$policy_home"
+bash "$policy_checkout/scripts/install-host-agents.sh" verify \
+  --revision "$policy_revision" --codex-home "$policy_home"

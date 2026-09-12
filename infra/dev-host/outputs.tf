@@ -61,3 +61,8 @@ output "project_backup" {
     target_tags     = local.backup_selection_tag
   }
 }
+
+output "host_policy_revision" {
+  description = "Pinned first-boot policy source revision; not an observation of the currently installed policy."
+  value       = var.host_policy_revision
+}

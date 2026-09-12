@@ -248,3 +248,14 @@ variable "backup_retention_count" {
     error_message = "backup_retention_count must be an integer from 1 through 1000."
   }
 }
+
+variable "host_policy_revision" {
+  description = "Reviewed GptClaw commit installed on first boot. Changing this pin replaces compute; use the host installer for in-place policy updates."
+  type        = string
+  default     = "a287d7c9712817fd9f318a11f28041cfc6b5ad06"
+
+  validation {
+    condition     = can(regex("^[0-9a-f]{40}$", var.host_policy_revision))
+    error_message = "host_policy_revision must be a full lowercase 40-character Git commit SHA."
+  }
+}

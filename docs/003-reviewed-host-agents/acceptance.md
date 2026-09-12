@@ -1,6 +1,6 @@
 # ACCEPTANCE-003: Reviewed Host AGENTS.md
 
-- **Status:** Local implementation verified; not deployed or accepted
+- **Status:** Policy installed on existing host; fresh-task and provisioning acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-003](./spec.md)
 - **Design:** [TDD-003](./technical-design.md)
@@ -10,10 +10,12 @@
 ## Authorization and review
 
 Daniel approved the specification and requested implementation on 2026-09-12.
-The canonical policy and installer are prepared on
-`codex/agt-001-reviewed-host-policy`. Review of the resulting policy revision
-precedes live activation under HAG-001 and the rollout design. Neither the
-specification approval nor the source checksum is represented as that review.
+Daniel reviewed PR #6 and authorized its merge on 2026-09-12.
+[PR #6](https://github.com/danielbardsley/gptclaw/pull/6) merged as
+`e6aa908ef51b2dd0daa2f241418d2bedfb411c73`, containing reviewed policy source
+`a287d7c9712817fd9f318a11f28041cfc6b5ad06`. The PR CI run #49 passed.
+Daniel subsequently requested Terraform bootstrap integration; that follow-up
+is prepared separately on `codex/agt-001-bootstrap-policy`.
 
 ## Non-secret host preflight
 
@@ -24,11 +26,15 @@ specification approval nor the source checksum is represented as that review.
 - No explicit `project_doc_max_bytes` or `project_doc_fallback_filenames` setting
   was found in the user configuration. Actual combined instruction loading
   remains a fresh-task check.
-- Codex home: owned by `forge`, mode `0775`; installation requires explicit
-  operator remediation to `0700`. Its permissions have not been changed.
+- Original Codex home mode was `0775`; after rechecking ownership and absence
+  of policy/overrides, only that directory was changed to `0700` on 2026-09-12.
 - Global `AGENTS.md`, global `AGENTS.override.md`, and managed provenance were
   absent. Authentication contents were not read or changed.
-- Active managed policy revision/checksum: **none installed**.
+- Installed and verified on 2026-09-12 at 22:33:04 UTC as `forge`.
+- Active source revision: `a287d7c9712817fd9f318a11f28041cfc6b5ad06`.
+- Active SHA-256: `0f6ae760595870c82d387d68a904730c31652f88e11bf4766748eacdce580fad`.
+- Installer verification reports `current`, validating exact source bytes,
+  provenance, ownership and modes. Fresh-task loading is not yet demonstrated.
 
 ## Local verification
 
@@ -44,9 +50,9 @@ specification approval nor the source checksum is represented as that review.
 - Synthetic auth/config sentinels retain their contents and modes across every
   filesystem test. Verification of missing and drifted profiles makes no writes.
 - Existing CI now includes the policy paths and invokes these tests through
-  `scripts/check-repository.sh`; remote CI status must be recorded separately.
-- Infrastructure files are unchanged; no local Terraform plan/apply or AWS
-  mutation was performed for AGT-001.
+  `scripts/check-repository.sh`; PR #6 CI run #49 passed; follow-up CI status is recorded separately.
+- The follow-up changes Terraform bootstrap code; no live Terraform apply or
+  AWS mutation was performed. Local Terraform tests mock AWS.
 
 ## Policy content mapping
 
@@ -69,15 +75,22 @@ specification approval nor the source checksum is represented as that review.
 
 | Criterion | State | Evidence or remaining work |
 |---|---|---|
-| AC-001 | Partial | Content mapping and size/encoding checks pass; owner review of the resulting policy commit pending. |
+| AC-001 | Pass | Content mapping and validation pass; Daniel reviewed PR #6 and authorized merge. |
 | AC-002 | Local pass | Offline tests and repository checks pass; record PR CI separately. |
-| AC-003 | Pending | Remediate home mode explicitly and install/verify the reviewed revision as `forge`. |
+| AC-003 | Pass | Approved source installed as `forge`; exact bytes, provenance, paths and modes verified. |
 | AC-004 | Pending | Fresh tasks through real SSH connection in GptClaw and independent scratch project. |
 | AC-005 | Pending | Safe remote scenarios for inherited repository rules, prior authorization, and scope boundaries. |
 | AC-006 | Partial | Offline drift/override/rollback tests pass; controlled live rehearsal and fresh-task verification pending. |
-| AC-007 | Partial | Connection/recovery/manage runbooks delivered; active revision and complete remote evidence still pending. |
+| AC-007 | Partial | Runbooks and active revision recorded; fresh remote behavior evidence remains pending. |
+| AC-008 | Pass locally | Five offline bootstrap tests plus three focused Terraform tests pass; follow-up PR CI recorded separately. |
+| AC-009 | Pending | No new EC2 instance provisioned with bootstrap version 4; review replacement plan and verify first boot during a future approved creation/replacement. |
 
 Daniel owns ongoing review, installation, recovery, and exception cleanup as
 specified. AGT-001 remains Planned until all acceptance gates pass. There is no
 claim that filesystem verification guarantees model compliance or that a CLI
 session proves the actual remote app's instruction inheritance.
+
+Provisioning follow-up validation: all 18 mocked Terraform tests pass, including
+the three first-boot tests using real local cloud-init rendering. Terraform
+formatting and validation, 22 offline installer/bootstrap tests, repository
+checks, and documentation link checks pass. No infrastructure apply was run.
