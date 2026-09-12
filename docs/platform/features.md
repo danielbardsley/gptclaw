@@ -1,7 +1,7 @@
 # GptClaw Platform Feature Catalogue
 
 - **Status:** Directional backlog; not a specification
-- **Last updated:** 2026-09-06
+- **Last updated:** 2026-09-12
 - **Architecture:** [GptClaw platform architecture](./architecture.md)
 
 ## 1. How to use this catalogue
@@ -26,6 +26,7 @@ Feature IDs remain stable even if names, grouping, or delivery order changes.
 | Status | Meaning |
 |---|---|
 | Delivered | Implemented and accepted by a numbered specification. |
+| Deployed | Deployed to the target environment; final acceptance evidence is still pending. |
 | Candidate | Intended direction but not yet specified. |
 | Draft | Selected for a numbered specification under review; not approved for implementation. |
 | Planned | Specification approved; design/tasks under review or awaiting implementation authorization. |
@@ -49,7 +50,7 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| RES-001 | Automated EBS snapshots | 1 | Planned | Terraform creates a tagged lifecycle policy for the project volume with retention. Silent DLM failures are accepted; no monitoring or notifications. Implementation in progress: [SPEC-002](../002-automated-ebs-snapshots/spec.md). |
+| RES-001 | Automated EBS snapshots | 1 | Deployed | DLM enabled for the project volume on 2026-09-12: daily at 03:00 UTC, retaining seven snapshots. Silent DLM failures are accepted; no monitoring or notifications. Acceptance pending verification of a naturally scheduled completed snapshot and a subsequent protected no-change plan. Daniel owns retention-expiry verification on 2026-09-21. [SPEC-002](../002-automated-ebs-snapshots/spec.md); [deployment evidence and remaining acceptance](../002-automated-ebs-snapshots/implementation.md). |
 | RES-002 | Restore drill | 1 | Candidate | Periodically prove that a recent recovery point can create an inspectable replacement volume without risking the live volume. |
 | RES-003 | Backup freshness indicator | 2 | Candidate | Dashboard shows last successful recovery point, age, retention class, and restore-test result. |
 | RES-004 | Host replacement rehearsal | 3 | Candidate | Exercise compute replacement, Tailscale re-enrollment, Git credential recreation, and Codex reauthentication. |
