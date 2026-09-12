@@ -10,3 +10,9 @@ deployment_revision      = "0123456789abcdef0123456789abcdef01234567"
 # data_volume_size_gib = 80
 # tailscale_tag         = "tag:gptclaw-dev"
 # tailscale_auth_key_version = 1
+
+# Project-volume snapshots (DLM; no monitoring or notifications)
+# backup_policy_enabled  = true
+# backup_interval_hours  = 24
+# backup_start_time_utc  = "03:00"
+# backup_retention_count = 7

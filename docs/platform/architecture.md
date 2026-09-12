@@ -438,8 +438,8 @@ access, and ad hoc host configuration are not platform features.
 - Alerts initially target ChatGPT notifications or email; Slack becomes an
   additional destination later.
 - The protected project EBS volume receives an automated snapshot policy
-  created by Terraform, with retention, failure alerting, and a documented
-  restore test.
+  created by Terraform, with retention and a documented restore test. RES-001
+  permits silent DLM failures; backup monitoring and notifications are excluded.
 - Budgets and cost visibility cover EC2, EBS, snapshots, CloudWatch, data
   transfer, HCP Terraform, Expo/EAS, and production resources.
 - Idle projects can be stopped automatically; the development host may gain a
@@ -497,4 +497,3 @@ and the owner has asked for that specification to be implemented.
 - [Tailscale: Funnel](https://tailscale.com/docs/features/tailscale-funnel)
 - [AWS: EBS snapshot lifecycle automation](https://docs.aws.amazon.com/ebs/latest/userguide/snapshot-lifecycle.html)
 - [AWS Backup: Restore testing](https://docs.aws.amazon.com/aws-backup/latest/devguide/restore-testing.html)
-

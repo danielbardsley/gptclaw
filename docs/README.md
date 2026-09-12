@@ -41,3 +41,8 @@ docs/
   [Specification](./001-bootstrap-remote-development-host/spec.md) ·
   [Technical design](./001-bootstrap-remote-development-host/technical-design.md) ·
   [Tasks](./001-bootstrap-remote-development-host/tasks.md)
+
+- **002 - Automated EBS snapshots (RES-001):**
+  [Specification](./002-automated-ebs-snapshots/spec.md) ·
+  [Technical design](./002-automated-ebs-snapshots/technical-design.md) ·
+  [Tasks](./002-automated-ebs-snapshots/tasks.md)

@@ -205,3 +205,46 @@ variable "log_retention_days" {
     error_message = "log_retention_days must be a supported CloudWatch Logs retention value."
   }
 }
+
+variable "backup_policy_enabled" {
+  description = "Enable scheduled project-volume snapshots. Disable only through a reviewed operating change."
+  type        = bool
+  default     = true
+  nullable    = false
+}
+
+variable "backup_interval_hours" {
+  description = "Project-volume snapshot interval in hours."
+  type        = number
+  default     = 24
+  nullable    = false
+
+  validation {
+    condition     = contains([12, 24], var.backup_interval_hours)
+    error_message = "backup_interval_hours must be 12 or 24."
+  }
+}
+
+variable "backup_start_time_utc" {
+  description = "Daily snapshot schedule start time in HH:MM UTC."
+  type        = string
+  default     = "03:00"
+  nullable    = false
+
+  validation {
+    condition     = can(regex("^([01][0-9]|2[0-3]):[0-5][0-9]$", var.backup_start_time_utc))
+    error_message = "backup_start_time_utc must be a valid HH:MM UTC time."
+  }
+}
+
+variable "backup_retention_count" {
+  description = "Number of snapshots DLM retains for the project volume."
+  type        = number
+  default     = 7
+  nullable    = false
+
+  validation {
+    condition     = var.backup_retention_count >= 1 && var.backup_retention_count <= 1000 && floor(var.backup_retention_count) == var.backup_retention_count
+    error_message = "backup_retention_count must be an integer from 1 through 1000."
+  }
+}

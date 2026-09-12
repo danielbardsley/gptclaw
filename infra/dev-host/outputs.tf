@@ -47,3 +47,17 @@ output "tailscale_enrollment_secret_arn" {
   description = "Secrets Manager ARN used once by the host to join Tailscale."
   value       = aws_secretsmanager_secret.tailscale_enrollment.arn
 }
+
+output "project_backup" {
+  description = "Non-secret snapshot policy and source-volume information for manual inspection."
+  value = {
+    policy_id       = aws_dlm_lifecycle_policy.projects.id
+    policy_arn      = aws_dlm_lifecycle_policy.projects.arn
+    volume_id       = aws_ebs_volume.projects.id
+    enabled         = var.backup_policy_enabled
+    interval_hours  = var.backup_interval_hours
+    start_time_utc  = var.backup_start_time_utc
+    retention_count = var.backup_retention_count
+    target_tags     = local.backup_selection_tag
+  }
+}

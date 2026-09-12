@@ -9,7 +9,8 @@ resource "aws_ebs_volume" "projects" {
   }
 
   tags = {
-    Name = "${local.name_prefix}-projects"
+    Name          = "${local.name_prefix}-projects"
+    GptClawBackup = local.backup_selection_tag.GptClawBackup
   }
 }
 
