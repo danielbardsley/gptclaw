@@ -49,8 +49,9 @@ Depends on phase 1.
   and applicable safe commands; record exact results and skipped operations.
 - [x] **2.6** Rehearse targeted Git rollback in the synthetic project and prove
   preservation of unrelated later edits. Document update ownership/provenance.
-- [ ] **2.7** Prepare implementation PR and obtain review of the resulting
-  repository guidance; update documentation links.
+- [x] **2.7a** Publish the implementation in PR #9 and update documentation
+  links and the PR description for the final scope.
+- [ ] **2.7b** Obtain review of the resulting repository guidance.
 
 **Gate:** AC-001–004 and AC-006 have concrete local/review evidence; no host,
 infrastructure, credentials, or runtime changes are required.
@@ -88,6 +89,6 @@ is insufficient.
 
 Template, guide, GptClaw adoption, ten focused tests, and workflow integration
 are implemented. The isolated rollback preserves unrelated committed and
-uncommitted work. Implementation review/merge and fresh-task remote acceptance
-remain pending. [Acceptance evidence](./acceptance.md) records the exact checks
+uncommitted work. Implementation is published at `770c06f`; CI run #53 has not started jobs.
+Implementation review/merge and fresh-task remote acceptance remain pending. [Acceptance evidence](./acceptance.md) records the exact checks
 and separates local evidence from AC-005 and final completion.

@@ -76,7 +76,14 @@ acceptance record remains unchanged.
 
 ## CI and remote verification
 
-CI: pending publication of the implementation revision.
+Implementation revision: `770c06f0debb3991250b82ee8115bc2234dd193c`
+([commit](https://github.com/danielbardsley/gptclaw/commit/770c06f0debb3991250b82ee8115bc2234dd193c)).
+Local results above were run against those implementation bytes.
+
+[CI run #53](https://github.com/danielbardsley/gptclaw/actions/runs/34725555902)
+for that revision is pending with no jobs started at handover. This is not a CI
+pass. No queued run was cancelled and no deployment workflow was dispatched.
+This subsequent evidence-only commit changes no implementation or test bytes.
 
 No new-task creation tool is available in this session. Fresh remote tasks were
 not simulated with a CLI run or by reusing this conversation. After resulting
