@@ -57,3 +57,8 @@ docs/
   [Technical design](./004-repository-agents-template/technical-design.md) ·
   [Tasks](./004-repository-agents-template/tasks.md) ·
   [Acceptance status](./004-repository-agents-template/acceptance.md)
+
+- **005 - Nested guidance pattern (AGT-003):**
+  [Specification](./005-nested-guidance-pattern/spec.md) ·
+  [Technical design](./005-nested-guidance-pattern/technical-design.md) ·
+  [Tasks](./005-nested-guidance-pattern/tasks.md)
