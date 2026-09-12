@@ -1,7 +1,7 @@
 # GptClaw Platform Feature Catalogue
 
 - **Status:** Directional backlog; not a specification
-- **Last updated:** 2026-09-06
+- **Last updated:** 2026-09-12
 - **Architecture:** [GptClaw platform architecture](./architecture.md)
 
 ## 1. How to use this catalogue
@@ -18,6 +18,12 @@ When the owner selects a feature or coherent feature slice:
 4. Review consistency with the platform architecture and prior accepted work.
 5. Implement only after the owner approves the specification.
 6. Add `acceptance.md` when the feature is verified.
+7. Whenever a feature's PR has merged and the feature is complete, update this
+   catalogue as part of completion: mark it Delivered, link its specification,
+   merged PR, and acceptance evidence, and update the catalogue date. Do this
+   without waiting for a separate reminder. If implementation is merged but
+   acceptance is still pending, record the actual status and remaining checks;
+   merging a PR alone does not establish completion.
 
 Feature IDs remain stable even if names, grouping, or delivery order changes.
 
@@ -26,6 +32,7 @@ Feature IDs remain stable even if names, grouping, or delivery order changes.
 | Status | Meaning |
 |---|---|
 | Delivered | Implemented and accepted by a numbered specification. |
+| Deployed | Installed in the target environment; final acceptance is still pending. |
 | Candidate | Intended direction but not yet specified. |
 | Draft | Selected for a numbered specification under review; not approved for implementation. |
 | Planned | Specification approved; design/tasks under review or awaiting implementation authorization. |
@@ -61,7 +68,7 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| AGT-001 | Reviewed host `AGENTS.md` | 2 | Planned | Reviewed host policy, traceable installation, and fresh-task verification of security boundaries, delivery workflow, evidence standards, and AWS mutation rules. [SPEC-003](../003-reviewed-host-agents/spec.md); policy reviewed, merged and installed on the existing host; automatic first-boot integration prepared, fresh-task and new-host acceptance pending. |
+| AGT-001 | Reviewed host `AGENTS.md` | 2 | Deployed | Policy and installer merged in [PR #6](https://github.com/danielbardsley/gptclaw/pull/6); approved policy installed and verified on the existing host on 2026-09-12. Automatic first-boot integration merged in [PR #7](https://github.com/danielbardsley/gptclaw/pull/7), but has not been applied to a new instance. Fresh-task loading, live rollback verification, and new-host acceptance remain pending. [SPEC-003](../003-reviewed-host-agents/spec.md) · [Acceptance evidence](../003-reviewed-host-agents/acceptance.md). |
 | AGT-002 | Repository `AGENTS.md` template | 2 | Candidate | Every project declares stack commands, quality gates, layout, data rules, and product-specific constraints. |
 | AGT-003 | Nested guidance pattern | 3 | Candidate | Infrastructure, mobile, backend, migrations, and UI areas can add focused instructions without bloating root guidance. |
 | AGT-004 | Specification skill | 2 | Candidate | Reusable workflow creates consistent spec, technical design, task, and acceptance documents. |
