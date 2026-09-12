@@ -51,3 +51,8 @@ docs/
   [Specification](./003-reviewed-host-agents/spec.md) ·
   [Technical design](./003-reviewed-host-agents/technical-design.md) ·
   [Tasks](./003-reviewed-host-agents/tasks.md)
+
+- **004 - Repository AGENTS.md template (AGT-002):**
+  [Specification](./004-repository-agents-template/spec.md) ·
+  [Technical design](./004-repository-agents-template/technical-design.md) ·
+  [Tasks](./004-repository-agents-template/tasks.md)

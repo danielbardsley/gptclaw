@@ -69,7 +69,7 @@ Priority indicates suggested sequencing, not authorization.
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
 | AGT-001 | Reviewed host `AGENTS.md` | 2 | Deployed | Policy and installer merged in [PR #6](https://github.com/danielbardsley/gptclaw/pull/6); approved policy installed and verified on the existing host on 2026-09-12. Automatic first-boot integration merged in [PR #7](https://github.com/danielbardsley/gptclaw/pull/7), but has not been applied to a new instance. Fresh-task loading, live rollback verification, and new-host acceptance remain pending. [SPEC-003](../003-reviewed-host-agents/spec.md) · [Acceptance evidence](../003-reviewed-host-agents/acceptance.md). |
-| AGT-002 | Repository `AGENTS.md` template | 2 | Candidate | Every project declares stack commands, quality gates, layout, data rules, and product-specific constraints. |
+| AGT-002 | Repository `AGENTS.md` template | 2 | Draft | Reusable project guidance for stack commands, quality gates, layout, data rules, and product constraints; proposed first adoption in GptClaw. [SPEC-004](../004-repository-agents-template/spec.md) drafted; implementation not approved. |
 | AGT-003 | Nested guidance pattern | 3 | Candidate | Infrastructure, mobile, backend, migrations, and UI areas can add focused instructions without bloating root guidance. |
 | AGT-004 | Specification skill | 2 | Candidate | Reusable workflow creates consistent spec, technical design, task, and acceptance documents. |
 | AGT-005 | Project bootstrap skill | 2 | Candidate | Agent can safely create a project from an approved template and verify the result. |
