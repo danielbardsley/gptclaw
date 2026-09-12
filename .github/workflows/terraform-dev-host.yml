@@ -8,6 +8,8 @@ on:
       - infra/dev-host/**
       - scripts/**
       - config/codex/**
+      - AGENTS.md
+      - templates/agents/**
   push:
     branches:
       - main
@@ -17,6 +19,8 @@ on:
       - infra/dev-host/**
       - scripts/**
       - config/codex/**
+      - AGENTS.md
+      - templates/agents/**
   workflow_dispatch:
     inputs:
       operation:

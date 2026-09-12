@@ -17,15 +17,29 @@ implementation specifications; each selected feature is specified separately.
 
 ```text
 .github/        GitHub Actions and dependency automation
+config/codex/   Reviewed host-policy source
 docs/           Specifications, designs, and implementation task lists
 infra/dev-host/ Terraform for the first remote development host
 runbooks/       Operator setup, connection, and recovery procedures
 scripts/        Non-secret verification utilities
+templates/      Reusable repository guidance
 ```
+
+## Repository guidance
+
+[AGENTS.md](./AGENTS.md) records project commands and constraints. Use the
+[repository template and adaptation guide](./templates/agents/README.md) when
+preparing another project's guidance.
 
 ## Local validation
 
-Use the Terraform version declared in `infra/dev-host/.terraform-version`.
+For policies, templates, scripts, workflow, or infrastructure changes, run
+`./scripts/check-repository.sh` from the repository root. It includes offline
+host-policy, bootstrap, and repository-guidance tests. Documentation-only edits
+need diff and relative-link review.
+
+For Terraform changes, use the Terraform version declared in
+`infra/dev-host/.terraform-version`.
 
 ```sh
 cd infra/dev-host
