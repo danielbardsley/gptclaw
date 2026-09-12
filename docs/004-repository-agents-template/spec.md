@@ -1,6 +1,6 @@
 # SPEC-004: Repository AGENTS.md Template
 
-- **Status:** Approved; implementation prepared, acceptance pending
+- **Status:** Approved; implementation merged, acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** AGT-002
 - **Technical design:** [TDD-004](./technical-design.md)
@@ -21,8 +21,8 @@ inventing commands, assuming future platform capabilities exist, or confusing
 repository instructions with permission to change the host or production.
 
 Daniel approved this specification and authorized implementation on 2026-09-12.
-The approved defaults below are implemented for review. Fresh-task acceptance
-and the implementation merge remain pending; see [acceptance](./acceptance.md).
+The approved defaults below are implemented and merged in PR #9. CI and
+fresh-task acceptance remain pending; see [acceptance](./acceptance.md).
 
 ## 2. Scope and dependencies
 

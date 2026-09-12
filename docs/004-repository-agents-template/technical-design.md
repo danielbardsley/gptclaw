@@ -1,6 +1,6 @@
 # TDD-004: Repository AGENTS.md Template
 
-- **Status:** Implemented locally; review and remote acceptance pending
+- **Status:** Reviewed and merged; CI and remote acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-004](./spec.md)
 - **Implementation tasks:** [TASKS-004](./tasks.md)

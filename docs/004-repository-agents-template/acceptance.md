@@ -1,6 +1,6 @@
 # ACCEPTANCE-004: Repository AGENTS.md Template
 
-- **Status:** Local implementation verified; review, merge, and remote acceptance pending
+- **Status:** Implementation reviewed and merged; CI and remote acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-004](./spec.md)
 - **Technical design:** [TDD-004](./technical-design.md)
@@ -10,9 +10,11 @@
 
 ## Authorization and baseline
 
-Daniel approved the draft specification in PR #9 and requested implementation
-on 2026-09-12. This authorizes the implementation; review of the resulting
-policy, merge, and fresh-task acceptance are recorded separately.
+Daniel approved the specification and requested implementation on 2026-09-12.
+He subsequently reviewed the resulting PR and explicitly authorized its merge.
+[PR #9](https://github.com/danielbardsley/gptclaw/pull/9) merged as
+`05cfbb7c7590fc4b908dd62519b62d3696498620`, with approved head
+`af015bb6bfb414ca60effd8368fcebca5c824985`. Fresh-task acceptance remains separate.
 
 The working tree was clean at implementation start. No GptClaw root policy or
 root override existed. The existing `config/codex/AGENTS.md` host source was
@@ -35,13 +37,13 @@ acceptance record remains unchanged.
 
 | Criterion | Evidence and remaining work |
 |---|---|
-| AC-001 | Template and guide cover six required sections; GptClaw and Pebble Counter include source version 1.0.0. Static checks pass. Template is 3,082 bytes; GptClaw policy 7,640 bytes; fixture policy 3,466 bytes. Owner review of resulting policy remains pending. |
+| AC-001 | Template and guide cover six required sections; GptClaw and Pebble Counter include source version 1.0.0. Static checks pass. Template is 3,082 bytes; GptClaw policy 7,640 bytes; fixture policy 3,466 bytes. Daniel reviewed the resulting policy and authorized merge. |
 | AC-002 | Command map reviewed against README, scripts, version/lock files, and existing workflow. Python/Bash/Git offline commands are available. No Terraform executable is on this shell's PATH; Terraform was not installed or run locally. CI results are recorded below. |
 | AC-003 | Ten focused tests pass: shipped contracts, full template adaptation, missing/duplicate/empty sections, placeholders/metadata, byte limits/encoding, invalid links, symlink escape, no command/network execution by validation, synthetic verification, and targeted Git rollback. |
-| AC-004 | Diff adds root guidance, inert template/fixture, tests, guide, documentation, and two workflow path entries per event. Existing guidance and deployment gates are unchanged. Review of the resulting PR remains pending. |
+| AC-004 | Diff adds root guidance, inert template/fixture, tests, guide, documentation, and two workflow path entries per event. Existing guidance and deployment gates are unchanged. Daniel reviewed and authorized the resulting PR merge. |
 | AC-005 | Pending fresh tasks through the supported remote connection at GptClaw and the synthetic project root. This continuing task and CLI metadata are not qualifying evidence. |
-| AC-006 | Automated isolated Git rehearsal reverts an update, restores prior policy bytes, then reverts first adoption; unrelated later README changes and an uncommitted user note survive. Manual version comparison, review, rollback, and fresh-task procedure are in the guide. Owner review remains pending. |
-| AC-007 | This record captures local evidence. Implementation merge, approved revision, remote results, and final acceptance remain pending; catalogue stays Planned with implementation status explained. |
+| AC-006 | Automated isolated Git rehearsal reverts an update, restores prior policy bytes, then reverts first adoption; unrelated later README changes and an uncommitted user note survive. Manual version comparison, review, rollback, and fresh-task procedure are in the guide. Owner review is complete. |
+| AC-007 | This record captures local evidence. Implementation is reviewed and merged at the revision above. CI, remote results, and final acceptance remain pending; catalogue stays Planned with merged status explained. |
 
 ## Command review
 
@@ -92,6 +94,10 @@ the disposable project and open both roots through the supported connection.
 The guide includes an explanation-only prompt without expected answers and
 the evidence fields to record. No live scratch project is left behind yet.
 
-Daniel owns the remaining resulting-policy review, merge authorization, and
-remote acceptance. Record exact reviewed revision and sanitized outcomes before
-marking AC-005/007 passed or AGT-002 Delivered.
+The final PR head
+[CI run #54](https://github.com/danielbardsley/gptclaw/actions/runs/34725653236)
+was also pending when merge was requested. GitHub accepted a normal merge with
+the expected head SHA; no required-check override or admin bypass was used.
+
+Daniel owns the remaining remote acceptance. Record CI results and sanitized
+fresh-task outcomes before marking AC-005/007 passed or AGT-002 Delivered.

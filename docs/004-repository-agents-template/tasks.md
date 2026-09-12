@@ -1,6 +1,6 @@
 # TASKS-004: Repository AGENTS.md Template
 
-- **Status:** Implemented locally; review and remote acceptance pending
+- **Status:** Reviewed and merged; CI and remote acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-004](./spec.md)
 - **Technical design:** [TDD-004](./technical-design.md)
@@ -51,7 +51,7 @@ Depends on phase 1.
   preservation of unrelated later edits. Document update ownership/provenance.
 - [x] **2.7a** Publish the implementation in PR #9 and update documentation
   links and the PR description for the final scope.
-- [ ] **2.7b** Obtain review of the resulting repository guidance.
+- [x] **2.7b** Obtain review of the resulting repository guidance.
 
 **Gate:** AC-001–004 and AC-006 have concrete local/review evidence; no host,
 infrastructure, credentials, or runtime changes are required.
@@ -90,5 +90,6 @@ is insufficient.
 Template, guide, GptClaw adoption, ten focused tests, and workflow integration
 are implemented. The isolated rollback preserves unrelated committed and
 uncommitted work. Implementation is published at `770c06f`; CI run #53 has not started jobs.
-Implementation review/merge and fresh-task remote acceptance remain pending. [Acceptance evidence](./acceptance.md) records the exact checks
+Daniel reviewed and authorized PR #9, merged as `05cfbb7` on 2026-09-12.
+The final head CI run #54 and fresh-task remote acceptance remain pending. [Acceptance evidence](./acceptance.md) records the exact checks
 and separates local evidence from AC-005 and final completion.
