@@ -43,6 +43,10 @@ Do not print the Tailscale secret or dump the process environment.
    status, Tailscale identity, and Codex executable.
 9. Recreate the EC2-to-GitHub deploy key and reauthenticate Codex if the root
    volume was replaced.
+10. Reinstall the reviewed host policy from its recorded Git revision using
+    [Manage the reviewed host policy](./manage-host-agents.md). Recheck the actual
+    remote profile and verify guidance in a fresh task before normal feature
+    work. Preserve authentication; do not restore the entire Codex home.
 
 Removing `prevent_destroy` from the project volume requires a dedicated pull
 request and explicit data-destruction review.

@@ -46,3 +46,8 @@ docs/
   [Specification](./002-automated-ebs-snapshots/spec.md) ·
   [Technical design](./002-automated-ebs-snapshots/technical-design.md) ·
   [Tasks](./002-automated-ebs-snapshots/tasks.md)
+
+- **003 - Reviewed host AGENTS.md (AGT-001):**
+  [Specification](./003-reviewed-host-agents/spec.md) ·
+  [Technical design](./003-reviewed-host-agents/technical-design.md) ·
+  [Tasks](./003-reviewed-host-agents/tasks.md)

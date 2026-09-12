@@ -71,4 +71,12 @@ if ! grep -Eq '^[[:space:]]*tags[[:space:]]*=[[:space:]]*local\.common_tags' inf
   status=1
 fi
 
+if ! ./scripts/install-host-agents.sh validate-source; then
+  status=1
+fi
+
+if ! ./scripts/tests/install-host-agents.sh; then
+  status=1
+fi
+
 exit "$status"
