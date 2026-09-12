@@ -61,7 +61,7 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| AGT-001 | Reviewed host `AGENTS.md` | 2 | Planned | Reviewed host policy, traceable installation, and fresh-task verification of security boundaries, delivery workflow, evidence standards, and AWS mutation rules. [SPEC-003](../003-reviewed-host-agents/spec.md); specification approved and implementation prepared; policy revision review, host rollout, and fresh-task acceptance pending. |
+| AGT-001 | Reviewed host `AGENTS.md` | 2 | Planned | Reviewed host policy, traceable installation, and fresh-task verification of security boundaries, delivery workflow, evidence standards, and AWS mutation rules. [SPEC-003](../003-reviewed-host-agents/spec.md); policy reviewed, merged and installed on the existing host; automatic first-boot integration prepared, fresh-task and new-host acceptance pending. |
 | AGT-002 | Repository `AGENTS.md` template | 2 | Candidate | Every project declares stack commands, quality gates, layout, data rules, and product-specific constraints. |
 | AGT-003 | Nested guidance pattern | 3 | Candidate | Infrastructure, mobile, backend, migrations, and UI areas can add focused instructions without bloating root guidance. |
 | AGT-004 | Specification skill | 2 | Candidate | Reusable workflow creates consistent spec, technical design, task, and acceptance documents. |

@@ -1,6 +1,6 @@
 # TASKS-003: Reviewed Host AGENTS.md
 
-- **Status:** Implemented locally; policy review and live acceptance pending
+- **Status:** Policy merged and installed; bootstrap follow-up and remote acceptance in progress
 - **Owner:** Daniel
 - **Specification:** [SPEC-003](./spec.md)
 - **Technical design:** [TDD-003](./technical-design.md)
@@ -95,7 +95,7 @@ Depends on phase 2.
 - [x] **3.6 Repository:** Update connection and recovery runbooks with policy
   installation and fresh-task checks, including restoration after root-volume
   replacement and preservation of all authentication material.
-- [ ] **3.7 Repository:** Prepare a PR describing the final policy/tooling,
+- [x] **3.7 Repository:** Prepare a PR describing the final policy/tooling,
   validation, and operational limits. Obtain owner review of the exact policy
   revision used for live installation; record review provenance.
 
@@ -107,10 +107,10 @@ and runbooks are reviewable.
 
 Depends on phase 3 and authorization for the reviewed live installation.
 
-- [ ] **4.1 Operator:** Confirm `forge`, effective remote profile, destination
+- [x] **4.1 Operator:** Confirm `forge`, effective remote profile, destination
   state/modes, and lack of shadowing overrides. Resolve any preflight conflict
   explicitly while preserving existing content.
-- [ ] **4.2 Operator:** Install from the reviewed full commit SHA. Run read-only
+- [x] **4.2 Operator:** Install from the reviewed full commit SHA. Run read-only
   verification and record revision, checksum, ownership, modes, and timestamp.
 - [ ] **4.3 Operator:** Start fresh tasks through the actual ChatGPT SSH
   connection in GptClaw and an independent scratch Git project. Confirm host
@@ -159,3 +159,25 @@ Depends on phase 4.
 | HAG-007 | 1.4, 3.5, 3.6, 4.5, 5.1-5.3 | AC-001, AC-006, AC-007 |
 
 Current evidence and pending gates: [Acceptance status](./acceptance.md).
+
+## Provisioning extension authorized 2026-09-12
+
+- [x] **6.1 Repository:** Add independent immutable first-boot pin and
+  Terraform/cloud-init helper, running the reviewed installer as `forge` before
+  Codex setup and bootstrap completion (HAG-008/010).
+- [x] **6.2 Repository:** Verify fetched commit, avoid stored Git credentials,
+  clean owned temporary checkout, and propagate installation failures (HAG-009).
+- [x] **6.3 Repository:** Test first boot, no-op retries, preserved auth/drift,
+  overrides, fetch failure, and wrong pin; test Terraform wiring and size (AC-008).
+- [x] **6.4 Repository:** Update specification, design, and runbooks for pin
+  refresh, replacement implications, public-source dependency and recovery.
+- [x] **6.5 Operator:** Install and verify the already-reviewed policy on the
+  existing host without replacing compute; record source checksum and modes.
+- [ ] **6.6 Repository:** Publish the bootstrap follow-up PR with passing checks
+  and explicit replacement impact; obtain review before infrastructure apply.
+- [ ] **6.7 Operator:** At the next reviewed creation/replacement, record
+  pipeline and first-boot evidence, then fresh-task loading (AC-009).
+
+The bootstrap code can be merged independently of immediate instance
+replacement. Filesystem installation is complete on the current host;
+AC-004/005 and the live portion of AC-006 still require fresh remote tasks.

@@ -16,3 +16,7 @@ deployment_revision      = "0123456789abcdef0123456789abcdef01234567"
 # backup_interval_hours  = 24
 # backup_start_time_utc  = "03:00"
 # backup_retention_count = 7
+
+# First-boot policy is pinned independently of deployment_revision.
+# Changing this pin replaces the instance. Use the installer for in-place updates.
+# host_policy_revision = "a287d7c9712817fd9f318a11f28041cfc6b5ad06"

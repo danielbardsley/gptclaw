@@ -110,8 +110,9 @@ credential storage, keep `~/.codex` mode `0700` and credential files mode
 ## 5. Install and verify the reviewed host policy
 
 Follow [Manage the reviewed host policy](./manage-host-agents.md) as `forge`.
-Confirm the actual remote profile, install from the reviewed immutable commit,
-and run read-only verification. Preserve authentication and any existing
+Confirm the actual remote profile and run read-only verification of the
+automatically installed pinned revision. On an older host without bootstrap
+policy installation, install from the reviewed immutable commit first. Preserve authentication and any existing
 unmanaged policy or override. Installation alone does not prove task loading.
 
 ## 6. Add the remote project in ChatGPT

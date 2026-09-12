@@ -38,8 +38,9 @@ and live verification before acceptance. See [Acceptance status](./acceptance.md
 - Repository templates (AGT-002), nested-policy tooling (AGT-003), skills
   (AGT-004 onward), and general context/drift validation (AGT-010/RES-005).
 - New IAM, sandbox, sudo, network, container, or production controls.
-- Changes to Terraform, cloud-init, compute, credentials, or app-server services.
-- Fleet distribution, automatic updates, background monitoring, or enforcement
+- Credential or app-server service changes. Terraform/cloud-init first-install
+  integration is included by the approved extension in section 7.
+- Fleet distribution, automatic policy updates, background monitoring, or enforcement
   hooks. Agents on other users, machines, or unverified profiles are not covered.
 - Retroactively updating the instructions of already-running tasks.
 
@@ -187,3 +188,38 @@ Implementation delivers the policy, installer, focused tests, runbook updates,
 and `acceptance.md` in this initiative. Every acceptance criterion must pass
 before marking AGT-001 Delivered. Keep AGT-002 and later features independent;
 this feature must work before any repository template or platform CLI exists.
+
+## 7. Approved provisioning extension (2026-09-12)
+
+Daniel requested automatic installation through the Terraform-managed EC2
+bootstrap, while retaining the installer for updates to running hosts.
+
+- **HAG-008:** New/replacement hosts must install and verify the policy as
+  unprivileged `forge` before bootstrap is marked complete. Pin an immutable,
+  reviewed `host_policy_revision` independently of `deployment_revision`; never
+  fetch a moving branch. Use the existing installer and provenance format.
+- **HAG-009:** Fetch from the fixed public GptClaw repository without stored Git
+  credentials. Verify the fetched commit, clean the owned temporary checkout,
+  and fail bootstrap on fetch, install, or verification failure. Preserve the
+  installer's drift, override, and existing-file checks on retries.
+- **HAG-010:** Routine policy changes use the existing installer. Changing the
+  first-boot pin is an explicit infrastructure change that can replace compute.
+  Preserve `user_data_replace_on_change`, data-volume protection, and the
+  GitHub/HCP deployment path. Do not replace the current host merely to install
+  its approved policy.
+
+**AC-008:** Offline bootstrap tests demonstrate first install, repeat no-op,
+unchanged authentication material, drift/override refusal, and fetch/pin failure.
+Terraform tests confirm pin validation/independence, unprivileged execution,
+cloud-init wiring, retained replacement behavior, and user-data size.
+
+**AC-009:** At the next reviewed host creation/replacement, the pipeline plan and
+apply plus host evidence show successful policy installation and verification
+before bootstrap completion. Record the source revision/checksum and fresh-task
+loading. Until then, distinguish tested provisioning code from a demonstrated
+EC2 first boot; existing-host installation does not satisfy this criterion.
+
+Default first-boot source is the owner-reviewed PR #6 commit
+`a287d7c9712817fd9f318a11f28041cfc6b5ad06`. The repository must remain publicly
+readable for this retrieval design. A private repository needs a separately
+reviewed distribution path, not a new long-lived bootstrap credential.

@@ -15,6 +15,11 @@ write_files:
     permissions: "0750"
     encoding: b64
     content: ${base64encode(bootstrap_script)}
+  - path: /usr/local/libexec/gptclaw-install-host-policy
+    owner: root:root
+    permissions: "0755"
+    encoding: b64
+    content: ${base64encode(host_policy_script)}
   - path: /etc/systemd/system/gptclaw-bootstrap.service
     owner: root:root
     permissions: "0644"
