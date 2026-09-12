@@ -1,6 +1,6 @@
 # SPEC-004: Repository AGENTS.md Template
 
-- **Status:** Draft; not approved for implementation
+- **Status:** Approved; implementation prepared, acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** AGT-002
 - **Technical design:** [TDD-004](./technical-design.md)
@@ -20,8 +20,9 @@ An agent starting a fresh task should find concrete project guidance without
 inventing commands, assuming future platform capabilities exist, or confusing
 repository instructions with permission to change the host or production.
 
-This request authorizes preparation of the planning documents. The defaults
-below are proposals; implementation requires owner approval.
+Daniel approved this specification and authorized implementation on 2026-09-12.
+The approved defaults below are implemented for review. Fresh-task acceptance
+and the implementation merge remain pending; see [acceptance](./acceptance.md).
 
 ## 2. Scope and dependencies
 
@@ -53,9 +54,9 @@ repository and host guidance together on the supported connection without
 claiming that this completes all of AGT-001. No future CLI, manifest, container
 runtime, or skill is a prerequisite.
 
-## 3. Proposed defaults
+## 3. Approved defaults
 
-| Item | Proposal |
+| Item | Default |
 |---|---|
 | Canonical template | `templates/agents/AGENTS.md.template` |
 | Adaptation guide | `templates/agents/README.md` |

@@ -1,6 +1,6 @@
 # TDD-004: Repository AGENTS.md Template
 
-- **Status:** Draft; pending specification approval
+- **Status:** Implemented locally; review and remote acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-004](./spec.md)
 - **Implementation tasks:** [TASKS-004](./tasks.md)
@@ -14,12 +14,12 @@ new package dependency is needed. The template filename deliberately differs
 from active `AGENTS.md` guidance. It is a reusable document, not a project
 scaffold or a replacement for the host policy.
 
-At drafting, GptClaw has no root `AGENTS.md`; its canonical host policy is
+At drafting, GptClaw had no root `AGENTS.md`; its canonical host policy is
 `config/codex/AGENTS.md`. Existing command sources are `README.md`,
 `scripts/check-repository.sh`, `.github/workflows/terraform-dev-host.yml`, and
 `infra/dev-host/.terraform-version`. Recheck this baseline before adoption.
 
-## 2. Proposed files and content
+## 2. Files and content
 
 | File | Responsibility |
 |---|---|
@@ -48,7 +48,7 @@ sources rather than duplicating version numbers.
    policies and overrides; inspect only relevant non-secret discovery settings.
 2. Recheck supported-client discovery documentation and actual configuration.
    Record discrepancies without changing global policy or settings. Respect
-   the proposed 8 KiB per-file budget and inspect the effective combined budget;
+   the approved 8 KiB per-file budget and inspect the effective combined budget;
    a size check alone cannot prove loading.
 3. Build the project fact/command map from checked-in sources. Classify each
    operation's prerequisites and side effects before considering execution.
@@ -113,3 +113,37 @@ these path additions.
 | RAG-004 | Explicit project data/product entries and review | AC-004, AC-005 |
 | RAG-005 | Manual adaptation, version provenance, targeted rollback | AC-001, AC-006 |
 | RAG-006 | Offline tests, human review, sanitized remote evidence | AC-003, AC-005, AC-007 |
+
+## 7. Implementation details and verification boundary
+
+The adopted metadata is `Source-Template-Version: 1.0.0` plus a
+`Template-Source` provenance identifier. Template metadata retains
+`Template-Version`. The synthetic example is stored inertly as
+`scripts/tests/fixtures/repository-agents/AGENTS.md.fixture`; tests copy it into
+a temporary Git project with README and `verify.py`. No nested active guidance
+is shipped. The guide supplies the same manual fixture preparation for remote
+acceptance.
+
+`test_repository_agents.py` owns the narrow validator and ten standard-library
+tests. Validation reads only the explicit policy, rejects unresolved/malformed
+placeholders and malformed metadata, and checks required nonempty sections.
+Simple inline local links must resolve within the explicit project root, even
+through symlinks. It stats local targets without reading their contents and
+never fetches external URLs. Link syntax and excluded anchor validation are
+documented in the adaptation guide. Known fixture code and fixed Git operations
+are executed only by separate tests, never by interpreting policy commands.
+
+Both pull-request and main-push paths include `AGENTS.md` and
+`templates/agents/**`. Only path filters changed in the workflow; quality steps,
+manual dispatch, protected environments, and plan/apply conditions are intact.
+The existing repository checker now includes the focused suite.
+
+Instruction discovery was checked against the
+[official documentation](https://learn.chatgpt.com/docs/agent-configuration/agents-md)
+on 2026-09-12 and installed CLI metadata (`codex-cli 0.153.4`). The shell launch
+profile is `/home/forge/.codex`; no instruction-size/fallback setting was found
+in its config, and global/root override files were absent. This is preflight
+evidence only. This continuing task already received host text explicitly and
+cannot prove automatic loading. Fresh remote tasks in both projects remain an
+operator acceptance step; no new-task creation tool is available in this session.
+See [acceptance](./acceptance.md) for precise evidence and remaining gates.

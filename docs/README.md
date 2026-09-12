@@ -55,4 +55,5 @@ docs/
 - **004 - Repository AGENTS.md template (AGT-002):**
   [Specification](./004-repository-agents-template/spec.md) ·
   [Technical design](./004-repository-agents-template/technical-design.md) ·
-  [Tasks](./004-repository-agents-template/tasks.md)
+  [Tasks](./004-repository-agents-template/tasks.md) ·
+  [Acceptance status](./004-repository-agents-template/acceptance.md)
