@@ -87,4 +87,8 @@ if ! python3 ./scripts/tests/test_repository_agents.py; then
   status=1
 fi
 
+if ! python3 -B ./scripts/tests/test_nested_agents.py; then
+  status=1
+fi
+
 exit "$status"

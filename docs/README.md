@@ -61,4 +61,5 @@ docs/
 - **005 - Nested guidance pattern (AGT-003):**
   [Specification](./005-nested-guidance-pattern/spec.md) ·
   [Technical design](./005-nested-guidance-pattern/technical-design.md) ·
-  [Tasks](./005-nested-guidance-pattern/tasks.md)
+  [Tasks](./005-nested-guidance-pattern/tasks.md) ·
+  [Acceptance status](./005-nested-guidance-pattern/acceptance.md)

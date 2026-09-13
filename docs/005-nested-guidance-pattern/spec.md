@@ -1,12 +1,12 @@
 # SPEC-005: Nested Guidance Pattern
 
-- **Status:** Draft; not approved for implementation
+- **Status:** Approved; implemented, review and acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** AGT-003
 - **Technical design:** [TDD-005](./technical-design.md)
 - **Implementation tasks:** [TASKS-005](./tasks.md)
 - **Architecture:** [Platform architecture](../platform/architecture.md), section 9
-- **Last updated:** 2026-09-12
+- **Last updated:** 2026-09-13
 
 ## 1. Summary and desired outcome
 
@@ -16,10 +16,11 @@ local commands and constraints while retaining repository-wide guidance. Area
 rules should stay scoped to their subtree and avoid enlarging the root policy
 with details that only apply to one part of a project.
 
-The first proposed adoption is `infra/dev-host/AGENTS.md` in GptClaw. Other
+The first adoption is `infra/dev-host/AGENTS.md` in GptClaw. Other
 areas are demonstrated with inert examples and synthetic fixtures, not new
-application stacks. This draft defines future implementation; creating or
-merging these planning documents does not approve policy adoption.
+application stacks. Daniel approved this specification and authorized
+implementation on 2026-09-13. Review of the resulting policy and fresh-task
+acceptance remain separate gates; see [acceptance](./acceptance.md).
 
 ## 2. Scope and dependencies
 
@@ -50,9 +51,9 @@ proceed; final AGT-003 acceptance must demonstrate host, root, and area guidance
 together through the supported remote connection. No future platform tool is
 a prerequisite.
 
-## 3. Proposed defaults
+## 3. Approved defaults
 
-| Item | Default for review |
+| Item | Approved default |
 |---|---|
 | Reusable sources | `templates/agents/nested/`, using `.template` or `.example` filenames that do not activate instructions |
 | Active first adoption | `infra/dev-host/AGENTS.md`; no additional active area policies |
@@ -176,11 +177,11 @@ If an entry point cannot be exercised, record the criterion as pending.
 
 ## 6. Deliverables and approval
 
-Implementation would deliver the reusable pattern and examples, one active area
+Implementation delivers the reusable pattern and examples, one active area
 policy, the root pointer, focused checks/fixtures, and `acceptance.md` beside these
-planning documents. The design and tasks describe that proposed work in order.
-Daniel reviews scope, budgets, first adoption, and acceptance expectations before
-implementation begins. No implementation approval is recorded by this draft.
+planning documents. Daniel authorized the scope, budgets, first adoption, and
+acceptance expectations on 2026-09-13. No repeat implementation approval is
+required. Resulting-policy review, merge, and remote acceptance remain pending.
 
 Mark AGT-003 Delivered only after the implementation PR is merged and all eight
 acceptance criteria pass. This proves one real adoption and reusable examples;

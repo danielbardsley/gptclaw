@@ -1,19 +1,19 @@
 # TDD-005: Nested Guidance Pattern
 
-- **Status:** Draft; proposed implementation only
+- **Status:** Implemented; review and acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-005](./spec.md)
 - **Implementation tasks:** [TASKS-005](./tasks.md)
-- **Last updated:** 2026-09-12
+- **Last updated:** 2026-09-13
 
 ## 1. Approach
 
 Extend the existing Markdown guidance system with an inert area contract and a
-manual adaptation procedure. Add one real area policy after specification
-approval. Reuse Bash/Python standard-library checks; no new runtime, installer,
+manual adaptation procedure. Add one real area policy under the specification approval recorded on
+2026-09-13. Reuse Bash/Python standard-library checks; no new runtime, installer,
 package, client setting, or infrastructure behavior is required.
 
-## 2. Proposed files
+## 2. Files
 
 | File or location | Responsibility |
 |---|---|
@@ -101,3 +101,26 @@ fresh-task verification; no host installer or bootstrap pin is touched.
 | NAG-004 | 2–4 | AC-001, AC-002, AC-006 |
 | NAG-005 | 2, 5 | AC-002, AC-007 |
 | NAG-006 | 4 | AC-003–006, AC-008 |
+
+## 7. Implementation details
+
+The area contract is version 1.0.0 with explicit `Area-Scope`, `Parent-Guidance`,
+and `Owner` fields. The validator reuses the root validator with separate section,
+placeholder, and size parameters; root defaults and its ten tests are preserved.
+Parent validation requires an existing ancestor policy inside the explicit root,
+and scope must match the adopted directory. Semantic parent selection, shadowing,
+and instruction behavior remain human/client checks.
+
+Five concrete examples are materialized at their hypothetical area paths so their
+relative links can be checked. Fixed fixture sources add a root contract, deeper
+backend area, temporary UI override, and deliberately conflicting backend rule.
+The helper refuses nonempty destinations and accepts only three named scenarios.
+Nine tests cover authoring failures, no execution/network/unrelated reads, inert
+sources, explicit placement, and first-adoption/update rollback preserving later
+committed, tracked-dirty, and untracked work. They do not simulate Codex loading.
+
+Existing workflow filters already cover every implementation path; the workflow
+was reviewed and left intact. The root pointer is an adoption-only addition; the
+root canonical template and host policy/bootstrap remain unchanged.
+[Acceptance evidence](./acceptance.md) separates local verification from pending
+review, remote behavior, effective remote settings, CI, and merge.

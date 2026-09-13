@@ -1,0 +1,40 @@
+# {{AREA_NAME}} area guidance
+
+Template-Version: 1.0.0
+Template-Source: GptClaw templates/agents/nested/AGENTS.md.template
+
+## Scope and ownership
+
+Area-Scope: {{AREA_SCOPE}}
+Parent-Guidance: {{PARENT_GUIDANCE}}
+Owner: {{OWNER}}
+
+{{AREA_PURPOSE}}
+
+## Local conventions
+
+{{LOCAL_CONVENTIONS}}
+
+Apply these rules only within this area. Read applicable deeper guidance before
+work there; do not transfer sibling conventions into this subtree.
+
+## Commands and verification
+
+{{VERIFICATION}}
+
+## Constraints
+
+{{AREA_CONSTRAINTS}}
+
+Respect higher-priority instructions, existing session authorization, and tool
+permissions. Local guidance grants no new authority. Surface unresolved
+conflicts and continue unaffected authorized work; do not ask again for scope
+already approved. Guidance is not a security boundary.
+
+## Maintenance
+
+{{MAINTENANCE}}
+
+Keep this file within 4 KiB UTF-8. Template versions record ancestry, not identical
+content. Updates are deliberate project-owned PRs, never automatic overwrites.
+Verify changed or restored guidance in fresh tasks; preserve ongoing sessions.
