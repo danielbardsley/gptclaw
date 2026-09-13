@@ -1,6 +1,6 @@
 # TASKS-005: Nested Guidance Pattern
 
-- **Status:** Implemented; review and remote acceptance pending
+- **Status:** Reviewed and merged; remote acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-005](./spec.md)
 - **Technical design:** [TDD-005](./technical-design.md)
@@ -48,10 +48,10 @@ Depends on phase 1.
 - [x] **2.5** Rehearse adoption and update rollback, preserving unrelated
   committed and uncommitted work. Document version/update ownership.
 - [x] **2.6a** Publish implementation and sanitized local evidence in PR #11.
-- [ ] **2.6b Owner:** Review the resulting active guidance revision.
+- [x] **2.6b Owner:** Review the resulting active guidance revision.
 
-**Gate:** Local evidence for AC-001–003 and AC-007 is recorded; owner review of
-the resulting guidance and actual loading remain pending.
+**Gate:** Local evidence for AC-001–003 and AC-007 is recorded; Daniel has authorized merge of
+the resulting guidance. Actual remote loading remains pending.
 
 ## Phase 3: Fresh-task acceptance and delivery
 
@@ -91,4 +91,5 @@ nested guidance 9. Shell syntax, whitespace, and local-link checks are recorded
 in [acceptance](./acceptance.md). Test-owned scratch fixtures were cleaned.
 Phase 3 remote scenarios have a reproducible fixture helper and reviewer matrix
 in the nested guide; no remote behavior is claimed from this continuing task.
-Daniel owns resulting-policy review, supported-connection acceptance, and merge.
+Daniel authorized merge as `b5ecfa3` on 2026-09-13; PR CI run #56 passed.
+Daniel owns the remaining supported-connection acceptance.

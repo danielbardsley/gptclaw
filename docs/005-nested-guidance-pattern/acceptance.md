@@ -1,6 +1,6 @@
 # SPEC-005 acceptance evidence
 
-- **Status:** Implemented; review, CI, merge, and remote acceptance pending
+- **Status:** Reviewed and merged; remote acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-005](./spec.md)
 - **Design:** [TDD-005](./technical-design.md)
@@ -9,23 +9,23 @@
 - **Evidence date:** 2026-09-13
 
 Daniel authorized implementation on 2026-09-13. This evidence covers the
-implementation changes following planning commit `0640b1e` on
-`codex/agt-003-spec`; the PR's commits identify the published revision. The
-reviewed/merged revision must be recorded when those gates complete. Local
+implementation revision `eb0017c0671e0af4ebd2f16ccfcf1c9f1bd33b70`. Daniel
+authorized merge on 2026-09-13; PR #11 merged as
+`b5ecfa38e24bb00944edc0f4765c9ac5ddb0534e`. Local
 verification is not evidence of remote instruction loading or feature delivery.
 
 ## Acceptance mapping
 
 | Criterion | State and evidence |
 |---|---|
-| AC-001 | Local content review and static checks complete; Daniel's resulting-policy review pending. Versioned inert template, five examples, and adaptation guide cover the five sections, provenance, placement, budgets, authority, and updates. All example links are checked at their intended synthetic placements. |
-| AC-002 | Local source comparison and root-contract regression tests pass; owner review pending. Infrastructure adoption links existing versions, lock, compute replacement, tests, root commands, and CI. Root discovery pointer preserves shared constraints. No Terraform, host-policy source, bootstrap, global settings, workflow, or runtime changes. |
+| AC-001 | Local content review and static checks complete; Daniel authorized merge of the resulting policy on 2026-09-13. Versioned inert template, five examples, and adaptation guide cover the five sections, provenance, placement, budgets, authority, and updates. All example links are checked at their intended synthetic placements. |
+| AC-002 | Local source comparison and root-contract regression tests pass; Daniel authorized merge on 2026-09-13. Infrastructure adoption links existing versions, lock, compute replacement, tests, root commands, and CI. Root discovery pointer preserves shared constraints. No Terraform, host-policy source, bootstrap, global settings, workflow, or runtime changes. |
 | AC-003 | Passed locally: nine nested tests cover positive/negative contracts, scope/parent boundaries, local links, encoding/size, inert sources, no execution/network/unrelated reads, and fixture placement. The existing ten root-guidance tests still pass. |
 | AC-004 | Pending: new task through the supported remote connection directly in `infra/dev-host`, without policy text supplied in the prompt. |
 | AC-005 | Pending: fresh root discovery, siblings, deeper specialization, and cross-area behavior. Fixed scenario sources and reproducible helper are ready; content/placement checks are not client behavior evidence. |
 | AC-006 | Partial preflight only: shell profile metadata and conservative file budgets below. Remote effective settings, override behavior/restoration, and conflict handling remain pending. Existing unknown settings/files were preserved. |
 | AC-007 | Passed locally: isolated adoption/update Git reverts preserved the root policy, unrelated later commit, dirty tracked README, and untracked note. Guide records ownership, independent version updates, targeted live rollback, and fresh-task re-verification. No live rollback was executed. |
-| AC-008 | Pending: this record maps every criterion, but resulting-policy review, remote observations, CI results, and merged implementation revision are outstanding. AGT-003 remains Planned. |
+| AC-008 | Pending: this record maps every criterion, but remote observations and effective remote settings are outstanding. Review, CI, and merged revision are recorded below. AGT-003 remains Planned. |
 
 ## Local verification
 
@@ -110,8 +110,7 @@ by a root-started task must be recorded separately from its startup chain.
 
 ## Remaining operator acceptance
 
-Daniel owns review of the resulting policy revision, supported-connection
-verification, and merge. The [nested guide](../../templates/agents/nested/README.md#fresh-task-acceptance)
+Daniel owns the remaining supported-connection verification. The [nested guide](../../templates/agents/nested/README.md#fresh-task-acceptance)
 provides a fixed fixture helper, entry points, explanation-only prompts, and a
 separate reviewer answer matrix. It covers direct/root starts, siblings, deeper
 scope, cross-area work, shadowing/restoration, and unresolved conflicts.
@@ -119,8 +118,7 @@ scope, cross-area work, shadowing/restoration, and unresolved conflicts.
 This continuing task already has guidance in its conversation and cannot satisfy
 fresh-task acceptance. No new user-owned tasks were created as part of this
 implementation request. The approved spec explicitly leaves unexercised remote
-entry points pending; no local CLI result substitutes for them. After review,
-exercise those scenarios in new tasks through the supported connection and
+entry points pending; no local CLI result substitutes for them. Exercise those scenarios in new tasks through the supported connection and
 record sanitized revision/client/profile/entry-point/results for each one.
 
 All temporary projects used by local tests and budget checks were task-owned and
@@ -129,5 +127,19 @@ created. At experiment expiry, the operator removes only the temporary override
 in its confirmed fixture and verifies restored UI guidance in another fresh task.
 Clean those confirmed projects only after saving acceptance evidence.
 
-Record CI and the merged revision here when available; mark Delivered only after
+Mark Delivered only after
 all criteria pass. AGT-001 and AGT-002 acceptance remains separate and unchanged.
+
+## CI and merge confirmation
+
+[Run #56](https://github.com/danielbardsley/gptclaw/actions/runs/34727428248)
+passed for implementation revision `eb0017c` after Daniel cancelled stuck run
+#51. Repository checks, Terraform formatting, backend-free initialization,
+validation, and tests all passed. Protected plan and apply jobs were skipped;
+no deployment ran. This is PR CI evidence, not a claim about post-merge CI.
+
+Daniel explicitly requested merging PR #11. GitHub confirmed the normal merge
+on 2026-09-13 at `b5ecfa38e24bb00944edc0f4765c9ac5ddb0534e`. AC-001 and AC-002
+now have the resulting-policy review/merge evidence as well as local checks.
+AC-004–006 and final AC-008 completion still require the documented fresh-task
+scenarios. No remote acceptance has been inferred from merge or successful CI.
