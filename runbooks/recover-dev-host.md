@@ -25,7 +25,9 @@ Do not print the Tailscale secret or dump the process environment.
 ## Planned instance replacement
 
 1. Quiesce writes beneath `/srv/forge/projects`.
-2. Confirm the Terraform plan retains `aws_ebs_volume.projects` and changes only
+2. Review `host_policy_revision` against the desired approved baseline before
+   replacement; in-place updates do not automatically advance this pin.
+   Confirm the Terraform plan retains `aws_ebs_volume.projects` and changes only
    the expected compute/attachment resources.
 3. Use the [backup inspection runbook](./inspect-backups.md) to select a completed
    snapshot from the Terraform-managed DLM policy. Verify its source, encryption,
@@ -43,6 +45,11 @@ Do not print the Tailscale secret or dump the process environment.
    status, Tailscale identity, and Codex executable.
 9. Recreate the EC2-to-GitHub deploy key and reauthenticate Codex if the root
    volume was replaced.
+10. Verify the automatically installed `host_policy_revision` using
+    [Manage the reviewed host policy](./manage-host-agents.md). Recheck the actual
+    remote profile and verify guidance in a fresh task before normal feature
+    work. Older bootstrap versions require manual installation from a reviewed
+    revision. Preserve authentication; do not restore the entire Codex home.
 
 Removing `prevent_destroy` from the project volume requires a dedicated pull
 request and explicit data-destruction review.

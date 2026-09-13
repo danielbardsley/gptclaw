@@ -1,10 +1,10 @@
 # TASKS-002: Automated EBS Snapshots
 
-- **Status:** Implementation in progress
+- **Status:** Complete; retention-expiry follow-up recorded
 - **Owner:** Daniel
 - **Specification:** [SPEC-002](./spec.md)
 - **Technical design:** [TDD-002](./technical-design.md)
-- **Last updated:** 2026-09-12
+- **Last updated:** 2026-09-13
 
 ## Working rules
 
@@ -82,18 +82,18 @@ resources.
   inspect the protected remote plan and apply with exact confirmation.
 - [x] **4.2 Operator:** Verify unchanged compute/attachment/key/protection/access,
   enabled policy, matching volume set, and completed permission attachments.
-- [ ] **4.3 Operator:** Observe a naturally scheduled completed snapshot. Record
+- [x] **4.3 Operator:** Observe a naturally scheduled completed snapshot. Record
   source, policy, timestamp, encryption/key, and private permissions.
 - [x] **4.4 Operator:** Record retention expiry or assign Daniel a dated
   follow-up after at least eight daily runs, as allowed by AC-005.
   Daniel: 2026-09-21. Expiry is not yet observed.
-- [ ] **4.5 Operator:** Verify a same-revision/variable pipeline plan reports no
+- [x] **4.5 Operator:** Verify a same-revision/variable pipeline plan reports no
   unexpected changes or drift from service-created snapshots.
-  Post-deployment plan #47 has no changes; repeat after the first scheduled
-  snapshot completes before marking this criterion passed.
-- [ ] **4.6 Repository:** Record each active acceptance criterion with sanitized
+  Plan #47 attempt 2 ran after the completed snapshot at the deployed revision
+  and reported no changes. See [acceptance evidence](./acceptance.md).
+- [x] **4.6 Repository:** Record each active acceptance criterion with sanitized
   evidence and outstanding limitations.
-- [ ] **4.7 Owner/repository:** Mark the feature complete only after all active
+- [x] **4.7 Owner/repository:** Mark the feature complete only after all active
   acceptance criteria pass. Restore remains unproven until RES-002.
 
 **Gate:** Automated snapshots accepted; no notification or freshness checks are

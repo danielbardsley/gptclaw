@@ -1,0 +1,20 @@
+# Mosaic Notes synthetic repository
+
+Owner: Synthetic fixture maintainer. This project holds example documentation
+only; no application, database, credentials, or production data exists.
+Use synthetic content and respect higher-priority instructions and permissions.
+Guidance grants no new authority. Preserve unrelated work and existing approval.
+
+Before working in a subtree, inspect applicable ancestor-to-target guidance,
+including overrides and deeper files. Repeat for each target area. Apply local
+rules only to their files; a directory change does not reload startup guidance.
+Report unresolved conflicts and continue unaffected work.
+
+The default documentation convention is sentence case. UI and backend rules
+are distinct; deeper backend guidance may explicitly specialize entity wording.
+Every external-facing report must include its scope. Local files may not waive
+this shared requirement without owner resolution of the conflict.
+
+Review Markdown and relative links per [the fixture guide](README.md). There is
+no application startup/build or stack test. Follow that guide for reviewed Git
+updates and rollback; verify restored guidance in fresh tasks.

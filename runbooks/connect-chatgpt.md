@@ -107,7 +107,15 @@ desktop. Copying `auth.json` is not the normal fallback. If Codex uses file-base
 credential storage, keep `~/.codex` mode `0700` and credential files mode
 `0600`.
 
-## 5. Add the remote project in ChatGPT
+## 5. Install and verify the reviewed host policy
+
+Follow [Manage the reviewed host policy](./manage-host-agents.md) as `forge`.
+Confirm the actual remote profile and run read-only verification of the
+automatically installed pinned revision. On an older host without bootstrap
+policy installation, install from the reviewed immutable commit first. Preserve authentication and any existing
+unmanaged policy or override. Installation alone does not prove task loading.
+
+## 6. Add the remote project in ChatGPT
 
 1. Open **Settings -> Connections -> SSH**.
 2. Add or enable the discovered `forge-dev` alias.
@@ -116,6 +124,10 @@ credential storage, keep `~/.codex` mode `0700` and credential files mode
    and current UTC timestamp.
 5. Run `hostname` and `date -u`, review the Git diff, remove the file, and
    confirm the repository is clean.
+
+6. Before normal feature work, use fresh tasks in GptClaw and the runbook's
+   independent scratch project to verify host-policy loading and safe behavior.
+   Record the active revision and results; keep existing tasks running.
 
 The desktop app starts and manages the remote Codex app server through SSH. Do
 not expose an app-server listener on a public or shared network.

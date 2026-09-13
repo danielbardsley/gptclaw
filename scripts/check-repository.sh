@@ -71,4 +71,24 @@ if ! grep -Eq '^[[:space:]]*tags[[:space:]]*=[[:space:]]*local\.common_tags' inf
   status=1
 fi
 
+if ! ./scripts/install-host-agents.sh validate-source; then
+  status=1
+fi
+
+if ! ./scripts/tests/install-host-agents.sh; then
+  status=1
+fi
+
+if ! python3 ./scripts/tests/test_host_policy_bootstrap.py; then
+  status=1
+fi
+
+if ! python3 ./scripts/tests/test_repository_agents.py; then
+  status=1
+fi
+
+if ! python3 -B ./scripts/tests/test_nested_agents.py; then
+  status=1
+fi
+
 exit "$status"

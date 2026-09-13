@@ -45,4 +45,22 @@ docs/
 - **002 - Automated EBS snapshots (RES-001):**
   [Specification](./002-automated-ebs-snapshots/spec.md) ·
   [Technical design](./002-automated-ebs-snapshots/technical-design.md) ·
-  [Tasks](./002-automated-ebs-snapshots/tasks.md)
+  [Tasks](./002-automated-ebs-snapshots/tasks.md) ·
+  [Acceptance](./002-automated-ebs-snapshots/acceptance.md)
+
+- **003 - Reviewed host AGENTS.md (AGT-001):**
+  [Specification](./003-reviewed-host-agents/spec.md) ·
+  [Technical design](./003-reviewed-host-agents/technical-design.md) ·
+  [Tasks](./003-reviewed-host-agents/tasks.md)
+
+- **004 - Repository AGENTS.md template (AGT-002):**
+  [Specification](./004-repository-agents-template/spec.md) ·
+  [Technical design](./004-repository-agents-template/technical-design.md) ·
+  [Tasks](./004-repository-agents-template/tasks.md) ·
+  [Acceptance status](./004-repository-agents-template/acceptance.md)
+
+- **005 - Nested guidance pattern (AGT-003):**
+  [Specification](./005-nested-guidance-pattern/spec.md) ·
+  [Technical design](./005-nested-guidance-pattern/technical-design.md) ·
+  [Tasks](./005-nested-guidance-pattern/tasks.md) ·
+  [Acceptance status](./005-nested-guidance-pattern/acceptance.md)

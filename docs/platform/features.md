@@ -1,7 +1,7 @@
 # GptClaw Platform Feature Catalogue
 
 - **Status:** Directional backlog; not a specification
-- **Last updated:** 2026-09-12
+- **Last updated:** 2026-09-13
 - **Architecture:** [GptClaw platform architecture](./architecture.md)
 
 ## 1. How to use this catalogue
@@ -18,6 +18,12 @@ When the owner selects a feature or coherent feature slice:
 4. Review consistency with the platform architecture and prior accepted work.
 5. Implement only after the owner approves the specification.
 6. Add `acceptance.md` when the feature is verified.
+7. Whenever a feature's PR has merged and the feature is complete, update this
+   catalogue as part of completion: mark it Delivered, link its specification,
+   merged PR, and acceptance evidence, and update the catalogue date. Do this
+   without waiting for a separate reminder. If implementation is merged but
+   acceptance is still pending, record the actual status and remaining checks;
+   merging a PR alone does not establish completion.
 
 Feature IDs remain stable even if names, grouping, or delivery order changes.
 
@@ -26,7 +32,7 @@ Feature IDs remain stable even if names, grouping, or delivery order changes.
 | Status | Meaning |
 |---|---|
 | Delivered | Implemented and accepted by a numbered specification. |
-| Deployed | Deployed to the target environment; final acceptance evidence is still pending. |
+| Deployed | Installed in the target environment; final acceptance is still pending. |
 | Candidate | Intended direction but not yet specified. |
 | Draft | Selected for a numbered specification under review; not approved for implementation. |
 | Planned | Specification approved; design/tasks under review or awaiting implementation authorization. |
@@ -50,7 +56,7 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| RES-001 | Automated EBS snapshots | 1 | Deployed | DLM enabled for the project volume on 2026-09-12: daily at 03:00 UTC, retaining seven snapshots. Silent DLM failures are accepted; no monitoring or notifications. Acceptance pending verification of a naturally scheduled completed snapshot and a subsequent protected no-change plan. Daniel owns retention-expiry verification on 2026-09-21. [SPEC-002](../002-automated-ebs-snapshots/spec.md); [deployment evidence and remaining acceptance](../002-automated-ebs-snapshots/implementation.md). |
+| RES-001 | Automated EBS snapshots | 1 | Delivered | Daily 03:00 UTC DLM snapshots retaining seven; first natural snapshot completed and post-snapshot plan had no changes on 2026-09-13. Silent failures accepted; no monitoring or notifications. Daniel owns permitted retention-expiry follow-up on 2026-09-21; restore remains RES-002. [SPEC-002](../002-automated-ebs-snapshots/spec.md); [merged PR #4](https://github.com/danielbardsley/gptclaw/pull/4); [acceptance](../002-automated-ebs-snapshots/acceptance.md). |
 | RES-002 | Restore drill | 1 | Candidate | Periodically prove that a recent recovery point can create an inspectable replacement volume without risking the live volume. |
 | RES-003 | Backup freshness indicator | 2 | Candidate | Dashboard shows last successful recovery point, age, retention class, and restore-test result. |
 | RES-004 | Host replacement rehearsal | 3 | Candidate | Exercise compute replacement, Tailscale re-enrollment, Git credential recreation, and Codex reauthentication. |
@@ -62,9 +68,9 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| AGT-001 | Reviewed host `AGENTS.md` | 2 | Candidate | Every remote task inherits security boundaries, delivery workflow, evidence standards, and AWS mutation rules. |
-| AGT-002 | Repository `AGENTS.md` template | 2 | Candidate | Every project declares stack commands, quality gates, layout, data rules, and product-specific constraints. |
-| AGT-003 | Nested guidance pattern | 3 | Candidate | Infrastructure, mobile, backend, migrations, and UI areas can add focused instructions without bloating root guidance. |
+| AGT-001 | Reviewed host `AGENTS.md` | 2 | Deployed | Policy and installer merged in [PR #6](https://github.com/danielbardsley/gptclaw/pull/6); approved policy installed and verified on the existing host on 2026-09-12. Automatic first-boot integration merged in [PR #7](https://github.com/danielbardsley/gptclaw/pull/7), but has not been applied to a new instance. Fresh-task loading, live rollback verification, and new-host acceptance remain pending. [SPEC-003](../003-reviewed-host-agents/spec.md) · [Acceptance evidence](../003-reviewed-host-agents/acceptance.md). |
+| AGT-002 | Repository `AGENTS.md` template | 2 | Planned | [SPEC-004](../004-repository-agents-template/spec.md) implemented and merged in [PR #9](https://github.com/danielbardsley/gptclaw/pull/9) on 2026-09-12. Template, GptClaw guidance, offline checks, and rollback rehearsal are complete; CI and fresh-task remote acceptance remain pending. [Acceptance evidence](../004-repository-agents-template/acceptance.md). |
+| AGT-003 | Nested guidance pattern | 3 | Planned | [SPEC-005](../005-nested-guidance-pattern/spec.md) approved and implementation authorized on 2026-09-13. Template, five inert examples, infrastructure adoption, and offline checks merged in [PR #11](https://github.com/danielbardsley/gptclaw/pull/11) on 2026-09-13. PR CI run #56 passed; fresh-task remote acceptance remains pending. [Acceptance evidence](../005-nested-guidance-pattern/acceptance.md). |
 | AGT-004 | Specification skill | 2 | Candidate | Reusable workflow creates consistent spec, technical design, task, and acceptance documents. |
 | AGT-005 | Project bootstrap skill | 2 | Candidate | Agent can safely create a project from an approved template and verify the result. |
 | AGT-006 | Runtime-operation skill | 3 | Candidate | Agent uses typed project lifecycle commands rather than improvised process management. |

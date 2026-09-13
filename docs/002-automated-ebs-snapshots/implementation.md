@@ -1,7 +1,7 @@
 # RES-001 implementation record
 
-- **Status:** Deployed; naturally scheduled snapshot acceptance pending
-- **Updated:** 2026-09-12
+- **Status:** Accepted; retention-expiry follow-up recorded
+- **Updated:** 2026-09-13
 - **Specification:** [SPEC-002](./spec.md)
 - **Tasks:** [TASKS-002](./tasks.md)
 
@@ -28,7 +28,12 @@ The implementation in [PR #4](https://github.com/danielbardsley/gptclaw/pull/4)
 was merged at `ca4305966500e9824ae8f6305594f10d046ce515` after prerequisite
 deployment, credential cleanup, and a no-change OIDC plan.
 
-## Deployment and remaining acceptance
+## Deployment and acceptance history
+
+[ACCEPTANCE-002](./acceptance.md) closes the pending checks described below:
+natural snapshot `snap-01b934e8e05f1018b` completed, encryption/privacy verified,
+and post-snapshot plan #47 attempt 2 reported no changes. The historical
+deployment checkpoint below is retained for traceability.
 
 See the [sanitized deployment record](./deployment-attempt-2026-09-12.md) for
 all run links, the owner's explicit one-time credential and tag-update exceptions,
@@ -56,5 +61,5 @@ phase-specific OIDC is verified, including the feature apply identity.
   stop it when acceptance passes. This adds no AWS monitoring or notification
   resources. The computer and desktop app must remain running for local checks.
 
-RES-001 is not yet complete. Create the final acceptance record only after live
-verification. No restore has been performed; that remains RES-002.
+RES-001 is now accepted as recorded in ACCEPTANCE-002. Retention expiry remains
+Daniel's dated follow-up; no restore has been performed, which remains RES-002.

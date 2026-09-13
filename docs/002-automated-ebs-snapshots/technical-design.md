@@ -1,11 +1,11 @@
 # TDD-002: Automated EBS Snapshots
 
-- **Status:** Approved; implementation in progress
+- **Status:** Implemented and accepted; see [ACCEPTANCE-002](./acceptance.md)
 - **Owner:** Daniel
 - **Source:** [SPEC-002](./spec.md)
 - **Implementation tasks:** [TASKS-002](./tasks.md)
 - **Repository:** `danielbardsley/gptclaw`
-- **Last updated:** 2026-09-06
+- **Last updated:** 2026-09-13
 
 ## 1. Purpose and baseline
 

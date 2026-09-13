@@ -1,13 +1,13 @@
 # SPEC-002: Automated EBS Snapshots
 
-- **Status:** Implementation in progress
+- **Status:** Accepted; see [ACCEPTANCE-002](./acceptance.md)
 - **Technical design:** [TDD-002](./technical-design.md)
 - **Implementation tasks:** [TASKS-002](./tasks.md)
 - **Owner:** Daniel
 - **Feature catalogue:** RES-001
 - **Dependency:** [SPEC-001](../001-bootstrap-remote-development-host/spec.md), complete
 - **Architecture:** [Platform architecture](../platform/architecture.md)
-- **Last updated:** 2026-09-06
+- **Last updated:** 2026-09-13
 
 ## 1. Summary
 

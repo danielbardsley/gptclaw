@@ -6,7 +6,10 @@ on:
       - .github/dependabot.yml
       - .github/workflows/terraform-dev-host.yml
       - infra/dev-host/**
-      - scripts/check-repository.sh
+      - scripts/**
+      - config/codex/**
+      - AGENTS.md
+      - templates/agents/**
   push:
     branches:
       - main
@@ -14,7 +17,10 @@ on:
       - .github/dependabot.yml
       - .github/workflows/terraform-dev-host.yml
       - infra/dev-host/**
-      - scripts/check-repository.sh
+      - scripts/**
+      - config/codex/**
+      - AGENTS.md
+      - templates/agents/**
   workflow_dispatch:
     inputs:
       operation:
@@ -52,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the reviewed revision
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -89,7 +95,7 @@ jobs:
     environment: development
     steps:
       - name: Check out the reviewed revision
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -146,7 +152,7 @@ jobs:
     environment: development
     steps:
       - name: Check out the requested revision
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0

@@ -1,5 +1,10 @@
 # RES-001 deployment attempt — 2026-09-12
 
+**2026-09-13 closeout:** The historical pending checks below are now satisfied
+by [ACCEPTANCE-002](./acceptance.md): natural snapshot completed, privacy/key
+verified, and post-snapshot protected plan reported no changes. Retention expiry
+remains the permitted dated follow-up; restore remains unproven.
+
 Status: prerequisite and feature deployed; naturally scheduled snapshot
 acceptance pending. No manual snapshot was created.
 
