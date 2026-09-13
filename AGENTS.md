@@ -56,12 +56,19 @@ directory. Do not install host packages to make checks pass.
 
 For documentation-only edits, use diff and relative-link review; Terraform runs
 are not required. For behavior changes, add meaningful tests and run relevant
-checks; the repository checker already runs all three script test suites.
+checks; the repository checker already runs the script test suites.
 The CI quality job runs broader Terraform checks for its configured paths.
 Report exact outcomes and skipped checks; distinguish local checks, CI, deployed
 behavior, and acceptance. Never claim an unexecuted command passed.
 
 ## Planning and delivery
+
+Before subtree work, inspect ancestor-to-target guidance, including overrides
+and deeper area files. Repeat for cross-area tasks; keep local rules scoped to
+their files. Root starts and shell directory changes do not prove nested loading.
+Follow the [nested pattern](templates/agents/nested/README.md); reconcile shared
+requirements, report unresolved conflicts, and continue unaffected work. Preserve
+unknown guidance and existing authorization.
 
 Find the active initiative in [the documentation index](docs/README.md), then
 read its spec, technical design, and tasks before material implementation.

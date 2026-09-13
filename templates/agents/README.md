@@ -175,3 +175,9 @@ proving that unrelated later documentation and an uncommitted note survive.
 The operator still owns live rollback and fresh-task evidence. See
 [SPEC-004 acceptance](../../docs/004-repository-agents-template/acceptance.md)
 for current status; AGT-001's separate acceptance is not completed by this work.
+
+## Focused area guidance
+
+Use the [nested guidance pattern](nested/README.md) when an existing subtree has
+durable local conventions. It supplies an independent 4 KiB area contract and
+explicit discovery for root-started work; the root contract stays within 8 KiB.

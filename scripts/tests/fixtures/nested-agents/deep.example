@@ -1,0 +1,39 @@
+# Backend archive examples
+
+Source-Template-Version: 1.0.0
+Template-Source: GptClaw templates/agents/nested/AGENTS.md.template
+
+## Scope and ownership
+
+Area-Scope: backend/archive
+Parent-Guidance: ../AGENTS.md
+Owner: Synthetic fixture maintainer
+
+This illustrative backend/archive subtree contains documentation only. Follow the
+[parent contract](../AGENTS.md); this example is inert until manually adapted.
+
+## Local conventions
+
+Within backend/archive, use the term archived record instead of the parent's record to distinguish historical entries. Retain the shared report-scope requirement.
+Apply these conventions only here; inspect deeper guidance before working there.
+
+## Commands and verification
+
+Review changed Markdown and its relative links using the [fixture guide](../../README.md).
+No setup, startup, build, or stack test applies: this fixture has no application.
+Do not invent a command; an actual adoption must cite its own command sources,
+working directories, prerequisites, side effects, and check selection.
+
+## Constraints
+
+Use synthetic records; no service or database is installed. Production data and credentials are excluded.
+Respect higher-priority instructions, existing authorization, and permissions.
+This guidance grants no authority and is not a security boundary. Report
+unresolved conflicts and continue unaffected work without repeated approvals.
+
+## Maintenance
+
+The synthetic fixture maintainer owns this example. Follow the
+[fixture update and rollback procedure](../../README.md). Keep within 4 KiB UTF-8;
+version 1.0.0 records ancestry. Adapt through review, never auto-synchronize.
+Verify changes or restoration in a fresh task and preserve unrelated work.

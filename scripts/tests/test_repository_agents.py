@@ -39,7 +39,8 @@ PLACEHOLDERS = {
 LINK = re.compile(r"\[[^\]\n]+\]\(([^\n)]*)\)")
 
 
-def validate_policy(path, root, *, template=False):
+def validate_policy(path, root, *, template=False, max_bytes=MAX_BYTES,
+                    sections=SECTIONS, placeholder_names=PLACEHOLDERS):
     """Read only the supplied policy; stat local targets without reading them.
 
     All links must use simple inline Markdown, no titles/spaces/parentheses.
@@ -50,9 +51,9 @@ def validate_policy(path, root, *, template=False):
     if not path.resolve().is_relative_to(root):
         raise ValueError("policy is outside repository")
     with path.open("rb") as source:
-        raw = source.read(MAX_BYTES + 1)
-    if not raw or len(raw) > MAX_BYTES:
-        raise ValueError("policy must be nonempty and at most 8192 bytes")
+        raw = source.read(max_bytes + 1)
+    if not raw or len(raw) > max_bytes:
+        raise ValueError(f"policy must be nonempty and at most {max_bytes} bytes")
     try:
         text = raw.decode("utf-8")
     except UnicodeDecodeError as error:
@@ -62,7 +63,7 @@ def validate_policy(path, root, *, template=False):
     # Ignore fenced examples so fake headings inside them cannot satisfy checks.
     prose = re.sub(r"(?ms)^```[^\n]*\n.*?^```\s*$", "", text)
     headings = list(re.finditer(r"(?m)^## (.+)$", prose))
-    for section in SECTIONS:
+    for section in sections:
         matches = [i for i, heading in enumerate(headings) if heading[1] == section]
         if len(matches) != 1:
             raise ValueError(f"expected one section: {section}")
@@ -77,7 +78,7 @@ def validate_policy(path, root, *, template=False):
         raise ValueError("missing template source")
     placeholders = set(re.findall(r"\{\{([A-Z][A-Z0-9_]*)\}\}", text))
     if template:
-        if placeholders != PLACEHOLDERS:
+        if placeholders != placeholder_names:
             raise ValueError("template placeholder contract changed")
         remaining = re.sub(r"\{\{[A-Z][A-Z0-9_]*\}\}", "", text)
     else:
