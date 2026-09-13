@@ -56,7 +56,7 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| RES-001 | Automated EBS snapshots | 1 | Planned | Terraform creates a tagged lifecycle policy for the project volume with retention. Silent DLM failures are accepted; no monitoring or notifications. Implementation in progress: [SPEC-002](../002-automated-ebs-snapshots/spec.md). |
+| RES-001 | Automated EBS snapshots | 1 | Delivered | Daily 03:00 UTC DLM snapshots retaining seven; first natural snapshot completed and post-snapshot plan had no changes on 2026-09-13. Silent failures accepted; no monitoring or notifications. Daniel owns permitted retention-expiry follow-up on 2026-09-21; restore remains RES-002. [SPEC-002](../002-automated-ebs-snapshots/spec.md); [merged PR #4](https://github.com/danielbardsley/gptclaw/pull/4); [acceptance](../002-automated-ebs-snapshots/acceptance.md). |
 | RES-002 | Restore drill | 1 | Candidate | Periodically prove that a recent recovery point can create an inspectable replacement volume without risking the live volume. |
 | RES-003 | Backup freshness indicator | 2 | Candidate | Dashboard shows last successful recovery point, age, retention class, and restore-test result. |
 | RES-004 | Host replacement rehearsal | 3 | Candidate | Exercise compute replacement, Tailscale re-enrollment, Git credential recreation, and Codex reauthentication. |

@@ -45,7 +45,8 @@ docs/
 - **002 - Automated EBS snapshots (RES-001):**
   [Specification](./002-automated-ebs-snapshots/spec.md) ·
   [Technical design](./002-automated-ebs-snapshots/technical-design.md) ·
-  [Tasks](./002-automated-ebs-snapshots/tasks.md)
+  [Tasks](./002-automated-ebs-snapshots/tasks.md) ·
+  [Acceptance](./002-automated-ebs-snapshots/acceptance.md)
 
 - **003 - Reviewed host AGENTS.md (AGT-001):**
   [Specification](./003-reviewed-host-agents/spec.md) ·
