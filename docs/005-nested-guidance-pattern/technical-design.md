@@ -1,6 +1,6 @@
 # TDD-005: Nested Guidance Pattern
 
-- **Status:** Implemented; review and acceptance pending
+- **Status:** Reviewed and merged; remote acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-005](./spec.md)
 - **Implementation tasks:** [TASKS-005](./tasks.md)
@@ -123,4 +123,4 @@ Existing workflow filters already cover every implementation path; the workflow
 was reviewed and left intact. The root pointer is an adoption-only addition; the
 root canonical template and host policy/bootstrap remain unchanged.
 [Acceptance evidence](./acceptance.md) separates local verification from pending
-review, remote behavior, effective remote settings, CI, and merge.
+remote behavior and effective remote settings; successful CI and merge are recorded.

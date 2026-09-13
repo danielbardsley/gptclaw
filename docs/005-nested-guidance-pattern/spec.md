@@ -1,6 +1,6 @@
 # SPEC-005: Nested Guidance Pattern
 
-- **Status:** Approved; implemented, review and acceptance pending
+- **Status:** Approved; implementation merged, remote acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** AGT-003
 - **Technical design:** [TDD-005](./technical-design.md)
@@ -19,8 +19,8 @@ with details that only apply to one part of a project.
 The first adoption is `infra/dev-host/AGENTS.md` in GptClaw. Other
 areas are demonstrated with inert examples and synthetic fixtures, not new
 application stacks. Daniel approved this specification and authorized
-implementation on 2026-09-13. Review of the resulting policy and fresh-task
-acceptance remain separate gates; see [acceptance](./acceptance.md).
+implementation on 2026-09-13. Daniel authorized merge of the resulting policy on 2026-09-13; fresh-task
+acceptance remains pending. See [acceptance](./acceptance.md).
 
 ## 2. Scope and dependencies
 
@@ -181,7 +181,7 @@ Implementation delivers the reusable pattern and examples, one active area
 policy, the root pointer, focused checks/fixtures, and `acceptance.md` beside these
 planning documents. Daniel authorized the scope, budgets, first adoption, and
 acceptance expectations on 2026-09-13. No repeat implementation approval is
-required. Resulting-policy review, merge, and remote acceptance remain pending.
+required. PR #11 is merged with passing CI; remote acceptance remains pending.
 
 Mark AGT-003 Delivered only after the implementation PR is merged and all eight
 acceptance criteria pass. This proves one real adoption and reusable examples;
