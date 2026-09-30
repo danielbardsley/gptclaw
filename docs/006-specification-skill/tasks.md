@@ -1,6 +1,6 @@
 # TASKS-006: Specification Skill
 
-- **Status:** Implemented; review, merge, and supported-client acceptance pending
+- **Status:** Owner reviewed; supported-client acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-006](./spec.md)
 - **Technical design:** [TDD-006](./technical-design.md)
@@ -56,7 +56,7 @@ execution paths stay pending with an owner and next action.
 Depends on phase 2; a PR may be opened earlier for review.
 
 - [x] **3.1** Publish implementation PR and record actual CI results.
-- [ ] **3.2 Owner:** Review and authorize merge of the resulting skill revision.
+- [x] **3.2 Owner:** Review and authorize merge of the resulting skill revision.
 - [ ] **3.3** Record merged revision and remaining acceptance; mark AGT-004
   Delivered only after all criteria pass. Keep prior initiatives' status intact.
 - [x] **3.4** Hand over changed files, verification, limitations, remaining
@@ -68,5 +68,6 @@ The repository skill, four outlines, package tests, synthetic scenarios, and CI
 path coverage are implemented in PR #16. All 51 repository tests and the bundled
 skill validator pass. CI run #61 passed for package revision 1d85796; five
 synthetic behavioral scenarios passed after review. Supported-client limitations are
-tracked in [acceptance](./acceptance.md). No global skill installation, deployment,
-or merge has been performed.
+tracked in [acceptance](./acceptance.md). Daniel accepted the implementation and
+authorized merge; PR #16 is the authoritative merge record. No global skill
+installation or deployment was performed.

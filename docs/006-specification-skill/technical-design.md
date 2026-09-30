@@ -1,6 +1,6 @@
 # TDD-006: Specification Skill
 
-- **Status:** Implemented; review and supported-client acceptance pending
+- **Status:** Owner reviewed; supported-client acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-006](./spec.md)
 - **Tasks:** [TASKS-006](./tasks.md)

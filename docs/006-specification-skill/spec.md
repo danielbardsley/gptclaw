@@ -1,6 +1,6 @@
 # SPEC-006: Specification Skill
 
-- **Status:** Approved; implementation in review, acceptance pending
+- **Status:** Owner reviewed; supported-client acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** AGT-004
 - **Technical design:** [TDD-006](./technical-design.md)
@@ -17,8 +17,8 @@ repeated explanation of GptClaw's planning conventions while preserving the
 owner's scope, existing decisions, and approval history.
 
 Daniel selected AGT-004 and approved this specification on 2026-09-30, explicitly
-authorizing implementation. Resulting-change review, merge, and supported-client
-acceptance remain separate. See [acceptance](./acceptance.md).
+authorizing implementation. Daniel subsequently accepted the implementation and authorized merge.
+Supported-client acceptance remains separately tracked. See [acceptance](./acceptance.md).
 
 ## 2. Scope and dependencies
 

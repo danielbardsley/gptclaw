@@ -1,6 +1,6 @@
 # SPEC-006 acceptance evidence
 
-- **Status:** Implemented; review, merge, and supported-client acceptance pending
+- **Status:** Owner reviewed; supported-client acceptance pending
 - **Owner:** Daniel
 - **Evidence date:** 2026-09-30
 - **Specification:** [SPEC-006](./spec.md)
@@ -10,7 +10,8 @@
 - **Tested package revision:** `1d857964f8c6a4834b3418e3e34a71eba57d0c25`
 
 Daniel approved the specification and explicitly authorized implementation in
-this chat on 2026-09-30. Merge has not been authorized or performed. The package
+this chat on 2026-09-30. Daniel subsequently accepted the implementation and
+explicitly authorized merging PR #16. The package
 is repository-scoped; no global installation, settings change, or deployment
 was made.
 
@@ -18,13 +19,13 @@ was made.
 
 | Criterion | State and evidence | Remaining action/owner |
 |---|---|---|
-| AC-001 | Local pass: skill and four outlines reviewed against SPS-001–005; bundled validator and 51 repository tests pass. | Daniel reviews resulting revision; CI tracked below. |
+| AC-001 | Local pass: skill and four outlines reviewed against SPS-001–005; bundled validator and 51 repository tests pass. | Daniel approved the resulting implementation; CI tracked below. |
 | AC-002 | Passed in explicit-loading synthetic evaluation: unused initiative 005, linked plans and index/catalogue updates, original source preserved. | Supported-client discovery remains AC-006. |
 | AC-003 | Passed after evaluator review: spelling-only diff retained IDs, approvals, completed tasks and dirty README; extension remained proposed. | Supported-client discovery remains AC-006. |
 | AC-004 | Passed in synthetic evaluation: format/destination question recorded alongside independent drafting; prior authorization recorded without implementation or repeat approval. | Supported-client discovery remains AC-006. |
 | AC-005 | Passed after review correction: supplied pass/fail/pending results attributed, merge unverified, catalogue Planned and final acceptance pending. | No live acceptance inferred from synthetic reports. |
-| AC-006 | Pending: this chat explicitly inspected the skill, not automatic discovery in a fresh supported-client session. | Daniel runs explicit, implicit, and unrelated-request scenarios through the supported connection. |
-| AC-007 | Partial: criterion mapping, provenance, and maintenance procedure recorded; PR open. | Daniel reviews/authorizes merge; record merge and complete remaining acceptance before Delivered. |
+| AC-006 | Partial: the app supplied the repository skill in its updated skill inventory; fresh-session explicit/implicit/unrelated-request scenarios remain unrun. | Daniel runs explicit, implicit, and unrelated-request scenarios through the supported connection. |
+| AC-007 | Partial: criterion mapping, provenance, and maintenance procedure recorded; PR open. | Merge authorized; PR #16 records merge outcome. Complete remaining client checks before Delivered. |
 
 ## Local checks
 
@@ -98,9 +99,16 @@ Earlier AGT-001–003 acceptance remains unchanged.
 passed for `1d85796`. Repository invariants/tests, Terraform formatting,
 backend-free initialization, validation, and tests all passed. Protected plan
 and apply were skipped. No deployment was dispatched.
-AGT-004 remains Planned until review, merge, and all required acceptance pass.
+AGT-004 remains Planned while required supported-client acceptance is pending.
 
 [Run #62](https://github.com/danielbardsley/gptclaw/actions/runs/36785467783)
 also passed the full quality job at documentation revision `6ed52fc`; protected
 plan/apply were skipped. The subsequent documentation-only correction checks
 the already-approved phase-0 task and records this CI result.
+
+[Run #63](https://github.com/danielbardsley/gptclaw/actions/runs/36785563365)
+passed at `810302a`. Daniel accepted the implementation and authorized merge
+after this revision. The app subsequently advertised `gptclaw-specification`
+from the repository in its skill inventory. This is observed discovery, not
+proof of the complete fresh-session behavior matrix. No unrun check is marked
+passed based on owner acceptance.
