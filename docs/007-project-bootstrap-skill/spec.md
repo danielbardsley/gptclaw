@@ -1,6 +1,6 @@
 # SPEC-007: Project Bootstrap Skill
 
-- **Status:** Approved; implementation in review, acceptance pending
+- **Status:** Merged and available; supported-client acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** AGT-005
 - **Design:** [TDD-007](./technical-design.md)

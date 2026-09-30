@@ -1,6 +1,6 @@
 # TDD-007: Project Bootstrap Skill
 
-- **Status:** Implemented; review and acceptance pending
+- **Status:** Merged and available; supported-client acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-007](./spec.md)
 - **Tasks:** [TASKS-007](./tasks.md)

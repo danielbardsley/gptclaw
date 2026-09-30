@@ -1,6 +1,6 @@
 # TASKS-007: Project Bootstrap Skill
 
-- **Status:** Implemented; review, merge, and supported-client acceptance pending
+- **Status:** Merged and available; supported-client acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-007](./spec.md)
 - **Design:** [TDD-007](./technical-design.md)
@@ -60,9 +60,9 @@ acceptance are distinct. No unexecuted operation is recorded as passing.
 
 ## 4. Delivery
 
-- [ ] **4.1** Publish implementation PR, record CI, and obtain resulting-change
+- [x] **4.1** Publish implementation PR, record CI, and obtain resulting-change
   review/merge authorization. Record the actual merge revision.
-- [ ] **4.2** Update catalogue and handover after merge: Deployed when available,
+- [x] **4.2** Update catalogue and handover after merge: Deployed when available,
   Delivered only after required acceptance. State remaining owners/actions and
   Git status; do not close earlier initiatives without their own evidence.
 
@@ -72,5 +72,5 @@ The skill, starter, bounded helper, 28 focused tests, and CI path coverage are
 implemented. Independent synthetic bootstrap/first-feature evaluation passed; all 79 local
 repository tests and CI run #67 passed. Evidence is recorded in
 [acceptance](./acceptance.md). Supported-client discovery
-and merge remain separate; no real project, remote repository, or runtime is
+remains pending; PR #18 merged as `947a78f` on 2026-09-30; no real project, remote repository, or runtime is
 created as part of implementation.

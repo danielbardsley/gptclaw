@@ -1,6 +1,6 @@
 # SPEC-007 acceptance evidence
 
-- **Status:** Implemented; review, merge, and supported-client acceptance pending
+- **Status:** Merged and available; supported-client acceptance pending
 - **Owner:** Daniel
 - **Evidence date:** 2026-09-30
 - **Specification:** [SPEC-007](./spec.md)
@@ -11,8 +11,9 @@
 - **Starter/skill behavioral candidate:** `11195ea1cb7f1627bb30c89d81f144863a1eda3c`
 
 Daniel approved the latest specification and authorized implementation on
-2026-09-30. No merge, global installation, real project creation, or deployment
-is claimed. All generated projects below are task-owned synthetic fixtures.
+2026-09-30. Daniel approved the resulting implementation and authorized merge; PR #18
+merged as recorded below. No global installation, real project creation, or
+deployment is claimed. All generated projects below are task-owned synthetic fixtures.
 The copied skill and starter are unchanged between the behavioral candidate and
 final helper revision; later changes add race tests and anchor staging.
 
@@ -20,12 +21,12 @@ final helper revision; later changes add race tests and anchor staging.
 
 | Criterion | Actual state and evidence | Remaining action/owner |
 |---|---|---|
-| AC-001 | Local pass: starter review and independent explicit bootstrap created the declared files with resolved six-section project guidance and planning-only claims. | Daniel reviews resulting implementation. |
+| AC-001 | Local pass: starter review and independent explicit bootstrap created the declared files with resolved six-section project guidance and planning-only claims. | Daniel approved the resulting implementation. |
 | AC-002 | Passed locally: 28 focused tests cover creation, empty directories, retries, modified/occupied outputs, source and path validation, publication races and failure preservation. | No destructive live test required. |
 | AC-003 | Passed locally: exact source allowlist, hashes, copied skill assets, no copied auth/settings/unknown skills, output links and Git boundary verified. | Supported-client evidence remains AC-005. |
 | AC-004 | Passed in task-scoped independent evaluation: first-feature plans produced from the generated project only; parent reviewed outputs, scope, links and preservation. | Fresh supported-client behavior remains AC-005. |
 | AC-005 | Pending: explicit-loading evaluations are not fresh supported-client discovery/selection. | Daniel exercises explicit and implicit planning in separate supported-client contexts. |
-| AC-006 | Partial: local checks pass, evidence and procedures recorded; CI below. | Review, merge, and record actual merged revision; keep catalogue status honest. |
+| AC-006 | Partial: local checks pass, evidence and procedures recorded; CI below. | Merge recorded below; complete AC-005 before Delivered. |
 
 ## Verification
 
@@ -91,8 +92,8 @@ No request to create a project is inferred from implementation authorization.
 
 [Run #66](https://github.com/danielbardsley/gptclaw/actions/runs/36788883197)
 passed for `896b35d`, before the final parent-directory staging fix. Final-helper
-CI passed as recorded below. AGT-005 remains Planned pending
-review/merge and final acceptance; prior initiatives are not marked complete.
+CI passed as recorded below. AGT-005 is Deployed following merge; final supported-client acceptance remains
+pending. Prior initiatives are not marked complete.
 
 
 ## Completed handoff and final CI
@@ -122,9 +123,21 @@ evaluation directory after recording and checking this evidence.
 passed at final helper revision `7632508`. Repository checks, Terraform format,
 backend-free initialization, validation, and tests passed. Protected plan/apply
 were skipped. The final documentation-only evidence commit is separate from
-this implementation-revision CI result. No merge or deployment was performed.
+this implementation-revision CI result. No deployment was performed; subsequent merge is recorded below.
 
 Documentation link review passed 53 relative file links across seven skill/
 planning/index/catalogue documents; template output links are additionally
 validated by the helper and its isolated tests. External URLs and heading-anchor
 semantics are outside the local file-link check.
+
+## Merge closeout
+
+Daniel approved and authorized merge of PR #18 on 2026-09-30. GitHub confirmed
+merge commit `947a78fa4522e521a75ea7209e92c727aa39cc84`.
+[Run #68](https://github.com/danielbardsley/gptclaw/actions/runs/36789402449)
+passed for final PR head `c8a2964c358fa3b965ba6a342e51139a65ca988f`.
+This is PR CI evidence, not a claim about post-merge CI. The app now advertises
+`gptclaw-project-bootstrap` from the repository in its skill inventory. That
+observation does not complete AC-005, which concerns discovery and use of the
+copied specification skill in fresh generated-project contexts. Daniel owns
+those remaining checks. The catalogue records Deployed, not Delivered.
