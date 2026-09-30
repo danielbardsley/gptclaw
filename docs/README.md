@@ -86,7 +86,8 @@ docs/
 - **009 - Release and production-promotion skill (AGT-007):**
   [Specification](./009-release-promotion-skill/spec.md) ·
   [Technical design](./009-release-promotion-skill/technical-design.md) ·
-  [Tasks](./009-release-promotion-skill/tasks.md)
+  [Tasks](./009-release-promotion-skill/tasks.md) ·
+  [Acceptance](./009-release-promotion-skill/acceptance.md)
 
 - **010 - Session handover generator (AGT-008):**
   [Specification](./010-session-handover-generator/spec.md) ·

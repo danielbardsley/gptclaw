@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGES = {
+    'gptclaw-release-promotion': {'references/release-contract.md', 'assets/release-record.md'},
     'gptclaw-runtime-operation': {'references/operations.md', 'assets/operation-report.md'},
 }
 
