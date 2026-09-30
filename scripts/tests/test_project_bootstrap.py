@@ -169,7 +169,7 @@ class BootstrapTests(unittest.TestCase):
         self.create()
         self.assertNotIn('unreviewed dirt', (self.dest / b.SKILL / 'SKILL.md').read_text())
 
-    def test_source_missing_or_extra_skill_asset_refused(self):
+    def test_source_extra_skill_asset_refused(self):
         (self.source / b.SKILL / 'extra.md').write_text('not allowlisted')
         b.git(self.source, 'add', '.')
         b.git(self.source, '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
@@ -270,6 +270,39 @@ class BootstrapTests(unittest.TestCase):
             self.create()
         self.assertEqual((self.dest / 'README.md').read_text(), 'concurrent owner content')
         self.assertTrue((self.dest / b.MARKER).exists())
+
+    def test_root_replaced_after_reservation_preserved(self):
+        other = self.root / 'other'
+        other.mkdir()
+        (other / 'keep').write_text('unrelated')
+        original_copy = b.copy_exclusive
+        def racing_copy(stage, target_fd, check):
+            self.dest.rename(self.root / 'reserved-project')
+            self.dest.symlink_to(other, target_is_directory=True)
+            return original_copy(stage, target_fd, check)
+        with patch.object(b, 'copy_exclusive', racing_copy), self.assertRaises(b.BootstrapError):
+            self.create()
+        self.assertEqual([p.name for p in other.iterdir()], ['keep'])
+        self.assertEqual((other / 'keep').read_text(), 'unrelated')
+        self.assertTrue((self.root / 'reserved-project' / b.MARKER).exists())
+
+    def test_retry_rejects_output_symlink_without_reading_target(self):
+        self.create()
+        target = self.dest / 'README.md'
+        target.unlink()
+        target.symlink_to(self.root / 'nonexistent-private-file')
+        with self.assertRaises(b.BootstrapError):
+            self.create()
+        self.assertTrue(target.is_symlink())
+
+    def test_source_missing_asset_refused(self):
+        (self.source / b.SKILL / 'assets/tasks.md').unlink()
+        b.git(self.source, 'add', '.')
+        b.git(self.source, '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+              'commit', '--quiet', '-m', 'missing')
+        revision = b.git(self.source, 'rev-parse', 'HEAD').stdout.decode().strip()
+        with self.assertRaises(b.BootstrapError):
+            b.load_payload(self.source, revision, b.metadata('Name', 'Purpose', 'Owner'))
 
     def test_global_git_templates_not_copied(self):
         templates = self.root / 'evil-template'
