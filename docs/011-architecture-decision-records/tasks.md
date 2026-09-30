@@ -1,6 +1,6 @@
 # TASKS-011: Architecture Decision Records
 
-- **Status:** Draft; implementation not authorized
+- **Status:** Implementation authorized; work in progress
 - **Owner:** Daniel
 - **Specification:** [SPEC-011](./spec.md)
 - **Design:** [TDD-011](./technical-design.md)

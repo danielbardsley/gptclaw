@@ -1,6 +1,6 @@
 # TASKS-009: Release and Production-promotion Skill
 
-- **Status:** Draft; implementation not authorized
+- **Status:** Implementation authorized; work in progress
 - **Owner:** Daniel
 - **Specification:** [SPEC-009](./spec.md)
 - **Design:** [TDD-009](./technical-design.md)

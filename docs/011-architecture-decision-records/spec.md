@@ -1,12 +1,16 @@
 # SPEC-011: Architecture Decision Records
 
-- **Status:** Draft; approval and implementation authorization pending
+- **Status:** Approved for implementation; acceptance pending
 - **Owner:** Daniel
 - **Feature:** AGT-009
 - **Design:** [TDD-011](./technical-design.md)
 - **Tasks:** [TASKS-011](./tasks.md)
 - **Architecture:** [Platform architecture](../platform/architecture.md), section 8.3
 - **Last updated:** 2026-09-30
+
+Daniel approved these specifications and authorized sequential implementation in
+one feature branch on 2026-09-30. This does not authorize runtime operations,
+product releases, or acceptance of the unwritten pilot ADR.
 
 ## Outcome
 

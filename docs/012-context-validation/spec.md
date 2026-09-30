@@ -1,12 +1,16 @@
 # SPEC-012: Context Validation
 
-- **Status:** Draft; approval and implementation authorization pending
+- **Status:** Approved for implementation; acceptance pending
 - **Owner:** Daniel
 - **Feature:** AGT-010
 - **Design:** [TDD-012](./technical-design.md)
 - **Tasks:** [TASKS-012](./tasks.md)
 - **Architecture:** [Platform architecture](../platform/architecture.md), sections 8–9
 - **Last updated:** 2026-09-30
+
+Daniel approved these specifications and authorized sequential implementation in
+one feature branch on 2026-09-30. This does not authorize runtime operations,
+product releases, or acceptance of the unwritten pilot ADR.
 
 ## Outcome
 

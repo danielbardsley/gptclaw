@@ -1,6 +1,6 @@
 # TASKS-010: Session Handover Generator
 
-- **Status:** Draft; implementation not authorized
+- **Status:** Implementation authorized; work in progress
 - **Owner:** Daniel
 - **Specification:** [SPEC-010](./spec.md)
 - **Design:** [TDD-010](./technical-design.md)

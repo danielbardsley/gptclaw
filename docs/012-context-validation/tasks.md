@@ -1,6 +1,6 @@
 # TASKS-012: Context Validation
 
-- **Status:** Draft; implementation not authorized
+- **Status:** Implementation authorized; work in progress
 - **Owner:** Daniel
 - **Specification:** [SPEC-012](./spec.md)
 - **Design:** [TDD-012](./technical-design.md)

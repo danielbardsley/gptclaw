@@ -1,6 +1,6 @@
 # TDD-008: Runtime-operation Skill
 
-- **Status:** Draft
+- **Status:** Approved for implementation
 - **Owner:** Daniel
 - **Specification:** [SPEC-008](./spec.md)
 - **Tasks:** [TASKS-008](./tasks.md)

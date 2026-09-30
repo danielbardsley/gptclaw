@@ -80,7 +80,8 @@ docs/
 - **008 - Runtime-operation skill (AGT-006):**
   [Specification](./008-runtime-operation-skill/spec.md) ·
   [Technical design](./008-runtime-operation-skill/technical-design.md) ·
-  [Tasks](./008-runtime-operation-skill/tasks.md)
+  [Tasks](./008-runtime-operation-skill/tasks.md) ·
+  [Acceptance](./008-runtime-operation-skill/acceptance.md)
 
 - **009 - Release and production-promotion skill (AGT-007):**
   [Specification](./009-release-promotion-skill/spec.md) ·

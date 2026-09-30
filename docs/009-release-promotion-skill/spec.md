@@ -1,12 +1,16 @@
 # SPEC-009: Release and Production-promotion Skill
 
-- **Status:** Draft; approval and implementation authorization pending
+- **Status:** Approved for implementation; acceptance pending
 - **Owner:** Daniel
 - **Feature:** AGT-007
 - **Design:** [TDD-009](./technical-design.md)
 - **Tasks:** [TASKS-009](./tasks.md)
 - **Architecture:** [Platform architecture](../platform/architecture.md), sections 6, 15–17
 - **Last updated:** 2026-09-30
+
+Daniel approved these specifications and authorized sequential implementation in
+one feature branch on 2026-09-30. This does not authorize runtime operations,
+product releases, or acceptance of the unwritten pilot ADR.
 
 ## Outcome
 
