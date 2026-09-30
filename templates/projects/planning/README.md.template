@@ -1,0 +1,20 @@
+# {{PROJECT_NAME}}
+
+{{PROJECT_PURPOSE}}
+
+Owner: {{PROJECT_OWNER}}
+
+This is a planning-ready local repository. Application code, stack/toolchain,
+installation, build, tests, CI, runtime, and deployment are not configured.
+There is no Git remote or initial commit; review generated files before committing.
+
+Start at [the documentation index](docs/README.md) and
+[feature catalogue](docs/platform/features.md). Use the repository's
+[gptclaw-specification skill](.agents/skills/gptclaw-specification/SKILL.md)
+to plan the first selected feature. Open this project in your supported client;
+verify skill discovery there. File presence alone does not prove client loading.
+
+Bootstrap source/version and file hashes are recorded in
+[provenance](docs/bootstrap-provenance.json). The project is self-contained;
+no original checkout is needed for specification writing. Updates are explicit
+reviewed changes preserving local adaptations, never automatic synchronization.

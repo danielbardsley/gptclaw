@@ -70,3 +70,9 @@ docs/
   [Technical design](./006-specification-skill/technical-design.md) ·
   [Tasks](./006-specification-skill/tasks.md) ·
   [Acceptance status](./006-specification-skill/acceptance.md)
+
+- **007 - Project bootstrap skill (AGT-005):**
+  [Specification](./007-project-bootstrap-skill/spec.md) ·
+  [Technical design](./007-project-bootstrap-skill/technical-design.md) ·
+  [Tasks](./007-project-bootstrap-skill/tasks.md) ·
+  [Acceptance status](./007-project-bootstrap-skill/acceptance.md)

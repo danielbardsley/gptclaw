@@ -1,0 +1,13 @@
+.env
+.env.*
+*.pem
+*.key
+auth.json
+*.tfstate
+*.tfstate.*
+*.tfplan
+.terraform/
+__pycache__/
+*.pyc
+node_modules/
+.DS_Store
