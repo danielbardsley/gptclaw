@@ -197,7 +197,7 @@ def verify_output(path, payload, allow_marker=False):
             raise BootstrapError('Modified output: ' + name)
     if not (path / '.git').is_dir():
         raise BootstrapError('Missing local Git directory')
-    if git(path, 'rev-parse', '--show-toplevel').stdout.decode().strip() != str(path):
+    if Path(git(path, 'rev-parse', '--show-toplevel').stdout.decode().strip()).resolve() != path.resolve():
         raise BootstrapError('Unexpected Git boundary')
     if git(path, 'symbolic-ref', 'HEAD').stdout.strip() != b'refs/heads/main':
         raise BootstrapError('Expected local main branch')
@@ -255,7 +255,10 @@ def create(source, revision, destination, name, purpose, owner, check_only=False
         return {'status': 'ready', 'destination': str(path)}
     parent_fd = os.open(path.parent, DIRECTORY_FLAGS)
     try:
-        with tempfile.TemporaryDirectory(prefix='.gptclaw-staging-', dir=path.parent) as scratch:
+        # Anchor staging and cleanup to the already-open parent even if renamed.
+        # A child Git process can resolve this process's fd through Linux procfs.
+        anchored_parent = Path(f'/proc/{os.getpid()}/fd/{parent_fd}')
+        with tempfile.TemporaryDirectory(prefix='.gptclaw-staging-', dir=anchored_parent) as scratch:
             stage = Path(scratch)
             for filename, content in payload.items():
                 output = stage / filename

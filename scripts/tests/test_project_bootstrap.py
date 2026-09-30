@@ -304,6 +304,22 @@ class BootstrapTests(unittest.TestCase):
         with self.assertRaises(b.BootstrapError):
             b.load_payload(self.source, revision, b.metadata('Name', 'Purpose', 'Owner'))
 
+    def test_parent_replaced_before_staging_does_not_redirect_writes(self):
+        parent = self.root / 'publication'
+        parent.mkdir()
+        self.dest = parent / 'sample-project'
+        unrelated = self.root / 'unrelated'
+        unrelated.mkdir()
+        original_temp = tempfile.TemporaryDirectory
+        def racing_temp(*args, **kwargs):
+            parent.rename(self.root / 'original-parent')
+            parent.symlink_to(unrelated, target_is_directory=True)
+            return original_temp(*args, **kwargs)
+        with patch.object(b.tempfile, 'TemporaryDirectory', racing_temp), self.assertRaises(b.BootstrapError):
+            self.create()
+        self.assertEqual(list(unrelated.iterdir()), [])
+        self.assertEqual(list((self.root / 'original-parent').iterdir()), [])
+
     def test_global_git_templates_not_copied(self):
         templates = self.root / 'evil-template'
         templates.mkdir()
