@@ -1,6 +1,6 @@
 # SPEC-006 acceptance evidence
 
-- **Status:** Owner reviewed; supported-client acceptance pending
+- **Status:** Merged and available; supported-client acceptance pending
 - **Owner:** Daniel
 - **Evidence date:** 2026-09-30
 - **Specification:** [SPEC-006](./spec.md)
@@ -25,7 +25,7 @@ was made.
 | AC-004 | Passed in synthetic evaluation: format/destination question recorded alongside independent drafting; prior authorization recorded without implementation or repeat approval. | Supported-client discovery remains AC-006. |
 | AC-005 | Passed after review correction: supplied pass/fail/pending results attributed, merge unverified, catalogue Planned and final acceptance pending. | No live acceptance inferred from synthetic reports. |
 | AC-006 | Partial: the app supplied the repository skill in its updated skill inventory; fresh-session explicit/implicit/unrelated-request scenarios remain unrun. | Daniel runs explicit, implicit, and unrelated-request scenarios through the supported connection. |
-| AC-007 | Partial: criterion mapping, provenance, and maintenance procedure recorded; PR open. | Merge authorized; PR #16 records merge outcome. Complete remaining client checks before Delivered. |
+| AC-007 | Partial: criterion mapping, provenance, and maintenance procedure recorded; PR #16 merged. | Merge recorded below. Complete remaining client checks before Delivered. |
 
 ## Local checks
 
@@ -99,7 +99,8 @@ Earlier AGT-001–003 acceptance remains unchanged.
 passed for `1d85796`. Repository invariants/tests, Terraform formatting,
 backend-free initialization, validation, and tests all passed. Protected plan
 and apply were skipped. No deployment was dispatched.
-AGT-004 remains Planned while required supported-client acceptance is pending.
+AGT-004 is Deployed: available in the repository and observed in the app skill
+inventory. Required fresh-session acceptance remains pending before Delivered.
 
 [Run #62](https://github.com/danielbardsley/gptclaw/actions/runs/36785467783)
 also passed the full quality job at documentation revision `6ed52fc`; protected
@@ -112,3 +113,12 @@ after this revision. The app subsequently advertised `gptclaw-specification`
 from the repository in its skill inventory. This is observed discovery, not
 proof of the complete fresh-session behavior matrix. No unrun check is marked
 passed based on owner acceptance.
+
+## Merge closeout
+
+Daniel authorized merge; PR #16 merged on 2026-09-30 as
+`aed4fe4bb5e4202a1df2e372057699d68fc933c6`.
+[Run #64](https://github.com/danielbardsley/gptclaw/actions/runs/36786055998)
+passed for final PR head `cbe32513d3da267ed438376e2f6953a5e39d183b`.
+The local main checkout was fast-forwarded to the merge with clean Git status.
+This records PR CI, not post-merge CI or completion of unrun client scenarios.

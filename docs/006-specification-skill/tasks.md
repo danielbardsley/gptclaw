@@ -1,6 +1,6 @@
 # TASKS-006: Specification Skill
 
-- **Status:** Owner reviewed; supported-client acceptance pending
+- **Status:** Merged and available; supported-client acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-006](./spec.md)
 - **Technical design:** [TDD-006](./technical-design.md)
@@ -69,5 +69,6 @@ path coverage are implemented in PR #16. All 51 repository tests and the bundled
 skill validator pass. CI run #61 passed for package revision 1d85796; five
 synthetic behavioral scenarios passed after review. Supported-client limitations are
 tracked in [acceptance](./acceptance.md). Daniel accepted the implementation and
-authorized merge; PR #16 is the authoritative merge record. No global skill
+authorized merge; PR #16 merged as `aed4fe4` on 2026-09-30. The catalogue
+records Deployed while fresh-session acceptance remains pending. No global skill
 installation or deployment was performed.
