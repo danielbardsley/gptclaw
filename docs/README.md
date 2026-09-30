@@ -76,3 +76,28 @@ docs/
   [Technical design](./007-project-bootstrap-skill/technical-design.md) ·
   [Tasks](./007-project-bootstrap-skill/tasks.md) ·
   [Acceptance status](./007-project-bootstrap-skill/acceptance.md)
+
+- **008 - Runtime-operation skill (AGT-006):**
+  [Specification](./008-runtime-operation-skill/spec.md) ·
+  [Technical design](./008-runtime-operation-skill/technical-design.md) ·
+  [Tasks](./008-runtime-operation-skill/tasks.md)
+
+- **009 - Release and production-promotion skill (AGT-007):**
+  [Specification](./009-release-promotion-skill/spec.md) ·
+  [Technical design](./009-release-promotion-skill/technical-design.md) ·
+  [Tasks](./009-release-promotion-skill/tasks.md)
+
+- **010 - Session handover generator (AGT-008):**
+  [Specification](./010-session-handover-generator/spec.md) ·
+  [Technical design](./010-session-handover-generator/technical-design.md) ·
+  [Tasks](./010-session-handover-generator/tasks.md)
+
+- **011 - Architecture decision records (AGT-009):**
+  [Specification](./011-architecture-decision-records/spec.md) ·
+  [Technical design](./011-architecture-decision-records/technical-design.md) ·
+  [Tasks](./011-architecture-decision-records/tasks.md)
+
+- **012 - Context validation (AGT-010):**
+  [Specification](./012-context-validation/spec.md) ·
+  [Technical design](./012-context-validation/technical-design.md) ·
+  [Tasks](./012-context-validation/tasks.md)
