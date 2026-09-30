@@ -8,7 +8,7 @@
 
 - [x] **T-001** Review existing project/session evidence conventions and draft
   independent spec/design/tasks with index/catalogue links.
-- [ ] **T-002 Owner/implementation:** After Daniel approves scope and authorizes
+- [x] **T-002 Owner/implementation:** After Daniel approves scope and authorizes
   implementation, write the skill and handover outline (HND-001–004).
 - [ ] **T-003** Create synthetic producer fixtures; evaluate factual state,
   freshness, authorization, read minimization and save collision behavior for
@@ -22,6 +22,6 @@
   remove only owned fixtures. No message or handoff to another real chat is
   implied by testing this feature.
 
-Current handover: planning only. Implementation can proceed independently after
-scope approval; AGT-006/007/009/010 are not required. No snapshot has been saved
-by this specification-drafting task.
+Current handover: scope approved on 2026-09-30; skill/outline and producer fixtures
+implemented. Behavioral producer/consumer evaluation is in progress; client
+selection, final CI and merge remain pending. See [acceptance](acceptance.md).

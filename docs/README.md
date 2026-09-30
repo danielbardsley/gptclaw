@@ -92,7 +92,8 @@ docs/
 - **010 - Session handover generator (AGT-008):**
   [Specification](./010-session-handover-generator/spec.md) ·
   [Technical design](./010-session-handover-generator/technical-design.md) ·
-  [Tasks](./010-session-handover-generator/tasks.md)
+  [Tasks](./010-session-handover-generator/tasks.md) ·
+  [Acceptance](./010-session-handover-generator/acceptance.md)
 
 - **011 - Architecture decision records (AGT-009):**
   [Specification](./011-architecture-decision-records/spec.md) ·
