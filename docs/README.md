@@ -64,3 +64,9 @@ docs/
   [Technical design](./005-nested-guidance-pattern/technical-design.md) ·
   [Tasks](./005-nested-guidance-pattern/tasks.md) ·
   [Acceptance status](./005-nested-guidance-pattern/acceptance.md)
+
+- **006 - Specification skill (AGT-004):**
+  [Specification](./006-specification-skill/spec.md) ·
+  [Technical design](./006-specification-skill/technical-design.md) ·
+  [Tasks](./006-specification-skill/tasks.md) ·
+  [Acceptance status](./006-specification-skill/acceptance.md)
