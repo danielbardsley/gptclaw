@@ -10,6 +10,7 @@ on:
       - config/codex/**
       - AGENTS.md
       - templates/agents/**
+      - templates/projects/**
       - .agents/skills/**
   push:
     branches:
@@ -22,6 +23,7 @@ on:
       - config/codex/**
       - AGENTS.md
       - templates/agents/**
+      - templates/projects/**
       - .agents/skills/**
   workflow_dispatch:
     inputs:

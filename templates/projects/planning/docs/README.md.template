@@ -1,0 +1,15 @@
+# {{PROJECT_NAME}} documentation
+
+Create numbered initiatives as `docs/NNN-kebab-case-name/`, starting at 001.
+Each contains spec.md (outcome/scope/acceptance), technical-design.md (approach
+and verification), and tasks.md (dependencies and progress). Add acceptance.md
+when evidence or acceptance tracking is available. Index initiatives here.
+
+Use the [specification skill](../.agents/skills/gptclaw-specification/SKILL.md)
+with [project guidance](../AGENTS.md). Check both this index and existing
+numbered directories before selecting a new number. Honor existing approvals;
+a selected catalogue feature alone does not authorize implementation.
+
+## Initiatives
+
+None yet. Select the first feature in the [catalogue](platform/features.md).

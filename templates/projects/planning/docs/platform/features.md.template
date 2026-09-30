@@ -1,0 +1,15 @@
+# {{PROJECT_NAME}} feature catalogue
+
+Owner: {{PROJECT_OWNER}}
+
+This catalogue starts empty. Add only this project's requested features.
+Entries describe candidate scope, not implementation authorization.
+
+| ID | Feature | Status | Evidence or next step |
+|---|---|---|---|
+
+Use Candidate for unselected ideas, Draft for plans under review, Planned for
+approved scope, Deployed for available implementation awaiting acceptance, and
+Delivered only after implementation is merged and required acceptance passes.
+Record actual limitations and approvals; do not copy another project's history.
+Update this catalogue as each feature progresses and link its local initiative.
