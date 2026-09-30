@@ -12,7 +12,7 @@
   applicable guidance, skill-authoring guidance, and Git state.
 - [x] **0.2** Draft specification, design, and tasks; link initiative 006 and
   mark AGT-004 Draft in the catalogue.
-- [ ] **0.3 Owner:** Approve concrete scope and authorize implementation.
+- [x] **0.3 Owner:** Approve concrete scope and authorize implementation.
 
 **Gate:** Daniel approved SPEC-006 and explicitly authorized implementation on
 2026-09-30. No repeat implementation approval is required.
