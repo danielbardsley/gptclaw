@@ -1,6 +1,6 @@
 # TDD-006: Specification Skill
 
-- **Status:** Draft; accompanies specification review
+- **Status:** Implemented; review and supported-client acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-006](./spec.md)
 - **Tasks:** [TASKS-006](./tasks.md)
@@ -18,7 +18,7 @@ was consulted on 2026-09-30; actual discovery in the supported connection must
 still be demonstrated during acceptance. No global settings are changed to
 make a discovery check pass.
 
-## 2. Proposed files
+## 2. Implemented files
 
 | Path | Responsibility |
 |---|---|
@@ -33,8 +33,8 @@ make a discovery check pass.
 | `.github/workflows/terraform-dev-host.yml` | Include skill paths in existing quality filters if needed; preserve deployment gates |
 | `docs/006-specification-skill/acceptance.md` | Implementation and behavioral evidence, created during verification |
 
-These are proposed implementation paths, not files created by this planning
-change. Optional UI metadata is unnecessary for the first slice. The repository
+These paths are implemented in PR #16. Optional UI metadata is unnecessary
+for this slice. The repository
 skill remains portable as a directory, but automatic distribution is excluded.
 
 ## 3. Workflow and document contract
@@ -107,3 +107,18 @@ retain previously loaded instructions. No installed global copy needs removal.
 | SPS-004 | Criterion/evidence mapping and honest status transitions | AC-005, AC-007 |
 | SPS-005 | Instruction-only package, version control, targeted revert | AC-001, AC-007 |
 | SPS-006 | Structural checks plus separate behavioral/client evaluation | AC-001–007 |
+
+## 7. Implementation notes
+
+The entrypoint uses only name/description frontmatter, with automatic selection
+left at its default. Package tests intentionally support this two-field,
+single-line metadata format and ordinary package-relative inline file links;
+they are not a general YAML or Markdown parser. Negative cases cover missing
+or duplicate metadata, invalid names, absent/empty/unlinked outlines, broken
+references, and symlink escape. A sentinel checks that document commands are
+not executed. Behavioral inputs and reviewer criteria are separate Markdown
+files in the fixture directory.
+
+Both pull-request and main-push quality filters now include `.agents/skills/**`.
+Existing protected plan/apply conditions are unchanged. The bundled authoring
+validator is an additional local check, not a repository dependency.

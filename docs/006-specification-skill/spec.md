@@ -1,6 +1,6 @@
 # SPEC-006: Specification Skill
 
-- **Status:** Draft; awaiting specification approval and implementation authorization
+- **Status:** Approved; implementation in review, acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** AGT-004
 - **Technical design:** [TDD-006](./technical-design.md)
@@ -16,8 +16,9 @@ maintains those documents and records acceptance from actual evidence. Reduce
 repeated explanation of GptClaw's planning conventions while preserving the
 owner's scope, existing decisions, and approval history.
 
-Daniel selected AGT-004 on 2026-09-30. This draft proposes the concrete scope;
-selection does not yet approve this specification or authorize implementation.
+Daniel selected AGT-004 and approved this specification on 2026-09-30, explicitly
+authorizing implementation. Resulting-change review, merge, and supported-client
+acceptance remain separate. See [acceptance](./acceptance.md).
 
 ## 2. Scope and dependencies
 
@@ -39,9 +40,9 @@ outstanding acceptance remains separate; this initiative does not claim to
 complete it. No future project manifest, platform CLI, or container toolchain
 is a dependency.
 
-## 3. Proposed defaults
+## 3. Approved defaults
 
-| Item | Proposal |
+| Item | Approved default |
 |---|---|
 | Skill name and location | `gptclaw-specification` at `.agents/skills/gptclaw-specification/` |
 | Invocation | Explicit invocation and normal automatic selection for matching planning requests |
@@ -137,4 +138,5 @@ client; record unexercised paths as pending rather than substituting file checks
 
 Implementation is complete only when the reviewed package is merged and all
 acceptance criteria pass. Pending behavioral or client checks remain explicit.
-The present planning PR does not install or activate the proposed skill.
+PR #16 now includes the repository skill. No global skill installation or client
+configuration change is required; actual client discovery remains to be verified.
