@@ -74,4 +74,5 @@ docs/
 - **007 - Project bootstrap skill (AGT-005):**
   [Specification](./007-project-bootstrap-skill/spec.md) ·
   [Technical design](./007-project-bootstrap-skill/technical-design.md) ·
-  [Tasks](./007-project-bootstrap-skill/tasks.md)
+  [Tasks](./007-project-bootstrap-skill/tasks.md) ·
+  [Acceptance status](./007-project-bootstrap-skill/acceptance.md)

@@ -1,6 +1,6 @@
 # SPEC-007: Project Bootstrap Skill
 
-- **Status:** Draft; specification approval and implementation authorization pending
+- **Status:** Approved; implementation in review, acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** AGT-005
 - **Design:** [TDD-007](./technical-design.md)
@@ -16,8 +16,8 @@ specification skill, so subsequent work there can produce consistent plans
 without depending on the original GptClaw checkout.
 
 This first slice prepares a project for planning. It does not promise a running
-application. Daniel requested this specification after accepting AGT-004;
-implementation of AGT-005 is not yet authorized.
+application. Daniel approved this specification and explicitly authorized implementation on
+2026-09-30. Review/merge and supported-client acceptance remain separately tracked.
 
 ## Scope and dependencies
 
@@ -40,9 +40,9 @@ optional placement guidance, but no nested policy is needed for this starter.
 Their remaining acceptance checks stay separate. No container runtime, platform
 CLI, language toolchain, remote credential, or new package is a prerequisite.
 
-## Proposed defaults and decisions
+## Approved defaults and decisions
 
-| Item | Proposal |
+| Item | Approved default |
 |---|---|
 | Bootstrap entrypoint | `.agents/skills/gptclaw-project-bootstrap/SKILL.md` in GptClaw |
 | Launch context | Invoke from GptClaw; do not require a global installation or copy the bootstrap skill into every project |
@@ -54,9 +54,8 @@ CLI, language toolchain, remote credential, or new package is a prerequisite.
 | Initial documents | README, adapted AGENTS.md, .gitignore, docs/README.md, docs/platform/features.md, and bootstrap provenance |
 | First feature | Create plans only if requested with sufficient scope; otherwise hand off a ready planning repository |
 
-These defaults are part of the proposal for Daniel to review. The main scope
-decision is to ship a planning starter now; a runnable stack template remains a
-later feature. No additional blocking product decision is known at drafting.
+The approved scope ships a planning starter now; a runnable stack template
+remains a later feature. See [acceptance](./acceptance.md) for actual evidence.
 
 ## Requirements
 
