@@ -1,42 +1,103 @@
 # GptClaw
 
-GptClaw is a secure remote development platform built around a persistent AWS
-development host and ChatGPT's SSH project connection. Infrastructure changes
-are reviewed in GitHub, executed remotely by HCP Terraform, and never applied
-from a developer workstation.
+GptClaw is Daniel's private-access remote development platform, built around a
+persistent AWS development host and ChatGPT/Codex remote project access. This
+repository owns the infrastructure, reviewed agent guidance, project planning
+and validation tools, and operator runbooks.
 
-The first implementation slice is documented in
-[`docs/001-bootstrap-remote-development-host`](./docs/001-bootstrap-remote-development-host/).
+Infrastructure changes follow committed code → GitHub Actions → HCP Terraform →
+AWS. The development host has no public inbound access; SSH uses Tailscale and
+recovery uses AWS Systems Manager. Project storage is encrypted and retained
+across compute replacement.
 
-The intended platform shape and candidate feature backlog are documented in
-the [platform architecture](./docs/platform/architecture.md) and
-[feature catalogue](./docs/platform/features.md). Catalogue entries are not
-implementation specifications; each selected feature is specified separately.
+## Current state
+
+As of October 1, 2026, the repository has progressed beyond the initial host
+bootstrap. The statuses below distinguish accepted capabilities from merged
+code that still needs deployment or acceptance.
+
+| Capability | Current state and evidence |
+|---|---|
+| Remote development foundation | **Delivered.** EC2 host, persistent project volume, Tailscale-only SSH, SSM recovery, repository-scoped Git access, remote project connection, and HCP AWS workload identity. [SPEC-001 acceptance](docs/001-bootstrap-remote-development-host/acceptance.md). |
+| Automated project-volume backups | **Delivered.** Daily DLM snapshots with seven-snapshot retention; a naturally scheduled snapshot and a subsequent no-change plan were verified. Retention-expiry follow-up remains unrecorded in the acceptance document; restore testing and freshness monitoring are not delivered. [SPEC-002 acceptance](docs/002-automated-ebs-snapshots/acceptance.md). |
+| Agent guidance and workflows | **Deployed, with acceptance remaining.** Reviewed host policy, repository and nested guidance templates, specification and project-bootstrap skills, runtime-operation and release-promotion skills, handovers, decision records, and context validation. Fresh-session, client, or live-workflow checks remain outstanding by initiative. [Initiatives 003–012](docs/README.md). |
+| Project manifest v1 | **Delivered.** A versioned declaration for one private HTTP service, JSON Schema, offline validator, and synthetic example. Validation does not create or run an application. [Reference](docs/project-manifest.md) · [SPEC-013 acceptance](docs/013-versioned-project-manifest/acceptance.md). |
+| Rootless container toolchain | **Merged; deployment and host acceptance pending.** Podman packages, fixed user mappings, storage/network configuration, user persistence, and an acceptance fixture are implemented through bootstrap. [PR #26](https://github.com/danielbardsley/gptclaw/pull/26) · [SPEC-014 evidence](docs/014-rootless-container-toolchain/acceptance.md). |
+| Declared host tool profile | **Merged; deployment and host acceptance pending.** Validated tool/source declarations, bootstrap installation, and version/provenance receipts. Temporary upstream-source exceptions expire November 1, 2026 (America/New_York). [SPEC-015 evidence](docs/015-host-tool-profile/acceptance.md). |
+| Automatic replacement-host Tailscale enrollment | **Merged; external setup, deployment, and acceptance pending.** AWS workload identity replaces per-replacement auth keys after one-time account issuer and tailnet trust setup. [PR #28](https://github.com/danielbardsley/gptclaw/pull/28) · [SPEC-016 evidence](docs/016-tailscale-workload-identity/acceptance.md). |
+
+The selected next product milestone is to create, run, open, and iterate on one
+private application, then prove a second instance can run independently. The
+manifest is complete, but a platform CLI, managed application runtime, application
+templates, and private application routing are still future work. The planning
+bootstrap creates a local planning-ready repository; runtime and promotion skills
+require existing reviewed interfaces and do not supply those systems themselves.
+A dashboard, public-preview manager, and product production pipelines are also
+not yet delivered.
+
+Use the [documentation index](docs/README.md) for specifications, designs, task
+lists, and acceptance records. The [platform architecture](docs/platform/architecture.md)
+and [feature catalogue](docs/platform/features.md) describe direction and future
+scope. Some initiative records retain pre-merge wording; the merged changes above
+do not establish deployment or live acceptance. Catalogue entries alone do not
+authorize implementation.
 
 ## Repository layout
 
 ```text
-.github/        GitHub Actions and dependency automation
-config/codex/   Reviewed host-policy source
-docs/           Specifications, designs, and implementation task lists
-infra/dev-host/ Terraform for the first remote development host
-runbooks/       Operator setup, connection, and recovery procedures
-scripts/        Non-secret verification utilities
-templates/      Reusable repository guidance
+.agents/skills/            Repository-local agent workflows and supporting resources
+.github/                   Protected infrastructure workflows and dependency automation
+config/codex/              Canonical reviewed host-policy source
+docs/                      Initiative plans, acceptance evidence, and platform direction
+examples/                  Synthetic manifest and rootless-container acceptance fixtures
+infra/dev-host/            Development host, storage, backups, and bootstrap tooling
+infra/tailscale-federation/Separate account-level workload-identity issuer stack
+requirements/              Hash-pinned manifest validation dependencies
+runbooks/                  Setup, connection, maintenance, and recovery procedures
+schemas/                   Versioned project manifest schema
+scripts/                   Bootstrap, validation, verification, and offline tests
+templates/                 Project planning, agent guidance, and decision templates
 ```
 
-## Repository guidance
+## Working with GptClaw
 
-[AGENTS.md](./AGENTS.md) records project commands and constraints. Use the
-[repository template and adaptation guide](./templates/agents/README.md) when
-preparing another project's guidance.
+- **Connect to the host:** follow [the remote project connection runbook](runbooks/connect-chatgpt.md).
+- **Prepare another project's guidance:** use [the repository template and adaptation guide](templates/agents/README.md) and [nested guidance pattern](templates/agents/nested/README.md).
+- **Create a local planning starter:** follow [the project bootstrap workflow](.agents/skills/gptclaw-project-bootstrap/SKILL.md), which uses `scripts/bootstrap-project.py`.
+- **Validate a project declaration:** follow [the manifest setup and usage reference](docs/project-manifest.md); [the example](examples/project-manifest/web.yaml) is inert.
+- **Plan and review work:** start with [AGENTS.md](AGENTS.md), the applicable initiative, and [architecture decisions](docs/decisions/README.md).
+
+## Operations and deployment
+
+| Operation | Runbook |
+|---|---|
+| Establish GitHub/HCP/AWS deployment prerequisites | [Bootstrap HCP and AWS](runbooks/bootstrap-hcp-aws.md) |
+| Inspect backups and outstanding retention evidence | [Inspect backups](runbooks/inspect-backups.md) |
+| Replace or recover the development host | [Recover the host](runbooks/recover-dev-host.md) |
+| Install or update the reviewed host policy | [Manage host guidance](runbooks/manage-host-agents.md) |
+| Deploy and verify the declared tool profile | [Manage host tools](runbooks/manage-host-tools.md) |
+| Deploy and accept the rootless toolchain | [Manage rootless tooling](runbooks/manage-rootless-toolchain.md) |
+| Configure automatic Tailscale enrollment | [Manage workload identity federation](runbooks/manage-tailscale-federation.md) |
+
+Merging a PR does not deploy infrastructure. Plans and applies use protected
+manual GitHub Actions workflows with HCP remote execution:
+
+- [Development host workflow](.github/workflows/terraform-dev-host.yml), workspace `gptclaw-dev-host`.
+- [Account federation workflow](.github/workflows/terraform-tailscale-federation.yml), workspace `gptclaw-tailscale-federation`.
+
+Before deploying the current host revision, complete or verify the account issuer
+and exact-role tailnet trust described in the federation runbook. Host replacement
+also requires a suitable recovery point, a reviewed replacement window, and
+post-deployment verification of private access and preserved project storage.
+Deployment and final acceptance remain separate from local and PR checks.
 
 ## Local validation
 
-For policies, templates, scripts, workflow, or infrastructure changes, run
+For policies, templates, scripts, workflows, or infrastructure changes, run
 `./scripts/check-repository.sh` from the repository root. It includes offline
-host-policy, bootstrap, repository-guidance, and project-manifest tests.
-First prepare and activate the isolated Python 3.12 environment:
+checks for agent workflows, host policy/bootstrap, project manifests, host tools,
+rootless containers, and Tailscale federation. First prepare and activate the
+isolated Python 3.12 environment:
 
 ```sh
 python3 scripts/setup-project-manifest.py --venv .venv-manifest
@@ -45,30 +106,32 @@ source .venv-manifest/bin/activate
 ```
 
 Setup downloads hash-pinned dependencies; validation/tests then run offline.
-Reuse the prepared environment; setup refuses existing destinations.
-See the [project manifest reference](./docs/project-manifest.md) for the validator,
-example, supported fields, and limitations. Documentation-only edits
-need diff and relative-link review.
+Reuse the prepared environment; setup refuses existing destinations. Do not
+install host packages to make checks pass.
 
-For Terraform changes, use the Terraform version declared in
-`infra/dev-host/.terraform-version`.
+For documentation-only edits, review relative links and run:
 
 ```sh
-cd infra/dev-host
+git diff --check
+git diff --cached --check
+```
+
+For Terraform changes, use the version declared in
+[the development version file](infra/dev-host/.terraform-version) and run in each
+affected Terraform root (`infra/dev-host` or `infra/tailscale-federation`):
+
+```sh
 terraform fmt -check -recursive
-terraform init -backend=false -input=false
+terraform init -backend=false -input=false -lockfile=readonly
 terraform validate
 terraform test
 ```
 
-Local validation is supported. Local `terraform apply` is not. Plans and applies
-must be initiated by `.github/workflows/terraform-dev-host.yml`; provider
-operations execute in the HCP Terraform workspace `gptclaw-dev-host`.
+Initialization may fetch providers. Terraform tests use mocked AWS resources;
+the development-host suite also renders cloud-init locally. These checks do not
+prove deployed behavior. Local `terraform apply` and direct AWS infrastructure
+mutation are not supported.
 
-Do not commit Terraform state, saved plans, variable files, access tokens,
-private keys, Codex authentication data, or captured environment dumps.
-
-Automatic replacement enrollment is implemented through
-[Tailscale workload identity federation](runbooks/manage-tailscale-federation.md).
-Complete the one-time account issuer and tailnet trust setup before deploying
-this revision; no per-replacement auth key is required.
+Never commit Terraform state, saved plans, local variable files, access tokens,
+private keys, Codex authentication data, or environment dumps. Preserve private
+host access, persistent-volume protection, and development/production isolation.
