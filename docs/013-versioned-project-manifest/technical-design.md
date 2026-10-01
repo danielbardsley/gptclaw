@@ -1,6 +1,6 @@
 # TDD-013: Versioned Project Manifest
 
-- **Status:** Implemented on feature branch; review and acceptance pending
+- **Status:** Implemented, merged and accepted
 - **Owner:** Daniel
 - **Last updated:** 2026-09-30 (America/New_York)
 - **Specification:** [SPEC-013](./spec.md)
@@ -176,7 +176,7 @@ Reverting this implementation must not delete consumers' manifests or data.
 | PMF-006 | Example, reference, author workflow, existing bootstrap checks | T-004, T-005, T-006 | AC-005, AC-006 |
 
 Daniel approved scope and authorized implementation in T-001. T-002 pins and
-setup are recorded above. Implementation review and merge remain pending. Lifecycle APIs, runtime profiles/resource policy, actual
+setup are recorded above. Daniel accepted implementation; PR #22 merged as `aa55583`. Lifecycle APIs, runtime profiles/resource policy, actual
 URL allocation, and application scaffolding remain later specifications.
 
 ## Implementation clarifications
