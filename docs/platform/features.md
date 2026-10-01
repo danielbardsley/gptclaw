@@ -99,7 +99,7 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| SYS-001 | Rootless container toolchain | 2 | Candidate | Install and configure Podman, subordinate IDs, networking, storage, Quadlet, and user-service persistence. |
+| SYS-001 | Rootless container toolchain | 2 | Draft | [SPEC-014](../014-rootless-container-toolchain/spec.md) proposes Podman, subordinate IDs, networking, storage, Quadlet, and user-service persistence; approval, implementation and deployed acceptance pending. |
 | SYS-002 | Pinned language toolchains | 2 | Candidate | Projects declare and automatically obtain supported Node, pnpm, Python, uv, and other approved versions. |
 | SYS-003 | Project dependency policy | 2 | Candidate | Agents may install dependencies inside their project boundary and must record lockfile changes. |
 | SYS-004 | Host tool profile | 2 | Candidate | Common host packages are declared in GptClaw code and deployed through the infrastructure pipeline. |
