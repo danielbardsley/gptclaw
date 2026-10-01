@@ -103,3 +103,37 @@ Daniel's acceptance. Rollback instructions are reviewed but unexecuted; they mus
 retain compatible UID/GID ownership even when reverting other rootless changes.
 No live configuration, deployment, restart/reboot test, replacement or final
 acceptance is claimed by this record.
+
+## Authorized deployment preparation (October 1, 2026)
+
+Daniel requested review, necessary fixes, and the protected plan/apply deployment
+of SYS-001 and SYS-004. PR #26 merged as
+`e59d14bec30cfed287dc0a6f54aa9362acfc5976`; its final CI run 82 passed.
+The [first protected plan](https://github.com/danielbardsley/gptclaw/actions/runs/36818874361)
+reported 2 additions, 15 updates and 2 destroys: compute and its volume attachment
+replace, while the project volume is retained with a revision-tag update.
+Thirteen updates were tags; two were deferred HCP identity policy renderings.
+Do not apply that superseded plan.
+
+The repair renders the same IAM statements with local JSON expressions instead
+of deferred provider data sources. It preserves exact resource scopes and the
+apply role's prohibition on modifying deployment identities. A mocked initial
+apply followed by a revision-only plan verifies the policies remain known.
+The code-managed enrollment counter advances from 4 to 5, and compute waits for
+the secret version before boot. Daniel must set a fresh tagged one-use key in
+HCP's sensitive `tailscale_auth_key` variable before apply; he asked to be reminded
+later. Do not paste keys into chat or create an HCP override for the code counter.
+
+Review confirms all 26 profile components flow through install and version checks,
+including Podman and eight rootless prerequisites; rootless capability and final
+profile verification gate the completion receipt. This is source/test evidence,
+not evidence of installed packages. The revised protected plan, completed backup
+metadata, fresh enrollment key, apply and post-bootstrap verification remain
+pending. The current connector exposes workflow reads and reruns but no dispatch;
+no local AWS CLI or operator identity was available for backup inspection.
+
+Repair validation: Terraform 1.16.1 formatting and validation passed; all 22
+Terraform tests passed (mock AWS only), including revision-only policy planning
+and rendered IAM mutation boundaries. The full offline repository checker passed.
+Shell syntax and Git whitespace checks passed. No infrastructure apply or
+package installation was performed by these checks.

@@ -28,16 +28,16 @@ run "backup_deployment_boundaries" {
 
   assert {
     condition = alltrue([
-      for statement in data.aws_iam_policy_document.hcp_plan.statement :
-      alltrue([for action in statement.actions : can(regex(":(Get|List|Describe)", action))])
+      for statement in local.hcp_plan_statements :
+      alltrue([for action in statement.Action : can(regex(":(Get|List|Describe)", action))])
     ])
     error_message = "The plan role must remain read-only."
   }
   assert {
     condition = alltrue([
-      for statement in data.aws_iam_policy_document.hcp_apply.statement :
-      !anytrue([for action in statement.actions : startswith(action, "iam:")]) ||
-      alltrue([for arn in statement.resources : contains([
+      for statement in local.hcp_apply_statements :
+      !anytrue([for action in statement.Action : startswith(action, "iam:")]) ||
+      alltrue([for arn in statement.Resource : contains([
         "arn:aws:iam::123456789012:role/gptclaw-dev-host",
         "arn:aws:iam::123456789012:instance-profile/gptclaw-dev-host",
         "arn:aws:iam::123456789012:role/gptclaw-dev-projects-backup",
@@ -47,40 +47,37 @@ run "backup_deployment_boundaries" {
   }
   assert {
     condition = one([
-      for statement in data.aws_iam_policy_document.hcp_apply.statement :
-      statement.resources == toset([local.backup_role_arn]) &&
-      anytrue([for condition in statement.condition :
-        condition.variable == "iam:PassedToService" &&
-        length(condition.values) == 1 && contains(condition.values, "dlm.amazonaws.com")
-      ])
-      if statement.sid == "PassBackupRoleToDlm"
+      for statement in local.hcp_apply_statements :
+      toset(statement.Resource) == toset([local.backup_role_arn]) &&
+      statement.Condition.StringEquals["iam:PassedToService"] == "dlm.amazonaws.com"
+      if statement.Sid == "PassBackupRoleToDlm"
     ])
     error_message = "The backup role can be passed only to DLM."
   }
   assert {
     condition = one([
-      for statement in data.aws_iam_policy_document.hcp_apply.statement :
+      for statement in local.hcp_apply_statements :
       alltrue([for key in ["aws:ResourceTag/Project", "aws:ResourceTag/BackupSet"] :
-        contains([for condition in statement.condition : condition.variable], key)
-      ]) && statement.resources == toset([local.backup_dlm_arn])
-      if statement.sid == "ManageBackupPolicy"
+        contains(keys(statement.Condition.StringEquals), key)
+      ]) && toset(statement.Resource) == toset([local.backup_dlm_arn])
+      if statement.Sid == "ManageBackupPolicy"
     ])
     error_message = "DLM management must be scoped to this Region/account and backup tags."
   }
   assert {
     condition = one([
-      for statement in data.aws_iam_policy_document.hcp_apply.statement :
+      for statement in local.hcp_apply_statements :
       alltrue([for key in ["aws:RequestedRegion", "aws:RequestTag/Project", "aws:RequestTag/BackupSet"] :
-        contains([for condition in statement.condition : condition.variable], key)
-      ]) && statement.actions == toset(["dlm:CreateLifecyclePolicy"])
-      if statement.sid == "CreateTaggedBackupPolicy"
+        contains(keys(statement.Condition.StringEquals), key)
+      ]) && toset(statement.Action) == toset(["dlm:CreateLifecyclePolicy"])
+      if statement.Sid == "CreateTaggedBackupPolicy"
     ])
     error_message = "Wildcard DLM creation must be constrained by Region and request tags."
   }
   assert {
     condition = !anytrue([
-      for statement in data.aws_iam_policy_document.hcp_apply.statement :
-      anytrue([for action in statement.actions :
+      for statement in local.hcp_apply_statements :
+      anytrue([for action in statement.Action :
         contains(["ec2:CreateSnapshot", "ec2:DeleteSnapshot"], action) ||
         can(regex("^(sns|cloudwatch|lambda|events):", action))
       ])

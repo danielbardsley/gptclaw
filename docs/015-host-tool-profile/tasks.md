@@ -1,6 +1,6 @@
 # TASKS-015: Host Tool Profile
 
-- **Status:** Implementation in review; deployment not authorized
+- **Status:** Implementation merged; deployment authorized, acceptance pending
 - **Owner:** Daniel
 - **Last updated:** 2026-10-01 (America/New_York)
 - **Specification:** [SPEC-015](spec.md)
