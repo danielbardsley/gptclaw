@@ -102,7 +102,7 @@ Priority indicates suggested sequencing, not authorization.
 | SYS-001 | Rootless container toolchain | 2 | Draft | [SPEC-014](../014-rootless-container-toolchain/spec.md) proposes Podman, subordinate IDs, networking, storage, Quadlet, and user-service persistence; approval, implementation and deployed acceptance pending. |
 | SYS-002 | Pinned language toolchains | 2 | Candidate | Projects declare and automatically obtain supported Node, pnpm, Python, uv, and other approved versions. |
 | SYS-003 | Project dependency policy | 2 | Candidate | Agents may install dependencies inside their project boundary and must record lockfile changes. |
-| SYS-004 | Host tool profile | 2 | Candidate | Common host packages are declared in GptClaw code and deployed through the infrastructure pipeline. |
+| SYS-004 | Host tool profile | 2 | Draft | [SPEC-015](../015-host-tool-profile/spec.md) proposes a versioned tool inventory, source/version policies, pipeline provisioning and verified receipts; approval, implementation and deployed acceptance pending. |
 | SYS-005 | Privileged capability broker | 4 | Candidate | Exceptional system changes use a narrow allowlist, owner approval, audit log, and mandatory reconciliation. |
 | SYS-006 | Dependency cache management | 3 | Candidate | Share safe package/build caches with quotas while preventing cross-project credential or artifact leakage. |
 | SYS-007 | Software bill of materials | 4 | Candidate | Produce SBOMs for images and releases and retain them with build provenance. |
