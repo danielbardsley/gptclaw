@@ -29,6 +29,9 @@ resource scope; limit the session to this account and those operations, with no
 IAM role/policy administration or disable permission. Supply it only as sensitive
 HCP environment variables in this isolated workspace, using the reviewed
 credential-handling rules in [the bootstrap runbook](bootstrap-hcp-aws.md).
+Ensure this isolated workspace does not inherit the development host's dynamic
+AWS role variables; use its scoped operator session for setup and remove it
+afterward. Do not change the development workspace's OIDC configuration.
 Do not borrow production credentials, put credentials in GitHub or this host,
 or expand `gptclaw-dev-hcp-apply`. Authorization to deploy is not evidence that
 such an operator session is currently available.
@@ -95,6 +98,10 @@ After replacement, verify SSM first, then private SSH/Tailscale access, original
 filesystem UUID/ownership, and the profile/rootless/bootstrap receipts described
 in [the rootless runbook](manage-rootless-toolchain.md). Confirm the expected
 online tag-owned node in Tailscale and record sanitized version/state evidence.
+Use the new node's actual address for the first connection; old persistent device
+records can remain after replacement. This change does not automatically delete
+old devices or promise a stable DNS-name cutover. Review obsolete records only
+after verifying the replacement, without removing unrelated tailnet devices.
 Do not publish raw tokens, credential files or unrestricted status/log dumps.
 The acceptance check must prove a fresh host joined without a manually supplied
 key; existing-node retry tests alone are insufficient.

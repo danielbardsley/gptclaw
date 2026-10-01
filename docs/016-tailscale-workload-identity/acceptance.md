@@ -1,6 +1,6 @@
 # SPEC-016 acceptance evidence
 
-- **Status:** Locally verified implementation; CI and external setup pending
+- **Status:** Local and CI checks passed; external setup and deployment pending
 - **Owner:** Daniel
 - **Date:** 2026-10-01 (America/New_York)
 - **Specification:** [SPEC-016](spec.md)
@@ -48,3 +48,12 @@ connector tools cannot dispatch workflows and no Tailscale connector is availabl
 operator actions remain necessary. This replaces the earlier fresh-key reminder.
 Rollback is documented, not executed; never disable the account issuer as part
 of routine host rollback. Delivered status is not claimed.
+
+## Review and CI
+
+[PR #28](https://github.com/danielbardsley/gptclaw/pull/28) contains implementation
+revision `04ed5424d7ab5db3865e51cae332ce1da2f33efe`.
+Both [development CI](https://github.com/danielbardsley/gptclaw/actions/runs/36821074386)
+and [account-setup CI](https://github.com/danielbardsley/gptclaw/actions/runs/36821074416)
+passed for that revision. Protected plan/apply jobs were skipped for these PR runs;
+CI did not establish issuer setup or change AWS infrastructure.
