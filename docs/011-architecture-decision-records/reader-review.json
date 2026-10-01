@@ -1,0 +1,32 @@
+{
+  "review_type": "Independent source-grounded reader and static lifecycle review",
+  "findings": [],
+  "reader_understanding": {
+    "scope": "Retain SPEC-006/007's repository-owned specification skill and reviewed immutable copies in new planning projects. This is not a policy for every future skill or a general ban on global installation.",
+    "historical_support": "SPEC-006 explicitly chooses repository version control and reviewed PRs with no user-wide installation. SPEC-007 requires the complete specification skill and assets from a reviewed immutable revision, provenance, project-owned output, explicit reviewed updates and no synchronization. Their acceptance documents record PR #16/#18 merges and outstanding supported-client checks. bootstrap-project.py confirms the exact Git-object allowlist, full commit SHA requirement and output hashes; it does not verify owner approval.",
+    "rationale": "The three alternatives and associated tradeoffs are explicitly present analysis, not reconstructed historical owner deliberation. The proposal does not retrospectively expand prior approvals.",
+    "applicability": "The existing SPEC-006/007 implementation remains independently approved. ADR-0001 is Proposed with null decision date and approval reference; Daniel's disposition of its exact framing remains unavailable.",
+    "implementation_limits": "No downstream implementation, allowlist expansion, global installation, existing-project synchronization or completion of client acceptance follows from this ADR. Hashes establish bytes, not suitability or review.",
+    "lifecycle": "The guide, template and checker consistently distinguish proposal, acceptance/rejection and retirement; retain original acceptance evidence; require reciprocal replacement scopes; permit partial and multi-hop supersession and later deprecated successors; reject unaccepted relationships, missing targets, self-links and cycles. Approval truth, semantic scope and historical editorial preservation remain explicitly human review responsibilities."
+  },
+  "reviewed_files": [
+    "docs/decisions/0001-repository-skill-distribution.md",
+    "docs/decisions/README.md",
+    "templates/decisions/README.md",
+    "templates/decisions/ADR.md.template",
+    "scripts/tests/test_decision_records.py",
+    "docs/011-architecture-decision-records/spec.md",
+    "docs/011-architecture-decision-records/technical-design.md",
+    "docs/006-specification-skill/spec.md",
+    "docs/006-specification-skill/acceptance.md",
+    "docs/007-project-bootstrap-skill/spec.md",
+    "docs/007-project-bootstrap-skill/acceptance.md",
+    "scripts/bootstrap-project.py"
+  ],
+  "limitations": [
+    "Static source review only; no tests, bootstrap code or document commands executed.",
+    "No network access or independent GitHub verification; historical merges and approval statements assessed against linked local acceptance records.",
+    "No owner approval inferred or supplied; this review does not satisfy the outstanding final owner disposition.",
+    "No repository files edited."
+  ]
+}

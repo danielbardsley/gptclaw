@@ -1,7 +1,7 @@
 # GptClaw Platform Feature Catalogue
 
 - **Status:** Directional backlog; not a specification
-- **Last updated:** 2026-09-30
+- **Last updated:** 2026-10-01
 - **Architecture:** [GptClaw platform architecture](./architecture.md)
 
 ## 1. How to use this catalogue
@@ -35,6 +35,7 @@ Feature IDs remain stable even if names, grouping, or delivery order changes.
 | Deployed | Installed in the target environment; final acceptance is still pending. |
 | Candidate | Intended direction but not yet specified. |
 | Draft | Selected for a numbered specification under review; not approved for implementation. |
+| In review | Implemented on a feature branch; review/merge and any remaining acceptance are pending. |
 | Planned | Specification approved; design/tasks under review or awaiting implementation authorization. |
 | Optional | Useful capability that should be implemented only when demanded. |
 | Deferred | Deliberately postponed until its dependencies or use case exist. |
@@ -73,11 +74,11 @@ Priority indicates suggested sequencing, not authorization.
 | AGT-003 | Nested guidance pattern | 3 | Deployed | [SPEC-005](../005-nested-guidance-pattern/spec.md) approved and implementation authorized on 2026-09-13. Template, five inert examples, infrastructure adoption, and offline checks merged in [PR #11](https://github.com/danielbardsley/gptclaw/pull/11) on 2026-09-13. PR CI run #56 passed; fresh-task remote acceptance remains pending. [Acceptance evidence](../005-nested-guidance-pattern/acceptance.md). |
 | AGT-004 | Specification skill | 2 | Deployed | Repository skill, four outlines, and checks merged in [PR #16](https://github.com/danielbardsley/gptclaw/pull/16) as `aed4fe4` on 2026-09-30; owner accepted implementation. Skill available in the repository and observed in the app inventory. Fresh-session behavior checks remain pending before Delivered. [SPEC-006](../006-specification-skill/spec.md) · [Acceptance](../006-specification-skill/acceptance.md). |
 | AGT-005 | Project bootstrap skill | 2 | Deployed | Local planning starter, bootstrap skill/helper, and checks merged in [PR #18](https://github.com/danielbardsley/gptclaw/pull/18) as `947a78f` on 2026-09-30; owner approved implementation. Bootstrap skill observed in the app inventory. Fresh-session discovery/use in a generated project remains pending before Delivered. [SPEC-007](../007-project-bootstrap-skill/spec.md) · [Acceptance](../007-project-bootstrap-skill/acceptance.md). |
-| AGT-006 | Runtime-operation skill | 3 | Candidate | Agent uses typed project lifecycle commands rather than improvised process management. |
-| AGT-007 | Release and production-promotion skill | 5 | Candidate | Releases follow consistent versioning, evidence, approval, rollback, and deployment steps. |
-| AGT-008 | Session handover generator | 3 | Candidate | Produce a concise, non-secret project state summary for a future remote session. |
-| AGT-009 | Architecture decision records | 3 | Candidate | Preserve cross-cutting decisions and supersession history outside individual specs. |
-| AGT-010 | Context validation | 3 | Candidate | Detect stale specs, missing tasks, conflicting instructions, and undocumented deviations before implementation. |
+| AGT-006 | Runtime-operation skill | 3 | In review | Skill/resources implemented; 17 synthetic scenarios reviewed. Runtime contract and live service acceptance remain pending. [SPEC-008](../008-runtime-operation-skill/spec.md) · [Acceptance](../008-runtime-operation-skill/acceptance.md) · [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
+| AGT-007 | Release and production-promotion skill | 5 | In review | Skill/resources implemented; 18 synthetic scenarios reviewed. Existing product contract and isolated non-production rehearsal remain pending. [SPEC-009](../009-release-promotion-skill/spec.md) · [Acceptance](../009-release-promotion-skill/acceptance.md) · [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
+| AGT-008 | Session handover generator | 3 | In review | Skill/outline and isolated Git scenarios implemented; producer/consumer evaluation passed after a scoped correction. Client acceptance and merge pending. [SPEC-010](../010-session-handover-generator/spec.md) · [Acceptance](../010-session-handover-generator/acceptance.md) · [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
+| AGT-009 | Architecture decision records | 3 | In review | Template, guide, index, Proposed pilot and 19 lifecycle checks implemented. Owner pilot disposition and merge pending. [SPEC-011](../011-architecture-decision-records/spec.md) · [Acceptance](../011-architecture-decision-records/acceptance.md) · [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
+| AGT-010 | Context validation | 3 | In review | Skill/checklist/report and five paired scenarios implemented; read-only semantic evaluation passed; two disposable repair checks await explicit authorization after automatic review rejection. Client acceptance and merge pending. [SPEC-012](../012-context-validation/spec.md) · [Acceptance](../012-context-validation/acceptance.md) · [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
 
 ## 5. Project creation and repository lifecycle
 

@@ -31,6 +31,11 @@ docs/
 - New specifications and designs must not be placed in separate top-level
   `specs` or `docs/design` folders.
 
+## Architecture decisions
+
+[Decision index](./decisions/README.md) records durable choices, scope and owner
+dispositions independently of feature implementation status.
+
 ## Initiatives
 
 - **Platform direction:**
@@ -76,3 +81,33 @@ docs/
   [Technical design](./007-project-bootstrap-skill/technical-design.md) ·
   [Tasks](./007-project-bootstrap-skill/tasks.md) ·
   [Acceptance status](./007-project-bootstrap-skill/acceptance.md)
+
+- **008 - Runtime-operation skill (AGT-006):**
+  [Specification](./008-runtime-operation-skill/spec.md) ·
+  [Technical design](./008-runtime-operation-skill/technical-design.md) ·
+  [Tasks](./008-runtime-operation-skill/tasks.md) ·
+  [Acceptance](./008-runtime-operation-skill/acceptance.md)
+
+- **009 - Release and production-promotion skill (AGT-007):**
+  [Specification](./009-release-promotion-skill/spec.md) ·
+  [Technical design](./009-release-promotion-skill/technical-design.md) ·
+  [Tasks](./009-release-promotion-skill/tasks.md) ·
+  [Acceptance](./009-release-promotion-skill/acceptance.md)
+
+- **010 - Session handover generator (AGT-008):**
+  [Specification](./010-session-handover-generator/spec.md) ·
+  [Technical design](./010-session-handover-generator/technical-design.md) ·
+  [Tasks](./010-session-handover-generator/tasks.md) ·
+  [Acceptance](./010-session-handover-generator/acceptance.md)
+
+- **011 - Architecture decision records (AGT-009):**
+  [Specification](./011-architecture-decision-records/spec.md) ·
+  [Technical design](./011-architecture-decision-records/technical-design.md) ·
+  [Tasks](./011-architecture-decision-records/tasks.md) ·
+  [Acceptance](./011-architecture-decision-records/acceptance.md)
+
+- **012 - Context validation (AGT-010):**
+  [Specification](./012-context-validation/spec.md) ·
+  [Technical design](./012-context-validation/technical-design.md) ·
+  [Tasks](./012-context-validation/tasks.md) ·
+  [Acceptance](./012-context-validation/acceptance.md)
