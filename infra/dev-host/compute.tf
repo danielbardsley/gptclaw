@@ -1,20 +1,19 @@
 locals {
-  host_tools_profile = file("${path.module}/host-tools.json")
-  host_tools_helper  = file("${path.module}/lib/host_tools.py")
-  rootless_helper    = file("${path.module}/lib/rootless.py")
+  host_tools_profile          = file("${path.module}/host-tools.json")
+  host_tools_helper           = file("${path.module}/lib/host_tools.py")
+  tailscale_federation_helper = file("${path.module}/lib/tailscale_federation.py")
+  rootless_helper             = file("${path.module}/lib/rootless.py")
 
   host_policy_script = templatefile("${path.module}/templates/install-host-policy.sh.tftpl", {
     host_policy_revision = var.host_policy_revision
   })
 
   bootstrap_script = templatefile("${path.module}/templates/bootstrap-forge.sh.tftpl", {
-    aws_region                 = var.aws_region
-    data_volume_id             = aws_ebs_volume.projects.id
-    instance_name              = var.instance_name
-    log_group_name             = aws_cloudwatch_log_group.dev_host.name
-    tailscale_auth_secret_arn  = aws_secretsmanager_secret.tailscale_enrollment.arn
-    tailscale_auth_key_version = var.tailscale_auth_key_version
-    tailscale_tag              = var.tailscale_tag
+    aws_region     = var.aws_region
+    data_volume_id = aws_ebs_volume.projects.id
+    instance_name  = var.instance_name
+    log_group_name = aws_cloudwatch_log_group.dev_host.name
+    tailscale_tag  = var.tailscale_tag
   })
 }
 
@@ -26,6 +25,14 @@ data "cloudinit_config" "dev_host" {
     content_type = "text/cloud-config"
     filename     = "cloud-init.yaml"
     content = templatefile("${path.module}/templates/cloud-init.yaml.tftpl", {
+      tailscale_federation_helper = local.tailscale_federation_helper
+      tailscale_federation_config = jsonencode({
+        client_id = var.tailscale_federation_client_id
+        audience  = local.tailscale_federation_audience
+        tag       = var.tailscale_tag
+        hostname  = var.instance_name
+        region    = var.aws_region
+      })
       rootless_helper        = local.rootless_helper
       host_tools_profile     = local.host_tools_profile
       host_tools_helper      = local.host_tools_helper
@@ -75,6 +82,5 @@ resource "aws_instance" "dev_host" {
   depends_on = [
     aws_iam_role_policy_attachment.ssm,
     aws_iam_role_policy.dev_host_runtime,
-    aws_secretsmanager_secret_version.tailscale_enrollment,
   ]
 }

@@ -44,7 +44,7 @@ output "hcp_terraform_apply_role_arn" {
 }
 
 output "tailscale_enrollment_secret_arn" {
-  description = "Secrets Manager ARN used once by the host to join Tailscale."
+  description = "Legacy secret retained during federation migration; no longer read by the host."
   value       = aws_secretsmanager_secret.tailscale_enrollment.arn
 }
 
@@ -65,4 +65,14 @@ output "project_backup" {
 output "host_policy_revision" {
   description = "Pinned first-boot policy source revision; not an observation of the currently installed policy."
   value       = var.host_policy_revision
+}
+
+output "tailscale_federation" {
+  description = "Non-secret trust values; account issuer comes from the separate bootstrap stack."
+  value = {
+    client_id = var.tailscale_federation_client_id
+    audience  = local.tailscale_federation_audience
+    subject   = "arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:role/${local.name_prefix}-host"
+    tag       = var.tailscale_tag
+  }
 }

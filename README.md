@@ -67,3 +67,8 @@ operations execute in the HCP Terraform workspace `gptclaw-dev-host`.
 
 Do not commit Terraform state, saved plans, variable files, access tokens,
 private keys, Codex authentication data, or captured environment dumps.
+
+Automatic replacement enrollment is implemented through
+[Tailscale workload identity federation](runbooks/manage-tailscale-federation.md).
+Complete the one-time account issuer and tailnet trust setup before deploying
+this revision; no per-replacement auth key is required.

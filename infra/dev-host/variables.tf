@@ -133,27 +133,17 @@ variable "desktop_ssh_public_key" {
   }
 }
 
-variable "tailscale_auth_key" {
-  description = "Fresh one-use, tagged Tailscale auth key. HCP Terraform supplies it ephemerally and Terraform never stores it in state."
+variable "tailscale_federation_client_id" {
+  description = "Non-secret Tailscale federated identity client ID, after account issuer and exact-role trust setup."
   type        = string
-  sensitive   = true
-  ephemeral   = true
-
   validation {
-    condition     = can(regex("^tskey-auth-", var.tailscale_auth_key))
-    error_message = "tailscale_auth_key must be a Tailscale authentication key."
+    condition     = can(regex("^[A-Za-z0-9_-]{10,128}$", var.tailscale_federation_client_id))
+    error_message = "Provide the real federated identity client ID (10-128 URL-safe characters)."
   }
 }
 
-variable "tailscale_auth_key_version" {
-  description = "Code-managed monotonic version used to rotate the write-only Tailscale secret value and replace the host. Increment whenever tailscale_auth_key changes."
-  type        = number
-  default     = 5
-
-  validation {
-    condition     = var.tailscale_auth_key_version >= 1 && floor(var.tailscale_auth_key_version) == var.tailscale_auth_key_version
-    error_message = "tailscale_auth_key_version must be a positive integer."
-  }
+locals {
+  tailscale_federation_audience = "api.tailscale.com/${var.tailscale_federation_client_id}"
 }
 
 variable "hcp_terraform_organization" {
@@ -180,8 +170,8 @@ variable "tailscale_tag" {
   default     = "tag:gptclaw-dev"
 
   validation {
-    condition     = can(regex("^tag:[a-zA-Z0-9-]+$", var.tailscale_tag))
-    error_message = "tailscale_tag must begin with tag: and contain only letters, digits, and hyphens."
+    condition     = var.tailscale_tag == "tag:gptclaw-dev"
+    error_message = "Federation is reviewed only for tag:gptclaw-dev."
   }
 }
 

@@ -40,13 +40,8 @@ if ! grep -Eq '^[[:space:]]*prevent_destroy[[:space:]]*=[[:space:]]*true' infra/
   status=1
 fi
 
-if ! grep -Eq '^[[:space:]]*secret_string_wo[[:space:]]*=' infra/dev-host/secrets.tf; then
-  echo "The Tailscale auth key must use the provider's write-only secret argument." >&2
-  status=1
-fi
-
-if grep -Eq '^[[:space:]]*secret_string[[:space:]]*=' infra/dev-host/secrets.tf; then
-  echo "The Tailscale auth key must never use the state-persisted secret_string argument." >&2
+if grep -Eq '^[[:space:]]*secret_string(_wo)?[[:space:]]*=' infra/dev-host/secrets.tf; then
+  echo "Federation must not provision static Tailscale enrollment secrets." >&2
   status=1
 fi
 
@@ -120,6 +115,10 @@ if ! python3 -B scripts/tests/test_host_tools.py; then
 fi
 
 if ! python3 -B scripts/tests/test_rootless_toolchain.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_tailscale_federation.py; then
   status=1
 fi
 

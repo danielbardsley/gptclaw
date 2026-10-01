@@ -1,5 +1,11 @@
 # Bootstrap HCP Terraform, AWS trust, and GitHub
 
+> Current enrollment uses [AWS workload identity federation](manage-tailscale-federation.md).
+> The key-based setup below is historical bootstrap/rollback context. Do not set
+> `tailscale_auth_key` or its counter for the current development root; supply
+> `tailscale_federation_client_id` after one-time issuer/trust setup instead.
+
+
 This runbook bootstraps the trust required by the development-host pipeline.
 Every AWS mutation—including the OIDC provider, deployment roles, Tailscale
 secret, EC2, VPC, EBS, and runtime IAM—is made by committed Terraform through

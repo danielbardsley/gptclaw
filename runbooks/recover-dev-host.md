@@ -35,8 +35,9 @@ Do not print the Tailscale secret or dump the process environment.
    predate recent work; wait for an appropriate scheduled recovery point or
    design an explicitly reviewed pipeline backup before risking that work.
    Do not create snapshots with direct AWS CLI or console mutations.
-4. Store a fresh tagged one-use Tailscale auth key in the existing Secrets
-   Manager secret.
+4. Confirm the one-time [federation trust setup](manage-tailscale-federation.md)
+   and non-secret client ID. Replacements enroll automatically; do not create
+   or rotate an auth key.
 5. Merge the reviewed change to `main`.
 6. Manually dispatch the `apply` operation with confirmation
    `gptclaw-dev-host` and complete the environment approval when configured.
@@ -96,6 +97,6 @@ compatibility with the protected project disk.
 | AWS OIDC denied | Correct the exact organization/project/workspace/phase trust. |
 | AWS permission denied | Add only the specific required action/resource and re-plan. |
 | Wrong account or region | Correct inputs; never relax the provider allowlist. |
-| Tailscale key expired or consumed | Store a fresh one-use key and rerun the enrollment service through SSM. |
+| Tailscale enrollment fails | Inspect federation issuer, audience, exact role/tag trust and client version through SSM; repair through the pipeline. |
 | Project volume not found | Confirm attachment and Nitro by-id link; never format an ambiguous device. |
 | Codex missing from login `PATH` | Re-run the official installer as `forge` and verify `sh -lc 'command -v codex'`. |

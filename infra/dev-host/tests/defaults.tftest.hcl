@@ -33,12 +33,12 @@ mock_provider "aws" {
 mock_provider "cloudinit" {}
 
 variables {
-  aws_account_id         = "123456789012"
-  aws_region             = "us-east-1"
-  availability_zone      = "us-east-1a"
-  desktop_ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExamplePublicKeyForTerraformTests forge-dev-test"
-  tailscale_auth_key     = "tskey-auth-test"
-  deployment_revision    = "0123456789abcdef0123456789abcdef01234567"
+  aws_account_id                 = "123456789012"
+  aws_region                     = "us-east-1"
+  availability_zone              = "us-east-1a"
+  desktop_ssh_public_key         = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExamplePublicKeyForTerraformTests forge-dev-test"
+  tailscale_federation_client_id = "synthetic-client-id"
+  deployment_revision            = "0123456789abcdef0123456789abcdef01234567"
 }
 
 run "planned_defaults" {
@@ -75,7 +75,7 @@ run "planned_defaults" {
   }
 
   assert {
-    condition     = aws_secretsmanager_secret_version.tailscale_enrollment.secret_string_wo_version == 5
-    error_message = "The default Tailscale secret version must match the committed rotation counter."
+    condition     = local.tailscale_federation_audience == "api.tailscale.com/synthetic-client-id"
+    error_message = "The audience must be bound to this federated identity."
   }
 }
