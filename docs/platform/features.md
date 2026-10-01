@@ -84,7 +84,7 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| PRJ-001 | Versioned project manifest | 2 | Candidate | `.gptclaw/project.yaml` becomes the validated contract for runtime, health, routing, data, and quality commands. |
+| PRJ-001 | Versioned project manifest | 2 | Draft | Single-web-service `.gptclaw/project.yaml`, versioned schema, offline validator, and synthetic example; first feature toward a working private application. Specification approval and implementation authorization pending. [SPEC-013](../013-versioned-project-manifest/spec.md) · [Design](../013-versioned-project-manifest/technical-design.md) · [Tasks](../013-versioned-project-manifest/tasks.md). |
 | PRJ-002 | `gptclawctl` CLI | 2 | Candidate | Provide idempotent `new`, `validate`, `start`, `stop`, `status`, `logs`, `test`, `expose`, and `archive` operations. |
 | PRJ-003 | Template catalogue | 2 | Candidate | Versioned templates cover web, API, Python, Expo, static site, CLI, and multi-package products. |
 | PRJ-004 | New GitHub repository automation | 3 | Candidate | Create repositories, protections, environments, secrets references, and initial pull requests with narrow credentials. |
@@ -261,7 +261,17 @@ Priority indicates suggested sequencing, not authorization.
 
 ## 17. Suggested specification sequence
 
-This is the recommended order for selecting future work:
+**Current owner selection (2026-09-30, America/New_York):** Prioritize a working
+private application: create, run, open, and iterate on one app, then prove a
+second instance can run independently. PRJ-001 is the selected first feature;
+[SPEC-013](../013-versioned-project-manifest/spec.md) covers only its manifest,
+validator, and example. Minimal CLI, runtime, template, and private routing
+follow through separately reviewed scope. Further RES work is deferred until
+that milestone is proven; existing backups and safeguards remain in place.
+This selection does not approve implementation or change existing acceptance.
+
+The broader sequence below remains directional; the selection above takes
+precedence for the next work:
 
 1. **Protect the persistent volume:** RES-001, RES-002, and DSH-008's data
    source. This closes the only material handover warning from SPEC-001.
