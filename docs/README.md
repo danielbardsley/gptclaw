@@ -31,6 +31,11 @@ docs/
 - New specifications and designs must not be placed in separate top-level
   `specs` or `docs/design` folders.
 
+## Architecture decisions
+
+[Decision index](./decisions/README.md) records durable choices, scope and owner
+dispositions independently of feature implementation status.
+
 ## Initiatives
 
 - **Platform direction:**
@@ -98,7 +103,8 @@ docs/
 - **011 - Architecture decision records (AGT-009):**
   [Specification](./011-architecture-decision-records/spec.md) ·
   [Technical design](./011-architecture-decision-records/technical-design.md) ·
-  [Tasks](./011-architecture-decision-records/tasks.md)
+  [Tasks](./011-architecture-decision-records/tasks.md) ·
+  [Acceptance](./011-architecture-decision-records/acceptance.md)
 
 - **012 - Context validation (AGT-010):**
   [Specification](./012-context-validation/spec.md) ·

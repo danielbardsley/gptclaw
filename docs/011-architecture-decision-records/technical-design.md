@@ -27,7 +27,9 @@ from review of the decision itself.
 
 Metadata fields: id, title, status, owner, decision_date (nullable until decided),
 approval_reference (nullable while Proposed), supersedes IDs, superseded_by IDs,
-and replacement scope where applicable. Include a separate recorded date for
+and replacement scope where applicable. Implemented metadata also includes
+`retirement` (date, approval reference and reason) for Superseded/Deprecated
+records, retaining original acceptance in decision_date/approval_reference. Include a separate recorded date for
 retrospective records; do not backdate authorship to an earlier implementation.
 The filename ID and index ID must agree. Scope and partial replacement remain
 explicit prose even when links are structurally valid.

@@ -11,6 +11,8 @@ on:
       - AGENTS.md
       - templates/agents/**
       - templates/projects/**
+      - templates/decisions/**
+      - docs/decisions/**
       - .agents/skills/**
   push:
     branches:
@@ -24,6 +26,8 @@ on:
       - AGENTS.md
       - templates/agents/**
       - templates/projects/**
+      - templates/decisions/**
+      - docs/decisions/**
       - .agents/skills/**
   workflow_dispatch:
     inputs:

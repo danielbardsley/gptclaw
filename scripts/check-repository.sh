@@ -103,4 +103,8 @@ if ! python3 -B ./scripts/tests/test_workflow_skills.py; then
   status=1
 fi
 
+if ! python3 -B ./scripts/tests/test_decision_records.py; then
+  status=1
+fi
+
 exit "$status"

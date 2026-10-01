@@ -1,0 +1,47 @@
+# ADR-NNNN: Decision title
+
+```adr-metadata
+{
+  "id": "NNNN",
+  "title": "Decision title",
+  "status": "Proposed",
+  "owner": "Decision owner",
+  "recorded_date": "YYYY-MM-DD",
+  "decision_date": null,
+  "approval_reference": null,
+  "supersedes": [],
+  "superseded_by": [],
+  "replacement_scope": {},
+  "retirement": null
+}
+```
+
+## Scope
+
+Decision question and exactly where it applies; replacement and remaining scope,
+if any. Separate decision authority from permission to implement or operate.
+
+## Context
+
+Relevant constraints and source-grounded historical facts; unknowns labeled.
+
+## Alternatives
+
+Credible alternatives and their tradeoffs; avoid inventing historical reasoning.
+
+## Decision
+
+Proposed choice, or actual accepted/rejected disposition with owner evidence.
+
+## Consequences
+
+Benefits, costs and practical limits; status is not deployment evidence.
+
+## Revisit
+
+Conditions that would justify a successor decision.
+
+## Evidence and follow-up
+
+Relevant source links, approval evidence and implementation initiatives;
+otherwise the owner and next action. Unverified reports remain attributed.

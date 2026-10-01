@@ -1,7 +1,7 @@
 # GptClaw Platform Feature Catalogue
 
 - **Status:** Directional backlog; not a specification
-- **Last updated:** 2026-09-30
+- **Last updated:** 2026-10-01
 - **Architecture:** [GptClaw platform architecture](./architecture.md)
 
 ## 1. How to use this catalogue
@@ -77,7 +77,7 @@ Priority indicates suggested sequencing, not authorization.
 | AGT-006 | Runtime-operation skill | 3 | In review | Skill/resources implemented; 17 synthetic scenarios reviewed. Runtime contract and live service acceptance remain pending. [SPEC-008](../008-runtime-operation-skill/spec.md) · [Acceptance](../008-runtime-operation-skill/acceptance.md) · [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
 | AGT-007 | Release and production-promotion skill | 5 | In review | Skill/resources implemented; 18 synthetic scenarios reviewed. Existing product contract and isolated non-production rehearsal remain pending. [SPEC-009](../009-release-promotion-skill/spec.md) · [Acceptance](../009-release-promotion-skill/acceptance.md) · [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
 | AGT-008 | Session handover generator | 3 | In review | Skill/outline and isolated Git scenarios implemented; producer/consumer evaluation in progress. Client acceptance and merge pending. [SPEC-010](../010-session-handover-generator/spec.md) · [Acceptance](../010-session-handover-generator/acceptance.md) · [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
-| AGT-009 | Architecture decision records | 3 | Planned | [SPEC-011](../011-architecture-decision-records/spec.md): Decision template, lifecycle/index checks, and a source-grounded pilot record. Scope approved and implementation authorized on 2026-09-30; work proceeds in feature order on [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
+| AGT-009 | Architecture decision records | 3 | In review | Template, guide, index, Proposed pilot and 19 lifecycle checks implemented. Owner pilot disposition and merge pending. [SPEC-011](../011-architecture-decision-records/spec.md) · [Acceptance](../011-architecture-decision-records/acceptance.md) · [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
 | AGT-010 | Context validation | 3 | Planned | [SPEC-012](../012-context-validation/spec.md): Bounded context review with evidence-backed findings and no automatic repair or global hook. Scope approved and implementation authorized on 2026-09-30; work proceeds in feature order on [PR #20](https://github.com/danielbardsley/gptclaw/pull/20). |
 
 ## 5. Project creation and repository lifecycle
