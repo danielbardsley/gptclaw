@@ -1,6 +1,6 @@
 # GptClaw
 
-GptClaw is Daniel's private-access remote development platform, built around a
+GptClaw is a private-access remote development platform, built around a
 persistent AWS development host and ChatGPT/Codex remote project access. This
 repository owns the infrastructure, reviewed agent guidance, project planning
 and validation tools, and operator runbooks.
