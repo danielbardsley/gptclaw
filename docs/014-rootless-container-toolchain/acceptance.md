@@ -137,3 +137,10 @@ Terraform tests passed (mock AWS only), including revision-only policy planning
 and rendered IAM mutation boundaries. The full offline repository checker passed.
 Shell syntax and Git whitespace checks passed. No infrastructure apply or
 package installation was performed by these checks.
+
+## Enrollment approach superseded
+
+Daniel subsequently authorized [SPEC-016](../016-tailscale-workload-identity/spec.md).
+Its federation implementation supersedes the fresh-key/counter instructions in
+the earlier deployment-preparation record. Actual deployment remains pending
+one-time issuer/trust setup and the reviewed protected plan/apply.

@@ -2,14 +2,12 @@ aws_account_id           = "123456789012"
 aws_region               = "us-east-1"
 availability_zone        = "us-east-1a"
 desktop_ssh_public_key   = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleReplaceWithYourPublicKey forge-dev"
-tailscale_auth_key       = "<set only as a sensitive HCP Terraform variable>"
 deployment_revision      = "0123456789abcdef0123456789abcdef01234567"
 
 # Optional overrides
 # instance_type        = "t3.large"
 # data_volume_size_gib = 80
 # tailscale_tag         = "tag:gptclaw-dev"
-# tailscale_auth_key_version = 1
 
 # Project-volume snapshots (DLM; no monitoring or notifications)
 # backup_policy_enabled  = true
@@ -20,3 +18,5 @@ deployment_revision      = "0123456789abcdef0123456789abcdef01234567"
 # First-boot policy is pinned independently of deployment_revision.
 # Changing this pin replaces the instance. Use the installer for in-place updates.
 # host_policy_revision = "a287d7c9712817fd9f318a11f28041cfc6b5ad06"
+
+tailscale_federation_client_id = "<non-secret ID from the one-time Tailscale trust setup>"

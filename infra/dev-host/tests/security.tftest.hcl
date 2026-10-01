@@ -38,12 +38,12 @@ override_resource {
 }
 
 variables {
-  aws_account_id         = "123456789012"
-  aws_region             = "us-east-1"
-  availability_zone      = "us-east-1a"
-  desktop_ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExamplePublicKeyForTerraformTests forge-dev-test"
-  tailscale_auth_key     = "tskey-auth-test"
-  deployment_revision    = "0123456789abcdef0123456789abcdef01234567"
+  aws_account_id                 = "123456789012"
+  aws_region                     = "us-east-1"
+  availability_zone              = "us-east-1a"
+  desktop_ssh_public_key         = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExamplePublicKeyForTerraformTests forge-dev-test"
+  tailscale_federation_client_id = "synthetic-client-id"
+  deployment_revision            = "0123456789abcdef0123456789abcdef01234567"
 }
 
 run "security_controls" {
@@ -90,8 +90,8 @@ run "security_controls" {
   }
 
   assert {
-    condition     = strcontains(aws_iam_role_policy.dev_host_runtime.policy, aws_secretsmanager_secret.tailscale_enrollment.arn)
-    error_message = "The host role must be limited to the exact Tailscale secret."
+    condition     = !strcontains(aws_iam_role_policy.dev_host_runtime.policy, "secretsmanager:")
+    error_message = "The host must not retain enrollment-secret access."
   }
 
   assert {
@@ -130,12 +130,12 @@ run "reject_private_ssh_key" {
   expect_failures = [var.desktop_ssh_public_key]
 }
 
-run "reject_invalid_tailscale_key" {
+run "reject_invalid_federation_client" {
   command = plan
 
   variables {
-    tailscale_auth_key = "not-a-tailscale-key"
+    tailscale_federation_client_id = "bad client id"
   }
 
-  expect_failures = [var.tailscale_auth_key]
+  expect_failures = [var.tailscale_federation_client_id]
 }

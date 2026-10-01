@@ -1,11 +1,11 @@
-name: Terraform development host
+name: Terraform Tailscale account federation
 
 on:
   pull_request:
     paths:
       - .github/dependabot.yml
-      - .github/workflows/terraform-dev-host.yml
-      - infra/dev-host/**
+      - .github/workflows/terraform-tailscale-federation.yml
+      - infra/tailscale-federation/**
       - scripts/**
       - schemas/**
       - examples/project-manifest/**
@@ -31,8 +31,8 @@ on:
       - main
     paths:
       - .github/dependabot.yml
-      - .github/workflows/terraform-dev-host.yml
-      - infra/dev-host/**
+      - .github/workflows/terraform-tailscale-federation.yml
+      - infra/tailscale-federation/**
       - scripts/**
       - schemas/**
       - examples/project-manifest/**
@@ -64,7 +64,7 @@ on:
           - plan
           - apply
       confirmation:
-        description: Enter gptclaw-dev-host to authorize apply
+        description: Enter gptclaw-tailscale-federation to authorize apply
         required: false
         type: string
 
@@ -72,17 +72,16 @@ permissions:
   contents: read
 
 concurrency:
-  group: terraform-gptclaw-dev-host
+  group: terraform-gptclaw-tailscale-federation
   cancel-in-progress: false
 
 env:
   TF_IN_AUTOMATION: "true"
   TF_INPUT: "false"
   TF_CLOUD_ORGANIZATION: ${{ vars.HCP_TERRAFORM_ORGANIZATION }}
-  TF_WORKSPACE: ${{ vars.HCP_TERRAFORM_WORKSPACE }}
-  TF_VAR_deployment_revision: ${{ github.sha }}
+  TF_WORKSPACE: gptclaw-tailscale-federation
   TERRAFORM_VERSION: ${{ vars.TERRAFORM_VERSION }}
-  WORKING_DIRECTORY: infra/dev-host
+  WORKING_DIRECTORY: infra/tailscale-federation
 
 jobs:
   quality:
@@ -134,7 +133,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.operation == 'plan'
     needs: quality
     runs-on: ubuntu-latest
-    environment: development
+    environment: federation-bootstrap
     steps:
       - name: Check out the reviewed revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -153,7 +152,7 @@ jobs:
           TF_API_TOKEN_PLAN: ${{ secrets.TF_API_TOKEN_PLAN }}
         run: |
           if [ -z "$TF_API_TOKEN_PLAN" ]; then
-            echo "TF_API_TOKEN_PLAN is unavailable in the development environment." >&2
+            echo "TF_API_TOKEN_PLAN is unavailable in the federation-bootstrap environment." >&2
             exit 1
           fi
 
@@ -191,7 +190,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.operation == 'apply'
     needs: quality
     runs-on: ubuntu-latest
-    environment: development
+    environment: federation-bootstrap
     steps:
       - name: Check out the requested revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -208,8 +207,8 @@ jobs:
             echo "Apply is allowed only from main." >&2
             exit 1
           fi
-          if [ "$APPLY_CONFIRMATION" != "gptclaw-dev-host" ]; then
-            echo "Apply confirmation did not match gptclaw-dev-host." >&2
+          if [ "$APPLY_CONFIRMATION" != "gptclaw-tailscale-federation" ]; then
+            echo "Apply confirmation did not match gptclaw-tailscale-federation." >&2
             exit 1
           fi
           current_main_sha=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')
@@ -223,7 +222,7 @@ jobs:
           TF_API_TOKEN_APPLY: ${{ secrets.TF_API_TOKEN_APPLY }}
         run: |
           if [ -z "$TF_API_TOKEN_APPLY" ]; then
-            echo "TF_API_TOKEN_APPLY is unavailable in the development environment." >&2
+            echo "TF_API_TOKEN_APPLY is unavailable in the federation-bootstrap environment." >&2
             exit 1
           fi
 

@@ -60,6 +60,17 @@ write_files:
       [Install]
       WantedBy=multi-user.target
 
+  - path: /etc/gptclaw/tailscale-federation.json
+    owner: root:root
+    permissions: "0644"
+    content: |
+      ${indent(6, tailscale_federation_config)}
+  - path: /usr/local/libexec/gptclaw-tailscale-federation
+    owner: root:root
+    permissions: "0755"
+    content: |
+      ${indent(6, tailscale_federation_helper)}
+
 runcmd:
   - [systemctl, daemon-reload]
   - [systemctl, enable, --now, gptclaw-bootstrap.service]

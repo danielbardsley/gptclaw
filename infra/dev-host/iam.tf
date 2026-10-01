@@ -42,13 +42,16 @@ resource "aws_iam_role_policy" "dev_host_runtime" {
         Resource = "${aws_cloudwatch_log_group.dev_host.arn}:*"
       },
       {
-        Sid    = "ReadTailscaleEnrollmentSecret"
-        Effect = "Allow"
-        Action = [
-          "secretsmanager:DescribeSecret",
-          "secretsmanager:GetSecretValue",
-        ]
-        Resource = aws_secretsmanager_secret.tailscale_enrollment.arn
+        Sid      = "IssueTailscaleIdentityToken"
+        Effect   = "Allow"
+        Action   = ["sts:GetWebIdentityToken"]
+        Resource = "*"
+        Condition = {
+          "ForAllValues:StringEquals" = { "sts:IdentityTokenAudience" = local.tailscale_federation_audience }
+          Null                        = { "sts:IdentityTokenAudience" = "false" }
+          NumericLessThanEquals       = { "sts:DurationSeconds" = 300 }
+          StringEquals                = { "aws:RequestedRegion" = var.aws_region }
+        }
       },
     ]
   })

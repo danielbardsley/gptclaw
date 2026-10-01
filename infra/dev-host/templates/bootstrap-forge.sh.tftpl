@@ -2,13 +2,11 @@
 set -Eeuo pipefail
 umask 027
 
-readonly BOOTSTRAP_VERSION="6"
+readonly BOOTSTRAP_VERSION="7"
 readonly AWS_REGION=${jsonencode(aws_region)}
 readonly DATA_VOLUME_ID=${jsonencode(data_volume_id)}
 readonly INSTANCE_NAME=${jsonencode(instance_name)}
 readonly LOG_GROUP_NAME=${jsonencode(log_group_name)}
-readonly TAILSCALE_AUTH_SECRET_ARN=${jsonencode(tailscale_auth_secret_arn)}
-readonly TAILSCALE_AUTH_KEY_VERSION=${jsonencode(tailscale_auth_key_version)}
 readonly TAILSCALE_TAG=${jsonencode(tailscale_tag)}
 readonly LOG_FILE="/var/log/gptclaw-bootstrap.log"
 
@@ -164,28 +162,10 @@ python3 /usr/local/libexec/gptclaw-rootless configure
 log "status=succeeded"
 
 current_phase="tailscale"
-log "status=started auth_key_version=$TAILSCALE_AUTH_KEY_VERSION"
+log "status=started method=aws-workload-identity"
 python3 /usr/local/libexec/gptclaw-host-tools phase tailscale
 systemctl enable --now tailscaled
-if ! tailscale status --json | jq -e '.BackendState == "Running"' >/dev/null; then
-  set +x
-  tailscale_auth_key=$(aws secretsmanager get-secret-value \
-    --region "$AWS_REGION" \
-    --secret-id "$TAILSCALE_AUTH_SECRET_ARN" \
-    --query SecretString \
-    --output text)
-  if [ -z "$tailscale_auth_key" ] || [ "$tailscale_auth_key" = "None" ]; then
-    log "status=failed reason=empty-enrollment-secret"
-    exit 1
-  fi
-  tailscale up \
-    --auth-key="$tailscale_auth_key" \
-    --hostname="$INSTANCE_NAME" \
-    --advertise-tags="$TAILSCALE_TAG" \
-    --ssh=false
-  unset tailscale_auth_key
-fi
-tailscale status
+python3 /usr/local/libexec/gptclaw-tailscale-federation
 log "status=succeeded"
 
 current_phase="ssh-hardening"

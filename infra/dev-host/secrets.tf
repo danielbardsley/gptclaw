@@ -12,8 +12,9 @@ resource "aws_secretsmanager_secret" "tailscale_enrollment" {
   }
 }
 
-resource "aws_secretsmanager_secret_version" "tailscale_enrollment" {
-  secret_id                = aws_secretsmanager_secret.tailscale_enrollment.id
-  secret_string_wo         = var.tailscale_auth_key
-  secret_string_wo_version = var.tailscale_auth_key_version
+# Preserve the existing value; stop managing it without deleting its version.
+# The protected secret container remains for deliberate later retirement.
+removed {
+  from = aws_secretsmanager_secret_version.tailscale_enrollment
+  lifecycle { destroy = false }
 }

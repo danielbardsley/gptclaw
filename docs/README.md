@@ -129,3 +129,9 @@ dispositions independently of feature implementation status.
   [Technical design](./015-host-tool-profile/technical-design.md) ·
   [Tasks](./015-host-tool-profile/tasks.md) ·
   [Acceptance status](./015-host-tool-profile/acceptance.md)
+
+- **016 — Automatic Tailscale enrollment:**
+  [Specification](./016-tailscale-workload-identity/spec.md) ·
+  [Technical design](./016-tailscale-workload-identity/technical-design.md) ·
+  [Tasks](./016-tailscale-workload-identity/tasks.md) ·
+  [Acceptance](./016-tailscale-workload-identity/acceptance.md)

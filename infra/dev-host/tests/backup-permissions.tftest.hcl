@@ -15,12 +15,12 @@ mock_provider "aws" {
 mock_provider "cloudinit" {}
 
 variables {
-  aws_account_id         = "123456789012"
-  aws_region             = "us-east-1"
-  availability_zone      = "us-east-1a"
-  desktop_ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExamplePublicKeyForTerraformTests forge-dev-test"
-  tailscale_auth_key     = "tskey-auth-test"
-  deployment_revision    = "0123456789abcdef0123456789abcdef01234567"
+  aws_account_id                 = "123456789012"
+  aws_region                     = "us-east-1"
+  availability_zone              = "us-east-1a"
+  desktop_ssh_public_key         = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExamplePublicKeyForTerraformTests forge-dev-test"
+  tailscale_federation_client_id = "synthetic-client-id"
+  deployment_revision            = "0123456789abcdef0123456789abcdef01234567"
 }
 
 run "backup_deployment_boundaries" {
