@@ -20,6 +20,11 @@ write_files:
     permissions: "0755"
     content: |
       ${indent(6, host_tools_helper)}
+  - path: /usr/local/libexec/gptclaw-rootless
+    owner: root:root
+    permissions: "0755"
+    content: |
+      ${indent(6, rootless_helper)}
   - path: /etc/gptclaw/forge_authorized_key
     owner: root:root
     permissions: "0600"
@@ -28,13 +33,13 @@ write_files:
   - path: /usr/local/sbin/gptclaw-bootstrap
     owner: root:root
     permissions: "0750"
-    encoding: b64
-    content: ${base64encode(bootstrap_script)}
+    content: |
+      ${indent(6, bootstrap_script)}
   - path: /usr/local/libexec/gptclaw-install-host-policy
     owner: root:root
     permissions: "0755"
-    encoding: b64
-    content: ${base64encode(host_policy_script)}
+    content: |
+      ${indent(6, host_policy_script)}
   - path: /etc/systemd/system/gptclaw-bootstrap.service
     owner: root:root
     permissions: "0644"

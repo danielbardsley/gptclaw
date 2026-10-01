@@ -1,10 +1,10 @@
 # SPEC-015 acceptance evidence
 
-- **Status:** Local implementation and CI verified; merge and deployed acceptance pending
+- **Status:** Local implementation and CI verified; deployed acceptance pending
 - **Owner:** Daniel
 - **Evidence date:** 2026-10-01 (America/New_York)
 - **Implementation revision:** `fd1d1d3d708469f74775a959f620bc9e8a8447f2`
-- **Review:** [PR #25](https://github.com/danielbardsley/gptclaw/pull/25), unmerged
+- **Review:** [PR #25](https://github.com/danielbardsley/gptclaw/pull/25), merged as `c4c273c8aae5c2ff848576ab7d294b49d2017c94`
 - **Plans:** [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 
 ## Authorization and source disposition
@@ -69,7 +69,8 @@ completed successfully for `12c98c3d0b14468050802fb704e97244a7698e21`, which con
 implementation `fd1d1d3` plus this evidence record. This was the pull-request quality
 workflow, not a protected plan/apply. The subsequent change recording this CI
 result is documentation-only; CI evidence here refers to that exact tested SHA.
-The PR also contains the previously requested SYS-001 planning documents, which
+Daniel authorized and completed the PR merge on October 1, 2026. No deployment
+was performed. The PR also contains the previously requested SYS-001 planning documents, which
 remain unimplemented. Before any replacement, obtain Daniel's concrete deployment
 authorization and follow [Manage host tools](../../runbooks/manage-host-tools.md)
 and [host recovery](../../runbooks/recover-dev-host.md). Confirm a suitable recovery

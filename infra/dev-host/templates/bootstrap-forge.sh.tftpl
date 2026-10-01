@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 umask 027
 
-readonly BOOTSTRAP_VERSION="5"
+readonly BOOTSTRAP_VERSION="6"
 readonly AWS_REGION=${jsonencode(aws_region)}
 readonly DATA_VOLUME_ID=${jsonencode(data_volume_id)}
 readonly INSTANCE_NAME=${jsonencode(instance_name)}
@@ -25,7 +25,7 @@ log() {
 
 on_error() {
   local exit_code=$?
-  rm -f /var/lib/gptclaw/bootstrap-complete.json /var/lib/gptclaw/host-tools.json
+  rm -f /var/lib/gptclaw/bootstrap-complete.json /var/lib/gptclaw/host-tools.json /var/lib/gptclaw/rootless-toolchain.json
   log "status=failed exit_code=$exit_code"
   exit "$exit_code"
 }
@@ -40,9 +40,10 @@ fi
 current_phase="host-tools-validation"
 log "status=started"
 # Invalidate before even checking the parser; a retry cannot retain stale success.
-rm -f /var/lib/gptclaw/bootstrap-complete.json /var/lib/gptclaw/host-tools.json
+rm -f /var/lib/gptclaw/bootstrap-complete.json /var/lib/gptclaw/host-tools.json /var/lib/gptclaw/rootless-toolchain.json
 command -v python3 >/dev/null
 python3 /usr/local/libexec/gptclaw-host-tools begin
+python3 /usr/local/libexec/gptclaw-rootless prepare
 log "status=succeeded"
 
 current_phase="base-packages"
@@ -68,9 +69,7 @@ log "status=succeeded"
 
 current_phase="forge-user"
 log "status=started"
-if ! id forge >/dev/null 2>&1; then
-  useradd --create-home --shell /bin/bash forge
-fi
+python3 /usr/local/libexec/gptclaw-rootless identity
 passwd --lock forge >/dev/null
 deluser forge sudo >/dev/null 2>&1 || true
 install -d -o forge -g forge -m 0700 /home/forge/.ssh
@@ -159,6 +158,11 @@ systemctl enable --now gptclaw-projects-volume.service
 mountpoint -q /srv/forge
 log "status=succeeded"
 
+current_phase="rootless-toolchain"
+log "status=started"
+python3 /usr/local/libexec/gptclaw-rootless configure
+log "status=succeeded"
+
 current_phase="tailscale"
 log "status=started auth_key_version=$TAILSCALE_AUTH_KEY_VERSION"
 python3 /usr/local/libexec/gptclaw-host-tools phase tailscale
@@ -241,6 +245,7 @@ log "status=succeeded"
 
 current_phase="completion"
 log "status=started"
+python3 /usr/local/libexec/gptclaw-rootless verify
 python3 /usr/local/libexec/gptclaw-host-tools finish
 jq --arg bootstrap_version "$BOOTSTRAP_VERSION" '{
   bootstrap_version: $bootstrap_version,

@@ -1,0 +1,6 @@
+# Alpine 3.22.2 linux/amd64, resolved from the public registry on 2026-10-01.
+FROM docker.io/library/alpine@sha256:85f2b723e106c34644cd5851d7e81ee87da98ac54672b29947c052a45d31dc2f
+RUN mkdir -p /srv/fixture && printf 'SYS-001 synthetic fixture\n' > /srv/fixture/index.html
+WORKDIR /srv/fixture
+EXPOSE 8080
+CMD ["httpd", "-f", "-p", "8080", "-h", "/srv/fixture"]

@@ -216,7 +216,7 @@ class HostToolsTests(unittest.TestCase):
     def test_receipt_complete_sanitized_and_failed_probe(self):
         fake=Fake(); engine=ht.Provisioner(self.profile,fake)
         receipt=engine.receipt('1'*40)
-        self.assertEqual(len(receipt['components']),17)
+        self.assertEqual(len(receipt['components']),len(self.profile['components']))
         self.assertEqual(receipt['profile_digest'],ht.digest(self.profile))
         self.assertNotIn('source',json.dumps(receipt))
         fake.fail='--version'

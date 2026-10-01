@@ -121,7 +121,8 @@ dispositions independently of feature implementation status.
 - **014 - Rootless container toolchain (SYS-001):**
   [Specification](./014-rootless-container-toolchain/spec.md) ·
   [Technical design](./014-rootless-container-toolchain/technical-design.md) ·
-  [Tasks](./014-rootless-container-toolchain/tasks.md)
+  [Tasks](./014-rootless-container-toolchain/tasks.md) ·
+  [Acceptance status](./014-rootless-container-toolchain/acceptance.md)
 
 - **015 - Host tool profile (SYS-004):**
   [Specification](./015-host-tool-profile/spec.md) ·

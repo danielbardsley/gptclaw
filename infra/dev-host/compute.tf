@@ -1,6 +1,7 @@
 locals {
   host_tools_profile = file("${path.module}/host-tools.json")
   host_tools_helper  = file("${path.module}/lib/host_tools.py")
+  rootless_helper    = file("${path.module}/lib/rootless.py")
 
   host_policy_script = templatefile("${path.module}/templates/install-host-policy.sh.tftpl", {
     host_policy_revision = var.host_policy_revision
@@ -25,6 +26,7 @@ data "cloudinit_config" "dev_host" {
     content_type = "text/cloud-config"
     filename     = "cloud-init.yaml"
     content = templatefile("${path.module}/templates/cloud-init.yaml.tftpl", {
+      rootless_helper        = local.rootless_helper
       host_tools_profile     = local.host_tools_profile
       host_tools_helper      = local.host_tools_helper
       deployment_revision    = var.deployment_revision

@@ -199,6 +199,150 @@
       "verification": "apt-version"
     },
     {
+      "id": "podman",
+      "purpose": "SYS-001 rootless engine and Quadlet generator (reviewed 4.9 baseline)",
+      "owner": "SYS-001",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "podman",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "uidmap",
+      "purpose": "Rootless subordinate UID/GID mapping helpers",
+      "owner": "SYS-001",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "uidmap",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "slirp4netns",
+      "purpose": "Rootless userspace networking",
+      "owner": "SYS-001",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "slirp4netns",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "fuse-overlayfs",
+      "purpose": "Rootless overlay storage",
+      "owner": "SYS-001",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "fuse-overlayfs",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "netavark",
+      "purpose": "Podman network backend",
+      "owner": "SYS-001",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "netavark",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "aardvark-dns",
+      "purpose": "Container network DNS helper",
+      "owner": "SYS-001",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "aardvark-dns",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "dbus-user-session",
+      "purpose": "Persistent user manager bus",
+      "owner": "SYS-001",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "dbus-user-session",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "crun",
+      "purpose": "Rootless OCI runtime",
+      "owner": "SYS-001",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "crun",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "libpam-systemd",
+      "purpose": "User session and runtime directory integration",
+      "owner": "SYS-001",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "libpam-systemd",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
       "id": "ssm",
       "purpose": "Private recovery access",
       "owner": "SYS-004",

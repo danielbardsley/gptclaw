@@ -1,6 +1,6 @@
 # SPEC-014: Rootless Container Toolchain
 
-- **Status:** Draft; awaiting Daniel's review
+- **Status:** Implementation in review; deployment and acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** SYS-001
 - **Last updated:** 2026-10-01 (America/New_York)
@@ -16,9 +16,12 @@ synthetic container without privileged runtime access, and keep an explicitly
 configured user service running across logout and host reboot. This enables
 later work toward the first privately accessible web application.
 
-Daniel requested the SYS-001 specification. Drafting is authorized; specification
-approval, implementation, host replacement, and deployed acceptance are pending.
-This document does not authorize installation or deployment.
+Daniel authorized implementation with “Lets go ahead and implement SYS-001 now
+then” on October 1, 2026 (America/New_York), approving this scope and the disposable
+engine-storage policy. Implementation is authorized; merge, host replacement and
+deployed acceptance remain pending. All host mutations are delivered through the
+existing GitHub Actions/HCP Terraform pipeline, not local installation.
+See the [acceptance record](acceptance.md).
 
 ## Scope and current baseline
 
@@ -34,7 +37,7 @@ source selects Ubuntu Noble amd64; user-data changes replace the instance and
 its disposable root disk. Existing projects survive on the separate volume.
 
 Exclude language toolchains (SYS-002), general dependency policy (SYS-003), a
-whole-host tool profile (SYS-004), a privileged broker, shared caches, product
+redesign of the merged host tool profile (SYS-004), a privileged broker, shared caches, product
 scaffolding, manifest execution, `gptclawctl`, routing, public exposure, production,
 and application databases or secrets. RUN-002 owns the future project lifecycle
 contract, reconciliation and managed service policy; SYS-001 proves only the
@@ -127,13 +130,20 @@ including boot activation. Separate local tests from actual host acceptance.
 
 ## Decisions and completion
 
-Daniel reviews the proposed disposable engine storage policy and deployment
-window. Before implementation, the implementer must inventory non-secret host
-identity/storage metadata and resolve exact distro package versions, rootless
-network/storage backends, subordinate ranges and fixture image digest against
-the target environment. These are implementation gates, not claims of installed
-capability. If Noble's supported packages cannot meet the requirements, return a
-specific source/version proposal for review rather than expanding host policy.
+Discovery confirmed `forge` UID/GID 1002, matching project ownership, and
+`forge:231072:65536` in both subordinate mapping files. Podman and user container
+configuration/storage were absent; linger was disabled. Implementation preserves
+those identities explicitly and enables linger only through future bootstrap.
+The selected baseline is Noble Podman 4.9.x with crun, netavark/slirp4netns and
+fuse-overlayfs, declared through SYS-004. The fixture's Alpine 3.22.2 amd64 base
+is digest-pinned. [TDD-014](technical-design.md) records concrete choices and
+source evidence; no live toolchain configuration or runtime acceptance is claimed.
+
+Daniel owns the review/merge decision and a separate authorized replacement
+window. Provisioning fails on unsupported capabilities, identity/configuration
+conflicts or unknown storage; no alternate installer or relaxed host protection
+is permitted. SYS-004 is merged as part of PR #25, but not deployed or accepted;
+its existing source exceptions retain their independent November 1 expiry.
 
 Deliver implementation, tests, fixture, runbook and an acceptance record in this
 initiative. Mark SYS-001 Delivered only after merged implementation and passing
