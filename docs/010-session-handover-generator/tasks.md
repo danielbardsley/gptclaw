@@ -10,10 +10,10 @@
   independent spec/design/tasks with index/catalogue links.
 - [x] **T-002 Owner/implementation:** After Daniel approves scope and authorizes
   implementation, write the skill and handover outline (HND-001–004).
-- [ ] **T-003** Create synthetic producer fixtures; evaluate factual state,
+- [x] **T-003** Create synthetic producer fixtures; evaluate factual state,
   freshness, authorization, read minimization and save collision behavior for
   AC-001–004. Run appropriate package/repository checks.
-- [ ] **T-004** Give an independent consumer only the generated handover and
+- [x] **T-004** Give an independent consumer only the generated handover and
   permitted project files; inspect next-step understanding and actions (AC-005).
 - [ ] **T-005** Exercise supported-client selection/invocation, record revision
   and actual results. Missing access leaves that acceptance explicit (AC-006).
@@ -22,6 +22,7 @@
   remove only owned fixtures. No message or handoff to another real chat is
   implied by testing this feature.
 
-Current handover: scope approved on 2026-09-30; skill/outline and producer fixtures
-implemented. Behavioral producer/consumer evaluation is in progress; client
-selection, final CI and merge remain pending. See [acceptance](acceptance.md).
+Current handover: skill/outline and independent producer/consumer evaluations
+complete, including a verified correction separating unrelated pending operations
+from independent work. T-005 fresh supported-client selection and T-006 final CI,
+review/merge remain pending. See [acceptance](acceptance.md).

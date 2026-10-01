@@ -114,4 +114,4 @@ Preserve project data, unrelated processes, and private access on every path.
 Daniel approves this specification and later reviews the implementation. Record
 provider readiness and live acceptance separately from synthetic checks. Skill
 publication may be Deployed with AC-005 pending; Delivered requires all criteria.
-No runtime installation or service operation is authorized by this drafting task.
+No runtime installation or service operation is authorized by skill implementation approval.

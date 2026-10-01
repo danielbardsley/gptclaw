@@ -34,7 +34,9 @@ and proposals. Name checks actually run and failures/skips; do not turn a report
 pass into a verified pass. Carry forward existing approval with its exact scope
 and available source, without renewing authority through this snapshot. Preserve
 pending task/acceptance states. Include unfinished operation IDs and unknown
-outcomes; resume with bounded observation, never blind resubmission.
+outcomes; resume with bounded observation, never blind resubmission. Explain
+which next steps depend on each operation; an unrelated pending operation must
+not become a prerequisite for independent authorized local work.
 
 List the files/evidence needed for the next step and what the receiver must
 recheck: mutable Git/target state, outstanding operations, evidence freshness and

@@ -1,18 +1,18 @@
 # SPEC-010 acceptance evidence
 
-- Owner: Daniel. Evidence date: 2026-09-30.
-- Status: implemented on feature branch; behavioral evaluation in progress.
+- Owner: Daniel. Evidence dates: 2026-09-30 and 2026-10-01.
+- Status: implemented on feature branch; behavioral evaluation complete; client acceptance and merge pending.
 - [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 - [Implementation PR #20](https://github.com/danielbardsley/gptclaw/pull/20).
-- Evaluated entrypoint SHA-256: `1d8a57975644594ecca8b736aab76d465ed9ce063326e7be484d56f696fc9033` (pre-commit evaluation).
+- Evaluated corrected entrypoint SHA-256: `5d7defed63e434d6e7edde0e7b33bad9b89178da5851a596450cc43002734cd7` (pre-commit evaluation).
 
 | Criterion | State | Evidence / remaining action |
 |---|---|---|
-| AC-001 | pending | Six isolated Git fixture cases under independent producer evaluation. |
-| AC-002 | pending | Producer evaluates supplied/stale checks, existing local approval and unknown op-42. |
-| AC-003 | pending | Read/action trace and secret exclusion require parent review. |
-| AC-004 | pending | Chat, collision and symlink-save artifacts require preservation/link checks. |
-| AC-005 | pending | Independent consumer receives saved handover and allowed project only. |
+| AC-001 | passed | Six Git scenarios cover completed/partial/failed work, dirty categories, unborn and detached state; supplied test results remain attributed. |
+| AC-002 | passed after correction | Stale/unknown CI, scoped approval and op-42 uncertainty retained; rerun separates unrelated operation from independent local work. |
+| AC-003 | passed (synthetic) | Parent reviewed recorded read/actions; no forbidden-file content reads or sentinel disclosures; hostile text not executed. |
+| AC-004 | passed | All 48 original file/symlink snapshots preserved; eight reports under 600 words; two exclusive saves with 10 resolved links, existing reports retained, symlink destination refused. |
+| AC-005 | passed after correction | Fresh consumer recovered next task, scoped authority, dirty state and dependent/independent rechecks from corrected saved handover plus five linked files only. |
 | AC-006 | pending | Package checks pass; fresh supported-client discovery, final CI, owner review and merge remain. |
 
 ## Local checks and limits
@@ -27,5 +27,28 @@ commits are test setup, not behavior of the handover skill.
 
 No app tests, remote queries, operation dispatch, global settings or user-owned
 chat transfer are part of evaluation. Explicit subagent loading is not automatic
-supported-client discovery. Final observed artifacts/results will be recorded
-below before review. Daniel owns remaining client acceptance and merge review.
+supported-client discovery. Observed artifacts/results are recorded below. Daniel owns remaining client acceptance and merge review.
+
+## Independent producer and consumer results
+
+[Recorded reports and read/action traces](behavioral-evaluation.json) include the
+initial six producer cases, initial consumer, two corrected producer cases and a
+fresh consumer without the earlier session. The parent inspected actual reports,
+current files and SHA-256/symlink snapshots: all 48 original entries remained
+unchanged, including dirty files, forbidden fixture files and the existing report.
+No file was created for chat-only cases. Saved report links resolved from their
+original directory. Fixture isolation is scoped task authorization, not an OS
+security boundary; read traces are evaluator-recorded observations.
+
+The first consumer reproduced an unnecessary prerequisite: observe unrelated
+staging op-42 before any local work. This was a real quality finding. The skill
+now requires identifying actual dependencies and keeping independent authorized
+work available. Dirty/save cases were rerun against that change, preserving both
+prior reports, and a fresh consumer correctly separated local notes planning from
+staging-dependent work while retaining unknown operation outcome and no-resubmit.
+No completed task was rerun or approval inferred. Fixture guidance permits
+planning only, so the consumer also identified that separate local-scope limit.
+
+No fresh supported-client discovery/selection was exercised; AC-006 remains
+pending for Daniel alongside final review/merge. The correction affects handover
+instruction only and introduces no additional program or global setting.

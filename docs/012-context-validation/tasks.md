@@ -21,7 +21,8 @@
 - [ ] **T-006** Record actual merge and catalogue state, hand over checked scope
   and remaining owner actions, and remove only owned synthetic fixtures.
 
-Current handover: scope approved on 2026-09-30; skill/checklist/report and five
-paired synthetic scenarios implemented. Independent semantic evaluation is in
-progress. Supported-client selection, final repository/CI evidence and merge
-remain pending. See [acceptance](acceptance.md). No global hook was added.
+Current handover: skill/resources and read-only semantic evaluations complete.
+T-003's two repair checks remain pending after automatic approval rejection;
+explicit authorization for their exact disposable-file edits has been requested.
+T-004 fresh client routing, T-005 final CI/review, and T-006 merge remain pending.
+See [acceptance](acceptance.md). No global hook was added.
