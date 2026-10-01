@@ -1,6 +1,6 @@
 # TASKS-014: Rootless Container Toolchain
 
-- **Status:** Draft; implementation not authorized
+- **Status:** Implementation in review; deployed acceptance pending
 - **Owner:** Daniel
 - **Last updated:** 2026-10-01 (America/New_York)
 - **Specification:** [SPEC-014](spec.md)
@@ -11,21 +11,22 @@
 - [x] T-000: Inspect the catalogue, architecture, PRJ-001 boundary, committed
   bootstrap, replacement behavior and recovery guidance; draft this initiative.
   Evidence: source links and baseline observations in the specification/design.
-- [ ] T-001: Daniel reviews the specification and proposed storage policy, resolves
-  requested changes, and explicitly authorizes implementation. Record the decision.
+- [x] T-001: Daniel reviews the specification and proposed storage policy, resolves
+  requested changes, and explicitly authorizes implementation. Recorded October 1,
+  2026: “Lets go ahead and implement SYS-001 now then.” Deployment remains separate.
 
 ## Implementation, after T-001
 
-- [ ] T-002: Inspect non-secret current identity and existing container/configuration
+- [x] T-002: Inspect non-secret current identity and existing container/configuration
   metadata. Select supported package baseline, dependencies, network/storage
   backends, stable subordinate allocation and fixture image digest. Check Noble
   capabilities against version-matched upstream documentation. Record conflicts
   and resolve migration decisions before writing configuration. (RCT-001–RCT-004)
-- [ ] T-003: Add the declared toolchain bootstrap phase, safe managed configuration,
+- [x] T-003: Add the declared toolchain bootstrap phase, safe managed configuration,
   stable identity checks, user-manager persistence, capability checks and completion
   gating. Preserve unknown settings and all existing security/data protections.
   Do not deploy. (RCT-001–RCT-003, RCT-005, RCT-006)
-- [ ] T-004: Add a digest-pinned synthetic build/run and Quadlet fixture with scoped
+- [x] T-004: Add a digest-pinned synthetic build/run and Quadlet fixture with scoped
   verification/cleanup, restart/resource bounds and no secrets; write the operator
   runbook including graph-store loss, capacity checks and recovery instructions.
   Cover port collisions and bind-mount ownership. (RCT-002–RCT-005, RCT-007)
@@ -54,7 +55,10 @@
 
 ## Current handover
 
-Planning documents are drafted; no toolchain code, installation, deployment or
-runtime tests have been performed. The documentation index and SYS-001 catalogue
-entry link this draft. Next action is Daniel's specification review (T-001), then
-version/identity/storage discovery (T-002) once implementation is authorized.
+Implementation and operator/fixture instructions are complete locally. Discovery
+selected the existing UID/GID and subordinate allocation, Noble Podman 4.9.x and
+a digest-pinned fixture; no existing store needs migration. T-005 local checks and
+CI are recorded in [acceptance.md](acceptance.md); review/merge and T-006/T-007 host
+acceptance remain pending. No live package installation, mappings, user-manager
+settings, containers or infrastructure have been changed. Next step is review of
+the implementation PR, followed by separately authorized pipeline deployment.

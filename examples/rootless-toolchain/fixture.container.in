@@ -1,0 +1,31 @@
+[Unit]
+Description=SYS-001 synthetic acceptance fixture @TOKEN@
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Container]
+Image=@IMAGE@
+ContainerName=@NAME@
+Label=com.gptclaw.sys001=@TOKEN@
+UserNS=keep-id
+Network=slirp4netns
+PublishPort=127.0.0.1:@PORT@:8080
+Volume=@DATA@:/srv/fixture:rw
+WorkingDir=/srv/fixture
+Exec=httpd -f -p 8080 -h /srv/fixture
+Pull=never
+NoNewPrivileges=true
+DropCapability=all
+ReadOnly=true
+PidsLimit=64
+PodmanArgs=--cpus=0.5 --memory=128m
+
+[Service]
+ExecStartPre=/usr/bin/timeout 120 /bin/sh -c 'until /usr/bin/mountpoint -q /srv/forge; do sleep 1; done'
+Restart=on-failure
+RestartSec=2
+TimeoutStartSec=180
+TimeoutStopSec=20
+
+[Install]
+WantedBy=default.target

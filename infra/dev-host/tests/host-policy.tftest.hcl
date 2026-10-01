@@ -70,7 +70,7 @@ run "first_boot_policy" {
   }
 
   assert {
-    condition     = strcontains(data.cloudinit_config.dev_host.part[0].content, base64encode(local.host_policy_script))
+    condition     = [for entry in yamldecode(data.cloudinit_config.dev_host.part[0].content).write_files : entry.content if entry.path == "/usr/local/libexec/gptclaw-install-host-policy"][0] == local.host_policy_script
     error_message = "Cloud-init must embed the generated policy bootstrap helper."
   }
 

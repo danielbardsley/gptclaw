@@ -82,6 +82,12 @@ and compare the installed receipt's profile digest and deployment revision with
 the reviewed source. Check channel exception expiry before deployment or rollback.
 Profile changes do not authorize a local installer or automatic package removal.
 
+For SYS-001 replacements, also follow [Manage the rootless toolchain](manage-rootless-toolchain.md).
+Preserve the declared forge UID/GID and subordinate range, verify the rootless
+capability receipt, and reconstruct only explicitly selected user Quadlets. A
+rollback must not restore dynamic identity allocation without verifying ownership
+compatibility with the protected project disk.
+
 ## Common failures
 
 | Failure | Response |

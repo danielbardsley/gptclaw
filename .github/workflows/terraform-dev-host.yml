@@ -13,6 +13,9 @@ on:
       - docs/project-manifest.md
       - docs/013-versioned-project-manifest/**
       - docs/015-host-tool-profile/**
+      - docs/014-rootless-container-toolchain/**
+      - examples/rootless-toolchain/**
+      - runbooks/manage-rootless-toolchain.md
       - runbooks/manage-host-tools.md
       - config/codex/**
       - AGENTS.md
@@ -35,6 +38,9 @@ on:
       - docs/project-manifest.md
       - docs/013-versioned-project-manifest/**
       - docs/015-host-tool-profile/**
+      - docs/014-rootless-container-toolchain/**
+      - examples/rootless-toolchain/**
+      - runbooks/manage-rootless-toolchain.md
       - runbooks/manage-host-tools.md
       - config/codex/**
       - AGENTS.md
