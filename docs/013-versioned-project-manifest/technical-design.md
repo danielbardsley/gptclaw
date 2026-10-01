@@ -1,6 +1,6 @@
 # TDD-013: Versioned Project Manifest
 
-- **Status:** Draft proposal; implementation not authorized
+- **Status:** Implemented on feature branch; review and acceptance pending
 - **Owner:** Daniel
 - **Last updated:** 2026-09-30 (America/New_York)
 - **Specification:** [SPEC-013](./spec.md)
@@ -12,15 +12,21 @@ Implement a small Python validator and bundled JSON Schema, separate from the
 future lifecycle CLI. Python 3 is the existing repository script baseline.
 Use maintained YAML and JSON Schema libraries in an isolated, pinned development
 environment; do not build a general YAML parser or install host packages.
-T-002 selects exact versions and records local/CI setup before implementation.
-Dependencies may be fetched during explicit setup, never during validation.
-No current installation of those libraries is assumed.
+T-002 selected Python 3.12, PyYAML 6.0.3 and jsonschema 4.26.0, with a complete
+hash-pinned transitive lock at `requirements/project-manifest.txt`.
+`scripts/setup-project-manifest.py --venv <new-directory>` creates an isolated
+environment even without host pip/ensurepip. Its pinned, digest-verified pip
+26.2.1 bootstrap installs wheels only. The setup and
+[reference](../project-manifest.md) document exact commands and dependency pins.
+Dependencies are fetched during explicit setup, never during validation.
+Local verification uses `/tmp/gptclaw-prj001-venv`; CI uses a fresh runner-temp
+environment with Python 3.12 from an immutable setup-python action.
 
 The public contract remains YAML plus JSON Schema. Parsing restrictions and
 cross-field rules supplement the schema; downstream consumers must use the
 same validation behavior, not treat schema-only checking as equivalent.
 
-## Proposed version-1 fields
+## Version-1 fields
 
 All fields below are required. Every object rejects additional properties.
 There are no implicit defaults or optional extension bags in version 1.
@@ -47,8 +53,8 @@ base path. Health checks target the internal service directly; ingress paths
 are not automatically prepended to it. The future routing/template design must
 serve the declared base path and specify its forwarding behavior explicitly.
 
-Proposed illustrative manifest (to become a checked-in example during
-implementation, not an active `.gptclaw/project.yaml` in this repository):
+The checked-in `examples/project-manifest/web.yaml` is inert, not an active
+`.gptclaw/project.yaml` in this repository:
 
 ```yaml
 schema_version: 1
@@ -83,7 +89,7 @@ and base-path support; the validator does not claim those exist.
 
 ## Components and interface
 
-| Proposed component | Responsibility |
+| Component | Responsibility |
 |---|---|
 | `schemas/project/v1.schema.json` | Versioned structural/type constraints; local references only |
 | `scripts/validate-project-manifest.py` | Thin command entrypoint over reusable parsing and validation functions |
@@ -91,9 +97,9 @@ and base-path support; the validator does not claim those exist.
 | `examples/project-manifest/web.yaml` | Inert synthetic example matching version 1 |
 | `docs/project-manifest.md` | Field reference, setup, interface, author workflow and limitations |
 | `scripts/tests/test_project_manifest.py` | Isolated behavioral and failure tests |
-| Dependency lock/setup, repository checker and CI | Reproducible isolated setup and execution of the same tests; exact paths selected in T-002 |
+| `requirements/project-manifest.txt`, `scripts/setup-project-manifest.py`, repository checker and existing CI workflow | Hash-pinned isolated setup and execution of the same tests; no change to deployment gates |
 
-Proposed invocation from the GptClaw checkout:
+Invocation from the GptClaw checkout:
 
 ```text
 python3 scripts/validate-project-manifest.py --project-root <directory> [--json]
@@ -169,7 +175,18 @@ Reverting this implementation must not delete consumers' manifests or data.
 | PMF-005 | Sanitized deterministic result and exit contract | T-003, T-005 | AC-004 |
 | PMF-006 | Example, reference, author workflow, existing bootstrap checks | T-004, T-005, T-006 | AC-005, AC-006 |
 
-Daniel reviews the proposed fields and scope in T-001. The implementation owner
-selects pinned libraries/setup in T-002; dependency availability is not required
-to review this draft. Lifecycle APIs, runtime profiles/resource policy, actual
+Daniel approved scope and authorized implementation in T-001. T-002 pins and
+setup are recorded above. Implementation review and merge remain pending. Lifecycle APIs, runtime profiles/resource policy, actual
 URL allocation, and application scaffolding remain later specifications.
+
+## Implementation clarifications
+
+Explicit YAML tags, including standard tags, are rejected to prevent overrides
+of the JSON scalar resolver. Unknown-field diagnostics report the containing
+object rather than echo arbitrary user keys. Strict integer validation rejects
+floating-point whole numbers as well as booleans. The Python regex end anchor
+is hardened against trailing line breaks; names/arguments also reject C1
+controls and Unicode line/paragraph separators. Missing libraries, corrupt
+schemas, and nonlocal schema references return setup errors without retrieval.
+The CLI disables bytecode writes. See the [acceptance record](acceptance.md)
+for executed evidence and limitations.

@@ -1,6 +1,6 @@
 # TASKS-013: Versioned Project Manifest
 
-- **Status:** Draft planning complete; specification approval and implementation authorization pending
+- **Status:** Implementation and local verification complete; CI, owner review/merge pending
 - **Owner:** Daniel
 - **Last updated:** 2026-09-30 (America/New_York)
 - **Specification:** [SPEC-013](./spec.md)
@@ -12,29 +12,29 @@
   and runtime-operation contract/acceptance. Reserve initiative 013, draft the
   specification/design/tasks, and index PRJ-001 as Draft. User selected PRJ-001
   as the first feature toward a working private app and deferred further RES work.
-- [ ] T-001: Daniel reviews the single-service manifest scope and proposed field
-  contract; record specification approval separately from implementation
-  authorization. A planning PR merge alone is not implementation authorization.
+- [x] T-001: Daniel approved the specification and explicitly authorized
+  implementation with “Implement the spec” on 2026-09-30 (America/New_York).
+  Resulting implementation review and merge are still pending.
 
 ## Implementation, after T-001 authorization
 
-- [ ] T-002: Verify available Python/tool versions; select maintained YAML and
+- [x] T-002: Verify available Python/tool versions; select maintained YAML and
   JSON Schema libraries, pin dependencies reproducibly, and document isolated
   local/CI setup without host installs. Verify required parser restrictions and
   offline schema resolution; update the design with exact paths and commands.
   Covers PMF-001/004; prerequisite for T-003 and T-005.
-- [ ] T-003: Implement bundled schema, strict bounded parser, semantic checks,
+- [x] T-003: Implement bundled schema, strict bounded parser, semantic checks,
   reusable validator, and thin CLI with documented exit/result/error contracts.
   Preserve observation-only behavior and safe file opening. Covers PMF-001–005;
   verify against AC-001–004.
-- [ ] T-004: Add the synthetic web example and field/author reference. Explain
+- [x] T-004: Add the synthetic web example and field/author reference. Explain
   commands, health/base paths, private/ephemeral limits, versioning, validation
   versus authorization, and explicit future adoption. Do not modify AGT-005's
   planning starter. Covers PMF-002/003/006; verify against AC-001/002/005.
 
 ## Verification and delivery
 
-- [ ] T-005: Add and run isolated positive/negative tests for AC-001–004; execute
+- [x] T-005: Add and run isolated positive/negative tests for AC-001–004; execute
   the copy/validate/break/fix workflow for AC-005. Include command/environment
   sentinels, unchanged project bytes, network-unavailable validation, permission
   failures, symlinks/non-regular files, and input limits. Run existing bootstrap
@@ -49,9 +49,10 @@
 
 ## Current handover
 
-Only planning documents and catalogue/index references have changed. No schema,
-validator, example file, dependency, runtime, host setting, or project manifest
-has been installed. No implementation acceptance criterion has been executed.
-Next decision: Daniel's specification review and implementation authorization
-(T-001). PRJ-002 and the runtime foundation follow this contract; further RES
-work waits for the working-product milestone.
+The schema, bounded offline validator, CLI, hash-pinned setup, synthetic example,
+reference, behavioral tests, and CI integration are implemented. All 134 repository tests pass, including 27 manifest tests. Local evidence is
+recorded; CI and owner implementation review/merge remain pending.
+No application, runtime, route, or infrastructure has been deployed. See
+[acceptance](acceptance.md) for exact verification and pending review/merge.
+PRJ-002 and the runtime foundation follow this contract; further RES work waits
+for the working-product milestone.

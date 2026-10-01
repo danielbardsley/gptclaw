@@ -35,7 +35,19 @@ preparing another project's guidance.
 
 For policies, templates, scripts, workflow, or infrastructure changes, run
 `./scripts/check-repository.sh` from the repository root. It includes offline
-host-policy, bootstrap, and repository-guidance tests. Documentation-only edits
+host-policy, bootstrap, repository-guidance, and project-manifest tests.
+First prepare and activate the isolated Python 3.12 environment:
+
+```sh
+python3 scripts/setup-project-manifest.py --venv .venv-manifest
+source .venv-manifest/bin/activate
+./scripts/check-repository.sh
+```
+
+Setup downloads hash-pinned dependencies; validation/tests then run offline.
+Reuse the prepared environment; setup refuses existing destinations.
+See the [project manifest reference](./docs/project-manifest.md) for the validator,
+example, supported fields, and limitations. Documentation-only edits
 need diff and relative-link review.
 
 For Terraform changes, use the Terraform version declared in

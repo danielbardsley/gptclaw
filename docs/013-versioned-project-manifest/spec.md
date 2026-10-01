@@ -1,6 +1,6 @@
 # SPEC-013: Versioned Project Manifest
 
-- **Status:** Draft; specification approval and implementation authorization pending
+- **Status:** Approved for implementation; implementation review pending
 - **Owner:** Daniel
 - **Feature catalogue:** PRJ-001
 - **Last updated:** 2026-09-30 (America/New_York)
@@ -19,7 +19,9 @@ receive actionable errors before future runtime tooling attempts to use it.
 This is the first feature toward the working-product milestone: create an app,
 run it privately, open it, request a change, and see the update. PRJ-001 delivers
 the contract and validator, not that entire milestone. Daniel selected this
-feature and requested its specification; implementation is not yet authorized.
+feature and requested its specification, then approved it and explicitly
+authorized implementation with “Implement the spec” on 2026-09-30
+(America/New_York). Implementation review/merge and acceptance remain separate.
 Further RES work is deferred until the working-product milestone is proven;
 existing backups and host safeguards remain in place.
 
@@ -150,11 +152,11 @@ Mark PRJ-001 Delivered after merged implementation and the criteria above pass.
 Do not close AGT-006's live acceptance or claim the working-product milestone
 from schema validation evidence.
 
-Proposed defaults are a single web service, argument vectors, path-based private
-routing, and no managed persistent data. Daniel can approve or revise these in
-specification review. Parser/schema-library pins are an implementation choice
-to resolve in T-002 with reproducible local dependency setup; they must not
-require host package installation or a network connection during validation.
+Approved defaults are a single web service, argument vectors, path-based private
+routing, and no managed persistent data. T-002 selected pinned parser/schema
+libraries and isolated setup, recorded in the design and
+[contract reference](../project-manifest.md); validation requires neither host
+package installation nor a network connection.
 There is no deployment or data migration in this scope. A reviewed revert can
 remove the validator/schema/example; it must preserve independently authored
 project manifests and cannot undo any later runtime operations.

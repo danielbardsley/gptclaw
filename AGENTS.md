@@ -18,8 +18,8 @@ boundary or a new grant of authority.
 
 Terraform is pinned in [the version file](infra/dev-host/.terraform-version);
 provider selections are in [the lock file](infra/dev-host/.terraform.lock.hcl).
-Scripts use Bash and Python 3's standard library; no package install is needed
-for their offline tests. Verify installed tools rather than assuming they exist.
+Scripts use Bash/Python 3. Manifest tests need an isolated Python 3.12
+environment: [setup](docs/project-manifest.md). Tests run offline after setup.
 
 - `infra/dev-host/`: Terraform, cloud-init templates, and Terraform tests.
 - `config/codex/`: canonical host-policy source, not the installed policy.
@@ -41,10 +41,10 @@ directory. Do not install host packages to make checks pass.
 | Operation | Directory | Command / applicability | Prerequisites, effects, and when |
 |---|---|---|---|
 | Terraform setup | `infra/dev-host` | `terraform init -backend=false -input=false -lockfile=readonly` | Pinned Terraform; network fetch of providers/modules and local `.terraform` writes. For Terraform changes when initialization is needed; no remote backend. |
-| Script setup | root | No package installation | Bash, Python 3, Git, and standard host utilities already available; inspect versions if needed. |
+| Script setup | root | `python3 scripts/setup-project-manifest.py --venv .venv-manifest`; `source .venv-manifest/bin/activate` | Python 3.12; network setup into a new environment. Reuse it thereafter; no host installs. |
 | Development startup / app build | root | Not applicable: no application service or build target | Do not start a runtime from architecture proposals. |
 | Diff quality | root | `git diff --check` and `git diff --cached --check` | Git; read-only whitespace checks, including staged edits. Review relative links for changed documentation. |
-| Repository checks | root | `./scripts/check-repository.sh` | Bash/Python 3/Git; offline invariants and isolated tests using task-owned temporary directories. For scripts, policies, templates, workflow, or Terraform changes. |
+| Repository checks | root | `./scripts/check-repository.sh` | Prepared manifest environment, Bash/Git; offline invariants and isolated tests using task-owned temporary directories. For scripts, policies, templates, workflow, or Terraform changes. |
 | Repository guidance tests | root | `python3 scripts/tests/test_repository_agents.py` | Python 3/Git; focused offline checks and fixture rollback; for template/root-guidance changes. |
 | Host-policy tests | root | `./scripts/tests/install-host-agents.sh` | Bash/Python 3/Git; isolated fixtures only; for installer/policy changes. |
 | Bootstrap tests | root | `python3 scripts/tests/test_host_policy_bootstrap.py` | Python 3/Git; offline bootstrap fixtures; for bootstrap helper changes. |

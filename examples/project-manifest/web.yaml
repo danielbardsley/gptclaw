@@ -1,0 +1,20 @@
+schema_version: 1
+project:
+  id: example-web
+  name: Example Web
+  kind: web
+commands:
+  build: [pnpm, build]
+  start: [pnpm, start]
+  test: [pnpm, test]
+service:
+  internal_port: 3000
+  health:
+    path: /projects/example-web/api/health
+    timeout_seconds: 5
+exposure:
+  private: true
+  base_path: /projects/example-web/
+  funnel: false
+data:
+  mode: ephemeral

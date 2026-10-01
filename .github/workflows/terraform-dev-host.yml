@@ -7,6 +7,11 @@ on:
       - .github/workflows/terraform-dev-host.yml
       - infra/dev-host/**
       - scripts/**
+      - schemas/**
+      - examples/project-manifest/**
+      - requirements/**
+      - docs/project-manifest.md
+      - docs/013-versioned-project-manifest/**
       - config/codex/**
       - AGENTS.md
       - templates/agents/**
@@ -22,6 +27,11 @@ on:
       - .github/workflows/terraform-dev-host.yml
       - infra/dev-host/**
       - scripts/**
+      - schemas/**
+      - examples/project-manifest/**
+      - requirements/**
+      - docs/project-manifest.md
+      - docs/013-versioned-project-manifest/**
       - config/codex/**
       - AGENTS.md
       - templates/agents/**
@@ -75,6 +85,16 @@ jobs:
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
           terraform_wrapper: false
+
+      - name: Set up Python for repository checks
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+
+      - name: Set up isolated manifest dependencies
+        run: |
+          python3 scripts/setup-project-manifest.py --venv "$RUNNER_TEMP/manifest-venv"
+          echo "$RUNNER_TEMP/manifest-venv/bin" >> "$GITHUB_PATH"
 
       - name: Check repository security invariants
         run: ./scripts/check-repository.sh
