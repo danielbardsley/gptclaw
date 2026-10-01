@@ -1,6 +1,6 @@
 # TASKS-013: Versioned Project Manifest
 
-- **Status:** Implementation and local verification complete; CI, owner review/merge pending
+- **Status:** Implementation, local verification and implementation CI complete; owner review/merge pending
 - **Owner:** Daniel
 - **Last updated:** 2026-09-30 (America/New_York)
 - **Specification:** [SPEC-013](./spec.md)
@@ -51,7 +51,7 @@
 
 The schema, bounded offline validator, CLI, hash-pinned setup, synthetic example,
 reference, behavioral tests, and CI integration are implemented. All 134 repository tests pass, including 27 manifest tests. Local evidence is
-recorded; CI and owner implementation review/merge remain pending.
+recorded and implementation CI run #73 passed; owner review/merge remain pending.
 No application, runtime, route, or infrastructure has been deployed. See
 [acceptance](acceptance.md) for exact verification and pending review/merge.
 PRJ-002 and the runtime foundation follow this contract; further RES work waits
