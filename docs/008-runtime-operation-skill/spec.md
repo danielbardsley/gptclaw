@@ -6,7 +6,7 @@
 - **Design:** [TDD-008](./technical-design.md)
 - **Tasks:** [TASKS-008](./tasks.md)
 - **Architecture:** [Platform architecture](../platform/architecture.md), sections 11–14
-- **Last updated:** 2026-09-30
+- **Last updated:** 2026-10-01
 
 Daniel approved these specifications and authorized sequential implementation in
 one feature branch on 2026-09-30. This does not authorize runtime operations,

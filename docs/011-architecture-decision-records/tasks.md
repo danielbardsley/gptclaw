@@ -4,7 +4,7 @@
 - **Owner:** Daniel
 - **Specification:** [SPEC-011](./spec.md)
 - **Design:** [TDD-011](./technical-design.md)
-- **Last updated:** 2026-09-30
+- **Last updated:** 2026-10-01
 
 - [x] **T-001** Review architecture decision intent and existing skill-distribution
   evidence; draft independent plans and catalogue/index links.
@@ -25,5 +25,6 @@
 Current handover: convention, template, index, Proposed pilot and 19 offline
 checks implemented. T-002 approval was supplied on 2026-09-30; it does not accept
 the pilot's unwritten rationale. Independent reader review passed;
-Daniel's pilot disposition, final CI and merge remain pending. See
+Daniel's pilot disposition and merge remain pending; full checks and PR CI
+run #70 passed. See
 [acceptance](acceptance.md).

@@ -4,7 +4,7 @@
 - **Owner:** Daniel
 - **Specification:** [SPEC-012](./spec.md)
 - **Tasks:** [TASKS-012](./tasks.md)
-- **Last updated:** 2026-09-30
+- **Last updated:** 2026-10-01
 
 ## Approach and artifacts
 

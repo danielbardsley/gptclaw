@@ -4,7 +4,7 @@
 - **Owner:** Daniel
 - **Specification:** [SPEC-011](./spec.md)
 - **Tasks:** [TASKS-011](./tasks.md)
-- **Last updated:** 2026-09-30
+- **Last updated:** 2026-10-01
 
 ## Design and files
 

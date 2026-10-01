@@ -4,7 +4,7 @@
 - **Owner:** Daniel
 - **Specification:** [SPEC-010](./spec.md)
 - **Design:** [TDD-010](./technical-design.md)
-- **Last updated:** 2026-09-30
+- **Last updated:** 2026-10-01
 
 - [x] **T-001** Review existing project/session evidence conventions and draft
   independent spec/design/tasks with index/catalogue links.
@@ -24,5 +24,5 @@
 
 Current handover: skill/outline and independent producer/consumer evaluations
 complete, including a verified correction separating unrelated pending operations
-from independent work. T-005 fresh supported-client selection and T-006 final CI,
-review/merge remain pending. See [acceptance](acceptance.md).
+from independent work. T-005 fresh supported-client selection and T-006 review/merge remain pending;
+the full repository suite and PR CI run #70 passed. See [acceptance](acceptance.md).

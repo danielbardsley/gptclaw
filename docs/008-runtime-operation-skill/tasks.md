@@ -4,7 +4,7 @@
 - **Owner:** Daniel
 - **Specification:** [SPEC-008](./spec.md)
 - **Design:** [TDD-008](./technical-design.md)
-- **Last updated:** 2026-09-30
+- **Last updated:** 2026-10-01
 
 - [x] **T-001** Inspect catalogue/architecture and actual repository capability;
   draft independent plans and link initiative 008.
@@ -24,5 +24,5 @@
 Current handover: scope approved and implementation authorized on 2026-09-30.
 T-002's scope approval is complete; concrete live-provider selection remains
 pending. Skill/resources and 17 synthetic evaluations are complete. T-005 waits
-for the real runtime; T-006 awaits final CI, owner review and merge. See
+for the real runtime; T-006 awaits owner review and merge; full checks and PR CI run #70 passed. See
 [acceptance evidence](acceptance.md). The other four initiatives are not dependencies.

@@ -11,7 +11,7 @@
 | AC-002 | passed (local) | 19 tests cover metadata, approval presence, retirement, editorial correction, full/partial/multi-hop supersession, later-deprecated successor and invalid graphs/IDs. |
 | AC-003 | passed (local) | Shipped index/record links and structure validated; checker reads only decision documents, checks other target existence and executes no content/network requests. |
 | AC-004 | passed | Independent reader identified scope, evidence, present rationale and implementation limits; no actionable issues. [Review](reader-review.json). |
-| AC-005 | pending | Local checks pass; final repository/CI results, owner disposition and merge remain. |
+| AC-005 | pending | Local checks pass; full checks/CI passed below; owner disposition and merge remain. |
 
 ## Verification and limits
 
@@ -34,3 +34,25 @@ source. Alternatives/rationale are labeled present analysis. Earlier approvals
 remain valid, but do not accept the ADR's new framing. Daniel owns its disposition
 and resulting-change review. A decision reversal normally creates a successor,
 not deletion of historical records. No fresh-client skill test applies to AGT-009.
+
+## Batch verification and delivery state
+
+Implementation sources at `4e649bffcc62aaf4e0c79e93f2c9fe730735f0fe` passed
+`./scripts/check-repository.sh`: all 107 tests and repository invariants passed
+(installer 17, host bootstrap 5, repository guidance 10, nested guidance 9,
+specification package 10, project bootstrap 28, workflow packages 9, ADR 19).
+`bash -n scripts/check-repository.sh`, `git diff --check` and
+`git diff --cached --check` passed. Local relative-link review resolved 157
+file targets in 40 changed Markdown documents before this evidence addition;
+external URLs and heading anchors were not checked.
+
+[PR CI run #70](https://github.com/danielbardsley/gptclaw/actions/runs/36794756237)
+passed for that implementation revision on 2026-10-01: repository quality checks,
+Terraform format, backend-free initialization, validation and tests. Protected
+plan/apply were skipped. No Terraform source changed, so separate local Terraform
+runs were unnecessary; no infrastructure deployment was performed.
+
+[PR #20](https://github.com/danielbardsley/gptclaw/pull/20) is ready for review on
+`codex/agt-006-through-010-specs`. Resulting-change review and merge remain pending;
+the catalogue records In review, not Delivered. The later documentation-only
+commit records this observed CI outcome and does not change tested source.
