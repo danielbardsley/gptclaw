@@ -2,12 +2,13 @@
 
 - **Owner:** Daniel
 - **Evidence date:** 2026-09-30 (America/New_York)
-- **Status:** Local verification and implementation CI passed; owner review and merge pending
+- **Status:** Accepted and merged; PRJ-001 Delivered
 - **Specification:** [SPEC-013](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 - **Tested implementation revision:** `63698085467028467d8076191d1e3ebf83d63a45`
 - **Implementation PR:** [PR #22](https://github.com/danielbardsley/gptclaw/pull/22)
 - **Authorization:** Daniel approved the specification and explicitly requested
-  implementation in this chat. Implementation acceptance and merge are separate.
+  implementation in this chat, then accepted the implementation with “looks good,
+  commit and merge into main” on 2026-09-30 (America/New_York).
 
 ## Criterion mapping
 
@@ -18,7 +19,7 @@
 | AC-003 | Passed locally | Actual unreadable file/directory checks as unprivileged forge; missing/symlink/FIFO/directory inputs, symlink swap during open, malformed/restricted YAML, UTF-8 and size/depth limits pass. Instrumented network/process denial, literal environment arguments, command sentinels and unchanged project bytes pass. |
 | AC-004 | Passed locally | Human/JSON and exit statuses, missing dependencies/schema, invalid/nonlocal schema, sanitized internal failures, deterministic bounded error lists and input redaction pass. |
 | AC-005 | Passed locally | CLI copy/validate/break/fix example passes without Node/runtime; CLI launched from project directory ignores project modules. All 28 existing planning-bootstrap tests pass unchanged. |
-| AC-006 | Pending | Local repository checks and implementation CI pass. Daniel's implementation review and merge remain pending. No running application or deployed behavior is claimed. |
+| AC-006 | Passed | All 134 local tests and final PR CI #74 passed; Daniel accepted implementation and authorized merge. PR #22 merged as `aa55583`. No running application or deployed behavior is claimed. |
 
 ## Executed verification
 
@@ -64,9 +65,12 @@ installed host policy was changed.
 
 ## Delivery and remaining work
 
-Implementation revision `6369808` is committed and pushed on
-`codex/prj-001-manifest-spec` in PR #22.
-Daniel owns implementation acceptance and merge. PRJ-001 remains In review,
-not Delivered. AGT-006 live runtime acceptance and the working-private-app
+[Final PR CI #74](https://github.com/danielbardsley/gptclaw/actions/runs/36812619003)
+passed for final implementation PR head
+`dfc162c2163e57b3eb7745edbbb2736a174a5c0e`. This includes repository and Terraform
+quality checks; protected plan/apply were skipped. Daniel accepted the
+implementation and authorized merge. [PR #22](https://github.com/danielbardsley/gptclaw/pull/22)
+merged into `main` as `aa55583309d8838649bf6b45cbe1170b211fa840`.
+All PRJ-001 criteria are satisfied; the catalogue records Delivered. AGT-006 live runtime acceptance and the working-private-app
 milestone remain open. Rollback is a reviewed revert of tooling; preserve
 independently authored manifests and any later runtime state.

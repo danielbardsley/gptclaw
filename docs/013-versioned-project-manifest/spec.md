@@ -1,6 +1,6 @@
 # SPEC-013: Versioned Project Manifest
 
-- **Status:** Approved for implementation; implementation review pending
+- **Status:** Delivered; merged and accepted
 - **Owner:** Daniel
 - **Feature catalogue:** PRJ-001
 - **Last updated:** 2026-09-30 (America/New_York)
@@ -21,7 +21,9 @@ run it privately, open it, request a change, and see the update. PRJ-001 deliver
 the contract and validator, not that entire milestone. Daniel selected this
 feature and requested its specification, then approved it and explicitly
 authorized implementation with “Implement the spec” on 2026-09-30
-(America/New_York). Implementation review/merge and acceptance remain separate.
+(America/New_York). Daniel subsequently accepted the implementation and authorized merge;
+[PR #22](https://github.com/danielbardsley/gptclaw/pull/22) merged as `aa55583`.
+See the [acceptance record](acceptance.md).
 Further RES work is deferred until the working-product milestone is proven;
 existing backups and host safeguards remain in place.
 

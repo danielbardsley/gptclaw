@@ -1,6 +1,6 @@
 # TASKS-013: Versioned Project Manifest
 
-- **Status:** Implementation, local verification and implementation CI complete; owner review/merge pending
+- **Status:** Complete; implementation merged and accepted
 - **Owner:** Daniel
 - **Last updated:** 2026-09-30 (America/New_York)
 - **Specification:** [SPEC-013](./spec.md)
@@ -14,7 +14,8 @@
   as the first feature toward a working private app and deferred further RES work.
 - [x] T-001: Daniel approved the specification and explicitly authorized
   implementation with “Implement the spec” on 2026-09-30 (America/New_York).
-  Resulting implementation review and merge are still pending.
+  Daniel subsequently accepted the implementation and authorized merge; PR #22
+  merged as `aa55583`.
 
 ## Implementation, after T-001 authorization
 
@@ -41,7 +42,7 @@
   tests, the repository checker, shell syntax checks for any changed shell
   files, diff checks, and documentation link review. Add CI coverage for actual
   implementation paths and report exact outcomes. Covers PMF-001–006.
-- [ ] T-006: Create sanitized acceptance evidence mapped to AC-001–006, obtain
+- [x] T-006: Create sanitized acceptance evidence mapped to AC-001–006, obtain
   Daniel's implementation review, deliver through the PR workflow, and record
   CI/merge separately from local checks and owner acceptance. Mark Delivered
   only after merged implementation and all criteria pass. Hand off to the
@@ -51,8 +52,9 @@
 
 The schema, bounded offline validator, CLI, hash-pinned setup, synthetic example,
 reference, behavioral tests, and CI integration are implemented. All 134 repository tests pass, including 27 manifest tests. Local evidence is
-recorded and implementation CI run #73 passed; owner review/merge remain pending.
+recorded; implementation CI #73 and final PR CI #74 passed. Daniel accepted the
+implementation and PR #22 merged as `aa55583`. PRJ-001 is Delivered.
 No application, runtime, route, or infrastructure has been deployed. See
-[acceptance](acceptance.md) for exact verification and pending review/merge.
+[acceptance](acceptance.md) for exact verification and merge evidence.
 PRJ-002 and the runtime foundation follow this contract; further RES work waits
 for the working-product milestone.
