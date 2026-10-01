@@ -75,5 +75,6 @@ resource "aws_instance" "dev_host" {
   depends_on = [
     aws_iam_role_policy_attachment.ssm,
     aws_iam_role_policy.dev_host_runtime,
+    aws_secretsmanager_secret_version.tailscale_enrollment,
   ]
 }

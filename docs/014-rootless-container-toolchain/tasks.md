@@ -1,6 +1,6 @@
 # TASKS-014: Rootless Container Toolchain
 
-- **Status:** Implementation in review; deployed acceptance pending
+- **Status:** Implementation merged; deployment authorized, acceptance pending
 - **Owner:** Daniel
 - **Last updated:** 2026-10-01 (America/New_York)
 - **Specification:** [SPEC-014](spec.md)
@@ -33,7 +33,7 @@
 
 ## Verification and delivery
 
-- [ ] T-005: Add meaningful isolated tests for allocation collisions, existing
+- [x] T-005: Add meaningful isolated tests for allocation collisions, existing
   storage/configuration, repeated execution, missing prerequisites and completion
   gating. Test rendered bootstrap ordering and unchanged infrastructure safeguards.
   Run `./scripts/check-repository.sh` in the prepared manifest environment,
@@ -58,7 +58,8 @@
 Implementation and operator/fixture instructions are complete locally. Discovery
 selected the existing UID/GID and subordinate allocation, Noble Podman 4.9.x and
 a digest-pinned fixture; no existing store needs migration. T-005 local checks and
-CI are recorded in [acceptance.md](acceptance.md); review/merge and T-006/T-007 host
-acceptance remain pending. No live package installation, mappings, user-manager
+CI and the completed merge are recorded in [acceptance.md](acceptance.md). Daniel
+authorized deployment and necessary repairs; corrected plan, recovery/enrollment
+readiness and T-006/T-007 host acceptance remain pending. No live package installation, mappings, user-manager
 settings, containers or infrastructure have been changed. Next step is review of
 the implementation PR, followed by separately authorized pipeline deployment.

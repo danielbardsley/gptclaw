@@ -1,6 +1,6 @@
 # SPEC-014: Rootless Container Toolchain
 
-- **Status:** Implementation in review; deployment and acceptance pending
+- **Status:** Implementation merged; deployment authorized, acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** SYS-001
 - **Last updated:** 2026-10-01 (America/New_York)
@@ -18,8 +18,9 @@ later work toward the first privately accessible web application.
 
 Daniel authorized implementation with “Lets go ahead and implement SYS-001 now
 then” on October 1, 2026 (America/New_York), approving this scope and the disposable
-engine-storage policy. Implementation is authorized; merge, host replacement and
-deployed acceptance remain pending. All host mutations are delivered through the
+engine-storage policy. Implementation and merge are complete. Daniel subsequently authorized necessary
+repairs and pipeline deployment/replacement; recovery and enrollment prerequisites
+and deployed acceptance remain pending. All host mutations are delivered through the
 existing GitHub Actions/HCP Terraform pipeline, not local installation.
 See the [acceptance record](acceptance.md).
 

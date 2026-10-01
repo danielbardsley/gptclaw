@@ -84,275 +84,256 @@ resource "aws_iam_role" "hcp_apply" {
   }
 }
 
-data "aws_iam_policy_document" "hcp_plan" {
-  statement {
-    sid    = "DiscoverDevelopmentInfrastructure"
-    effect = "Allow"
-    actions = [
-      "ec2:Describe*",
-      "logs:DescribeLogGroups",
-      "sts:GetCallerIdentity",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    sid       = "ReadCanonicalUbuntuAmi"
-    effect    = "Allow"
-    actions   = ["ssm:GetParameter"]
-    resources = ["arn:${data.aws_partition.current.partition}:ssm:${var.aws_region}::parameter/aws/service/canonical/ubuntu/server/noble/stable/current/amd64/hvm/ebs-gp3/ami-id"]
-  }
-
-  statement {
-    sid    = "ReadDeploymentIdentities"
-    effect = "Allow"
-    actions = [
-      "iam:GetInstanceProfile",
-      "iam:GetOpenIDConnectProvider",
-      "iam:GetRole",
-      "iam:GetRolePolicy",
-      "iam:ListAttachedRolePolicies",
-      "iam:ListInstanceProfileTags",
-      "iam:ListInstanceProfilesForRole",
-      "iam:ListOpenIDConnectProviderTags",
-      "iam:ListRolePolicies",
-      "iam:ListRoleTags",
-    ]
-    resources = [
-      aws_iam_openid_connect_provider.hcp_terraform.arn,
-      aws_iam_role.hcp_plan.arn,
-      aws_iam_role.hcp_apply.arn,
-      local.backup_role_arn,
-      "arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:role/${local.name_prefix}-host",
-      "arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:instance-profile/${local.name_prefix}-host",
-    ]
-  }
-
-  statement {
-    sid    = "ReadDevelopmentLogsAndEnrollmentSecret"
-    effect = "Allow"
-    actions = [
-      "logs:ListTagsForResource",
-      "secretsmanager:DescribeSecret",
-      "secretsmanager:GetResourcePolicy",
-      "secretsmanager:ListSecretVersionIds",
-    ]
-    resources = [
-      aws_cloudwatch_log_group.dev_host.arn,
-      aws_secretsmanager_secret.tailscale_enrollment.arn,
-    ]
-  }
-
-  statement {
-    sid       = "ReadBackupPolicies"
-    actions   = ["dlm:GetLifecyclePolicy", "dlm:ListTagsForResource"]
-    resources = [local.backup_dlm_arn]
-  }
-
-
+locals {
+  hcp_plan_statements = [
+    {
+      Sid    = "DiscoverDevelopmentInfrastructure"
+      Effect = "Allow"
+      Action = [
+        "ec2:Describe*",
+        "logs:DescribeLogGroups",
+        "sts:GetCallerIdentity",
+      ]
+      Resource = ["*"]
+    },
+    {
+      Sid      = "ReadCanonicalUbuntuAmi"
+      Effect   = "Allow"
+      Action   = ["ssm:GetParameter"]
+      Resource = ["arn:${data.aws_partition.current.partition}:ssm:${var.aws_region}::parameter/aws/service/canonical/ubuntu/server/noble/stable/current/amd64/hvm/ebs-gp3/ami-id"]
+    },
+    {
+      Sid    = "ReadDeploymentIdentities"
+      Effect = "Allow"
+      Action = [
+        "iam:GetInstanceProfile",
+        "iam:GetOpenIDConnectProvider",
+        "iam:GetRole",
+        "iam:GetRolePolicy",
+        "iam:ListAttachedRolePolicies",
+        "iam:ListInstanceProfileTags",
+        "iam:ListInstanceProfilesForRole",
+        "iam:ListOpenIDConnectProviderTags",
+        "iam:ListRolePolicies",
+        "iam:ListRoleTags",
+      ]
+      Resource = [
+        aws_iam_openid_connect_provider.hcp_terraform.arn,
+        aws_iam_role.hcp_plan.arn,
+        aws_iam_role.hcp_apply.arn,
+        local.backup_role_arn,
+        "arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:role/${local.name_prefix}-host",
+        "arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:instance-profile/${local.name_prefix}-host",
+      ]
+    },
+    {
+      Sid    = "ReadDevelopmentLogsAndEnrollmentSecret"
+      Effect = "Allow"
+      Action = [
+        "logs:ListTagsForResource",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:GetResourcePolicy",
+        "secretsmanager:ListSecretVersionIds",
+      ]
+      Resource = [
+        aws_cloudwatch_log_group.dev_host.arn,
+        aws_secretsmanager_secret.tailscale_enrollment.arn,
+      ]
+    },
+    {
+      Sid      = "ReadBackupPolicies"
+      Action   = ["dlm:GetLifecyclePolicy", "dlm:ListTagsForResource"]
+      Resource = [local.backup_dlm_arn]
+      Effect   = "Allow"
+    },
+  ]
 }
 
 resource "aws_iam_role_policy" "hcp_plan" {
   name   = "${local.name_prefix}-terraform-plan"
   role   = aws_iam_role.hcp_plan.id
-  policy = data.aws_iam_policy_document.hcp_plan.json
+  policy = local.hcp_plan_policy
 
   lifecycle {
     prevent_destroy = true
   }
 }
 
-data "aws_iam_policy_document" "hcp_apply" {
-  source_policy_documents = [data.aws_iam_policy_document.hcp_plan.json]
+locals {
+  hcp_apply_statements = [
+    {
+      Sid    = "ManageDevelopmentEc2Resources"
+      Effect = "Allow"
+      Action = [
+        "ec2:AssociateRouteTable",
+        "ec2:AttachInternetGateway",
+        "ec2:AttachVolume",
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:CreateInternetGateway",
+        "ec2:CreateRoute",
+        "ec2:CreateRouteTable",
+        "ec2:CreateSecurityGroup",
+        "ec2:CreateSubnet",
+        "ec2:CreateTags",
+        "ec2:CreateVolume",
+        "ec2:CreateVpc",
+        "ec2:DeleteInternetGateway",
+        "ec2:DeleteRoute",
+        "ec2:DeleteRouteTable",
+        "ec2:DeleteSecurityGroup",
+        "ec2:DeleteSubnet",
+        "ec2:DeleteTags",
+        "ec2:DeleteVolume",
+        "ec2:DeleteVpc",
+        "ec2:DetachInternetGateway",
+        "ec2:DetachVolume",
+        "ec2:DisassociateRouteTable",
+        "ec2:ModifyInstanceAttribute",
+        "ec2:ModifyInstanceMetadataOptions",
+        "ec2:ModifySubnetAttribute",
+        "ec2:ModifyVolume",
+        "ec2:ModifyVpcAttribute",
+        "ec2:ReplaceRoute",
+        "ec2:RevokeSecurityGroupEgress",
+        "ec2:RunInstances",
+        "ec2:StartInstances",
+        "ec2:StopInstances",
+        "ec2:TerminateInstances",
+      ]
+      Resource = ["*"]
 
-  statement {
-    sid    = "ManageDevelopmentEc2Resources"
-    effect = "Allow"
-    actions = [
-      "ec2:AssociateRouteTable",
-      "ec2:AttachInternetGateway",
-      "ec2:AttachVolume",
-      "ec2:AuthorizeSecurityGroupEgress",
-      "ec2:CreateInternetGateway",
-      "ec2:CreateRoute",
-      "ec2:CreateRouteTable",
-      "ec2:CreateSecurityGroup",
-      "ec2:CreateSubnet",
-      "ec2:CreateTags",
-      "ec2:CreateVolume",
-      "ec2:CreateVpc",
-      "ec2:DeleteInternetGateway",
-      "ec2:DeleteRoute",
-      "ec2:DeleteRouteTable",
-      "ec2:DeleteSecurityGroup",
-      "ec2:DeleteSubnet",
-      "ec2:DeleteTags",
-      "ec2:DeleteVolume",
-      "ec2:DeleteVpc",
-      "ec2:DetachInternetGateway",
-      "ec2:DetachVolume",
-      "ec2:DisassociateRouteTable",
-      "ec2:ModifyInstanceAttribute",
-      "ec2:ModifyInstanceMetadataOptions",
-      "ec2:ModifySubnetAttribute",
-      "ec2:ModifyVolume",
-      "ec2:ModifyVpcAttribute",
-      "ec2:ReplaceRoute",
-      "ec2:RevokeSecurityGroupEgress",
-      "ec2:RunInstances",
-      "ec2:StartInstances",
-      "ec2:StopInstances",
-      "ec2:TerminateInstances",
-    ]
-    resources = ["*"]
+      Condition = { StringEquals = {
+        "aws:RequestedRegion" = var.aws_region
+      } }
+    },
+    {
+      Sid    = "ManageDevelopmentHostRole"
+      Effect = "Allow"
+      Action = [
+        "iam:AttachRolePolicy",
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:DeleteRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:PutRolePolicy",
+        "iam:TagRole",
+        "iam:UntagRole",
+        "iam:UpdateAssumeRolePolicy",
+      ]
+      Resource = ["arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:role/${local.name_prefix}-host"]
+    },
+    {
+      Sid    = "ManageDevelopmentHostInstanceProfile"
+      Effect = "Allow"
+      Action = [
+        "iam:AddRoleToInstanceProfile",
+        "iam:CreateInstanceProfile",
+        "iam:DeleteInstanceProfile",
+        "iam:RemoveRoleFromInstanceProfile",
+        "iam:TagInstanceProfile",
+        "iam:UntagInstanceProfile",
+      ]
+      Resource = ["arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:instance-profile/${local.name_prefix}-host"]
+    },
+    {
+      Sid      = "PassDevelopmentHostRoleOnly"
+      Effect   = "Allow"
+      Action   = ["iam:PassRole"]
+      Resource = ["arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:role/${local.name_prefix}-host"]
 
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestedRegion"
-      values   = [var.aws_region]
-    }
-  }
+      Condition = { StringEquals = {
+        "iam:PassedToService" = "ec2.amazonaws.com"
+      } }
+    },
+    {
+      Sid    = "ManageDevelopmentLogs"
+      Effect = "Allow"
+      Action = [
+        "logs:CreateLogGroup",
+        "logs:DeleteLogGroup",
+        "logs:PutRetentionPolicy",
+        "logs:TagResource",
+        "logs:UntagResource",
+      ]
+      Resource = ["arn:${data.aws_partition.current.partition}:logs:${var.aws_region}:${var.aws_account_id}:log-group:/${var.project_name}/${var.environment}/${var.instance_name}*"]
+    },
+    {
+      Sid    = "ManageTailscaleEnrollmentSecret"
+      Effect = "Allow"
+      Action = [
+        "secretsmanager:PutSecretValue",
+        "secretsmanager:TagResource",
+        "secretsmanager:UntagResource",
+        "secretsmanager:UpdateSecret",
+      ]
+      Resource = [aws_secretsmanager_secret.tailscale_enrollment.arn]
+    },
+    {
+      Sid      = "CreateTaggedBackupPolicy"
+      Action   = ["dlm:CreateLifecyclePolicy"]
+      Resource = ["*"]
 
-  statement {
-    sid    = "ManageDevelopmentHostRole"
-    effect = "Allow"
-    actions = [
-      "iam:AttachRolePolicy",
-      "iam:CreateRole",
-      "iam:DeleteRole",
-      "iam:DeleteRolePolicy",
-      "iam:DetachRolePolicy",
-      "iam:PutRolePolicy",
-      "iam:TagRole",
-      "iam:UntagRole",
-      "iam:UpdateAssumeRolePolicy",
-    ]
-    resources = ["arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:role/${local.name_prefix}-host"]
-  }
+      Effect = "Allow"
+      Condition = { StringEquals = {
+        "aws:RequestedRegion"      = var.aws_region
+        "aws:RequestTag/BackupSet" = "${var.environment}-projects"
+        "aws:RequestTag/Project"   = "GptClaw"
+      } }
+    },
+    {
+      Sid      = "ManageBackupPolicy"
+      Action   = ["dlm:UpdateLifecyclePolicy", "dlm:DeleteLifecyclePolicy", "dlm:TagResource", "dlm:UntagResource"]
+      Resource = [local.backup_dlm_arn]
 
-  statement {
-    sid    = "ManageDevelopmentHostInstanceProfile"
-    effect = "Allow"
-    actions = [
-      "iam:AddRoleToInstanceProfile",
-      "iam:CreateInstanceProfile",
-      "iam:DeleteInstanceProfile",
-      "iam:RemoveRoleFromInstanceProfile",
-      "iam:TagInstanceProfile",
-      "iam:UntagInstanceProfile",
-    ]
-    resources = ["arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:instance-profile/${local.name_prefix}-host"]
-  }
+      Effect = "Allow"
+      Condition = { StringEquals = {
+        "aws:ResourceTag/BackupSet" = "${var.environment}-projects"
+        "aws:ResourceTag/Project"   = "GptClaw"
+      } }
+    },
+    {
+      Sid = "ManageBackupRole"
+      Action = [
+        "iam:CreateRole", "iam:DeleteRole", "iam:PutRolePolicy",
+        "iam:DeleteRolePolicy", "iam:TagRole", "iam:UntagRole",
+        "iam:UpdateAssumeRolePolicy",
+      ]
+      Resource = [local.backup_role_arn]
+      Effect   = "Allow"
+    },
+    {
+      Sid      = "PassBackupRoleToDlm"
+      Action   = ["iam:PassRole"]
+      Resource = [local.backup_role_arn]
 
-  statement {
-    sid       = "PassDevelopmentHostRoleOnly"
-    effect    = "Allow"
-    actions   = ["iam:PassRole"]
-    resources = ["arn:${data.aws_partition.current.partition}:iam::${var.aws_account_id}:role/${local.name_prefix}-host"]
-
-    condition {
-      test     = "StringEquals"
-      variable = "iam:PassedToService"
-      values   = ["ec2.amazonaws.com"]
-    }
-  }
-
-  statement {
-    sid    = "ManageDevelopmentLogs"
-    effect = "Allow"
-    actions = [
-      "logs:CreateLogGroup",
-      "logs:DeleteLogGroup",
-      "logs:PutRetentionPolicy",
-      "logs:TagResource",
-      "logs:UntagResource",
-    ]
-    resources = ["arn:${data.aws_partition.current.partition}:logs:${var.aws_region}:${var.aws_account_id}:log-group:/${var.project_name}/${var.environment}/${var.instance_name}*"]
-  }
-
-  statement {
-    sid    = "ManageTailscaleEnrollmentSecret"
-    effect = "Allow"
-    actions = [
-      "secretsmanager:PutSecretValue",
-      "secretsmanager:TagResource",
-      "secretsmanager:UntagResource",
-      "secretsmanager:UpdateSecret",
-    ]
-    resources = [aws_secretsmanager_secret.tailscale_enrollment.arn]
-  }
-
-
-  statement {
-    sid       = "CreateTaggedBackupPolicy"
-    actions   = ["dlm:CreateLifecyclePolicy"]
-    resources = ["*"]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestedRegion"
-      values   = [var.aws_region]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/BackupSet"
-      values   = ["${var.environment}-projects"]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/Project"
-      values   = ["GptClaw"]
-    }
-  }
-
-  statement {
-    sid       = "ManageBackupPolicy"
-    actions   = ["dlm:UpdateLifecyclePolicy", "dlm:DeleteLifecyclePolicy", "dlm:TagResource", "dlm:UntagResource"]
-    resources = [local.backup_dlm_arn]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:ResourceTag/BackupSet"
-      values   = ["${var.environment}-projects"]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "aws:ResourceTag/Project"
-      values   = ["GptClaw"]
-    }
-  }
-
-  statement {
-    sid = "ManageBackupRole"
-    actions = [
-      "iam:CreateRole", "iam:DeleteRole", "iam:PutRolePolicy",
-      "iam:DeleteRolePolicy", "iam:TagRole", "iam:UntagRole",
-      "iam:UpdateAssumeRolePolicy",
-    ]
-    resources = [local.backup_role_arn]
-  }
-
-  statement {
-    sid       = "PassBackupRoleToDlm"
-    actions   = ["iam:PassRole"]
-    resources = [local.backup_role_arn]
-
-    condition {
-      test     = "StringEquals"
-      variable = "iam:PassedToService"
-      values   = ["dlm.amazonaws.com"]
-    }
-  }
-
-
+      Effect = "Allow"
+      Condition = { StringEquals = {
+        "iam:PassedToService" = "dlm.amazonaws.com"
+      } }
+    },
+  ]
 }
 
 resource "aws_iam_role_policy" "hcp_apply" {
   name   = "${local.name_prefix}-terraform-apply"
   role   = aws_iam_role.hcp_apply.id
-  policy = data.aws_iam_policy_document.hcp_apply.json
+  policy = local.hcp_apply_policy
 
   lifecycle {
     prevent_destroy = true
   }
+}
+
+# Render policy JSON locally: provider data-source reads defer when referenced
+# resources are retagged, spuriously planning protected identity policy writes.
+# These expressions retain the exact resource ARNs and existing permissions.
+locals {
+  hcp_plan_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = local.hcp_plan_statements
+  })
+  hcp_apply_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = concat(local.hcp_plan_statements, local.hcp_apply_statements)
+  })
 }

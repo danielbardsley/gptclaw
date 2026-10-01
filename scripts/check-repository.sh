@@ -50,7 +50,7 @@ if grep -Eq '^[[:space:]]*secret_string[[:space:]]*=' infra/dev-host/secrets.tf;
   status=1
 fi
 
-hcp_self_management=$(sed -n '/sid[[:space:]]*=[[:space:]]*"ManageDevelopmentHostRole"/,/^[[:space:]]*}/p' infra/dev-host/hcp_identity.tf)
+hcp_self_management=$(sed -n '/[Ss]id[[:space:]]*=[[:space:]]*"ManageDevelopmentHostRole"/,/^[[:space:]]*}/p' infra/dev-host/hcp_identity.tf)
 if grep -q 'hcp-apply' <<<"$hcp_self_management"; then
   echo "The dynamic apply role must not be allowed to modify its own permissions." >&2
   status=1

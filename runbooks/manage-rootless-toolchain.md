@@ -20,8 +20,13 @@ Changing bootstrap/user data replaces compute; it does not install tools on the
 running host when Git is pulled. Follow [host recovery](recover-dev-host.md):
 review the protected plan and adequate recovery point, quiesce project writes,
 obtain Daniel's concrete replacement authorization/window, and verify private
-access and the protected filesystem after replacement. No plan/apply or host
-replacement has been performed as part of implementation.
+access and the protected filesystem after replacement. The initial protected plan exposed deferred deployment-policy updates; re-plan
+with the repair before applying. Deployment is now authorized, but replacement
+has not run. Expect the project volume to be retained, compute/attachment
+replacement, revision tags and the fresh enrollment secret version. There must
+be no HCP deployment-role/OIDC mutation. Set a fresh key in HCP's sensitive
+`tailscale_auth_key` variable before apply; the committed rotation counter is 5.
+Do not override that code-managed counter in HCP.
 
 ## Declared baseline and boundaries
 
