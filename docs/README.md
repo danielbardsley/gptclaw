@@ -109,4 +109,5 @@ dispositions independently of feature implementation status.
 - **012 - Context validation (AGT-010):**
   [Specification](./012-context-validation/spec.md) ·
   [Technical design](./012-context-validation/technical-design.md) ·
-  [Tasks](./012-context-validation/tasks.md)
+  [Tasks](./012-context-validation/tasks.md) ·
+  [Acceptance](./012-context-validation/acceptance.md)

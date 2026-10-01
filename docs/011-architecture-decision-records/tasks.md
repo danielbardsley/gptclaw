@@ -24,6 +24,6 @@
 
 Current handover: convention, template, index, Proposed pilot and 19 offline
 checks implemented. T-002 approval was supplied on 2026-09-30; it does not accept
-the pilot's unwritten rationale. Independent reader review is in progress;
+the pilot's unwritten rationale. Independent reader review passed;
 Daniel's pilot disposition, final CI and merge remain pending. See
 [acceptance](acceptance.md).

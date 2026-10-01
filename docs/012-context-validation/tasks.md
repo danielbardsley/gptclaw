@@ -8,7 +8,7 @@
 
 - [x] **T-001** Inspect existing guidance/planning conventions and feature scope;
   draft independent specification, design, tasks and catalogue/index links.
-- [ ] **T-002 Owner/implementation:** After scope approval and implementation
+- [x] **T-002 Owner/implementation:** After scope approval and implementation
   authorization, write skill/checklist/report outline for CTX-001–004.
 - [ ] **T-003** Build paired synthetic fixture scenarios and run independent
   semantic evaluation for AC-001–004. Inspect read/action traces, evidence
@@ -21,6 +21,7 @@
 - [ ] **T-006** Record actual merge and catalogue state, hand over checked scope
   and remaining owner actions, and remove only owned synthetic fixtures.
 
-Current handover: planning only. The skill does not require AGT-006–009 and will
-not add a mandatory preflight hook. No project has been audited or repaired by
-this specification-drafting task.
+Current handover: scope approved on 2026-09-30; skill/checklist/report and five
+paired synthetic scenarios implemented. Independent semantic evaluation is in
+progress. Supported-client selection, final repository/CI evidence and merge
+remain pending. See [acceptance](acceptance.md). No global hook was added.

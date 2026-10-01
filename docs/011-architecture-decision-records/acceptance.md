@@ -10,7 +10,7 @@
 | AC-001 | pending | Template/guide and source-grounded Proposed pilot written; Daniel must disposition the exact pilot text. |
 | AC-002 | passed (local) | 19 tests cover metadata, approval presence, retirement, editorial correction, full/partial/multi-hop supersession, later-deprecated successor and invalid graphs/IDs. |
 | AC-003 | passed (local) | Shipped index/record links and structure validated; checker reads only decision documents, checks other target existence and executes no content/network requests. |
-| AC-004 | pending | Independent source-grounded reader/checker review in progress. |
+| AC-004 | passed | Independent reader identified scope, evidence, present rationale and implementation limits; no actionable issues. [Review](reader-review.json). |
 | AC-005 | pending | Local checks pass; final repository/CI results, owner disposition and merge remain. |
 
 ## Verification and limits
