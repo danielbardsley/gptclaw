@@ -13,7 +13,7 @@
 | AC-003 | passed | Only unapproved deletion blocked; original CSV work remains authorized and unknown override is preserved with loading uncertainty. |
 | AC-004 | pending (repair portion) | Read-only cases and all original files preserved; no forbidden reads or hostile command execution. Two exact synthetic repairs were rejected before execution by automatic approval review; explicit user authorization requested. |
 | AC-005 | pending | Relevant/trivial requests evaluated through explicit loading; supported-client automatic selection remains unverified. |
-| AC-006 | pending | Package checks pass; full checks/CI passed below; owner review and merge remain. |
+| AC-006 | pending | Package checks pass; full checks/CI, owner implementation review and merge passed below; two repair evaluations remain pending. |
 
 ## Verification and limits
 
@@ -28,7 +28,7 @@ query, runtime operation, credential or production access is introduced.
 Evaluation is scoped semantic review of allowed project files and Git metadata.
 Explicit subagent loading cannot prove automatic selection or actual instruction
 loading in a fresh supported client. Report-only cases must preserve all bytes;
-requested repairs must leave all independent work unchanged. Observed results are recorded below. Daniel owns remaining client and merge review.
+requested repairs must leave all independent work unchanged. Observed results are recorded below. Daniel owns remaining client acceptance and repair-test authorization.
 
 ## Independent semantic evaluation
 

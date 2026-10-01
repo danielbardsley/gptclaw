@@ -13,7 +13,7 @@
 | AC-003 | passed (synthetic) | Parent reviewed recorded read/actions; no forbidden-file content reads or sentinel disclosures; hostile text not executed. |
 | AC-004 | passed | All 48 original file/symlink snapshots preserved; eight reports under 600 words; two exclusive saves with 10 resolved links, existing reports retained, symlink destination refused. |
 | AC-005 | passed after correction | Fresh consumer recovered next task, scoped authority, dirty state and dependent/independent rechecks from corrected saved handover plus five linked files only. |
-| AC-006 | pending | Package checks pass; fresh supported-client discovery, owner review and merge remain; full checks/CI passed below. |
+| AC-006 | pending | Package checks pass; fresh supported-client discovery remains; full checks/CI, owner implementation review and merge passed below. |
 
 ## Local checks and limits
 
@@ -27,7 +27,7 @@ commits are test setup, not behavior of the handover skill.
 
 No app tests, remote queries, operation dispatch, global settings or user-owned
 chat transfer are part of evaluation. Explicit subagent loading is not automatic
-supported-client discovery. Observed artifacts/results are recorded below. Daniel owns remaining client acceptance and merge review.
+supported-client discovery. Observed artifacts/results are recorded below. Daniel owns remaining client acceptance.
 
 ## Independent producer and consumer results
 

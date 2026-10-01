@@ -11,7 +11,7 @@
 | AC-002 | passed (local) | 19 tests cover metadata, approval presence, retirement, editorial correction, full/partial/multi-hop supersession, later-deprecated successor and invalid graphs/IDs. |
 | AC-003 | passed (local) | Shipped index/record links and structure validated; checker reads only decision documents, checks other target existence and executes no content/network requests. |
 | AC-004 | passed | Independent reader identified scope, evidence, present rationale and implementation limits; no actionable issues. [Review](reader-review.json). |
-| AC-005 | pending | Local checks pass; full checks/CI passed below; owner disposition and merge remain. |
+| AC-005 | pending | Local checks pass; full checks/CI passed below; explicit pilot disposition remains; implementation review and merge are complete. |
 
 ## Verification and limits
 
