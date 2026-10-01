@@ -1,7 +1,7 @@
 # SPEC-010 acceptance evidence
 
 - Owner: Daniel. Evidence dates: 2026-09-30 and 2026-10-01.
-- Status: implemented on feature branch; behavioral evaluation complete; client acceptance and merge pending.
+- Status: merged and available; final acceptance pending.
 - [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 - [Implementation PR #20](https://github.com/danielbardsley/gptclaw/pull/20).
 - Evaluated corrected entrypoint SHA-256: `5d7defed63e434d6e7edde0e7b33bad9b89178da5851a596450cc43002734cd7` (pre-commit evaluation).
@@ -13,7 +13,7 @@
 | AC-003 | passed (synthetic) | Parent reviewed recorded read/actions; no forbidden-file content reads or sentinel disclosures; hostile text not executed. |
 | AC-004 | passed | All 48 original file/symlink snapshots preserved; eight reports under 600 words; two exclusive saves with 10 resolved links, existing reports retained, symlink destination refused. |
 | AC-005 | passed after correction | Fresh consumer recovered next task, scoped authority, dirty state and dependent/independent rechecks from corrected saved handover plus five linked files only. |
-| AC-006 | pending | Package checks pass; fresh supported-client discovery, owner review and merge remain; full checks/CI passed below. |
+| AC-006 | pending | Package checks pass; fresh supported-client discovery remains; full checks/CI, owner implementation review and merge passed below. |
 
 ## Local checks and limits
 
@@ -27,7 +27,7 @@ commits are test setup, not behavior of the handover skill.
 
 No app tests, remote queries, operation dispatch, global settings or user-owned
 chat transfer are part of evaluation. Explicit subagent loading is not automatic
-supported-client discovery. Observed artifacts/results are recorded below. Daniel owns remaining client acceptance and merge review.
+supported-client discovery. Observed artifacts/results are recorded below. Daniel owns remaining client acceptance.
 
 ## Independent producer and consumer results
 
@@ -70,7 +70,17 @@ Terraform format, backend-free initialization, validation and tests. Protected
 plan/apply were skipped. No Terraform source changed, so separate local Terraform
 runs were unnecessary; no infrastructure deployment was performed.
 
-[PR #20](https://github.com/danielbardsley/gptclaw/pull/20) is ready for review on
-`codex/agt-006-through-010-specs`. Resulting-change review and merge remain pending;
-the catalogue records In review, not Delivered. The later documentation-only
-commit records this observed CI outcome and does not change tested source.
+## Merge closeout
+
+Daniel approved the resulting implementation and authorized merge on 2026-10-01.
+[PR #20](https://github.com/danielbardsley/gptclaw/pull/20) merged as
+`033c30b96ae355b0de54ddb24cf1c2f405328920`. Final PR head `d20997c365bab1fd0504524bf4b69ebf7cc2c3c9`
+passed [CI run #71](https://github.com/danielbardsley/gptclaw/actions/runs/36794914080),
+including repository checks and Terraform quality checks; protected plan/apply
+were skipped. This records PR CI, not a new infrastructure deployment.
+
+Fresh supported-client selection/invocation remains pending (T-005).
+Merge approval does not turn an unrun check into a pass or authorize the previously
+rejected fixture edits. The four new skills are now advertised in the app's
+repository skill inventory; that observation does not prove fresh-client behavior.
+The catalogue records Deployed while remaining acceptance stays explicit.

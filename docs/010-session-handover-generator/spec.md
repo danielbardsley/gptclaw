@@ -1,6 +1,6 @@
 # SPEC-010: Session Handover Generator
 
-- **Status:** Approved for implementation; acceptance pending
+- **Status:** Implementation reviewed and merged; final acceptance pending
 - **Owner:** Daniel
 - **Feature:** AGT-008
 - **Design:** [TDD-010](./technical-design.md)

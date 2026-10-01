@@ -1,6 +1,6 @@
 # SPEC-011: Architecture Decision Records
 
-- **Status:** Approved for implementation; acceptance pending
+- **Status:** Implementation reviewed and merged; final acceptance pending
 - **Owner:** Daniel
 - **Feature:** AGT-009
 - **Design:** [TDD-011](./technical-design.md)

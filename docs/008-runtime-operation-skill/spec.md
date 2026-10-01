@@ -1,6 +1,6 @@
 # SPEC-008: Runtime-operation Skill
 
-- **Status:** Approved for implementation; acceptance pending
+- **Status:** Implementation reviewed and merged; final acceptance pending
 - **Owner:** Daniel
 - **Feature:** AGT-006
 - **Design:** [TDD-008](./technical-design.md)

@@ -1,6 +1,6 @@
 # TASKS-012: Context Validation
 
-- **Status:** Implementation authorized; work in progress
+- **Status:** Implementation merged; remaining acceptance tracked below
 - **Owner:** Daniel
 - **Specification:** [SPEC-012](./spec.md)
 - **Design:** [TDD-012](./technical-design.md)
@@ -21,9 +21,9 @@
 - [ ] **T-006** Record actual merge and catalogue state, hand over checked scope
   and remaining owner actions, and remove only owned synthetic fixtures.
 
-Current handover: skill/resources and read-only semantic evaluations complete.
-T-003's two repair checks remain pending after automatic approval rejection;
-explicit authorization for their exact disposable-file edits has been requested.
-T-004 fresh client routing, T-005 resulting-change review, and T-006 merge remain
-pending; the full repository suite and PR CI run #70 passed.
-See [acceptance](acceptance.md). No global hook was added.
+Current handover: Daniel approved the resulting implementation and authorized
+merge on 2026-10-01. [PR #20](https://github.com/danielbardsley/gptclaw/pull/20)
+merged as `033c30b96ae355b0de54ddb24cf1c2f405328920`; all 107 repository tests and final PR CI run #71 passed.
+Two synthetic repair checks remain blocked by automatic approval review (T-003); fresh supported-client routing also remains pending (T-004).
+The delivery-record task retains any outstanding acceptance/fixture closeout;
+review and merge themselves are complete. See [acceptance](acceptance.md).

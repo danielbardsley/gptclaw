@@ -1,6 +1,6 @@
 # SPEC-009: Release and Production-promotion Skill
 
-- **Status:** Approved for implementation; acceptance pending
+- **Status:** Implementation reviewed and merged; final acceptance pending
 - **Owner:** Daniel
 - **Feature:** AGT-007
 - **Design:** [TDD-009](./technical-design.md)
