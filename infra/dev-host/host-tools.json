@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "target": {
+    "os": "ubuntu",
+    "release": "24.04",
+    "architecture": "amd64"
+  },
+  "components": [
+    {
+      "id": "ca-certificates",
+      "purpose": "TLS trust for bootstrap downloads",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "ca-certificates",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "curl",
+      "purpose": "Retrieve approved bootstrap artifacts",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "curl",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "e2fsprogs",
+      "purpose": "Inspect and mount protected ext4 project storage",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "e2fsprogs",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "git",
+      "purpose": "Repository and reviewed policy retrieval",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "git",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "jq",
+      "purpose": "Sanitized bootstrap metadata and service configuration",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "jq",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "nvme-cli",
+      "purpose": "Identify attached project storage",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "nvme-cli",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "openssh-server",
+      "purpose": "Private SSH access",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "openssh-server",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "python3",
+      "purpose": "Bootstrap profile validation and repository tooling",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "python3",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "rsyslog",
+      "purpose": "Host log collection",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "rsyslog",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "sudo",
+      "purpose": "Bootstrap privilege drop to forge; no new grants",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "sudo",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "ufw",
+      "purpose": "Existing host ingress policy",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "ufw",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "unzip",
+      "purpose": "Extract AWS CLI archive",
+      "owner": "SYS-004",
+      "adapter": "apt",
+      "identity": "root",
+      "source": "ubuntu:noble",
+      "package": "unzip",
+      "version": {
+        "policy": "distribution",
+        "value": null,
+        "sha256": null,
+        "exception": null
+      },
+      "verification": "apt-version"
+    },
+    {
+      "id": "ssm",
+      "purpose": "Private recovery access",
+      "owner": "SYS-004",
+      "adapter": "ssm",
+      "identity": "root",
+      "source": "snap:amazon-ssm-agent/latest/stable",
+      "package": null,
+      "version": {
+        "policy": "channel",
+        "value": null,
+        "sha256": null,
+        "exception": {
+          "owner": "Daniel",
+          "scope": "ssm",
+          "reason": "Preserve the existing reviewed bootstrap source while migrating to the declared profile.",
+          "approved_on": "2026-10-01",
+          "expires_on": "2026-11-01",
+          "removal": "Replace with a reviewed versioned source and verification adapter before expiry; expiry blocks provisioning, not a running host."
+        }
+      },
+      "verification": "ssm-version"
+    },
+    {
+      "id": "aws-cli",
+      "purpose": "Scoped bootstrap AWS operations",
+      "owner": "SYS-004",
+      "adapter": "aws-cli",
+      "identity": "root",
+      "source": "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip",
+      "package": null,
+      "version": {
+        "policy": "channel",
+        "value": null,
+        "sha256": null,
+        "exception": {
+          "owner": "Daniel",
+          "scope": "aws-cli",
+          "reason": "Preserve the existing reviewed bootstrap source while migrating to the declared profile.",
+          "approved_on": "2026-10-01",
+          "expires_on": "2026-11-01",
+          "removal": "Replace with a reviewed versioned source and verification adapter before expiry; expiry blocks provisioning, not a running host."
+        }
+      },
+      "verification": "aws-cli-version"
+    },
+    {
+      "id": "tailscale",
+      "purpose": "Private host connectivity",
+      "owner": "SYS-004",
+      "adapter": "tailscale",
+      "identity": "root",
+      "source": "https://tailscale.com/install.sh",
+      "package": null,
+      "version": {
+        "policy": "channel",
+        "value": null,
+        "sha256": null,
+        "exception": {
+          "owner": "Daniel",
+          "scope": "tailscale",
+          "reason": "Preserve the existing reviewed bootstrap source while migrating to the declared profile.",
+          "approved_on": "2026-10-01",
+          "expires_on": "2026-11-01",
+          "removal": "Replace with a reviewed versioned source and verification adapter before expiry; expiry blocks provisioning, not a running host."
+        }
+      },
+      "verification": "tailscale-version"
+    },
+    {
+      "id": "cloudwatch",
+      "purpose": "Host bootstrap and authentication log shipping",
+      "owner": "SYS-004",
+      "adapter": "cloudwatch",
+      "identity": "root",
+      "source": "https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb",
+      "package": null,
+      "version": {
+        "policy": "channel",
+        "value": null,
+        "sha256": null,
+        "exception": {
+          "owner": "Daniel",
+          "scope": "cloudwatch",
+          "reason": "Preserve the existing reviewed bootstrap source while migrating to the declared profile.",
+          "approved_on": "2026-10-01",
+          "expires_on": "2026-11-01",
+          "removal": "Replace with a reviewed versioned source and verification adapter before expiry; expiry blocks provisioning, not a running host."
+        }
+      },
+      "verification": "cloudwatch-version"
+    },
+    {
+      "id": "codex",
+      "purpose": "Unprivileged development agent",
+      "owner": "SYS-004",
+      "adapter": "codex",
+      "identity": "forge",
+      "source": "https://chatgpt.com/codex/install.sh",
+      "package": null,
+      "version": {
+        "policy": "channel",
+        "value": null,
+        "sha256": null,
+        "exception": {
+          "owner": "Daniel",
+          "scope": "codex",
+          "reason": "Preserve the existing reviewed bootstrap source while migrating to the declared profile.",
+          "approved_on": "2026-10-01",
+          "expires_on": "2026-11-01",
+          "removal": "Replace with a reviewed versioned source and verification adapter before expiry; expiry blocks provisioning, not a running host."
+        }
+      },
+      "verification": "codex-version"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 umask 027
 
-readonly BOOTSTRAP_VERSION="4"
+readonly BOOTSTRAP_VERSION="5"
 readonly AWS_REGION=${jsonencode(aws_region)}
 readonly DATA_VOLUME_ID=${jsonencode(data_volume_id)}
 readonly INSTANCE_NAME=${jsonencode(instance_name)}
@@ -25,6 +25,7 @@ log() {
 
 on_error() {
   local exit_code=$?
+  rm -f /var/lib/gptclaw/bootstrap-complete.json /var/lib/gptclaw/host-tools.json
   log "status=failed exit_code=$exit_code"
   exit "$exit_code"
 }
@@ -36,51 +37,33 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
+current_phase="host-tools-validation"
+log "status=started"
+# Invalidate before even checking the parser; a retry cannot retain stale success.
+rm -f /var/lib/gptclaw/bootstrap-complete.json /var/lib/gptclaw/host-tools.json
+command -v python3 >/dev/null
+python3 /usr/local/libexec/gptclaw-host-tools begin
+log "status=succeeded"
+
 current_phase="base-packages"
 log "status=started"
-export DEBIAN_FRONTEND=noninteractive
-apt-get update -y
-apt-get install -y --no-install-recommends \
-  ca-certificates \
-  curl \
-  e2fsprogs \
-  git \
-  jq \
-  nvme-cli \
-  openssh-server \
-  python3 \
-  rsyslog \
-  sudo \
-  ufw \
-  unzip
+python3 /usr/local/libexec/gptclaw-host-tools phase base-packages
 systemctl enable --now rsyslog
 log "status=succeeded"
 
 current_phase="ssm-agent"
 log "status=started"
-if systemctl list-unit-files amazon-ssm-agent.service >/dev/null 2>&1; then
+python3 /usr/local/libexec/gptclaw-host-tools phase ssm-agent
+if [ "$(systemctl show --property=LoadState --value amazon-ssm-agent.service)" = loaded ]; then
   systemctl enable --now amazon-ssm-agent.service
-elif systemctl list-unit-files snap.amazon-ssm-agent.amazon-ssm-agent.service >/dev/null 2>&1; then
-  systemctl enable --now snap.amazon-ssm-agent.amazon-ssm-agent.service
 else
-  snap install amazon-ssm-agent --classic
   systemctl enable --now snap.amazon-ssm-agent.amazon-ssm-agent.service
 fi
 log "status=succeeded"
 
 current_phase="aws-cli"
 log "status=started"
-if ! command -v aws >/dev/null 2>&1; then
-  aws_cli_dir=$(mktemp -d)
-  curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "$aws_cli_dir/awscliv2.zip"
-  unzip -q "$aws_cli_dir/awscliv2.zip" -d "$aws_cli_dir"
-  "$aws_cli_dir/aws/install" --update
-  case "$aws_cli_dir" in
-    /tmp/*) rm -rf -- "$aws_cli_dir" ;;
-    *) log "status=warning reason=unexpected-temporary-path" ;;
-  esac
-fi
-aws --version
+python3 /usr/local/libexec/gptclaw-host-tools phase aws-cli
 log "status=succeeded"
 
 current_phase="forge-user"
@@ -178,9 +161,7 @@ log "status=succeeded"
 
 current_phase="tailscale"
 log "status=started auth_key_version=$TAILSCALE_AUTH_KEY_VERSION"
-if ! command -v tailscale >/dev/null 2>&1; then
-  curl -fsSL https://tailscale.com/install.sh | sh
-fi
+python3 /usr/local/libexec/gptclaw-host-tools phase tailscale
 systemctl enable --now tailscaled
 if ! tailscale status --json | jq -e '.BackendState == "Running"' >/dev/null; then
   set +x
@@ -226,12 +207,7 @@ log "status=succeeded"
 
 current_phase="cloudwatch-agent"
 log "status=started"
-if ! dpkg-query -W -f='$Status' amazon-cloudwatch-agent 2>/dev/null | grep -q 'ok installed'; then
-  cloudwatch_deb=$(mktemp --suffix=.deb)
-  curl -fsSL "https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb" -o "$cloudwatch_deb"
-  dpkg -i "$cloudwatch_deb"
-  rm -f -- "$cloudwatch_deb"
-fi
+python3 /usr/local/libexec/gptclaw-host-tools phase cloudwatch-agent
 jq -n --arg group "$LOG_GROUP_NAME" '{
   agent: {run_as_user: "root"},
   logs: {
@@ -260,30 +236,20 @@ log "status=succeeded"
 
 current_phase="codex"
 log "status=started"
-sudo -u forge -H env \
-  CODEX_NON_INTERACTIVE=1 \
-  CODEX_INSTALL_DIR=/home/forge/.local/bin \
-  sh -c 'curl -fsSL https://chatgpt.com/codex/install.sh | sh'
-sudo -iu forge sh -lc 'command -v codex'
-sudo -iu forge sh -lc 'codex --version'
+python3 /usr/local/libexec/gptclaw-host-tools phase codex
 log "status=succeeded"
 
 current_phase="completion"
 log "status=started"
-codex_version=$(sudo -iu forge sh -lc 'codex --version' | head -n 1)
-tailscale_version=$(tailscale version | head -n 1)
-aws_cli_version=$(aws --version 2>&1 | head -n 1)
-jq -n \
-  --arg bootstrap_version "$BOOTSTRAP_VERSION" \
-  --arg completed_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-  --arg codex "$codex_version" \
-  --arg tailscale "$tailscale_version" \
-  --arg aws_cli "$aws_cli_version" \
-  '{
-    bootstrap_version: $bootstrap_version,
-    completed_at: $completed_at,
-    status: "succeeded",
-    components: {codex: $codex, tailscale: $tailscale, aws_cli: $aws_cli}
-  }' >/var/lib/gptclaw/bootstrap-complete.json
-chmod 0644 /var/lib/gptclaw/bootstrap-complete.json
+python3 /usr/local/libexec/gptclaw-host-tools finish
+jq --arg bootstrap_version "$BOOTSTRAP_VERSION" '{
+  bootstrap_version: $bootstrap_version,
+  completed_at: .observed_at,
+  status: "succeeded",
+  profile_digest: .profile_digest,
+  deployment_revision: .deployment_revision,
+  components: (.components | map({key: .id, value: .version}) | from_entries)
+}' /var/lib/gptclaw/host-tools.json >/var/lib/gptclaw/.bootstrap-complete.json.tmp
+chmod 0644 /var/lib/gptclaw/.bootstrap-complete.json.tmp
+mv /var/lib/gptclaw/.bootstrap-complete.json.tmp /var/lib/gptclaw/bootstrap-complete.json
 log "status=succeeded"

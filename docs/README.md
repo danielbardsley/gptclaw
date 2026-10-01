@@ -117,3 +117,14 @@ dispositions independently of feature implementation status.
   [Technical design](./013-versioned-project-manifest/technical-design.md) ·
   [Tasks](./013-versioned-project-manifest/tasks.md) ·
   [Acceptance](./013-versioned-project-manifest/acceptance.md)
+
+- **014 - Rootless container toolchain (SYS-001):**
+  [Specification](./014-rootless-container-toolchain/spec.md) ·
+  [Technical design](./014-rootless-container-toolchain/technical-design.md) ·
+  [Tasks](./014-rootless-container-toolchain/tasks.md)
+
+- **015 - Host tool profile (SYS-004):**
+  [Specification](./015-host-tool-profile/spec.md) ·
+  [Technical design](./015-host-tool-profile/technical-design.md) ·
+  [Tasks](./015-host-tool-profile/tasks.md) ·
+  [Acceptance status](./015-host-tool-profile/acceptance.md)

@@ -75,6 +75,13 @@ no snapshot. Its content was limited to the reproducible repository clone.
 SPEC-002 adds the backup policy in code. Confirm its deployed acceptance and
 an appropriate completed snapshot before treating the host as protected storage.
 
+## Host tool profile changes
+
+For SYS-004 replacements, follow [Manage the host tool profile](manage-host-tools.md)
+and compare the installed receipt's profile digest and deployment revision with
+the reviewed source. Check channel exception expiry before deployment or rollback.
+Profile changes do not authorize a local installer or automatic package removal.
+
 ## Common failures
 
 | Failure | Response |

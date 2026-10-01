@@ -5,6 +5,21 @@ ssh_pwauth: false
 disable_root: true
 
 write_files:
+  - path: /etc/gptclaw/host-tools-profile.json
+    owner: root:root
+    permissions: "0644"
+    content: |
+      ${indent(6, host_tools_profile)}
+  - path: /etc/gptclaw/host-tools-context.json
+    owner: root:root
+    permissions: "0644"
+    content: |
+      {"deployment_revision": "${deployment_revision}"}
+  - path: /usr/local/libexec/gptclaw-host-tools
+    owner: root:root
+    permissions: "0755"
+    content: |
+      ${indent(6, host_tools_helper)}
   - path: /etc/gptclaw/forge_authorized_key
     owner: root:root
     permissions: "0600"
