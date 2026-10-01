@@ -1,6 +1,6 @@
 # TDD-012: Context Validation
 
-- **Status:** Approved for implementation
+- **Status:** Implementation reviewed and merged
 - **Owner:** Daniel
 - **Specification:** [SPEC-012](./spec.md)
 - **Tasks:** [TASKS-012](./tasks.md)

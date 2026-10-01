@@ -1,6 +1,6 @@
 # TASKS-008: Runtime-operation Skill
 
-- **Status:** Implementation authorized; work in progress
+- **Status:** Implementation merged; remaining acceptance tracked below
 - **Owner:** Daniel
 - **Specification:** [SPEC-008](./spec.md)
 - **Design:** [TDD-008](./technical-design.md)
@@ -21,8 +21,9 @@
   publish implementation PR and obtain review/merge authorization. Update
   catalogue after actual merge and acceptance; clean owned fixtures only.
 
-Current handover: scope approved and implementation authorized on 2026-09-30.
-T-002's scope approval is complete; concrete live-provider selection remains
-pending. Skill/resources and 17 synthetic evaluations are complete. T-005 waits
-for the real runtime; T-006 awaits owner review and merge; full checks and PR CI run #70 passed. See
-[acceptance evidence](acceptance.md). The other four initiatives are not dependencies.
+Current handover: Daniel approved the resulting implementation and authorized
+merge on 2026-10-01. [PR #20](https://github.com/danielbardsley/gptclaw/pull/20)
+merged as `033c30b96ae355b0de54ddb24cf1c2f405328920`; all 107 repository tests and final PR CI run #71 passed.
+Live runtime acceptance waits for the reviewed provider and disposable service (T-002/T-005).
+The delivery-record task retains any outstanding acceptance/fixture closeout;
+review and merge themselves are complete. See [acceptance](acceptance.md).

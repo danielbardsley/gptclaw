@@ -1,6 +1,6 @@
 # TASKS-011: Architecture Decision Records
 
-- **Status:** Implementation authorized; work in progress
+- **Status:** Implementation merged; remaining acceptance tracked below
 - **Owner:** Daniel
 - **Specification:** [SPEC-011](./spec.md)
 - **Design:** [TDD-011](./technical-design.md)
@@ -22,9 +22,9 @@
 - [ ] **T-006** Record AC-001–005 evidence and CI, publish PR and obtain merge
   authorization. Record actual merge, update catalogue, and clean owned fixtures.
 
-Current handover: convention, template, index, Proposed pilot and 19 offline
-checks implemented. T-002 approval was supplied on 2026-09-30; it does not accept
-the pilot's unwritten rationale. Independent reader review passed;
-Daniel's pilot disposition and merge remain pending; full checks and PR CI
-run #70 passed. See
-[acceptance](acceptance.md).
+Current handover: Daniel approved the resulting implementation and authorized
+merge on 2026-10-01. [PR #20](https://github.com/danielbardsley/gptclaw/pull/20)
+merged as `033c30b96ae355b0de54ddb24cf1c2f405328920`; all 107 repository tests and final PR CI run #71 passed.
+ADR-0001 remains Proposed; Daniel's explicit disposition of the decision remains pending (T-005).
+The delivery-record task retains any outstanding acceptance/fixture closeout;
+review and merge themselves are complete. See [acceptance](acceptance.md).

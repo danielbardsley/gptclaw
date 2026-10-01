@@ -1,6 +1,6 @@
 # TDD-010: Session Handover Generator
 
-- **Status:** Approved for implementation
+- **Status:** Implementation reviewed and merged
 - **Owner:** Daniel
 - **Specification:** [SPEC-010](./spec.md)
 - **Tasks:** [TASKS-010](./tasks.md)

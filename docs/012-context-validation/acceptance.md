@@ -1,7 +1,7 @@
 # SPEC-012 acceptance evidence
 
 - Owner: Daniel. Evidence date: 2026-10-01.
-- Status: implemented on feature branch; read-only behavioral review complete; two repair tests blocked by automatic approval review.
+- Status: merged and available; final acceptance pending.
 - [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 - [Implementation PR #20](https://github.com/danielbardsley/gptclaw/pull/20).
 - Evaluated entrypoint SHA-256: `0fae0e3dd1eff106c890a48f9dc14985f3252f5fc8b315bacece2ce9e541d4ca` (pre-commit evaluation).
@@ -69,7 +69,17 @@ Terraform format, backend-free initialization, validation and tests. Protected
 plan/apply were skipped. No Terraform source changed, so separate local Terraform
 runs were unnecessary; no infrastructure deployment was performed.
 
-[PR #20](https://github.com/danielbardsley/gptclaw/pull/20) is ready for review on
-`codex/agt-006-through-010-specs`. Resulting-change review and merge remain pending;
-the catalogue records In review, not Delivered. The later documentation-only
-commit records this observed CI outcome and does not change tested source.
+## Merge closeout
+
+Daniel approved the resulting implementation and authorized merge on 2026-10-01.
+[PR #20](https://github.com/danielbardsley/gptclaw/pull/20) merged as
+`033c30b96ae355b0de54ddb24cf1c2f405328920`. Final PR head `d20997c365bab1fd0504524bf4b69ebf7cc2c3c9`
+passed [CI run #71](https://github.com/danielbardsley/gptclaw/actions/runs/36794914080),
+including repository checks and Terraform quality checks; protected plan/apply
+were skipped. This records PR CI, not a new infrastructure deployment.
+
+Two synthetic repair checks remain blocked by automatic approval review (T-003); fresh supported-client routing also remains pending (T-004).
+Merge approval does not turn an unrun check into a pass or authorize the previously
+rejected fixture edits. The four new skills are now advertised in the app's
+repository skill inventory; that observation does not prove fresh-client behavior.
+The catalogue records Deployed while remaining acceptance stays explicit.

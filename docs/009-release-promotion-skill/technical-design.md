@@ -1,6 +1,6 @@
 # TDD-009: Release and Production-promotion Skill
 
-- **Status:** Approved for implementation
+- **Status:** Implementation reviewed and merged
 - **Owner:** Daniel
 - **Specification:** [SPEC-009](./spec.md)
 - **Tasks:** [TASKS-009](./tasks.md)

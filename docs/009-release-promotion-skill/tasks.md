@@ -1,6 +1,6 @@
 # TASKS-009: Release and Production-promotion Skill
 
-- **Status:** Implementation authorized; work in progress
+- **Status:** Implementation merged; remaining acceptance tracked below
 - **Owner:** Daniel
 - **Specification:** [SPEC-009](./spec.md)
 - **Design:** [TDD-009](./technical-design.md)
@@ -23,8 +23,9 @@
   publish PR, obtain review/merge authorization, record merge and update catalogue
   with actual acceptance. Preserve release records; clean owned test artifacts.
 
-Current handover: skill/resources and 18 synthetic evaluations complete. Scope
-approval in T-002 was supplied on 2026-09-30; product-contract selection remains
-pending. T-005 waits for that dependency and scoped rehearsal authorization;
-T-006 awaits owner review and merge; full checks and PR CI run #70 passed. See [acceptance](acceptance.md).
-No release operation is authorized by implementation approval.
+Current handover: Daniel approved the resulting implementation and authorized
+merge on 2026-10-01. [PR #20](https://github.com/danielbardsley/gptclaw/pull/20)
+merged as `033c30b96ae355b0de54ddb24cf1c2f405328920`; all 107 repository tests and final PR CI run #71 passed.
+Live non-production rehearsal waits for the product contract and separately scoped operations (T-002/T-005).
+The delivery-record task retains any outstanding acceptance/fixture closeout;
+review and merge themselves are complete. See [acceptance](acceptance.md).

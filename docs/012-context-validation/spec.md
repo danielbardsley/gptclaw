@@ -1,6 +1,6 @@
 # SPEC-012: Context Validation
 
-- **Status:** Approved for implementation; acceptance pending
+- **Status:** Implementation reviewed and merged; final acceptance pending
 - **Owner:** Daniel
 - **Feature:** AGT-010
 - **Design:** [TDD-012](./technical-design.md)

@@ -1,7 +1,7 @@
 # SPEC-008 acceptance evidence
 
 - Owner: Daniel. Evidence date: 2026-09-30.
-- Status: implemented on feature branch; live acceptance and merge pending.
+- Status: merged and available; final acceptance pending.
 - [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 - [Implementation PR #20](https://github.com/danielbardsley/gptclaw/pull/20).
 - Evaluated skill entrypoint SHA-256: `49819f3e47cd75d88476798cea0b325baca13d902ca760d15790f7e70ddaa50c` (pre-commit evaluation).
@@ -13,7 +13,7 @@
 | AC-003 | passed | No-op, success, degraded, busy, timeout, lost receipt and partial group outcomes reviewed; at most one mutation per case. |
 | AC-004 | passed (synthetic) | Reports omit sentinel secret and identify unknowns; no live provider or project data was accessed. This does not prove provider data isolation. |
 | AC-005 | pending | Daniel/PRJ-002 owner must select the actual reviewed runtime contract and disposable service; then run fresh-client live operations. |
-| AC-006 | pending | Local package and behavioral checks passed; full repository/CI results recorded below; owner review and merge remain. |
+| AC-006 | passed | Package/repository checks, independent synthetic evidence and final PR CI passed; Daniel approved implementation and PR #20 merged. Live acceptance remains AC-005. |
 
 ## Verification
 
@@ -52,7 +52,17 @@ Terraform format, backend-free initialization, validation and tests. Protected
 plan/apply were skipped. No Terraform source changed, so separate local Terraform
 runs were unnecessary; no infrastructure deployment was performed.
 
-[PR #20](https://github.com/danielbardsley/gptclaw/pull/20) is ready for review on
-`codex/agt-006-through-010-specs`. Resulting-change review and merge remain pending;
-the catalogue records In review, not Delivered. The later documentation-only
-commit records this observed CI outcome and does not change tested source.
+## Merge closeout
+
+Daniel approved the resulting implementation and authorized merge on 2026-10-01.
+[PR #20](https://github.com/danielbardsley/gptclaw/pull/20) merged as
+`033c30b96ae355b0de54ddb24cf1c2f405328920`. Final PR head `d20997c365bab1fd0504524bf4b69ebf7cc2c3c9`
+passed [CI run #71](https://github.com/danielbardsley/gptclaw/actions/runs/36794914080),
+including repository checks and Terraform quality checks; protected plan/apply
+were skipped. This records PR CI, not a new infrastructure deployment.
+
+Live runtime acceptance waits for the reviewed provider and disposable service (T-002/T-005).
+Merge approval does not turn an unrun check into a pass or authorize the previously
+rejected fixture edits. The four new skills are now advertised in the app's
+repository skill inventory; that observation does not prove fresh-client behavior.
+The catalogue records Deployed while remaining acceptance stays explicit.

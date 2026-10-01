@@ -1,6 +1,6 @@
 # TDD-011: Architecture Decision Records
 
-- **Status:** Approved for implementation
+- **Status:** Implementation reviewed and merged
 - **Owner:** Daniel
 - **Specification:** [SPEC-011](./spec.md)
 - **Tasks:** [TASKS-011](./tasks.md)
