@@ -126,4 +126,5 @@ dispositions independently of feature implementation status.
 - **015 - Host tool profile (SYS-004):**
   [Specification](./015-host-tool-profile/spec.md) ·
   [Technical design](./015-host-tool-profile/technical-design.md) ·
-  [Tasks](./015-host-tool-profile/tasks.md)
+  [Tasks](./015-host-tool-profile/tasks.md) ·
+  [Acceptance status](./015-host-tool-profile/acceptance.md)

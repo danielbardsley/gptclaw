@@ -12,6 +12,8 @@ on:
       - requirements/**
       - docs/project-manifest.md
       - docs/013-versioned-project-manifest/**
+      - docs/015-host-tool-profile/**
+      - runbooks/manage-host-tools.md
       - config/codex/**
       - AGENTS.md
       - templates/agents/**
@@ -32,6 +34,8 @@ on:
       - requirements/**
       - docs/project-manifest.md
       - docs/013-versioned-project-manifest/**
+      - docs/015-host-tool-profile/**
+      - runbooks/manage-host-tools.md
       - config/codex/**
       - AGENTS.md
       - templates/agents/**

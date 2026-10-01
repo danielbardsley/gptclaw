@@ -1,122 +1,125 @@
 # TDD-015: Host Tool Profile
 
-- **Status:** Draft proposal
+- **Status:** Implemented for review; not deployed
 - **Owner:** Daniel
 - **Last updated:** 2026-10-01 (America/New_York)
 - **Specification:** [SPEC-015](spec.md)
 - **Tasks:** [TASKS-015](tasks.md)
+- **Evidence:** [Acceptance status](acceptance.md)
 
-## Approach and existing integration
+## Implementation
 
-The [bootstrap template](../../infra/dev-host/templates/bootstrap-forge.sh.tftpl)
-contains both the apt list and specialized installers. The
-[compute definition](../../infra/dev-host/compute.tf) renders this into user data
-and replaces compute on user-data changes. Preserve that deployment path and
-existing phase-specific service setup. Do not construct a general package manager.
+The authoritative [profile](../../infra/dev-host/host-tools.json) uses version-1
+JSON for Ubuntu 24.04 amd64. Its 17 records cover the 12 existing explicit apt
+packages and five specialized bootstrap components. Each declares purpose,
+capability owner, adapter, identity, source, version policy and verification.
+The [structural schema](../../infra/dev-host/host-tools.schema.json) is supplemented
+by the [stdlib validator](../../infra/dev-host/lib/host_tools.py): strict JSON
+parsing, duplicate keys/IDs, package ownership, safe arguments, fixed source and
+identity matching, required bootstrap consumers and exception dates. No field is
+shell text. The same validator runs in repository checks and before provisioning.
+Python 3 on the Noble image is checked before installation; there is no fallback
+package list to bootstrap the parser.
 
-Propose `infra/dev-host/host-tools.json` with `schema_version: 1`, a target
-OS/architecture and a component list. JSON allows Terraform rendering and Python
-standard-library parsing without a YAML dependency. A checked-in schema/reference
-and strict offline validator define permitted fields and installation policies.
-Reject duplicate JSON keys as well as component IDs. Validate the entire profile
-before any side effect; test that both the CI and provisioning paths reject the
-same invalid fixtures. Python 3 supplied by the target base image must be checked
-as a prerequisite before parsing; if unavailable, fail explicitly rather than
-maintaining a fallback installation list.
+[Compute](../../infra/dev-host/compute.tf) reads the profile and standalone helper
+from within the Terraform module and embeds them in
+[cloud-init](../../infra/dev-host/templates/cloud-init.yaml.tftpl), together with
+the deployment Git revision. Files therefore travel inside the HCP configuration
+boundary and change instance user data. Existing replacement behavior remains.
+No AWS resource, identity permission or public ingress is added.
 
-Component records describe data, not commands: identifier, purpose, capability
-owner, fixed installer adapter, installation identity, structured source,
-version policy and fixed verification adapter. Adapter names are allowlisted in
-reviewed code. Reject unexpected root/user combinations, invalid package/version
-strings, URLs outside approved source policy and values interpreted as options.
-Use argument arrays and no shell evaluation. Unknown adapters fail closed.
+Cloud-init writes root-owned files at `/etc/gptclaw/host-tools-profile.json`,
+`/etc/gptclaw/host-tools-context.json` and
+`/usr/local/libexec/gptclaw-host-tools`. Only `validate` is exposed for use from a
+checkout. Provisioning actions require root and that installed helper path; this
+is an operational guard, not a sandbox against an administrator editing code.
 
-Suggested methods are distribution packages and a small set of named existing
-component adapters. The inventory must determine the final adapter set. Entries
-may refer to an adapter that provisions several tightly related packages, but
-package ownership must be unique and the profile must contain the actual desired
-package set. Specialized adapters retain service configuration in its existing
-phase; profile membership/version policy controls installation. An absent optional
-component must not leave a later phase calling its binary; required bootstrap
-capabilities cannot be retired without updating and testing their consumers.
+## Adapters and component disposition
 
-## Baseline migration
-
-| Existing source mechanism | Proposed disposition, pending review |
+| Adapter | Installation/verification behavior |
 |---|---|
-| Inline apt list (`ca-certificates`, `curl`, `e2fsprogs`, `git`, `jq`, `nvme-cli`, `openssh-server`, `python3`, `rsyslog`, `sudo`, `ufw`, `unzip`) | Profile entries with purpose, distro source and distribution-maintained policy; preserve current consumers and privilege boundaries. |
-| SSM unit detection with snap fallback | Explicit platform-component adapter; verify an existing supported installation or use a reviewed declared fallback, not an implicit alternate source. |
-| AWS CLI downloaded zip | Select a verified immutable artifact or submit a bounded channel exception for Daniel's decision. |
-| Tailscale upstream installer | Declare source and version policy; replace with a reviewed fixed method or record a bounded exception. |
-| CloudWatch Agent current-release deb | Select a verified immutable artifact or submit a bounded exception. |
-| Codex installer as `forge` | Keep unprivileged identity; resolve version/source policy or a bounded exception before deployment. |
-| Host policy revision installer | Remains separately pinned and managed; profile does not control its content or installation. |
-| SYS-001 package set | Add only when approved; use one profile declaration while SYS-001 owns configuration and capability acceptance. |
+| apt | Profile-owned package arguments; distribution-maintained or exact policy; validate selected missing-package version against official Noble archive/security origins; installed matching packages remain untouched. Verify installed dpkg status/version. |
+| SSM | Detect exactly one loaded dpkg/snap unit and verify agent version; absence uses the explicitly declared stable snap channel. Two loaded variants fail instead of choosing one. |
+| AWS CLI | Verify canonical executable/version; absent tool uses approved channel zip or exact versioned URL plus SHA-256 before extraction. Unknown existing installation trees fail. |
+| Tailscale | Verify canonical executable/version; absence uses the existing official installer. Enrollment/service configuration remains in bootstrap. |
+| CloudWatch | Verify dpkg installed status/version; absence uses existing official deb; an untracked existing installation directory fails. Existing logging configuration remains in bootstrap. |
+| Codex | Verify its canonical user executable/version as `forge`; absence downloads the existing installer and runs it as `forge`, preserving user-scoped installation. |
 
-This table describes observed committed code and proposed work. It is not a claim
-that a version-specific download endpoint exists or that any exception is approved.
-Version and integrity mechanisms must be checked against authoritative component
-documentation when selecting artifacts. Do not download or execute installers
-while writing this plan.
+Daniel explicitly approved the five existing channels through November 1, 2026
+(America/New_York). Each profile exception includes owner, scope, reason, approval,
+expiry and removal. Version selection is transparent, not immutable: channel
+installers retain their upstream behavior and distribution packages may change.
+Existing matching installs are not reinstalled or automatically upgraded. Exact
+policy currently supports apt and AWS CLI only; other versioned sources require
+reviewed adapter work. This avoids inventing artifact URLs for unsupported pins.
 
-## Rendering, verification and evidence
+Downloads require HTTPS, have a deadline and fail without source fallback. Exact
+AWS archives must match the declared digest before extraction. Subprocesses use
+argument arrays, fixed adapters and a timeout; raw output is captured rather than
+copied to bootstrap logs. Version parsers produce only bounded receipt values.
+Unknown/partial installations or exact-version mismatches fail without automatic
+uninstall, downgrade, tree replacement or broad cleanup.
 
-Read the profile as a Terraform source file and include its canonical content and
-digest in the rendered bootstrap payload. Use the existing deployment revision
-input for provenance. Ensure the profile is inside the remote Terraform upload
-boundary; do not depend on a sibling file omitted from HCP execution. Any schema
-or helper required during provisioning must likewise be embedded or included by
-the reviewed render path. The implementation must test payload size against the
-existing cloud-init transport limit before deployment.
+The bootstrap no longer has an independent package/install list. Required consumer
+checks in the validator protect existing phases; retiring a required capability
+needs a coordinated consumer change. Extra apt entries can be retired without
+live-host removal, although AMI/transitive dependencies may retain the package.
+The separate pinned AGENTS installer is unchanged. Podman is not added; SYS-001
+will supply its approved profile entries and own runtime configuration/acceptance.
 
-After each adapter, run bounded version/capability probes and aggregate sanitized
-results. Proposed receipt path is `/var/lib/gptclaw/host-tools.json`, root-owned
-and readable by `forge`, containing only the approved metadata. Write a temporary
-file in that directory, then atomically replace the receipt after full success.
-Invalidate stale success at the start of an actual provisioning attempt, while
-retaining a clearly labeled previous receipt if useful for diagnosis. Couple the
-receipt digest/revision with the existing bootstrap completion record. The current
-one-shot completion guard means changing the working checkout alone does not
-reconcile the running host; the profile is applied through replacement bootstrap.
+## Ordering, failure and receipt
 
-Separate profile presence, installed version verification and feature behavior.
-For example, an installed Podman binary does not prove rootless storage or reboot
-persistence. Those checks and acceptance remain in SPEC-014.
+[Bootstrap](../../infra/dev-host/templates/bootstrap-forge.sh.tftpl) clears old
+success files before parser/profile checks, then invokes the fixed phase adapters.
+Base packages precede account setup; Codex follows `forge` creation and the
+separately reviewed host-policy installation. Existing service setup stays in its
+original phases. Each helper invocation validates the whole profile and checks
+target OS/architecture. Expiry is checked against America/New_York calendar dates.
 
-## Verification, rollout and recovery
+The final phase rechecks every component and atomically writes
+`/var/lib/gptclaw/host-tools.json` with canonical profile SHA-256, deployment SHA,
+target, UTC observation time, identity, version, policy and verification result.
+The bootstrap completion marker is atomically replaced afterward with matching
+provenance. Failures clear both success files; partial results cannot masquerade
+as current success. The receipt is root-owned, readable by `forge`, and excludes
+source secrets, environments and raw diagnostics. It describes provisioning-time
+tool verification, not ongoing drift or feature behavior.
 
-Offline tests use temporary roots and mock installers; never apt, snap, systemd,
-network downloads or real users. Cover malformed profiles, conflicting ownership,
-argument injection, unsupported adapter/identity combinations, failed downloads,
-integrity checks, missing versions, verification failures, partial/stale receipts,
-repeat runs and retirement without deletion. Terraform tests inspect rendered
-profile provenance, phase ordering and unchanged safeguards.
+## Verification and operation
 
-Run repository and changed-script checks plus pinned Terraform format, validate
-and tests for implementation changes. Review CI separately. Deployment requires
-Daniel's explicit scope/window approval and the
-[replacement procedure](../../runbooks/recover-dev-host.md), including a suitable
-recovery point and protected-volume plan review. Verify the deployed profile digest,
-installed tools, private access and persistent project ownership afterward.
+[Offline tests](../../scripts/tests/test_host_tools.py) exercise strict parsing,
+source/version refusal, exception expiry, installer failures, digest failure before
+execution, existing-state conflicts, Codex identity, repeat/retirement behavior,
+interrupted writes and failed final receipt publication. All installers, network
+and systemd interactions are fake and filesystem fixtures are task-owned.
+[Terraform tests](../../infra/dev-host/tests/host-tools.tftest.hcl) use mock AWS
+and real local cloud-init to check embedded source/provenance, phase ordering,
+replacement wiring and compressed payload size. Repository checks include the
+same profile validator and focused test suite.
 
-Rollback is a targeted reviewed revert through the pipeline and may replace
-compute again. Review package availability before rollback; distribution/channel
-policies may select different versions at different times. Never silently fall
-back, uninstall unrelated packages, restore an entire user home or discard the
-project disk. Record rollback review versus any actual drill distinctly.
+The [runbook](../../runbooks/manage-host-tools.md) defines the version-1 fields,
+change workflow, channel exceptions, receipt inspection and retirement. Deployment
+requires a reviewed protected plan, suitable recovery point and Daniel's specific
+authorization/window, following [host recovery](../../runbooks/recover-dev-host.md).
+Post-replacement acceptance must verify SSM/private SSH, original project volume
+UUID/ownership and matching receipt; none has been claimed locally.
 
-## Planned files and traceability
+Rollback uses a reviewed revert through the pipeline and can replace compute
+again. Check older package/source availability and exception expiry first; absence
+blocks rollback pending a reviewed alternative. Channel-selected versions are not
+byte-identical rebuilds. Preserve the protected project disk and do not attempt
+live-host package removal or restoration of an entire user home.
 
-| Component | Responsibility | Requirements | Tasks | Acceptance |
-|---|---|---|---|---|
-| Profile and schema/reference | Strict desired-tool contract and policies | HTP-001, HTP-002 | T-002, T-003 | AC-001, AC-002 |
-| Validator and fixed adapter helpers | Validation, safe install decisions and verification | HTP-001–HTP-005 | T-003, T-004 | AC-001–AC-005 |
-| Bootstrap/rendering and Terraform tests | Same-revision delivery, phase ordering, completion/receipt | HTP-003, HTP-004 | T-004, T-005 | AC-003, AC-004 |
-| Isolated fixture tests | Failures, retries, migration and retirement | HTP-001–HTP-005 | T-005 | AC-001–AC-005 |
-| Tool-profile runbook and recovery links | Change review, replacement and rollback | HTP-005–HTP-007 | T-006, T-007 | AC-005–AC-007 |
-| Initiative acceptance record | Evidence and owner disposition | HTP-007 | T-007 | AC-007 |
+## Traceability
 
-Daniel owns policy/exception approval. The implementer resolves adapter feasibility,
-artifact verification and existing-state conflicts at T-002. SYS-001 integration
-order is resolved against merged code at implementation time, not by assuming
-both drafts have already shipped. No new infrastructure resource is proposed.
+| Requirements | Mechanism | Tasks | Acceptance |
+|---|---|---|---|
+| HTP-001, HTP-002 | Profile/schema, validator, source/version policies | T-002, T-003 | AC-001, AC-002 |
+| HTP-003, HTP-004 | Embedded helper/context, ordered adapters, atomic receipt | T-004, T-005 | AC-003, AC-004 |
+| HTP-005 | Conflict refusal, no-op verification, consumer checks, no uninstall | T-004, T-005 | AC-005 |
+| HTP-006 | Existing pipeline/replacement path and recovery runbook | T-006 | AC-006 |
+| HTP-007 | Runbook and distinct local/CI/deployed acceptance evidence | T-006, T-007 | AC-007 |
+
+No component source decision remains pending for this implementation. Review,
+merge, deployment authorization and host acceptance remain separate gates.
+Daniel owns channel replacement before expiry and final acceptance.

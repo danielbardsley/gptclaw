@@ -1,6 +1,6 @@
 # SPEC-015: Host Tool Profile
 
-- **Status:** Draft; awaiting Daniel's review
+- **Status:** Implementation in review; deployment and acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** SYS-004
 - **Last updated:** 2026-10-01 (America/New_York)
@@ -17,8 +17,11 @@ comes from, how its version is selected and how a replacement host verifies it.
 A tool addition or update follows the existing infrastructure pipeline rather
 than an agent installing a system package interactively.
 
-Daniel requested this specification. Drafting is authorized; specification
-approval, implementation and deployment authorization remain pending.
+Daniel authorized implementation with “Implement SYS-004” on October 1, 2026
+(America/New_York), approving this specification's scope. He also explicitly
+approved retaining the five existing upstream channels through November 1, 2026.
+Implementation is authorized; merge, deployment and deployed acceptance remain
+pending. See the [acceptance record](acceptance.md).
 
 ## Baseline and scope
 
@@ -149,13 +152,15 @@ merged implementation and all required deployed criteria pass.
 
 ## Decisions and completion
 
-Proposed baseline is distribution-maintained apt packages with observed versions,
-not an immutable snapshot of all OS dependencies. Daniel owns approval of that
-policy and any retained channel exceptions. The implementer inventories the
-existing install mechanisms and proposes exact component dispositions before
-implementation changes; expiry dates cannot be invented on Daniel's behalf.
-Until then the exceptions are unresolved, not approved. Planning and validation
-design can proceed independently.
+The approved baseline uses distribution-maintained apt packages with observed
+versions, not an immutable snapshot of OS dependencies. Daniel approved temporary
+existing-channel exceptions for SSM's snap fallback, AWS CLI, Tailscale, CloudWatch
+Agent and Codex on October 1, 2026, through November 1, 2026 (America/New_York).
+Each profile entry records Daniel as owner, its scope/reason and the removal step:
+replace it with a reviewed versioned source before expiry. Validation blocks new
+provisioning after expiry; operator follow-through is required, and running tools
+are not automatically stopped. No approval for new upstream channels is implied.
+The [runbook](../../runbooks/manage-host-tools.md) records component dispositions.
 
 Deliver the profile/schema, provisioning integration, tests, receipt, operator
 runbook and acceptance record. Acceptance of SYS-004 does not accept SYS-001's

@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gptclaw.invalid/host-tools/v1.schema.json",
+  "title": "Host tool profile v1 (structural schema; host_tools.py enforces semantic constraints)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "target",
+    "components"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "target": {
+      "const": {
+        "os": "ubuntu",
+        "release": "24.04",
+        "architecture": "amd64"
+      }
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "purpose",
+          "owner",
+          "adapter",
+          "identity",
+          "source",
+          "package",
+          "version",
+          "verification"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+          },
+          "adapter": {
+            "enum": [
+              "apt",
+              "ssm",
+              "aws-cli",
+              "tailscale",
+              "cloudwatch",
+              "codex"
+            ]
+          },
+          "identity": {
+            "enum": [
+              "root",
+              "forge"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+          },
+          "package": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-z0-9][a-z0-9+.-]{0,79}$"
+          },
+          "version": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "policy",
+              "value",
+              "sha256",
+              "exception"
+            ],
+            "properties": {
+              "policy": {
+                "enum": [
+                  "distribution",
+                  "channel",
+                  "exact"
+                ]
+              },
+              "value": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "sha256": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              "exception": {
+                "anyOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "owner",
+                      "scope",
+                      "reason",
+                      "removal",
+                      "approved_on",
+                      "expires_on"
+                    ],
+                    "properties": {
+                      "owner": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500,
+                        "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+                      },
+                      "scope": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500,
+                        "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+                      },
+                      "reason": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500,
+                        "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+                      },
+                      "removal": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 500,
+                        "pattern": "^[^\\x00-\\x1f\\x7f]+$"
+                      },
+                      "approved_on": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "expires_on": {
+                        "type": "string",
+                        "format": "date"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "verification": {
+            "enum": [
+              "apt-version",
+              "ssm-version",
+              "aws-cli-version",
+              "tailscale-version",
+              "cloudwatch-version",
+              "codex-version"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
