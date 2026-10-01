@@ -1,10 +1,12 @@
 # SPEC-014 acceptance evidence
 
-- **Status:** Local implementation verified; CI, merge, deployment and host acceptance pending
+- **Status:** Local implementation and CI verified; merge, deployment and host acceptance pending
 - **Owner:** Daniel
 - **Evidence date:** 2026-10-01 (America/New_York)
 - **Implementation revision:** `c5f6cb27737cff345fbf09e3b6cdebb942763765`
 - **Review branch:** `codex/sys-001-rootless-toolchain`
+- **Review:** [PR #26](https://github.com/danielbardsley/gptclaw/pull/26)
+- **CI:** [Run 81](https://github.com/danielbardsley/gptclaw/actions/runs/36818384744) passed quality checks for `2cf828d34bba07c9959ee52cdbef35bfef3ac2d7`; protected plan/apply jobs were skipped as expected for a PR.
 - **Plans:** [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 - **Operation:** [Rootless toolchain runbook](../../runbooks/manage-rootless-toolchain.md)
 
