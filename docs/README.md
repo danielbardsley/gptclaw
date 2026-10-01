@@ -111,3 +111,9 @@ dispositions independently of feature implementation status.
   [Technical design](./012-context-validation/technical-design.md) ·
   [Tasks](./012-context-validation/tasks.md) ·
   [Acceptance](./012-context-validation/acceptance.md)
+
+- **013 - Versioned project manifest (PRJ-001):**
+  [Specification](./013-versioned-project-manifest/spec.md) ·
+  [Technical design](./013-versioned-project-manifest/technical-design.md) ·
+  [Tasks](./013-versioned-project-manifest/tasks.md) ·
+  [Acceptance](./013-versioned-project-manifest/acceptance.md)

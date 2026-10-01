@@ -25,3 +25,8 @@ terraform.tfvars.json
 
 # Local verification output
 acceptance-evidence/
+
+# Project-local Python tooling
+.venv-manifest/
+__pycache__/
+*.pyc
