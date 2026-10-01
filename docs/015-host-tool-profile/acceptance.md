@@ -1,6 +1,6 @@
 # SPEC-015 acceptance evidence
 
-- **Status:** Local implementation verified; CI, merge and deployed acceptance pending
+- **Status:** Local implementation and CI verified; merge and deployed acceptance pending
 - **Owner:** Daniel
 - **Evidence date:** 2026-10-01 (America/New_York)
 - **Implementation revision:** `fd1d1d3d708469f74775a959f620bc9e8a8447f2`
@@ -33,7 +33,7 @@ approved exceptions; SYS-001 installs no tools in this implementation.
 | AC-004 | pending | Local stale/partial receipt, interrupted write and failed final probe tests pass. No replacement host receipt has been produced. | Compare deployed receipt/provenance and verify tools, operator. |
 | AC-005 | passed | Repeat/conflict/retirement fixtures preserve unrelated state and avoid uninstall calls. Required bootstrap consumers explicitly gate retirement. | Review operational migration before deployment, Daniel. |
 | AC-006 | pending | Recovery runbook and availability/expiry limitations documented; no protected plan, apply, replacement or rollback drill was run. | Review recovery point/window, authorize deployment and verify data/access, Daniel/operator. |
-| AC-007 | pending | Runbook and this local evidence record exist; CI/deployment references and final owner acceptance remain separate. | Review CI, merge, deployed results and acceptance, Daniel. |
+| AC-007 | pending | Runbook, local evidence and successful CI reference exist; deployment and final owner acceptance remain separate. | Review CI, merge, deployed results and acceptance, Daniel. |
 
 “Passed” above describes the criterion's local evidence only; it does not mark
 SYS-004 Delivered. Required host checks and final acceptance remain pending.
@@ -64,7 +64,11 @@ both the full rerun and final targeted tests passed. No infrastructure was touch
 
 ## Remaining delivery work
 
-CI status must be read from the implementation PR; local results are not CI.
+GitHub Actions [run 36815940238](https://github.com/danielbardsley/gptclaw/actions/runs/36815940238)
+completed successfully for `12c98c3d0b14468050802fb704e97244a7698e21`, which contains
+implementation `fd1d1d3` plus this evidence record. This was the pull-request quality
+workflow, not a protected plan/apply. The subsequent change recording this CI
+result is documentation-only; CI evidence here refers to that exact tested SHA.
 The PR also contains the previously requested SYS-001 planning documents, which
 remain unimplemented. Before any replacement, obtain Daniel's concrete deployment
 authorization and follow [Manage host tools](../../runbooks/manage-host-tools.md)
