@@ -71,3 +71,10 @@ acceptance was performed. See the evidence record for exact checks and PR status
 October 8 repair: AWS CLI installer permissions and final forge execution are
 covered by code and offline tests. Daniel authorized merge, re-plan and protected
 replacement; recovery readiness and actual deployment acceptance remain required.
+
+- [ ] T-008: Complete the October 8 absent-dpkg-record repair review and CI,
+  then review recovery readiness and the protected development-host plan before
+  an authorized replacement. Verify bootstrap, automatic Tailscale enrollment,
+  project filesystem/ownership and all profile receipts afterward. The code and
+  regression tests are prepared; 12 selected offline tests passed locally.
+  See [the acceptance record](acceptance.md) for the diagnosed failure and limits.

@@ -97,3 +97,39 @@ Full offline repository checks passed after the final extraction/installer
 umask change. Terraform 1.16.5 format/validate and all 24 development-root tests
 passed before the extraction adjustment; the affected host-tool rendering test
 is rerun against the final helper. Whitespace and relative links passed.
+
+## Absent dpkg record repair - October 8, 2026
+
+Read-only AWS CLI inspection verified replacement instance `i-0ec67cdd63169ee10`
+(`forge-dev-01`) at revision `15334352f647ff2518ebb8595c9ef4edef6f2d82`,
+with SSM online. The [protected apply](https://github.com/danielbardsley/gptclaw/actions/runs/37739732969)
+succeeded, but SSM diagnostics found `gptclaw-bootstrap.service` failed in
+`base-packages` with `existing package is not fully installed`. The package
+query returned successfully for `nvme-cli` with status `not-installed`.
+Tailscale was not installed and enrollment was never attempted; cloud-init's
+`done` status did not establish bootstrap success. No completion receipt existed.
+
+Daniel instructed that this repair be made locally in the Terraform-delivered
+source because the remote chat was on the inaccessible host. The helper now
+treats exactly `not-installed` as absence and follows the existing approved
+installation and verification path. Other incomplete package states still fail;
+no source, package list, permission, or replacement gate changes.
+
+The new absent-package regression reproduced the original failure before the
+repair. Both new tests and ten existing companion tests then passed with Python
+3.12 on Windows (12 selected offline tests). The tests verify installation,
+post-install version verification, repeat behavior, and refusal of six incomplete
+or retained-configuration states without an installation command. Existing
+source/version and receipt checks were included. Shell syntax checks for the
+repository checker and bootstrap template, and Git whitespace checks passed.
+
+Full Linux repository checks were not run locally: the existing Ubuntu 24.04 WSL
+disk is missing. The installed Terraform is 1.11.1, not the required 1.16.5; a
+temporary pinned-tool check could not start due to a local process access error.
+The existing PR CI must verify the full Linux suite and Terraform rendering,
+including the unchanged payload-size and replacement assertions.
+
+Only read-only diagnostics were executed on the live host. Repair deployment,
+Tailscale enrollment, project filesystem/ownership, all profile receipts and
+final acceptance remain pending. Review current recovery readiness and the
+protected plan before any further replacement apply.
