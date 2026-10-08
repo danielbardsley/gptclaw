@@ -1,6 +1,6 @@
 # SPEC-014 acceptance evidence
 
-- **Status:** Implementation merged; replacement bootstrap blocked; host acceptance pending
+- **Status:** Bootstrap verified; full host acceptance pending
 - **Owner:** Daniel
 - **Evidence date:** 2026-10-08 (America/New_York)
 - **Implementation revision:** `c5f6cb27737cff345fbf09e3b6cdebb942763765`

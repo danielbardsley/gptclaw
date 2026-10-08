@@ -38,15 +38,14 @@ During the October 1 implementation checks, no local package install, token
 request, AWS mutation or external trust write was performed. Mock test blocks named `apply` do not provision AWS resources. No
 credentials, live tokens, state or plans are included in this evidence.
 
-## Remaining setup
+## Remaining acceptance
 
-Follow [the runbook](../../runbooks/manage-tailscale-federation.md) for the
-recovery readiness and protected development-host apply. The protected remote plan
-now confirms Terraform 1.16.5. Preserve the empty development working directory
-and disabled auto-apply. Tailnet Lock is disabled on the connected host's tailnet;
-confirm recovery point, maintenance window and rollback readiness before replacement.
-No host replacement or actual automatic enrollment has occurred in this setup.
-Delivered status is not claimed.
+Fresh-host enrollment, completed bootstrap and private access are verified in
+[the live evidence below](#fresh-host-enrollment-verified---october-8-2026).
+Preserve disabled auto-apply and the reviewed workspace configuration. Final
+owner acceptance and the separate SYS-001 fixture, logout/reboot and cleanup
+scenarios remain pending. Earlier setup/plan observations below are historical;
+they do not supersede the latest verified bootstrap result.
 
 ## Review and CI
 
