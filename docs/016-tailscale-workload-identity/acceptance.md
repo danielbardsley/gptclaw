@@ -133,3 +133,27 @@ maintenance readiness and independent SSM recovery access remain required.
 The AWS console redirected TinyFish to sign-in during read-only backup
 inspection. No current snapshot metadata was obtained; AWS access is the next
 operator action. This is not evidence that snapshots are absent.
+
+### Backup inspection and AWS CLI preference follow-up
+
+Daniel saved an AWS browser session, then instructed that all AWS work use the
+CLI. Repository guidance now records that preference; infrastructure mutations
+remain on the protected pipeline. No further AWS browser checks will be started.
+The already-running read-only browser check completed after a cancellation
+request was rejected by automatic approval review (the connector requires an
+explicit stop instruction).
+
+That browser reported completed snapshot `snap-0022f6fe12c59fe58` for
+`vol-0f53005235c1e39f3`, starting October 7, 2026 at 23:16:36 EDT
+(October 8 at 03:16:36 UTC), encrypted with source-volume key
+`80089d26-3dc7-46ef-8982-e41f1d5163f7`, and private with no listed sharing accounts.
+Its description names DLM policy `policy-0915f5294ae69132a`; the policy tag and
+actual policy state were not independently extracted. CLI confirmation and
+adequacy for subsequent project writes remain pending; no restore was tested.
+
+AWS CLI v2 is already declared in `infra/dev-host/host-tools.json` and has an
+installation/verification adapter in `infra/dev-host/lib/host_tools.py`.
+Read-only `namei -l /usr/local/bin/aws` found the existing symlink but also
+root-owned `/usr/local/aws-cli` with mode 750, preventing forge from traversing
+the installed CLI tree. No live permissions or packages were changed. CLI access
+needs a reviewed repair or approved user-scoped setup before backup verification.

@@ -9,10 +9,9 @@ GptClaw is Daniel's private-access AWS remote development platform. This
 repository owns its reviewed infrastructure, host-policy source, and operational
 runbooks. It is not a product application or a general project runtime manager.
 
-Use these project facts alongside applicable host guidance. Higher-priority
-session instructions and available permissions govern. Surface unresolved
-conflicts and continue unaffected authorized work; guidance is not a security
-boundary or a new grant of authority.
+Follow host guidance and higher-priority session instructions. Surface unresolved
+conflicts and continue unaffected authorized work. This guidance neither grants
+permissions nor establishes a security boundary.
 
 ## Stack and layout
 
@@ -58,8 +57,8 @@ For documentation-only edits, use diff and relative-link review; Terraform runs
 are not required. For behavior changes, add meaningful tests and run relevant
 checks; the repository checker already runs the script test suites.
 The CI quality job runs broader Terraform checks for its configured paths.
-Report exact outcomes and skipped checks; distinguish local checks, CI, deployed
-behavior, and acceptance. Never claim an unexecuted command passed.
+Report outcomes and skipped checks; distinguish local checks, CI, deployment and
+acceptance. Never claim an unexecuted command passed.
 
 ## Planning and delivery
 
@@ -93,7 +92,8 @@ This repository has no application runtime dataset; persistent project-volume
 data is operational state governed by existing specs/runbooks, never test data.
 
 Preserve project-volume and identity deletion protection, private host access,
-and development/production identity, state, and data separation. AWS mutations
+and development/production identity, state, and data separation. Use the AWS CLI
+for AWS inspection and operations, not browser automation. Infrastructure mutations
 stay on the protected pipeline; never run local applies or direct infrastructure
 mutation, or broaden permissions after a denial. Do not use production or
 unrelated repository credentials. Prior temporary exceptions grant no standing
