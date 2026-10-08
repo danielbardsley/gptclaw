@@ -107,8 +107,13 @@ The final phase rechecks every component before atomically publishing
 `/var/lib/gptclaw/host-tools.json`. It contains schema version, canonical profile
 SHA-256, deployment revision, target, observation timestamp, component versions,
 identities, policy and verification status. The completion marker references the
-same digest/revision. An error removes both success markers. A receipt records
-tool verification at provisioning time, not ongoing drift or runtime acceptance.
+same digest/revision. An error removes both success markers. AWS CLI installation uses a subprocess-only umask of 022 so forge can read and
+execute the root-owned tool; the remaining bootstrap keeps umask 027. Final
+verification runs the canonical AWS executable as forge and checks the same
+version before publishing success. Existing inaccessible installations fail
+verification; repair them through reviewed bootstrap and instance replacement,
+not live permission changes. A receipt records provisioning-time verification,
+not ongoing drift or runtime acceptance.
 
 Read-only inspection on an authorized host:
 

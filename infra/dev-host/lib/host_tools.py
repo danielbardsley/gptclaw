@@ -138,14 +138,14 @@ def digest(profile):
     return hashlib.sha256(json.dumps(profile, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
 
-def run(args, *, optional=False):
+def run(args, *, optional=False, umask=-1):
     """Capture diagnostics rather than copying potentially sensitive installer output."""
     env = dict(os.environ, LC_ALL='C', DEBIAN_FRONTEND='noninteractive',
                PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin')
     try:
         with tempfile.TemporaryFile() as output:
             result = subprocess.run(args, stdout=output, stderr=subprocess.DEVNULL, env=env,
-                                    timeout=900, check=False)
+                                    timeout=900, check=False, umask=umask)
             if result.returncode:
                 if optional:
                     return None
@@ -301,8 +301,9 @@ class Provisioner:
                     # Never overwrite an unrecognized existing installation tree.
                     require(self.run(['test', '-e', '/usr/local/aws-cli'], optional=True) is None,
                             'existing AWS installation conflicts')
-                    self.run(['unzip', '-q', str(artifact), '-d', tmp])
-                    self.run([str(Path(tmp) / 'aws/install')])
+                    self.run(['unzip', '-q', str(artifact), '-d', tmp], umask=0o022)
+                    # Scope public tool permissions to this installer; retain bootstrap's 027.
+                    self.run([str(Path(tmp) / 'aws/install')], umask=0o022)
                 elif a == 'cloudwatch':
                     require(self.run(['test', '-e', '/opt/aws/amazon-cloudwatch-agent'], optional=True) is None,
                             'existing CloudWatch installation conflicts')
@@ -327,6 +328,13 @@ class Provisioner:
 
     def receipt(self, revision):
         require(re.fullmatch(r'[0-9a-f]{40}', revision), 'invalid deployment revision')
+        # forge is created after the AWS installation phase. Check actual user
+        # execution before publishing any successful provisioning receipt.
+        aws = next(c for c in self.profile['components'] if c['adapter'] == 'aws-cli')
+        expected = self.verify(aws)['version']
+        observed = self.run(['sudo', '-u', 'forge', '-H', '/usr/local/bin/aws', '--version'])
+        require(re.match(r'^aws-cli/' + re.escape(expected) + r'(?:\s|$)', observed),
+                'AWS CLI unavailable or inconsistent for forge')
         return {'schema_version': 1, 'profile_digest': digest(self.profile),
                 'deployment_revision': revision, 'target': self.profile['target'],
                 'observed_at': dt.datetime.now(dt.timezone.utc).isoformat(),

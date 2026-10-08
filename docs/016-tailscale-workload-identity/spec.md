@@ -1,6 +1,6 @@
 # SPEC-016: Automatic Tailscale enrollment
 
-- **Status:** Implementation authorized; deployment pending trust setup
+- **Status:** Account issuer and trust configured; host deployment and acceptance pending
 - **Owner:** Daniel
 - **Date:** 2026-10-01 (America/New_York)
 - **Design:** [Technical design](technical-design.md)
@@ -9,7 +9,8 @@
 Daniel authorized “implement that now” after selecting AWS workload identity
 federation to eliminate the recurring manual enrollment-key step. Existing
 SYS-001/SYS-004 deployment authorization remains valid, subject to recovery and
-one-time trust readiness. This does not establish that external trust is configured.
+one-time trust readiness. Account issuer and external trust setup are now recorded
+in [acceptance evidence](acceptance.md); fresh-host enrollment remains pending.
 
 ## Requirements
 

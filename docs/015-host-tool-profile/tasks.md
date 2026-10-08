@@ -67,3 +67,7 @@ runbook portion is complete; its review/merge and authorized deployment remain
 pending. T-007's [acceptance record](acceptance.md) exists with pending deployed
 criteria. No host package installation, infrastructure mutation or runtime
 acceptance was performed. See the evidence record for exact checks and PR status.
+
+October 8 repair: AWS CLI installer permissions and final forge execution are
+covered by code and offline tests. Daniel authorized merge, re-plan and protected
+replacement; recovery readiness and actual deployment acceptance remain required.
