@@ -76,5 +76,6 @@ replacement; recovery readiness and actual deployment acceptance remain required
   then review recovery readiness and the protected development-host plan before
   an authorized replacement. Verify bootstrap, automatic Tailscale enrollment,
   project filesystem/ownership and all profile receipts afterward. The code and
-  regression tests are prepared; 12 selected offline tests passed locally.
+  regression tests are prepared; 12 selected offline tests passed locally
+  and both PR quality workflows passed with all 23 Linux host-tool tests.
   See [the acceptance record](acceptance.md) for the diagnosed failure and limits.

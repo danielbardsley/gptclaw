@@ -133,3 +133,14 @@ Only read-only diagnostics were executed on the live host. Repair deployment,
 Tailscale enrollment, project filesystem/ownership, all profile receipts and
 final acceptance remain pending. Review current recovery readiness and the
 protected plan before any further replacement apply.
+
+
+[PR #33](https://github.com/danielbardsley/gptclaw/pull/33) CI passed at
+`c0657520d9379fa1ca6391582ced23933b39f21c`, containing repair commit `d12e659`:
+[development quality](https://github.com/danielbardsley/gptclaw/actions/runs/37839726804)
+and [account quality](https://github.com/danielbardsley/gptclaw/actions/runs/37839726815).
+Both ran the full Linux repository checks, including all 23 host-tool tests and
+the new regressions. The development and account Terraform format, backend-free
+locked initialization, validation and test steps passed. Protected remote plan
+and apply jobs were skipped; no deployment or enrollment acceptance is implied.
+This subsequent CI evidence addition changes documentation only.
