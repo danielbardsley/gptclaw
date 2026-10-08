@@ -93,8 +93,8 @@ data is operational state governed by existing specs/runbooks, never test data.
 
 Preserve project-volume and identity deletion protection, private host access,
 and development/production identity, state, and data separation. Use the AWS CLI
-for AWS inspection and operations, not browser automation. Infrastructure mutations
-stay on the protected pipeline; never run local applies or direct infrastructure
+for AWS inspection and operations, not browser automation. All EC2 configuration
+changes must use IaC through the protected pipeline; never run local applies or direct
 mutation, or broaden permissions after a denial. Do not use production or
 unrelated repository credentials. Prior temporary exceptions grant no standing
 permission; record owner, scope, reason, expiry, and removal step for any newly

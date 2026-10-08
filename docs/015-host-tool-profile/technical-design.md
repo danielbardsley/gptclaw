@@ -40,7 +40,7 @@ is an operational guard, not a sandbox against an administrator editing code.
 |---|---|
 | apt | Profile-owned package arguments; distribution-maintained or exact policy; validate selected missing-package version against official Noble archive/security origins; installed matching packages remain untouched. Verify installed dpkg status/version. |
 | SSM | Detect exactly one loaded dpkg/snap unit and verify agent version; absence uses the explicitly declared stable snap channel. Two loaded variants fail instead of choosing one. |
-| AWS CLI | Verify canonical executable/version; absent tool uses approved channel zip or exact versioned URL plus SHA-256 before extraction. Unknown existing installation trees fail. |
+| AWS CLI | Verify canonical executable/version; absent tool uses approved channel zip or exact versioned URL plus SHA-256 before extraction. Unknown existing installation trees fail. Fresh installer subprocess uses umask 022 without changing bootstrap umask 027. Final receipt requires matching CLI version execution as forge after account creation. |
 | Tailscale | Verify canonical executable/version; absence uses the existing official installer. Enrollment/service configuration remains in bootstrap. |
 | CloudWatch | Verify dpkg installed status/version; absence uses existing official deb; an untracked existing installation directory fails. Existing logging configuration remains in bootstrap. |
 | Codex | Verify its canonical user executable/version as `forge`; absence downloads the existing installer and runs it as `forge`, preserving user-scoped installation. |

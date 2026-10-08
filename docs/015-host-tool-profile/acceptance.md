@@ -81,3 +81,19 @@ ownership, all required tool versions, matching profile digest/revision and abse
 of stale success. Record actual deployment/run links and Daniel's acceptance.
 Rollback is documented but unexecuted. No local install, Terraform apply, direct
 AWS mutation, merge, deployed tool verification or final acceptance is claimed.
+
+## AWS CLI accessibility repair — October 8, 2026
+
+Daniel authorized code, PR merge, protected re-plan and replacement, retaining
+backup/recovery requirements and all EC2 configuration through IaC. The current
+root-owned AWS installation has mode 750 and is inaccessible to forge. No live
+permissions were changed. The bootstrap installer now uses a child-only umask
+of 022; final receipt verification requires the same AWS CLI version as forge.
+Twenty-one focused offline tests passed, including a real synthetic subprocess
+permission regression, unchanged parent umask, denied user execution and version
+mismatch. This does not establish deployed CLI usability.
+
+Full offline repository checks passed after the final extraction/installer
+umask change. Terraform 1.16.5 format/validate and all 24 development-root tests
+passed before the extraction adjustment; the affected host-tool rendering test
+is rerun against the final helper. Whitespace and relative links passed.

@@ -4,6 +4,8 @@ import copy
 import datetime as dt
 import importlib.util
 import json
+import os
+import sys
 from pathlib import Path
 import subprocess
 import tempfile
@@ -30,7 +32,7 @@ class Fake:
         self.fail = None
         self.version = '1.0'
 
-    def __call__(self, args, optional=False):
+    def __call__(self, args, optional=False, umask=-1):
         self.calls.append(args)
         if self.fail and self.fail in args:
             raise ht.ProfileError('synthetic command failure')
@@ -42,7 +44,7 @@ class Fake:
             return 'SSM Agent version: 3.3.1.0'
         if args[0] == 'test':
             return '' if self.present and args[-1] != '/usr/local/aws-cli' else None
-        if args[0] == '/usr/local/bin/aws':
+        if '/usr/local/bin/aws' in args:
             return 'aws-cli/2.31.0 Python/3.13 Linux/amd64'
         if args[0] == '/usr/bin/tailscale':
             return '1.88.0\n  version details'
@@ -179,6 +181,49 @@ class HostToolsTests(unittest.TestCase):
                 calls=[x for x in fake.calls if x[:5]==['sudo','-u','forge','-H','env']]
                 self.assertEqual(len(calls),1)
                 self.assertIn('CODEX_INSTALL_DIR=/home/forge/.local/bin',calls[0])
+
+    def test_aws_installer_permissions_are_scoped(self):
+        c = next(c for c in self.profile['components'] if c['adapter'] == 'aws-cli')
+        fake = Fake(); fake.present = False
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            def runner(args, optional=False, umask=-1):
+                if args[0].endswith('/aws/install'):
+                    # Exercise the real subprocess wrapper with a synthetic installer.
+                    ht.run([sys.executable, '-c',
+                            "from pathlib import Path; import sys; p=Path(sys.argv[1]); "
+                            "(p/'cli').mkdir(); (p/'cli'/'library').write_text('fixture')",
+                            d], umask=umask)
+                elif args[0] == 'unzip':
+                    self.assertEqual(umask, 0o022)
+                else:
+                    self.assertEqual(umask, -1)
+                return fake(args, optional=optional)
+            previous = os.umask(0o027)
+            try:
+                ht.Provisioner(self.profile, runner).install(c)
+                (root/'private').write_text('fixture')
+            finally:
+                os.umask(previous)
+            self.assertEqual((root/'cli').stat().st_mode & 0o777, 0o755)
+            self.assertEqual((root/'cli'/'library').stat().st_mode & 0o777, 0o644)
+            self.assertEqual((root/'private').stat().st_mode & 0o777, 0o640)
+
+    def test_receipt_requires_aws_execution_as_forge(self):
+        fake = Fake()
+        def denied(args, optional=False, **kwargs):
+            if args[:4] == ['sudo', '-u', 'forge', '-H']:
+                raise ht.ProfileError('synthetic permission denied')
+            return fake(args, optional=optional, **kwargs)
+        with self.assertRaisesRegex(ht.ProfileError, 'permission denied'):
+            ht.Provisioner(self.profile, denied).receipt('1'*40)
+        def mismatch(args, optional=False, **kwargs):
+            if args[:4] == ['sudo', '-u', 'forge', '-H']:
+                return 'aws-cli/2.0.0 synthetic'
+            return fake(args, optional=optional, **kwargs)
+        with self.assertRaisesRegex(ht.ProfileError, 'inconsistent'):
+            ht.Provisioner(self.profile, mismatch).receipt('1'*40)
+        self.assertEqual(ht.Provisioner(self.profile, fake).receipt('1'*40)['status'], 'passed')
 
     def test_retire_optional_package_preserves_others(self):
         optional=copy.deepcopy(self.profile['components'][0]); optional.update(id='optional-tool',package='ripgrep')
