@@ -221,7 +221,8 @@ class Provisioner:
         if a in ('apt', 'cloudwatch'):
             package = c['package'] if a == 'apt' else 'amazon-cloudwatch-agent'
             value = self.run(['dpkg-query', '-W', '-f=${db:Status-Status} ${Version}', package], optional=True)
-            if value is None:
+            # dpkg may retain a successful query record for an absent package.
+            if value is None or value == 'not-installed':
                 return None
             require(value.startswith('installed '), 'existing package is not fully installed')
             value = value.split(' ', 1)[1]

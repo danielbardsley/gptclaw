@@ -148,6 +148,38 @@ class HostToolsTests(unittest.TestCase):
         with self.assertRaises(ht.ProfileError): engine.install(c)
         self.assertFalse(any(x[0]=='apt-get' for x in fake.calls))
 
+    def test_not_installed_dpkg_record_is_installed_and_verified(self):
+        component = next(c for c in self.profile['components'] if c['package'] == 'nvme-cli')
+        fake = Fake(); fake.present = False
+        def runner(args, **kwargs):
+            if args[0] == 'dpkg-query' and not fake.present:
+                fake.calls.append(args)
+                # dpkg-query can succeed for a known package that has no files.
+                return 'not-installed'
+            return fake(args, **kwargs)
+        engine = ht.Provisioner(self.profile, runner)
+        engine.install(component)
+        self.assertEqual(engine.verify(component)['version'], fake.version)
+        engine.install(component)
+        self.assertEqual(fake.calls.count(
+            ['apt-get', 'install', '-y', '--no-install-recommends', '--', 'nvme-cli']), 1)
+
+    def test_partial_dpkg_records_refuse_installation(self):
+        component = next(c for c in self.profile['components'] if c['package'] == 'nvme-cli')
+        for status in ('config-files', 'half-installed', 'unpacked', 'half-configured',
+                       'triggers-awaited', 'triggers-pending'):
+            with self.subTest(status=status):
+                fake = Fake()
+                def runner(args, **kwargs):
+                    if args[0] == 'dpkg-query':
+                        fake.calls.append(args)
+                        return status + ' 1.0'
+                    return fake(args, **kwargs)
+                with self.assertRaisesRegex(ht.ProfileError, 'not fully installed'):
+                    ht.Provisioner(self.profile, runner).install(component)
+                self.assertEqual(len(fake.calls), 1)
+                self.assertEqual(fake.calls[0][0], 'dpkg-query')
+
     def test_existing_version_conflict_does_not_downgrade(self):
         c = self.profile['components'][0]
         c['version'].update(policy='exact',value='0.9')
