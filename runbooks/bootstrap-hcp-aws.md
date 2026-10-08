@@ -49,11 +49,11 @@ In the approved HCP organization and project, create `gptclaw-dev-host` with:
 - Workflow: **CLI-driven**, with no VCS connection
 - Auto apply: **Off**
 - Working directory: blank
-- Terraform version: `1.16.1`
+- Terraform version: `1.16.5`
 
-If HCP does not yet offer `1.16.1`, select one supported `1.16.x` version and
-update `.terraform-version`, `versions.tf`, the workflow variable, and all
-planning documents in the same pull request.
+If HCP does not yet offer `1.16.5`, select one supported `1.16.x` version and
+update both roots' `.terraform-version` and `required_version` pins, the committed
+workflow environment values, and all planning documents in the same pull request.
 
 ## 3. Bootstrap HCP-to-AWS trust through the pipeline
 
@@ -162,7 +162,10 @@ Create repository variables:
 |---|---|
 | `HCP_TERRAFORM_ORGANIZATION` | Approved organization |
 | `HCP_TERRAFORM_WORKSPACE` | `gptclaw-dev-host` |
-| `TERRAFORM_VERSION` | `1.16.1` |
+
+Both workflows pin `TERRAFORM_VERSION=1.16.5` in committed configuration;
+the repository variable of that name is no longer used. Set both HCP workspaces
+to the same version before their next protected run.
 
 Configure required reviewers on the `development` environment when the GitHub
 plan supports them. The exact manual confirmation remains mandatory either way.

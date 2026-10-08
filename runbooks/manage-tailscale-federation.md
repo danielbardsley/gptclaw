@@ -15,7 +15,7 @@ and workflow **Terraform Tailscale account federation**. It never manages comput
 project storage, HCP roles or inbound OIDC trust.
 
 Create a CLI-driven HCP workspace named `gptclaw-tailscale-federation` in the
-existing organization. Use Terraform 1.16.1 and working directory
+existing organization. Use Terraform 1.16.5 and working directory
 `infra/tailscale-federation`. Set `aws_account_id` to the approved development
 account. Configure GitHub environment `federation-bootstrap` with required
 reviewers when available and the existing scoped HCP plan/apply token mechanism
