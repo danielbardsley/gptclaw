@@ -41,10 +41,10 @@ credentials, live tokens, state or plans are included in this evidence.
 ## Remaining setup
 
 Follow [the runbook](../../runbooks/manage-tailscale-federation.md) for the
-protected development-host plan and recovery readiness. Set that HCP workspace
-to Terraform 1.16.5 before its next run; the October 8 browser check still observed
-1.16.1 and could not save the dropdown change. Preserve the empty development
-working directory and disabled auto-apply. Confirm Tailnet Lock requirements,
+protected development-host plan and recovery readiness. Daniel confirmed setting that HCP workspace
+to Terraform 1.16.5 after the browser could not save the dropdown change; this is
+an owner report pending confirmation by the next protected run. Preserve the
+empty development working directory and disabled auto-apply. Confirm Tailnet Lock requirements,
 recovery point, maintenance window and rollback readiness before replacement.
 No host replacement or actual automatic enrollment has occurred in this setup.
 Delivered status is not claimed.

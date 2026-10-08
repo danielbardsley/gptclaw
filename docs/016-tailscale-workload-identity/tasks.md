@@ -8,8 +8,9 @@
 
 Account issuer plan/apply and external Tailscale trust setup completed on
 October 8, 2026; the client ID is saved in the development workspace. T-003
-remains incomplete until the protected development-host plan/apply. The
-development HCP workspace still needs its version set to 1.16.5. No host
+remains incomplete until the protected development-host plan/apply. Daniel
+confirmed setting the development HCP workspace to 1.16.5; the next protected
+run must confirm it. No host
 replacement or package deployment has run.
 
 Local verification: [acceptance record](acceptance.md). Account setup evidence is recorded; host deployment and live acceptance remain pending.
