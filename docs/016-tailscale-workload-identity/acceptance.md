@@ -13,7 +13,7 @@
 | Criterion | State | Evidence / remaining work |
 |---|---|---|
 | AC-001 | passed locally | 11 offline enrollment tests cover success, retry, version/config/state/tag failures, timeout, credential isolation and migration; rendered helper/no-key/payload assertions pass. |
-| AC-002 | pending remote | Local IAM bounds, exact subject and account-stack tests pass. Account plan/apply verified on October 8; development-host plan and identity/disk preservation review remain pending. |
+| AC-002 | passed | Local IAM bounds and account-stack tests pass. October 8 protected account plan/apply and development-host plan retain deployment identities and project disk; see run evidence below. |
 | AC-003 | pending | Issuer and exact-role trust configured October 8; fresh-host enrollment and SSM/private access remain pending. |
 | AC-004 | pending | Existing Podman/profile tests pass; actual package receipts, private access and preserved storage must be checked after replacement. |
 
@@ -41,11 +41,10 @@ credentials, live tokens, state or plans are included in this evidence.
 ## Remaining setup
 
 Follow [the runbook](../../runbooks/manage-tailscale-federation.md) for the
-protected development-host plan and recovery readiness. Daniel confirmed setting that HCP workspace
-to Terraform 1.16.5 after the browser could not save the dropdown change; this is
-an owner report pending confirmation by the next protected run. Preserve the
-empty development working directory and disabled auto-apply. Confirm Tailnet Lock requirements,
-recovery point, maintenance window and rollback readiness before replacement.
+recovery readiness and protected development-host apply. The protected remote plan
+now confirms Terraform 1.16.5. Preserve the empty development working directory
+and disabled auto-apply. Tailnet Lock is disabled on the connected host's tailnet;
+confirm recovery point, maintenance window and rollback readiness before replacement.
 No host replacement or actual automatic enrollment has occurred in this setup.
 Delivered status is not claimed.
 
@@ -102,3 +101,35 @@ separate pipeline credentials and were preserved.
 
 No local AWS mutation, host replacement, reboot/logout acceptance, or rollback
 drill was performed. Historical local test evidence above remains unchanged.
+
+## Development-host plan — October 8, 2026 (UTC)
+
+- [Protected plan #97](https://github.com/danielbardsley/gptclaw/actions/runs/37735107049)
+  passed at `ce5b81438e9092bca050be42c0450facc255a8f7`; quality checks also
+  passed and the apply job was skipped. The [HCP speculative run](https://app.terraform.io/app/Bardsley/gptclaw-dev-host/runs/run-og2PTtwN2Z2UHEoM)
+  reports Terraform 1.16.5 and **2 additions, 14 updates, 2 deletions**.
+- Only `aws_instance.dev_host` and `aws_volume_attachment.projects` are replaced.
+  `aws_ebs_volume.projects` (`vol-0f53005235c1e39f3`) has only revision-tag
+  updates; its existing attachment reports `delete_on_termination=false`.
+  Deployment identities have no planned changes. Thirteen in-place updates are
+  revision tags; the remaining update is the host runtime IAM policy.
+- Host runtime IAM removes Secrets Manager reads and adds `sts:GetWebIdentityToken`
+  for the exact configured audience, nonempty audience, `us-east-1`, and at most
+  300 seconds. EC2-only host trust remains unchanged. The legacy secret version
+  is forgotten with `destroy=false`; the secret container is retained.
+- Terraform warns that the obsolete `tailscale_auth_key` HCP input is undeclared.
+  Remove obsolete key/counter inputs without reading their values after rollback
+  preparation. Rollback requires reviewed code and a fresh one-use key/counter;
+  the old key is not a usable fallback.
+- The browser could not determine Tailnet Lock status. The installed client's
+  read-only `tailscale lock status` then explicitly reported **NOT enabled**.
+- Read-only `findmnt` reports `/srv/forge` as ext4 with filesystem UUID
+  `680fdc21-378e-466b-8b3f-8fa947eabc8d`; `id -u` reports forge UID 1002.
+  Retain this baseline for post-replacement checks. This does not prove backup
+  freshness, restored data, or post-replacement ownership.
+
+No apply was dispatched. A suitable completed DLM snapshot, quiesced writes,
+maintenance readiness and independent SSM recovery access remain required.
+The AWS console redirected TinyFish to sign-in during read-only backup
+inspection. No current snapshot metadata was obtained; AWS access is the next
+operator action. This is not evidence that snapshots are absent.

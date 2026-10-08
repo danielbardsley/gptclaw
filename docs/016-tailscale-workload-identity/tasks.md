@@ -8,9 +8,10 @@
 
 Account issuer plan/apply and external Tailscale trust setup completed on
 October 8, 2026; the client ID is saved in the development workspace. T-003
-remains incomplete until the protected development-host plan/apply. Daniel
-confirmed setting the development HCP workspace to 1.16.5; the next protected
-run must confirm it. No host
+remains incomplete until the protected development-host apply. Development-host
+plan #97 passed with Terraform 1.16.5: compute/attachment replacement, preserved
+project disk and deployment identities. Tailnet Lock is disabled. Recovery point,
+maintenance readiness and post-replacement verification remain pending. No host
 replacement or package deployment has run.
 
 Local verification: [acceptance record](acceptance.md). Account setup evidence is recorded; host deployment and live acceptance remain pending.
