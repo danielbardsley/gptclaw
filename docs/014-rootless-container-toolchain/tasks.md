@@ -63,3 +63,11 @@ authorized deployment and necessary repairs; corrected plan, recovery/enrollment
 readiness and T-006/T-007 host acceptance remain pending. No live package installation, mappings, user-manager
 settings, containers or infrastructure have been changed. Next step is review of
 the implementation PR, followed by separately authorized pipeline deployment.
+
+- [ ] T-008: Review and deploy the October 8 storage-parent ownership repair
+  through the protected pipeline. The bootstrap explicitly assigns `.local` and
+  `.local/bin` to forge; its regression reproduced the live failure and passes
+  locally. Confirm CI, review the new protected plan and recovery readiness, then
+  obtain authorization for replacement. Verify actual rootless receipts,
+  Tailscale enrollment and protected data after deployment; the disposable
+  capability probe is not final acceptance. See [the evidence](acceptance.md).
