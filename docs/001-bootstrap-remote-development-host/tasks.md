@@ -435,3 +435,17 @@ SPEC-001 acceptance criterion has retained sanitized evidence.
 | REM-001 | 0.4, 9.1–9.2, 10.2 |
 | REM-002 | 0.3, 9.3–9.6 |
 | OBS-001 | 3.5, 3.9, 4.1, 4.8–4.9, 5.9, 7.3–7.7, 10.5 |
+
+## Terraform patch-version follow-up (2026-10-08)
+
+Daniel selected Terraform 1.16.5 because 1.16.1 was unavailable in the HCP
+workspace selector. The original checked tasks above record the bootstrap version.
+Both roots and workflows now target 1.16.5; both HCP workspaces must match before
+their next protected run. Deployment and live acceptance remain separate.
+
+Local verification with the checksum-verified Terraform 1.16.5 binary passed:
+formatting, backend-free initialization with unchanged provider locks, validation,
+and tests in both roots (24 development-host and 2 account-federation tests).
+AWS was mocked; cloud-init rendering was local. The full offline repository
+checker and Git whitespace checks passed. No remote plan/apply or HCP workspace
+version update is claimed by these local checks.

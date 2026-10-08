@@ -54,7 +54,7 @@ GitHub: current main + manual plan/apply dispatch
     v
 GitHub Actions
     |
-    | Terraform CLI 1.16.1
+    | Terraform CLI 1.16.5
     v
 HCP Terraform: gptclaw-dev-host
     |
@@ -135,9 +135,9 @@ The provider lock file is committed. State, plans, overrides, crash logs, and `.
 
 ### 5.1 Versions and HCP connection
 
-Initial pins:
+Current pins:
 
-- Terraform CLI and HCP workspace: `1.16.1`.
+- Terraform CLI and HCP workspace: `1.16.5`.
 - AWS provider: `~> 6.62`; lock file pins the selected patch.
 - cloud-init provider: `~> 2.4`.
 
@@ -145,7 +145,7 @@ The exact Terraform version appears in `.terraform-version`, `required_version`,
 
 ~~~hcl
 terraform {
-  required_version = "= 1.16.1"
+  required_version = "= 1.16.5"
 
   cloud {}
 
@@ -382,7 +382,9 @@ Each secret is passed only to the `cli_config_credentials_token` input of `hashi
 |---|---|
 | `HCP_TERRAFORM_ORGANIZATION` | Supplied organization |
 | `HCP_TERRAFORM_WORKSPACE` | `gptclaw-dev-host` |
-| `TERRAFORM_VERSION` | `1.16.1` |
+
+Both workflows pin `TERRAFORM_VERSION=1.16.5` in their committed environment
+configuration rather than an independently mutable repository variable.
 
 No AWS credential exists in this workflow. Stale AWS secrets are ignored and removed only after verifying no other workflow uses them.
 
@@ -738,7 +740,7 @@ These are configuration inputs, not architecture changes.
 - [HCP Terraform AWS dynamic credentials](https://developer.hashicorp.com/terraform/cloud-docs/dynamic-provider-credentials/aws-configuration)
 - [HashiCorp setup-terraform](https://github.com/hashicorp/setup-terraform)
 - [Terraform installation](https://developer.hashicorp.com/terraform/install)
-- [Terraform 1.16.1 release](https://github.com/hashicorp/terraform/releases/tag/v1.16.1)
+- [Terraform 1.16.5 release](https://github.com/hashicorp/terraform/releases/tag/v1.16.5)
 - [Terraform AWS provider 6.62.0](https://github.com/hashicorp/terraform-provider-aws/releases/tag/v6.62.0)
 - [Terraform cloud-init provider 2.4.0](https://github.com/hashicorp/terraform-provider-cloudinit/releases/tag/v2.4.0)
 - [GitHub environments](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments)
