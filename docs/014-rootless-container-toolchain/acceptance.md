@@ -1,8 +1,8 @@
 # SPEC-014 acceptance evidence
 
-- **Status:** Local implementation and CI verified; merge, deployment and host acceptance pending
+- **Status:** Implementation merged; replacement bootstrap blocked; host acceptance pending
 - **Owner:** Daniel
-- **Evidence date:** 2026-10-01 (America/New_York)
+- **Evidence date:** 2026-10-08 (America/New_York)
 - **Implementation revision:** `c5f6cb27737cff345fbf09e3b6cdebb942763765`
 - **Review branch:** `codex/sys-001-rootless-toolchain`
 - **Review:** [PR #26](https://github.com/danielbardsley/gptclaw/pull/26)
@@ -144,3 +144,42 @@ Daniel subsequently authorized [SPEC-016](../016-tailscale-workload-identity/spe
 Its federation implementation supersedes the fresh-key/counter instructions in
 the earlier deployment-preparation record. Actual deployment remains pending
 one-time issuer/trust setup and the reviewed protected plan/apply.
+
+## Rootless storage parent ownership repair - October 8, 2026
+
+[Protected apply](https://github.com/danielbardsley/gptclaw/actions/runs/37841684250)
+and [HCP run](https://app.terraform.io/app/Bardsley/gptclaw-dev-host/runs/run-W6sxoPo2JcG2xH2G)
+succeeded at `c94ac9f02d563e063524015e8515fe9eea0c271d`, creating replacement
+`i-05db973e028285c47`. This proved infrastructure replacement, not bootstrap or
+Tailscale acceptance. Daniel subsequently authorized host commands for debugging;
+Terraform plans and applies must remain in CI/CD.
+
+SSM diagnostics verified the earlier absent-package repair: base packages, SSM,
+AWS CLI, forge identity and project-volume phases passed. The protected volume
+mounted as ext4 at `/srv/forge` with original UUID
+`680fdc21-378e-466b-8b3f-8fa947eabc8d`. Bootstrap failed in `rootless-toolchain`
+at 16:49:17 EDT; no completion or rootless capability receipt existed. The
+Tailscale service was absent and enrollment had not been attempted.
+
+The bounded Podman probe reported permission denied creating
+`/home/forge/.local/share`. `namei` and `stat` verified `.local` was `root:root`
+mode 755 while `.local/bin` was `forge:forge` mode 755. GNU install's directory
+ownership flags applied only to the explicit leaf operand; its implicit parent
+remained owned by the root bootstrap caller. The bootstrap now explicitly creates
+both `.local` and `.local/bin` with forge ownership, without recursive ownership
+changes, extra packages, or privilege changes.
+
+A disposable diagnostic storage directory allowed the installed Podman 4.9.3 to
+prove rootless operation, v2/systemd cgroups, netavark, slirp4netns, crun and overlay.
+Observed UID and GID maps both matched `(0, 1002, 1), (1, 231072, 65536)`.
+The task-owned temporary storage was removed. This did not change the deployed
+configuration, initialize the intended engine graph, pull an image or produce an
+acceptance receipt. User manager/linger were active and rootful units remained
+masked/inactive.
+
+The bootstrap ownership regression failed against the old template and passed
+after the fix. Four focused host-tool tests passed with Python 3.12 on Windows;
+bootstrap shell syntax and Git whitespace checks passed. The full Linux repository
+and pinned Terraform checks are delegated to PR CI because this desktop's WSL
+runtime is unavailable and its default Terraform version differs from the pin.
+Deployment and actual bootstrap/enrollment acceptance of this repair remain pending.

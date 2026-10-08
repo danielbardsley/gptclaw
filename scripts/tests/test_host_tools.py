@@ -6,7 +6,8 @@ import importlib.util
 import json
 import os
 import sys
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+import shlex
 import subprocess
 import tempfile
 import unittest
@@ -341,6 +342,28 @@ class HostToolsTests(unittest.TestCase):
         result=subprocess.run(['python3',str(HELPER),'begin'],capture_output=True,text=True)
         self.assertNotEqual(result.returncode,0)
         self.assertIn('restricted',result.stdout)
+
+    def test_forge_can_create_storage_beneath_local_parent(self):
+        script = (ROOT/'infra/dev-host/templates/bootstrap-forge.sh.tftpl').read_text()
+        phase = script.split('current_phase="forge-user"', 1)[1].split(
+            'current_phase="project-volume"', 1)[0]
+        ownership = {'/home/forge': ('forge', 'forge')}
+        for line in phase.splitlines():
+            args = shlex.split(line)
+            if args[:2] != ['install', '-d']:
+                continue
+            owner = (args[args.index('-o') + 1], args[args.index('-g') + 1])
+            targets = args[args.index('-m') + 2:]
+            for target in targets:
+                path = PurePosixPath(target)
+                # GNU install creates implicit parents as its root caller;
+                # -o/-g apply only to explicit directory operands.
+                for parent in reversed(path.parents):
+                    ownership.setdefault(str(parent), ('root', 'root'))
+                ownership[str(path)] = owner
+        self.assertEqual(ownership['/home/forge/.local'], ('forge', 'forge'),
+                         'forge must own .local to create rootless engine storage')
+        self.assertEqual(ownership['/home/forge/.local/bin'], ('forge', 'forge'))
 
     def test_bootstrap_invalidation_and_phase_order(self):
         s=(ROOT/'infra/dev-host/templates/bootstrap-forge.sh.tftpl').read_text()

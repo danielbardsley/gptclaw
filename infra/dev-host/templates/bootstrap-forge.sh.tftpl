@@ -72,7 +72,7 @@ passwd --lock forge >/dev/null
 deluser forge sudo >/dev/null 2>&1 || true
 install -d -o forge -g forge -m 0700 /home/forge/.ssh
 install -o forge -g forge -m 0600 /etc/gptclaw/forge_authorized_key /home/forge/.ssh/authorized_keys
-install -d -o forge -g forge -m 0755 /home/forge/.local/bin
+install -d -o forge -g forge -m 0755 /home/forge/.local /home/forge/.local/bin
 cat >/etc/profile.d/gptclaw-forge-path.sh <<'PROFILE'
 if [ "$USER" = "forge" ]; then
   PATH="$HOME/.local/bin:$PATH"
