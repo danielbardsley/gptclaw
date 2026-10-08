@@ -183,3 +183,13 @@ bootstrap shell syntax and Git whitespace checks passed. The full Linux reposito
 and pinned Terraform checks are delegated to PR CI because this desktop's WSL
 runtime is unavailable and its default Terraform version differs from the pin.
 Deployment and actual bootstrap/enrollment acceptance of this repair remain pending.
+
+## Successful repaired bootstrap - October 8, 2026
+
+The protected replacement at `6d90105136de55f7932c7e6857ba0bf6415db249`
+completed bootstrap successfully. Rootless and host-tool receipts passed,
+Tailscale enrolled automatically, and authenticated private SSH plus original
+project filesystem/ownership were verified. See [SPEC-016 live evidence](../016-tailscale-workload-identity/acceptance.md#fresh-host-enrollment-verified---october-8-2026)
+for public workflow references and remaining acceptance limits. This supersedes
+the earlier pending bootstrap outcome; full fixture/reboot and final owner
+acceptance remain separate.

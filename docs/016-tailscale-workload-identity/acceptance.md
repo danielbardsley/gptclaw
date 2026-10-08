@@ -1,6 +1,6 @@
 # SPEC-016 acceptance evidence
 
-- **Status:** Account issuer and Tailscale trust configured; host deployment and acceptance pending
+- **Status:** Fresh-host enrollment, bootstrap and private access verified; owner acceptance pending
 - **Owner:** Daniel
 - **Date:** 2026-10-08 (America/New_York)
 - **Specification:** [SPEC-016](spec.md)
@@ -14,8 +14,8 @@
 |---|---|---|
 | AC-001 | passed locally | 11 offline enrollment tests cover success, retry, version/config/state/tag failures, timeout, credential isolation and migration; rendered helper/no-key/payload assertions pass. |
 | AC-002 | passed | Local IAM bounds and account-stack tests pass. October 8 protected account plan/apply and development-host plan retain deployment identities and project disk; see run evidence below. |
-| AC-003 | pending | Issuer and exact-role trust configured October 8; fresh-host enrollment and SSM/private access remain pending. |
-| AC-004 | pending | Existing Podman/profile tests pass; actual package receipts, private access and preserved storage must be checked after replacement. |
+| AC-003 | verified | October 8 fresh host enrolled automatically; expected online/tag state, SSM and authenticated private SSH verified below. |
+| AC-004 | verified | Successful bootstrap/profile/rootless receipts and preserved project filesystem/ownership verified below. Full SYS-001 fixture/reboot acceptance remains separate. |
 
 ## Executed verification
 
@@ -157,3 +157,42 @@ Read-only `namei -l /usr/local/bin/aws` found the existing symlink but also
 root-owned `/usr/local/aws-cli` with mode 750, preventing forge from traversing
 the installed CLI tree. No live permissions or packages were changed. CLI access
 needs a reviewed repair or approved user-scoped setup before backup verification.
+
+## Fresh-host enrollment verified - October 8, 2026
+
+[PR #33](https://github.com/danielbardsley/gptclaw/pull/33) repaired absent-package
+classification. [PR #34](https://github.com/danielbardsley/gptclaw/pull/34) repaired
+the bootstrap storage-parent ownership that blocked Podman before Tailscale.
+Final deployed source: `6d90105136de55f7932c7e6857ba0bf6415db249`.
+
+The [protected plan](https://github.com/danielbardsley/gptclaw/actions/runs/37845606105)
+passed: two additions, thirteen revision-tag updates, two deletions. Only compute
+and its attachment were replaced; protected project storage was retained.
+The [protected apply](https://github.com/danielbardsley/gptclaw/actions/runs/37846268276)
+succeeded with the same counts. Daniel authorized that replacement and subsequent
+host debugging; Terraform plans/applies remained exclusively in CI/CD.
+
+Post-apply verification observed successful bootstrap completion, passing
+rootless and host-tool receipts, and matching deployment-revision provenance.
+The rootless phase passed before Tailscale enrollment, and subsequent hardening,
+logging, policy and agent-installation phases completed. Tailscale reported
+Running, online, and the exact expected tag. The new instance enrolled through
+the installed AWS workload-identity bootstrap helper without a manually supplied
+auth key or interactive enrollment login.
+
+Desktop Tailscale ping returned two relay pongs. TCP 22 and authenticated private
+SSH succeeded. SSH host identity was verified against the public key obtained
+through SSM; the temporary known-hosts file was removed. Independent SSH checks
+confirmed the original project filesystem identity and expected ownership, plus
+the corrected engine-storage-parent ownership. The desktop SSH alias still needs
+the replacement's current DNS name; no permanent local SSH configuration or old
+tailnet-device record was changed during verification.
+
+Connection addresses, cloud resource identifiers, HCP run links and detailed
+host metadata are omitted from this new public evidence summary. No tokens,
+credentials, Terraform state/plans or raw authentication logs are included.
+
+These observations verify SPEC-016 enrollment and receipt/storage checks.
+Final owner acceptance, full SYS-001 container/logout/reboot/cleanup scenarios
+and any post-replacement agent reauthentication/deploy-key recovery remain
+separate. No broader feature Delivered status or executed rollback is claimed.

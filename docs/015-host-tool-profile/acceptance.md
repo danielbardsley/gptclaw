@@ -144,3 +144,13 @@ the new regressions. The development and account Terraform format, backend-free
 locked initialization, validation and test steps passed. Protected remote plan
 and apply jobs were skipped; no deployment or enrollment acceptance is implied.
 This subsequent CI evidence addition changes documentation only.
+
+## Successful repaired bootstrap - October 8, 2026
+
+The protected replacement at `6d90105136de55f7932c7e6857ba0bf6415db249`
+completed bootstrap successfully. Rootless and host-tool receipts passed,
+Tailscale enrolled automatically, and authenticated private SSH plus original
+project filesystem/ownership were verified. See [SPEC-016 live evidence](../016-tailscale-workload-identity/acceptance.md#fresh-host-enrollment-verified---october-8-2026)
+for public workflow references and remaining acceptance limits. This supersedes
+the earlier pending bootstrap outcome; full fixture/reboot and final owner
+acceptance remain separate.
