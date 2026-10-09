@@ -260,6 +260,14 @@ Priority indicates suggested sequencing, not authorization.
 | PRD-009 | Production smoke tests | 6 | Candidate | Verify health, critical journeys, observability, and rollback readiness after deployment. |
 | PRD-010 | Production incident mode | 6 | Deferred | Provide time-bounded, audited diagnosis without granting the development agent standing production administration. |
 
+## Host acceptance follow-up
+
+[Draft SPEC-017](../017-host-acceptance/spec.md) coordinates deployed acceptance
+for SYS-001, SYS-004 and SPEC-016 after replacement. It plans independent recovery,
+container behavior, logout/reboot observations and evidence reconciliation; it
+does not authorize execution or change existing feature completion requirements.
+Original feature delivery remains pending its required evidence and owner acceptance.
+
 ## 17. Suggested specification sequence
 
 **Current owner selection (2026-09-30, America/New_York):** Prioritize a working

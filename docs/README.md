@@ -135,3 +135,9 @@ dispositions independently of feature implementation status.
   [Technical design](./016-tailscale-workload-identity/technical-design.md) ·
   [Tasks](./016-tailscale-workload-identity/tasks.md) ·
   [Acceptance](./016-tailscale-workload-identity/acceptance.md)
+
+- **017 — Development host acceptance (SYS-001/SYS-004/SPEC-016):**
+  [Draft specification](./017-host-acceptance/spec.md) ·
+  [Technical design](./017-host-acceptance/technical-design.md) ·
+  [Tasks](./017-host-acceptance/tasks.md) ·
+  [Acceptance](./017-host-acceptance/acceptance.md)
