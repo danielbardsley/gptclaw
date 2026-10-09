@@ -14,7 +14,7 @@
 |---|---|---|
 | AC-001 | passed locally | 11 offline enrollment tests cover success, retry, version/config/state/tag failures, timeout, credential isolation and migration; rendered helper/no-key/payload assertions pass. |
 | AC-002 | passed | Local IAM bounds and account-stack tests pass. October 8 protected account plan/apply and development-host plan retain deployment identities and project disk; see run evidence below. |
-| AC-003 | pending | Daniel reports successful instance replacement and Tailscale connection on October 9. Confirm enrollment without manual key entry, expected tag/state, and independent SSM/private access evidence. |
+| AC-003 | pending | Daniel reports successful instance replacement and Tailscale connection on October 9. Daniel supplied successful independent CLI SSM access on October 9; tagged online state was checked locally. Manual-key-free enrollment confirmation and complete private-access/deployment provenance remain pending. |
 | AC-004 | pending | Daniel reports installation failures resolved. Failure details and repair provenance are unknown; verify deployed tool/rootless receipts and preserved filesystem/ownership. |
 
 ## Executed verification
@@ -179,3 +179,11 @@ Next acceptance actions:
    (AC-004; coordinate SPEC-014 and SPEC-015 acceptance).
 4. Record Daniel's final acceptance once required criteria pass. Keep Delivered
    status pending until that evidence is complete.
+
+## Independent recovery access — October 9, 2026
+
+Daniel supplied a successful CLI SSM session transcript targeting
+`i-0c42b82d7480123b1` in `us-east-1`: remote user `ssm-user`, hostname
+`forge-dev-01`. This establishes owner-reported independent recovery access for
+AC-003; the session identifier is omitted. It does not prove manual-key-free
+enrollment or complete the remaining AC-003/AC-004 obligations.

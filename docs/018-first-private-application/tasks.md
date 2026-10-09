@@ -10,8 +10,8 @@
   test and draft this plan. SPEC-017 remains reserved by closed unmerged PR #37.
 - [ ] T-001: Daniel reviews the narrow template/workflow and authorizes
   implementation. Resolve toolchain pins, state contract, limits and routing
-  capability before dependent implementation. Confirm independent SSM access
-  without broadening the host role; preserve outstanding host acceptance.
+  capability before dependent implementation. Independent SSM access is confirmed
+  by Daniel; preserve outstanding host acceptance and existing host-role bounds.
 - [ ] T-002: Implement the initial CLI/template and reuse manifest validation;
   preserve existing files, define version/help/result contracts and container-only
   command execution. Verify APP-001 / AC-001.

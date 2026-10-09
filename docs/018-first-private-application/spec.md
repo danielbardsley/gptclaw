@@ -76,8 +76,9 @@ reviewed scope before dependent operations proceed.
 The October 9 small container smoke test passed after repairing the test image's
 missing HTTP server; [SPEC-014 evidence](../014-rootless-container-toolchain/acceptance.md)
 records exact scope. That does not close logout/reboot or replacement acceptance.
-Independent SSM connection confirmation is outstanding; the host role was denied
-its registration query and must not be broadened to work around it.
+Daniel confirmed independent CLI SSM access on October 9: the session reached
+`forge-dev-01` as `ssm-user`. The earlier host-role registration query was denied;
+that does not prevent operator access and no host permission expansion is needed.
 
 Daniel reviews the proposed template/slice and authorizes implementation. Private
 Serve changes need the existing operator capability and concrete authorized

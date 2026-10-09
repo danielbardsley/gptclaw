@@ -217,7 +217,8 @@ Executed after repair:
 
 These results supplement AC-002/003/004/005/007; their other obligations remain
 pending. No logout, reboot, synthetic-source replacement/rebuild test or full
-owner acceptance occurred. Independent CLI SSM connection is not yet confirmed;
+owner acceptance occurred. At the time of the smoke test, independent CLI SSM
+connection was not yet confirmed;
 `ssm:DescribeInstanceInformation` for this instance was denied to the development
 host role, so no permissions were expanded and no recovery success is inferred.
 
@@ -227,3 +228,13 @@ by the reviewed setup script; `bash -n scripts/check-repository.sh`, Git whitesp
 relative-link and plan traceability checks passed. No Terraform changes were made
 and Terraform checks were not run locally. Live smoke execution and offline
 checks above are separate from CI and complete host acceptance.
+
+## Independent SSM recovery confirmation — October 9, 2026
+
+Daniel supplied the transcript of an independent CLI connection using
+`aws ssm start-session --region us-east-1 --target i-0c42b82d7480123b1`.
+The session opened successfully; `whoami` returned `ssm-user` and `hostname`
+returned `forge-dev-01`. This is owner-supplied recovery-access evidence, not an
+agent-run session. The session identifier is omitted. No permissions were changed.
+Logout/reboot persistence and synthetic-source replacement acceptance remain
+pending; this connection does not complete those criteria.
