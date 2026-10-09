@@ -86,7 +86,7 @@ Priority indicates suggested sequencing, not authorization.
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
 | PRJ-001 | Versioned project manifest | 2 | Delivered | Single-web-service `.gptclaw/project.yaml`, versioned schema, offline validator, and synthetic example; first feature toward a working private application. Daniel accepted implementation on 2026-09-30 (America/New_York); [PR #22](https://github.com/danielbardsley/gptclaw/pull/22) merged as `aa55583`. All 134 local tests and final PR CI #74 passed. This completes the manifest contract, not live-app acceptance. [SPEC-013](../013-versioned-project-manifest/spec.md) · [Design](../013-versioned-project-manifest/technical-design.md) · [Tasks](../013-versioned-project-manifest/tasks.md) · [Acceptance](../013-versioned-project-manifest/acceptance.md). |
-| PRJ-002 | `gptclawctl` CLI | 2 | Candidate | Provide idempotent `new`, `validate`, `start`, `stop`, `status`, `logs`, `test`, `expose`, and `archive` operations. |
+| PRJ-002 | `gptclawctl` CLI | 2 | Draft | [SPEC-018](../018-first-private-application/spec.md) drafts the first `new`, `validate`, `start`, `stop`, `status`, `logs`, and `test` slice for private web apps. Broader `expose` and `archive` operations remain candidates. |
 | PRJ-003 | Template catalogue | 2 | Candidate | Versioned templates cover web, API, Python, Expo, static site, CLI, and multi-package products. |
 | PRJ-004 | New GitHub repository automation | 3 | Candidate | Create repositories, protections, environments, secrets references, and initial pull requests with narrow credentials. |
 | PRJ-005 | Repository credential broker | 3 | Candidate | Prefer a scoped GitHub App; otherwise issue and rotate one deploy key per repository. |
@@ -271,6 +271,11 @@ follow through separately reviewed scope. Further RES work is deferred until
 that milestone is proven; existing backups and safeguards remain in place.
 PRJ-001 implementation was subsequently authorized; other feature implementation
 and existing acceptance remain unchanged.
+
+[Draft SPEC-018](../018-first-private-application/spec.md) proposes the minimum
+CLI/template/runtime/private-routing slices for this milestone. Full catalogue
+features remain incomplete; implementation awaits scope review. Formal host
+logout/reboot/replacement acceptance stays pending in its existing initiatives.
 
 The broader sequence below remains directional; the selection above takes
 precedence for the next work:

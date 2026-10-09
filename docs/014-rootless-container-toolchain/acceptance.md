@@ -183,3 +183,47 @@ bootstrap shell syntax and Git whitespace checks passed. The full Linux reposito
 and pinned Terraform checks are delegated to PR CI because this desktop's WSL
 runtime is unavailable and its default Terraform version differs from the pin.
 Deployment and actual bootstrap/enrollment acceptance of this repair remain pending.
+
+## Small container smoke test — October 9, 2026 (America/New_York)
+
+Daniel authorized returning to the first-private-app milestone and running a
+small container smoke test. Starting `scripts/rootless-fixture.py` at port 18081
+on reviewed host revision `6d90105136de55f7932c7e6857ba0bf6415db249` built the image
+and passed forge bind-write ownership plus DNS/outbound HTTPS, but user service
+startup failed with exit 127: `httpd` was missing. A scoped probe confirmed that
+the pinned Alpine base's BusyBox had no HTTP applet. The failed owned fixture
+`gptclaw-sys001-62995f275109` was cleaned up using the fixture helper.
+
+The test image now installs exact `busybox-extras=1.37.0-r20` from Alpine v3.22
+and checks its HTTP applet during build; both image CMD and Quadlet explicitly
+invoke `/bin/busybox-extras httpd`. No host package or configuration change was
+made. [Package source](https://pkgs.alpinelinux.org/package/v3.22/main/x86_64/busybox-extras).
+The base image remains digest-pinned; package retrieval uses the signed Alpine
+repository and is not a claim of a fully immutable dependency closure.
+
+Executed after repair:
+
+- `python3 scripts/tests/test_rootless_toolchain.py`: 22 offline tests passed.
+- `python3 scripts/rootless-fixture.py start --port 18081`: passed; fixture
+  `gptclaw-sys001-7ce690804176` built/ran rootlessly with DNS/HTTPS, bind ownership
+  and loopback HTTP checks.
+- `check --directory /srv/forge/projects/gptclaw-sys001-7ce690804176 --non-loopback`
+  with an actual assigned host IPv4: passed; listener exclusively loopback and
+  connection via the non-loopback address refused.
+- `crash --directory /srv/forge/projects/gptclaw-sys001-7ce690804176`: passed;
+  bounded systemd restart and HTTP recovery verified.
+- `cleanup --directory /srv/forge/projects/gptclaw-sys001-7ce690804176`: passed;
+  owned resources/listener/activation removed; shared base/cache retained.
+
+These results supplement AC-002/003/004/005/007; their other obligations remain
+pending. No logout, reboot, synthetic-source replacement/rebuild test or full
+owner acceptance occurred. Independent CLI SSM connection is not yet confirmed;
+`ssm:DescribeInstanceInformation` for this instance was denied to the development
+host role, so no permissions were expanded and no recovery success is inferred.
+
+Repair verification on `codex/first-private-app-plan`: the full
+`./scripts/check-repository.sh` passed in the isolated `.venv-manifest` prepared
+by the reviewed setup script; `bash -n scripts/check-repository.sh`, Git whitespace,
+relative-link and plan traceability checks passed. No Terraform changes were made
+and Terraform checks were not run locally. Live smoke execution and offline
+checks above are separate from CI and complete host acceptance.
