@@ -136,7 +136,7 @@ dispositions independently of feature implementation status.
   [Tasks](./016-tailscale-workload-identity/tasks.md) ·
   [Acceptance](./016-tailscale-workload-identity/acceptance.md)
 
-- **018 — First private application workflow:**
+- **018 — First private application workflow (desktop Hello World, then repeatable apps):**
   [Draft specification](./018-first-private-application/spec.md) ·
   [Technical design](./018-first-private-application/technical-design.md) ·
   [Tasks](./018-first-private-application/tasks.md)
