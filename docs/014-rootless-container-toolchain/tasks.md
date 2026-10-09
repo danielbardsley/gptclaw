@@ -1,8 +1,8 @@
 # TASKS-014: Rootless Container Toolchain
 
-- **Status:** Implementation merged; deployment authorized, acceptance pending
+- **Status:** Deployed; remaining acceptance pending
 - **Owner:** Daniel
-- **Last updated:** 2026-10-01 (America/New_York)
+- **Last updated:** 2026-10-09 (America/New_York)
 - **Specification:** [SPEC-014](spec.md)
 - **Design:** [TDD-014](technical-design.md)
 
@@ -55,19 +55,20 @@
 
 ## Current handover
 
-Implementation and operator/fixture instructions are complete locally. Discovery
-selected the existing UID/GID and subordinate allocation, Noble Podman 4.9.x and
-a digest-pinned fixture; no existing store needs migration. T-005 local checks and
-CI and the completed merge are recorded in [acceptance.md](acceptance.md). Daniel
-authorized deployment and necessary repairs; corrected plan, recovery/enrollment
-readiness and T-006/T-007 host acceptance remain pending. No live package installation, mappings, user-manager
-settings, containers or infrastructure have been changed. Next step is review of
-the implementation PR, followed by separately authorized pipeline deployment.
+The implementation and subsequent bootstrap repairs are merged and deployed.
+Matching successful rootless/tool/bootstrap receipts, retained filesystem/forge
+ownership, and the October 9 synthetic container smoke test are recorded in
+[acceptance.md](acceptance.md). Daniel confirmed independent SSM access. The
+smoke fixture was cleaned up and its HTTP executable repair merged in PR #38.
 
-- [ ] T-008: Review and deploy the October 8 storage-parent ownership repair
-  through the protected pipeline. The bootstrap explicitly assigns `.local` and
-  `.local/bin` to forge; its regression reproduced the live failure and passes
-  locally. Confirm CI, review the new protected plan and recovery readiness, then
-  obtain authorization for replacement. Verify actual rootless receipts,
-  Tailscale enrollment and protected data after deployment; the disposable
-  capability probe is not final acceptance. See [the evidence](acceptance.md).
+T-006/T-007 remain open for complete deployment/recovery provenance, namespace
+and criterion reconciliation, logout/reboot observations, synthetic-source
+preservation/rebuild across replacement and final owner acceptance. These gaps
+do not imply another replacement is authorized. The next product work is
+[SPEC-018](../018-first-private-application/spec.md), within reviewed scope.
+
+- [ ] T-008: Close acceptance evidence for the deployed October 8 storage-parent
+  ownership repair: implementation/CI and successful receipts now exist. Reconcile
+  the protected apply with the current revision, recovery readiness and remaining
+  original acceptance criteria. Do not perform another replacement merely to
+  clear this task. See [the evidence](acceptance.md).

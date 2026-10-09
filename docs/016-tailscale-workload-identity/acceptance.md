@@ -1,6 +1,6 @@
 # SPEC-016 acceptance evidence
 
-- **Status:** Replacement and Tailscale connection reported successful by Daniel; final acceptance pending
+- **Status:** Deployed; replacement connection, online tag and independent recovery observed/reported; final acceptance pending
 - **Owner:** Daniel
 - **Date:** 2026-10-09 (America/New_York)
 - **Specification:** [SPEC-016](spec.md)
@@ -15,7 +15,7 @@
 | AC-001 | passed locally | 11 offline enrollment tests cover success, retry, version/config/state/tag failures, timeout, credential isolation and migration; rendered helper/no-key/payload assertions pass. |
 | AC-002 | passed | Local IAM bounds and account-stack tests pass. October 8 protected account plan/apply and development-host plan retain deployment identities and project disk; see run evidence below. |
 | AC-003 | pending | Daniel reports successful instance replacement and Tailscale connection on October 9. Daniel supplied successful independent CLI SSM access on October 9; tagged online state was checked locally. Manual-key-free enrollment confirmation and complete private-access/deployment provenance remain pending. |
-| AC-004 | pending | Daniel reports installation failures resolved. Failure details and repair provenance are unknown; verify deployed tool/rootless receipts and preserved filesystem/ownership. |
+| AC-004 | pending | October 9 tool/rootless/bootstrap receipts match the reviewed profile/revision; retained filesystem UUID and forge project ownership match. Installation failure/repair evidence is recorded in SPEC-014/015. Complete deployment provenance and final acceptance remain pending. |
 
 ## Executed verification
 
@@ -187,3 +187,14 @@ Daniel supplied a successful CLI SSM session transcript targeting
 `forge-dev-01`. This establishes owner-reported independent recovery access for
 AC-003; the session identifier is omitted. It does not prove manual-key-free
 enrollment or complete the remaining AC-003/AC-004 obligations.
+
+## Catalogue reconciliation — October 9, 2026
+
+Current matching tool/rootless/bootstrap receipts and storage/ownership checks
+are documented in [SPEC-015 evidence](../015-host-tool-profile/acceptance.md) and
+[SPEC-014 smoke evidence](../014-rootless-container-toolchain/acceptance.md).
+Earlier notes about unknown installation failures are superseded by those
+records. They support Deployed status, alongside the tagged online node and
+Daniel's independent SSM transcript. Explicit confirmation of enrollment without
+a manual auth key, protected deployment correlation and final owner acceptance
+remain pending. No new enrollment or replacement was performed in this review.
