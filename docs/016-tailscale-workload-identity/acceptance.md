@@ -1,8 +1,8 @@
 # SPEC-016 acceptance evidence
 
-- **Status:** Account issuer and Tailscale trust configured; host deployment and acceptance pending
+- **Status:** Replacement and Tailscale connection reported successful by Daniel; final acceptance pending
 - **Owner:** Daniel
-- **Date:** 2026-10-08 (America/New_York)
+- **Date:** 2026-10-09 (America/New_York)
 - **Specification:** [SPEC-016](spec.md)
 - **Design:** [TDD-016](technical-design.md)
 - **Tasks:** [Tasks](tasks.md)
@@ -14,8 +14,8 @@
 |---|---|---|
 | AC-001 | passed locally | 11 offline enrollment tests cover success, retry, version/config/state/tag failures, timeout, credential isolation and migration; rendered helper/no-key/payload assertions pass. |
 | AC-002 | passed | Local IAM bounds and account-stack tests pass. October 8 protected account plan/apply and development-host plan retain deployment identities and project disk; see run evidence below. |
-| AC-003 | pending | Issuer and exact-role trust configured October 8; fresh-host enrollment and SSM/private access remain pending. |
-| AC-004 | pending | Existing Podman/profile tests pass; actual package receipts, private access and preserved storage must be checked after replacement. |
+| AC-003 | pending | Daniel reports successful instance replacement and Tailscale connection on October 9. Confirm enrollment without manual key entry, expected tag/state, and independent SSM/private access evidence. |
+| AC-004 | pending | Daniel reports installation failures resolved. Failure details and repair provenance are unknown; verify deployed tool/rootless receipts and preserved filesystem/ownership. |
 
 ## Executed verification
 
@@ -45,7 +45,7 @@ recovery readiness and protected development-host apply. The protected remote pl
 now confirms Terraform 1.16.5. Preserve the empty development working directory
 and disabled auto-apply. Tailnet Lock is disabled on the connected host's tailnet;
 confirm recovery point, maintenance window and rollback readiness before replacement.
-No host replacement or actual automatic enrollment has occurred in this setup.
+At the time of the October 8 setup record, no host replacement or actual automatic enrollment had occurred; the October 9 owner report below supersedes replacement-pending wording.
 Delivered status is not claimed.
 
 ## Review and CI
@@ -157,3 +157,25 @@ Read-only `namei -l /usr/local/bin/aws` found the existing symlink but also
 root-owned `/usr/local/aws-cli` with mode 750, preventing forge from traversing
 the installed CLI tree. No live permissions or packages were changed. CLI access
 needs a reviewed repair or approved user-scoped setup before backup verification.
+
+## Owner-reported replacement outcome — October 9, 2026 (America/New_York)
+
+Daniel reports that the instance was recreated and Tailscale connected properly
+after replacement. He also reports that installation failures have now been
+resolved. These are owner reports received in this chat, not checks run by the
+agent. The exact replacement/repair time, deployed revision, pipeline run, failure
+messages and repair method were not supplied. No automatic enrollment without
+manual key entry, tag/state, SSM recovery, receipt provenance or preserved-volume
+checks are inferred from the connection report.
+
+Next acceptance actions:
+
+1. Associate the replacement with its protected GitHub/HCP apply and deployed
+   revision; record the installation failures and repairs without secrets.
+2. Confirm automatic enrollment without manual key entry, expected tag/state,
+   private access and independent SSM recovery (AC-003).
+3. Verify the retained project filesystem UUID/ownership against the October 8
+   baseline and inspect deployed tool/profile and rootless Podman receipts
+   (AC-004; coordinate SPEC-014 and SPEC-015 acceptance).
+4. Record Daniel's final acceptance once required criteria pass. Keep Delivered
+   status pending until that evidence is complete.
