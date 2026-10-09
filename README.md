@@ -12,7 +12,7 @@ across compute replacement.
 
 ## Current state
 
-As of October 1, 2026, the repository has progressed beyond the initial host
+As of October 9, 2026, the repository has progressed beyond the initial host
 bootstrap. The statuses below distinguish accepted capabilities from merged
 code that still needs deployment or acceptance.
 
@@ -24,7 +24,7 @@ code that still needs deployment or acceptance.
 | Project manifest v1 | **Delivered.** A versioned declaration for one private HTTP service, JSON Schema, offline validator, and synthetic example. Validation does not create or run an application. [Reference](docs/project-manifest.md) · [SPEC-013 acceptance](docs/013-versioned-project-manifest/acceptance.md). |
 | Rootless container toolchain | **Merged; deployment and host acceptance pending.** Podman packages, fixed user mappings, storage/network configuration, user persistence, and an acceptance fixture are implemented through bootstrap. [PR #26](https://github.com/danielbardsley/gptclaw/pull/26) · [SPEC-014 evidence](docs/014-rootless-container-toolchain/acceptance.md). |
 | Declared host tool profile | **Merged; deployment and host acceptance pending.** Validated tool/source declarations, bootstrap installation, and version/provenance receipts. Temporary upstream-source exceptions expire November 1, 2026 (America/New_York). [SPEC-015 evidence](docs/015-host-tool-profile/acceptance.md). |
-| Automatic replacement-host Tailscale enrollment | **Merged; external setup, deployment, and acceptance pending.** AWS workload identity replaces per-replacement auth keys after one-time account issuer and tailnet trust setup. [PR #28](https://github.com/danielbardsley/gptclaw/pull/28) · [SPEC-016 evidence](docs/016-tailscale-workload-identity/acceptance.md). |
+| Automatic replacement-host Tailscale enrollment | **Replacement and Tailscale connection reported successful; final acceptance pending.** Account issuer and trust setup are recorded. Daniel reports successful instance recreation and Tailscale connection, with installation failures resolved; enrollment details, recovery access, storage and tool receipts still need evidence. [PR #28](https://github.com/danielbardsley/gptclaw/pull/28) · [SPEC-016 evidence](docs/016-tailscale-workload-identity/acceptance.md). |
 
 The selected next product milestone is to create, run, open, and iterate on one
 private application, then prove a second instance can run independently. The

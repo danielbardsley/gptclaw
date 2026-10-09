@@ -33,7 +33,8 @@ Offline fixtures cover old client, invalid input, token/enrollment command failu
 wrong state/tag and correct enrollment; Terraform checks exact IAM bounds and
 rendered helper, size, no-key inputs and storage protection. Remote bootstrap-stack
 plan must show only account federation; development plan must preserve identities
-and disk. Actual replacement/receipts remain pending external setup.
+and disk. Daniel reports successful replacement and Tailscale connection on October 9;
+actual deployed receipts and the full enrollment criteria remain pending verification.
 
 Sources checked October 1, 2026:
 - [Tailscale federation](https://tailscale.com/docs/features/workload-identity-federation?tab=aws)

@@ -7,11 +7,11 @@
 - [ ] T-004: Verify replacement access, storage, package/rootless receipts and automatic enrollment; record acceptance (AC-003/AC-004).
 
 Account issuer plan/apply and external Tailscale trust setup completed on
-October 8, 2026; the client ID is saved in the development workspace. T-003
-remains incomplete until the protected development-host apply. Development-host
-plan #97 passed with Terraform 1.16.5: compute/attachment replacement, preserved
-project disk and deployment identities. Tailnet Lock is disabled. Recovery point,
-maintenance readiness and post-replacement verification remain pending. No host
-replacement or package deployment has run.
+October 8, 2026. Daniel reports successful instance recreation and Tailscale
+connection on October 9, and reports that installation failures are resolved.
+T-003 remains open for replacement pipeline/revision evidence; T-004 remains
+open for automatic enrollment details, SSM/private access, preserved storage,
+and tool/rootless receipts. Failure details and repair provenance are unknown.
 
-Local verification: [acceptance record](acceptance.md). Account setup evidence is recorded; host deployment and live acceptance remain pending.
+Local verification and attributed owner report: [acceptance record](acceptance.md).
+No live checks were run in this documentation update; final acceptance is pending.
