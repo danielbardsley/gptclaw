@@ -1,8 +1,8 @@
 # SPEC-014 acceptance evidence
 
-- **Status:** Implementation merged; replacement bootstrap blocked; host acceptance pending
+- **Status:** Deployed; container smoke checks passed, remaining host acceptance pending
 - **Owner:** Daniel
-- **Evidence date:** 2026-10-08 (America/New_York)
+- **Evidence date:** 2026-10-09 (America/New_York)
 - **Implementation revision:** `c5f6cb27737cff345fbf09e3b6cdebb942763765`
 - **Review branch:** `codex/sys-001-rootless-toolchain`
 - **Review:** [PR #26](https://github.com/danielbardsley/gptclaw/pull/26)
@@ -29,13 +29,13 @@ were inspected.
 
 | Criterion | State | Local evidence | Required remaining evidence/owner |
 |---|---|---|---|
-| AC-001 | pending | Profile/ordering, prerequisite failure, exact YAML embedding and completion-gate tests pass. Actual distro generator parses the fixture. | Deployed versions, kernel/storage/network capabilities and rootless receipt, operator. |
-| AC-002 | pending | Synthetic identity/mapping collision and repeat tests pass; probes explicitly drop to forge; rootful system units are masked before package installation in code. | Real unprivileged build/run and namespace map checks after deployment, operator. |
-| AC-003 | pending | Unknown configuration/storage and symlink fixtures are preserved; paths and keep-id write checks are implemented. | Real bind ownership and replacement preservation/rebuild checks, operator. |
-| AC-004 | pending | Fixture has a pinned public base, explicit loopback publication and independent DNS/outbound/non-loopback checks; no private route or ingress change. | Run image/DNS/HTTPS/HTTP and non-loopback tests on deployed host, operator. |
-| AC-005 | pending | Quadlet generation succeeds; bounded restart/boot activation and mount waiting are declared; no fixture is started by bootstrap. | Actual crash restart, last-session logout and reboot-before-login observations, independent operator. |
-| AC-006 | pending | Conflict-safe preflight, system unit masks, repeat and failure tests pass. Recovery/identity rollback constraints documented. | Protected plan, recovery point/window, authorized replacement and post-replacement checks, Daniel/operator. |
-| AC-007 | pending | Scoped fixture ownership/cleanup refusal tests and runbook complete; no broad prune/reset. | Actual fixture cleanup, CI/deployment references and Daniel's acceptance. |
+| AC-001 | passed | Rendered/ordering tests and current CI passed; installed versions/rootless capability receipts were inspected and live Quadlet/container smoke execution succeeded. | Final feature acceptance remains separate; deployment/recovery provenance is tracked in AC-006. |
+| AC-002 | pending | October 9 unprivileged image build/run and keep-id bind writes passed; isolated mapping/conflict tests pass. | Reconcile current namespace/non-overlap and repeat-identity evidence before final acceptance. |
+| AC-003 | pending | Original filesystem UUID/project ownership match; live synthetic bind-write ownership passed. | Synthetic-source preservation and cache rebuild across replacement remain unproven; do not trigger replacement from this status review. |
+| AC-004 | passed | October 9 pinned-base retrieval, container DNS/HTTPS, loopback HTTP and non-loopback refusal passed after the HTTP fixture repair. The fixture/diff changes no ingress policy. | Final feature acceptance remains separate; no managed app routing is inferred. |
+| AC-005 | pending | Live Quadlet service and bounded crash restart/HTTP recovery passed October 9. | Independent last-session logout and reboot-before-forge-login observations remain pending. |
+| AC-006 | pending | Merged repairs and replacement are recorded; successful receipts, retained UUID/ownership and owner-confirmed SSM access are observed. | Complete protected-run/recovery-point/window evidence and rollback review; no executed rollback is claimed. |
+| AC-007 | pending | Live owned-fixture cleanup removed listener and activation; shared cache was retained. Current repository checks and PR #38 CI passed. | Final criterion reconciliation and Daniel's acceptance remain pending. |
 
 All acceptance criteria contain deployed or operator outcomes. Passing local tests
 does not pass those unobserved portions or establish that SYS-001 is Delivered.

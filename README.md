@@ -22,14 +22,17 @@ code that still needs deployment or acceptance.
 | Automated project-volume backups | **Delivered.** Daily DLM snapshots with seven-snapshot retention; a naturally scheduled snapshot and a subsequent no-change plan were verified. Retention-expiry follow-up remains unrecorded in the acceptance document; restore testing and freshness monitoring are not delivered. [SPEC-002 acceptance](docs/002-automated-ebs-snapshots/acceptance.md). |
 | Agent guidance and workflows | **Deployed, with acceptance remaining.** Reviewed host policy, repository and nested guidance templates, specification and project-bootstrap skills, runtime-operation and release-promotion skills, handovers, decision records, and context validation. Fresh-session, client, or live-workflow checks remain outstanding by initiative. [Initiatives 003–012](docs/README.md). |
 | Project manifest v1 | **Delivered.** A versioned declaration for one private HTTP service, JSON Schema, offline validator, and synthetic example. Validation does not create or run an application. [Reference](docs/project-manifest.md) · [SPEC-013 acceptance](docs/013-versioned-project-manifest/acceptance.md). |
-| Rootless container toolchain | **Merged; deployment and host acceptance pending.** Podman packages, fixed user mappings, storage/network configuration, user persistence, and an acceptance fixture are implemented through bootstrap. [PR #26](https://github.com/danielbardsley/gptclaw/pull/26) · [SPEC-014 evidence](docs/014-rootless-container-toolchain/acceptance.md). |
-| Declared host tool profile | **Merged; deployment and host acceptance pending.** Validated tool/source declarations, bootstrap installation, and version/provenance receipts. Temporary upstream-source exceptions expire November 1, 2026 (America/New_York). [SPEC-015 evidence](docs/015-host-tool-profile/acceptance.md). |
-| Automatic replacement-host Tailscale enrollment | **Replacement and Tailscale connection reported successful; final acceptance pending.** Account issuer and trust setup are recorded. Daniel reports successful instance recreation and Tailscale connection, with installation failures resolved; enrollment details, recovery access, storage and tool receipts still need evidence. [PR #28](https://github.com/danielbardsley/gptclaw/pull/28) · [SPEC-016 evidence](docs/016-tailscale-workload-identity/acceptance.md). |
+| Rootless container toolchain | **Deployed; remaining host acceptance pending.** Rootless packages/configuration and matching receipts are installed. October 9 container build/run, network, file ownership, crash restart and cleanup checks passed; independent logout/reboot and synthetic-source replacement checks remain pending. [PR #26](https://github.com/danielbardsley/gptclaw/pull/26) · [SPEC-014 evidence](docs/014-rootless-container-toolchain/acceptance.md). |
+| Declared host tool profile | **Deployed; final acceptance pending.** Successful receipts cover all 26 components and match the reviewed profile/deployment revision. Full deployment/recovery reconciliation and owner acceptance remain pending. Temporary upstream-source exceptions expire November 1, 2026 (America/New_York). [SPEC-015 evidence](docs/015-host-tool-profile/acceptance.md). |
+| Automatic replacement-host Tailscale enrollment | **Deployed; final acceptance pending.** Account issuer/trust and matching host receipts are recorded; the node is tagged online, retained storage checks passed, and Daniel confirmed independent SSM access. Manual-key-free enrollment confirmation and full provenance remain pending. [PR #28](https://github.com/danielbardsley/gptclaw/pull/28) · [SPEC-016 evidence](docs/016-tailscale-workload-identity/acceptance.md). |
 
 The selected next product milestone is to create, run, open, and iterate on one
-private application, then prove a second instance can run independently. The
-manifest is complete, but a platform CLI, managed application runtime, application
-templates, and private application routing are still future work. The planning
+private application, then prove a second application can run independently on
+the same host. The
+manifest is complete; [draft SPEC-018](docs/018-first-private-application/spec.md)
+now scopes the initial CLI, container runtime, web template and private routing.
+Its plans merged in PR #38; application workflow implementation is not started.
+The planning
 bootstrap creates a local planning-ready repository; runtime and promotion skills
 require existing reviewed interfaces and do not supply those systems themselves.
 A dashboard, public-preview manager, and product production pipelines are also
@@ -38,8 +41,9 @@ not yet delivered.
 Use the [documentation index](docs/README.md) for specifications, designs, task
 lists, and acceptance records. The [platform architecture](docs/platform/architecture.md)
 and [feature catalogue](docs/platform/features.md) describe direction and future
-scope. Some initiative records retain pre-merge wording; the merged changes above
-do not establish deployment or live acceptance. Catalogue entries alone do not
+scope. Historical initiative sections retain observations from earlier revisions;
+use current acceptance summaries for deployed status and remaining evidence.
+Catalogue entries alone do not
 authorize implementation.
 
 ## Repository layout
@@ -85,10 +89,10 @@ manual GitHub Actions workflows with HCP remote execution:
 - [Development host workflow](.github/workflows/terraform-dev-host.yml), workspace `gptclaw-dev-host`.
 - [Account federation workflow](.github/workflows/terraform-tailscale-federation.yml), workspace `gptclaw-tailscale-federation`.
 
-Before deploying the current host revision, complete or verify the account issuer
-and exact-role tailnet trust described in the federation runbook. Host replacement
-also requires a suitable recovery point, a reviewed replacement window, and
-post-deployment verification of private access and preserved project storage.
+For any future replacement, verify the account issuer and exact-role tailnet
+trust described in the federation runbook. Replacement also requires a suitable
+recovery point, a reviewed window, and post-deployment verification of private
+access and preserved project storage.
 Deployment and final acceptance remain separate from local and PR checks.
 
 ## Local validation

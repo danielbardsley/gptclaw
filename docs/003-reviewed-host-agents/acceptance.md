@@ -1,11 +1,11 @@
 # ACCEPTANCE-003: Reviewed Host AGENTS.md
 
-- **Status:** Policy installed on existing host; fresh-task and provisioning acceptance pending
+- **Status:** Installed on replacement host; fresh-task, rollout and complete provisioning acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-003](./spec.md)
 - **Design:** [TDD-003](./technical-design.md)
 - **Tasks:** [TASKS-003](./tasks.md)
-- **Last updated:** 2026-09-12
+- **Last updated:** 2026-10-09 (America/New_York)
 
 ## Authorization and review
 
@@ -83,10 +83,10 @@ is prepared separately on `codex/agt-001-bootstrap-policy`.
 | AC-006 | Partial | Offline drift/override/rollback tests pass; controlled live rehearsal and fresh-task verification pending. |
 | AC-007 | Partial | Runbooks and active revision recorded; fresh remote behavior evidence remains pending. |
 | AC-008 | Pass locally | Five offline bootstrap tests plus three focused Terraform tests pass; follow-up PR CI recorded separately. |
-| AC-009 | Pending | No new EC2 instance provisioned with bootstrap version 4; review replacement plan and verify first boot during a future approved creation/replacement. |
+| AC-009 | Pending | Replacement-host metadata reports installation October 8 before bootstrap completion; October 9 byte/digest/pinned-source comparison passed. Protected-run correlation and fresh-task loading remain required. |
 
 Daniel owns ongoing review, installation, recovery, and exception cleanup as
-specified. AGT-001 remains Planned until all acceptance gates pass. There is no
+specified. AGT-001 remains Deployed while final acceptance gates are pending. There is no
 claim that filesystem verification guarantees model compliance or that a CLI
 session proves the actual remote app's instruction inheritance.
 
@@ -94,3 +94,17 @@ Provisioning follow-up validation: all 18 mocked Terraform tests pass, including
 the three first-boot tests using real local cloud-init rendering. Terraform
 formatting and validation, 22 offline installer/bootstrap tests, repository
 checks, and documentation link checks pass. No infrastructure apply was run.
+
+## Catalogue review — October 9, 2026
+
+Read-only inspection of `gptclaw-host-policy.meta` reports policy version 1.0.0,
+reviewed source `a287d7c9712817fd9f318a11f28041cfc6b5ad06` and installation
+October 8 at 17:27:39 EDT, before the successful bootstrap receipt at 17:27:48
+EDT. SHA-256 of the installed AGENTS.md matches its recorded digest; its bytes
+match that pinned Git source. No host `AGENTS.override.md` was found in this
+Codex home. No installation, policy modification or global settings change ran.
+
+This supersedes the earlier claim that no replacement-host installation exists.
+AGT-001 is Deployed, not Delivered: fresh-task app/scratch-project behavior,
+controlled live rollout/rollback and complete AC-009 run/loading evidence remain
+pending. File matching alone does not prove instruction-loading behavior.

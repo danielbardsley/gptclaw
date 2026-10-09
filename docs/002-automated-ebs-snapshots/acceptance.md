@@ -1,6 +1,6 @@
 # ACCEPTANCE-002: Automated EBS Snapshots
 
-- **Status:** Accepted on 2026-09-13; retention-expiry follow-up recorded
+- **Status:** Accepted on 2026-09-13; retention-expiry follow-up scheduled but execution unrecorded
 - **Owner:** Daniel
 - **Specification:** [SPEC-002](./spec.md)
 - **Deployment:** [sanitized deployment evidence](./deployment-attempt-2026-09-12.md)

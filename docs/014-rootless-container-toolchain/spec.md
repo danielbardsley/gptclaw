@@ -1,9 +1,9 @@
 # SPEC-014: Rootless Container Toolchain
 
-- **Status:** Implementation merged; deployment authorized, acceptance pending
+- **Status:** Deployed; remaining acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** SYS-001
-- **Last updated:** 2026-10-01 (America/New_York)
+- **Last updated:** 2026-10-09 (America/New_York)
 - **Design:** [TDD-014](technical-design.md)
 - **Tasks:** [TASKS-014](tasks.md)
 - **Context:** [Architecture](../platform/architecture.md), sections 10, 11 and 14;

@@ -1,13 +1,13 @@
 # SPEC-003: Reviewed Host AGENTS.md
 
-- **Status:** Approved; implementation in progress
+- **Status:** Deployed; remaining acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** AGT-001
 - **Technical design:** [TDD-003](./technical-design.md)
 - **Implementation tasks:** [TASKS-003](./tasks.md)
 - **Dependency:** [SPEC-001](../001-bootstrap-remote-development-host/spec.md), accepted
 - **Architecture:** [Platform architecture](../platform/architecture.md), sections 3, 8, 9, 15, and 17
-- **Last updated:** 2026-09-12
+- **Last updated:** 2026-10-09 (America/New_York)
 
 ## 1. Summary and desired outcome
 

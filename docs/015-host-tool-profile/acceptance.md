@@ -1,8 +1,8 @@
 # SPEC-015 acceptance evidence
 
-- **Status:** Local implementation and CI verified; deployed acceptance pending
+- **Status:** Deployed with matching successful receipts; final acceptance pending
 - **Owner:** Daniel
-- **Evidence date:** 2026-10-01 (America/New_York)
+- **Evidence date:** 2026-10-09 (America/New_York)
 - **Implementation revision:** `fd1d1d3d708469f74775a959f620bc9e8a8447f2`
 - **Review:** [PR #25](https://github.com/danielbardsley/gptclaw/pull/25), merged as `c4c273c8aae5c2ff848576ab7d294b49d2017c94`
 - **Plans:** [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -30,10 +30,10 @@ approved exceptions; SYS-001 installs no tools in this implementation.
 | AC-001 | passed | Strict parser/schema tests reject malformed/duplicate/unsafe declarations before installer calls. Profile accounts for all 12 explicit apt packages and five existing component adapters. | Review implementation PR, Daniel. |
 | AC-002 | passed | Offline version/source and checksum-failure tests pass without fallback. Five channel exceptions explicitly approved by Daniel; exact archive verification exercised with synthetic bytes. | Replace exceptions before expiry, Daniel and implementer. |
 | AC-003 | passed | Mock-AWS/real-cloud-init tests verify embedded profile/helper bytes and deployment revision, ordering, size and replacement wiring; no new privileges or independent installer list. | Protected deployment remains separate. |
-| AC-004 | pending | Local stale/partial receipt, interrupted write and failed final probe tests pass. No replacement host receipt has been produced. | Compare deployed receipt/provenance and verify tools, operator. |
+| AC-004 | passed | Partial/failure/receipt tests and current CI passed. Replacement receipt/marker report 26 passed intended-identity checks at `6d90105`; digest matches reviewed profile. Current tool/apt inventory and forge AWS CLI execution were checked October 9. | Full protected-deployment correlation/recovery and owner sign-off remain AC-006/007; receipts are not continuous drift detection. |
 | AC-005 | passed | Repeat/conflict/retirement fixtures preserve unrelated state and avoid uninstall calls. Required bootstrap consumers explicitly gate retirement. | Review operational migration before deployment, Daniel. |
-| AC-006 | pending | Recovery runbook and availability/expiry limitations documented; no protected plan, apply, replacement or rollback drill was run. | Review recovery point/window, authorize deployment and verify data/access, Daniel/operator. |
-| AC-007 | pending | Runbook, local evidence and successful CI reference exist; deployment and final owner acceptance remain separate. | Review CI, merge, deployed results and acceptance, Daniel. |
+| AC-006 | pending | Replacement operations and repairs are recorded below; retained filesystem UUID/forge ownership match, bootstrap succeeded, and Daniel confirmed independent SSM access. | Complete protected-plan/apply, recovery readiness and reviewed rollback evidence; no rollback drill is claimed. |
+| AC-007 | pending | Implementation and repairs are merged; current repository checks and PR #38 CI passed. Matching deployed receipts and private/recovery access observations exist. | Complete criterion reconciliation and Daniel's final acceptance; resolve source exceptions before expiry. |
 
 “Passed” above describes the criterion's local evidence only; it does not mark
 SYS-004 Delivered. Required host checks and final acceptance remain pending.
@@ -144,3 +144,20 @@ the new regressions. The development and account Terraform format, backend-free
 locked initialization, validation and test steps passed. Protected remote plan
 and apply jobs were skipped; no deployment or enrollment acceptance is implied.
 This subsequent CI evidence addition changes documentation only.
+
+## Deployed inventory status — October 9, 2026
+
+Earlier deployment-pending and missing-receipt statements are historical.
+Read-only inspection found Ubuntu 24.04.5, Git 2.43.0, Python 3.12.3, Podman 4.9.3,
+AWS CLI 2.37.11 (usable as forge), Tailscale 1.104.1 and Codex CLI 0.162.0. All
+declared apt packages were installed. The host-tools receipt has 26 passed
+components and matches the bootstrap marker, canonical reviewed profile digest
+`f2be7cdc4f4f057fafc908a1d5917ec812ce699cf0ecdd56b8b03e50cd8d294a`
+and deployment revision `6d90105136de55f7932c7e6857ba0bf6415db249`. SSM and
+CloudWatch services were active. Receipts are provisioning observations, not a
+continuous drift check; the current sudo package was newer than its receipt.
+
+These observations justify Deployed, not final Delivered. Full protected-run
+correlation/recovery reconciliation and Daniel's acceptance remain pending.
+The five temporary source-channel exceptions still expire November 1; this
+status update does not extend them. No packages or host configuration were changed.

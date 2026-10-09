@@ -1,7 +1,7 @@
 # GptClaw Platform Feature Catalogue
 
 - **Status:** Directional backlog; not a specification
-- **Last updated:** 2026-10-01
+- **Last updated:** 2026-10-09 (America/New_York)
 - **Architecture:** [GptClaw platform architecture](./architecture.md)
 
 ## 1. How to use this catalogue
@@ -41,9 +41,16 @@ Feature IDs remain stable even if names, grouping, or delivery order changes.
 | Optional | Useful capability that should be implemented only when demanded. |
 | Deferred | Deliberately postponed until its dependencies or use case exist. |
 
-Priority indicates suggested sequencing, not authorization.
+Priority indicates suggested sequencing, not authorization. When a specification
+covers only an initial slice, the row describes that slice and the remaining
+backlog separately. A merged draft is still Draft until scope approval is
+recorded; it is not implemented runtime code.
 
-## 2. Delivered foundation
+The current target is repeatable private application development on the existing
+EC2 host. The backlog includes later mobile, dashboard, sharing and production
+capabilities; those are not prerequisites for creating the first applications.
+
+## 2. Development foundation
 
 | ID | Feature | Status | Evidence |
 |---|---|---|---|
@@ -53,15 +60,16 @@ Priority indicates suggested sequencing, not authorization.
 | FND-004 | Remote ChatGPT/Codex project connection | Delivered | SPEC-001 |
 | FND-005 | Repository-specific host Git credential | Delivered | SPEC-001 |
 | FND-006 | HCP Terraform AWS workload identity | Delivered | SPEC-001 |
+| FND-007 | Automatic replacement-host Tailscale enrollment | Deployed | [SPEC-016](../016-tailscale-workload-identity/spec.md): account issuer/trust and host implementation are deployed; replacement connection is owner-reported, tagged online state was checked, and independent SSM access confirmed. Explicit manual-key-free enrollment and full acceptance remain pending. [Evidence](../016-tailscale-workload-identity/acceptance.md). |
 
 ## 3. Resilience and host safety
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| RES-001 | Automated EBS snapshots | 1 | Delivered | Daily 03:00 UTC DLM snapshots retaining seven; first natural snapshot completed and post-snapshot plan had no changes on 2026-09-13. Silent failures accepted; no monitoring or notifications. Daniel owns permitted retention-expiry follow-up on 2026-09-21; restore remains RES-002. [SPEC-002](../002-automated-ebs-snapshots/spec.md); [merged PR #4](https://github.com/danielbardsley/gptclaw/pull/4); [acceptance](../002-automated-ebs-snapshots/acceptance.md). |
+| RES-001 | Automated EBS snapshots | 1 | Delivered | Daily 03:00 UTC DLM snapshots retaining seven; first natural snapshot completed and post-snapshot plan had no changes on 2026-09-13. Silent failures accepted; no monitoring or notifications. The permitted September 21 retention-expiry follow-up remains unverified in the record; Daniel owns it; restore remains RES-002. [SPEC-002](../002-automated-ebs-snapshots/spec.md); [merged PR #4](https://github.com/danielbardsley/gptclaw/pull/4); [acceptance](../002-automated-ebs-snapshots/acceptance.md). |
 | RES-002 | Restore drill | 1 | Candidate | Periodically prove that a recent recovery point can create an inspectable replacement volume without risking the live volume. |
 | RES-003 | Backup freshness indicator | 2 | Candidate | Dashboard shows last successful recovery point, age, retention class, and restore-test result. |
-| RES-004 | Host replacement rehearsal | 3 | Candidate | Exercise compute replacement, Tailscale re-enrollment, Git credential recreation, and Codex reauthentication. |
+| RES-004 | Host replacement rehearsal | 3 | Candidate | Exercise compute replacement, Tailscale re-enrollment, Git credential recreation, and Codex reauthentication. Actual deployment replacements and restored Git/SSM access are evidence of operations; they do not complete a repeatable rehearsal or all replacement acceptance. |
 | RES-005 | Host configuration drift detection | 3 | Candidate | Compare declared bootstrap/tool profile with observed packages, units, mounts, and security settings. |
 | RES-006 | Disk capacity guardrails | 2 | Candidate | Warn, prune safe caches, and stop risky builds before the persistent volume fills. |
 | RES-007 | Platform export | 4 | Optional | Export non-secret manifests, project inventory, and recovery metadata for off-host safekeeping. |
@@ -70,8 +78,8 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| AGT-001 | Reviewed host `AGENTS.md` | 2 | Deployed | Policy and installer merged in [PR #6](https://github.com/danielbardsley/gptclaw/pull/6); approved policy installed and verified on the existing host on 2026-09-12. Automatic first-boot integration merged in [PR #7](https://github.com/danielbardsley/gptclaw/pull/7), but has not been applied to a new instance. Fresh-task loading, live rollback verification, and new-host acceptance remain pending. [SPEC-003](../003-reviewed-host-agents/spec.md) · [Acceptance evidence](../003-reviewed-host-agents/acceptance.md). |
-| AGT-002 | Repository `AGENTS.md` template | 2 | Deployed | [SPEC-004](../004-repository-agents-template/spec.md) implemented and merged in [PR #9](https://github.com/danielbardsley/gptclaw/pull/9) on 2026-09-12. Template, GptClaw guidance, offline checks, and rollback rehearsal are complete; CI and fresh-task remote acceptance remain pending. [Acceptance evidence](../004-repository-agents-template/acceptance.md). |
+| AGT-001 | Reviewed host `AGENTS.md` | 2 | Deployed | Policy/installer and first-boot integration merged in [PR #6](https://github.com/danielbardsley/gptclaw/pull/6) and [PR #7](https://github.com/danielbardsley/gptclaw/pull/7). October 9 file inspection found the reviewed policy installed on the replacement host; bytes match its pinned source and metadata. Fresh-task behavior and live rollback acceptance remain pending. [SPEC-003](../003-reviewed-host-agents/spec.md) · [Evidence](../003-reviewed-host-agents/acceptance.md). |
+| AGT-002 | Repository `AGENTS.md` template | 2 | Deployed | Template, GptClaw guidance, offline checks and isolated rollback rehearsal merged in [PR #9](https://github.com/danielbardsley/gptclaw/pull/9). Current repository checks and PR #38 CI passed; fresh-task remote acceptance remains pending. [SPEC-004](../004-repository-agents-template/spec.md) · [Evidence](../004-repository-agents-template/acceptance.md). |
 | AGT-003 | Nested guidance pattern | 3 | Deployed | [SPEC-005](../005-nested-guidance-pattern/spec.md) approved and implementation authorized on 2026-09-13. Template, five inert examples, infrastructure adoption, and offline checks merged in [PR #11](https://github.com/danielbardsley/gptclaw/pull/11) on 2026-09-13. PR CI run #56 passed; fresh-task remote acceptance remains pending. [Acceptance evidence](../005-nested-guidance-pattern/acceptance.md). |
 | AGT-004 | Specification skill | 2 | Deployed | Repository skill, four outlines, and checks merged in [PR #16](https://github.com/danielbardsley/gptclaw/pull/16) as `aed4fe4` on 2026-09-30; owner accepted implementation. Skill available in the repository and observed in the app inventory. Fresh-session behavior checks remain pending before Delivered. [SPEC-006](../006-specification-skill/spec.md) · [Acceptance](../006-specification-skill/acceptance.md). |
 | AGT-005 | Project bootstrap skill | 2 | Deployed | Local planning starter, bootstrap skill/helper, and checks merged in [PR #18](https://github.com/danielbardsley/gptclaw/pull/18) as `947a78f` on 2026-09-30; owner approved implementation. Bootstrap skill observed in the app inventory. Fresh-session discovery/use in a generated project remains pending before Delivered. [SPEC-007](../007-project-bootstrap-skill/spec.md) · [Acceptance](../007-project-bootstrap-skill/acceptance.md). |
@@ -100,10 +108,10 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| SYS-001 | Rootless container toolchain | 2 | In review | [SPEC-014](../014-rootless-container-toolchain/spec.md) implements declared rootless packages, stable IDs, storage/network configuration and user persistence through bootstrap; [acceptance](../014-rootless-container-toolchain/acceptance.md) tracks pending merge, deployment and host checks. |
-| SYS-002 | Pinned language toolchains | 2 | Candidate | Projects declare and automatically obtain supported Node, pnpm, Python, uv, and other approved versions. |
+| SYS-001 | Rootless container toolchain | 2 | Deployed | Rootless Podman and supporting configuration are installed on the replacement host. October 9 build/run, bind ownership, DNS/HTTPS, loopback HTTP, non-loopback refusal, crash restart and scoped cleanup passed; the fixture repair merged in [PR #38](https://github.com/danielbardsley/gptclaw/pull/38). Logout/reboot, synthetic-source preservation/rebuild across replacement and final acceptance remain pending. [SPEC-014](../014-rootless-container-toolchain/spec.md) · [Evidence](../014-rootless-container-toolchain/acceptance.md). |
+| SYS-002 | Pinned language toolchains | 2 | Candidate | Projects declare and automatically obtain supported Node, pnpm, Python, uv, and other approved versions. SPEC-018 proposes pinned Node/pnpm inside the first template container; a general toolchain manager remains future scope. |
 | SYS-003 | Project dependency policy | 2 | Candidate | Agents may install dependencies inside their project boundary and must record lockfile changes. |
-| SYS-004 | Host tool profile | 2 | Implemented | [SPEC-015](../015-host-tool-profile/spec.md) merged in [PR #25](https://github.com/danielbardsley/gptclaw/pull/25); [acceptance](../015-host-tool-profile/acceptance.md) tracks pending pipeline deployment and host verification. |
+| SYS-004 | Host tool profile | 2 | Deployed | Profile/bootstrap merged in [PR #25](https://github.com/danielbardsley/gptclaw/pull/25); the replacement host has successful receipts for all 26 components, matching reviewed profile and deployment revision. Full provenance/recovery reconciliation and owner acceptance remain pending. Five approved source-channel exceptions expire November 1. [SPEC-015](../015-host-tool-profile/spec.md) · [Evidence](../015-host-tool-profile/acceptance.md). |
 | SYS-005 | Privileged capability broker | 4 | Candidate | Exceptional system changes use a narrow allowlist, owner approval, audit log, and mandatory reconciliation. |
 | SYS-006 | Dependency cache management | 3 | Candidate | Share safe package/build caches with quotas while preventing cross-project credential or artifact leakage. |
 | SYS-007 | Software bill of materials | 4 | Candidate | Produce SBOMs for images and releases and retain them with build provenance. |
@@ -112,11 +120,11 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| RUN-001 | Rootless project containers | 3 | Candidate | Each project runs in its own non-root network, containers, volumes, and namespace. |
-| RUN-002 | User systemd/Quadlet lifecycle | 3 | Candidate | Services survive disconnects, restart predictably, and expose status through standard tooling. |
-| RUN-003 | Port registry | 3 | Candidate | Allocate collision-free loopback ports and preserve stable assignments across restarts. |
-| RUN-004 | Resource limits | 3 | Candidate | Apply per-project CPU, memory, process, storage, and log limits with sensible defaults. |
-| RUN-005 | Health contract | 3 | Candidate | Every long-running service has startup, readiness, and ongoing health checks. |
+| RUN-001 | Rootless project containers | 3 | Draft | Each project runs in its own non-root network, containers, volumes, and namespace. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
+| RUN-002 | User systemd/Quadlet lifecycle | 3 | Draft | Services survive disconnects, restart predictably, and expose status through standard tooling. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
+| RUN-003 | Port registry | 3 | Draft | Allocate collision-free loopback ports and preserve stable assignments across restarts. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
+| RUN-004 | Resource limits | 3 | Draft | Apply per-project CPU, memory, process, storage, and log limits with sensible defaults. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
+| RUN-005 | Health contract | 3 | Draft | Every long-running service has startup, readiness, and ongoing health checks. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
 | RUN-006 | Multi-service projects | 3 | Candidate | Run web, API, database, cache, and worker components as one declared project group. |
 | RUN-007 | Background jobs and schedulers | 4 | Candidate | Declare recurring or asynchronous workers without unmanaged terminal processes. |
 | RUN-008 | Pause, resume, and idle shutdown | 4 | Candidate | Reclaim memory and CPU from inactive projects while preserving data and URLs. |
@@ -129,7 +137,7 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| TPL-001 | Next.js full-stack template | 3 | Candidate | TypeScript, App Router, Tailwind, health route, tests, container, base-path support, and CI. |
+| TPL-001 | Next.js full-stack template | 3 | Draft | [SPEC-018](../018-first-private-application/spec.md) drafts the first Next.js/TypeScript/pnpm template with container tooling, health, tests and base-path development updates. The full template catalogue and broader UI/CI defaults remain future scope; no runnable template is implemented yet. |
 | TPL-002 | TypeScript API template | 4 | Candidate | Fastify service with schema validation, OpenAPI, health checks, tests, container, and migrations. |
 | TPL-003 | Python API/AI template | 4 | Candidate | FastAPI, Pydantic, uv, Ruff, pytest, health checks, container, and typed configuration. |
 | TPL-004 | Expo universal application template | 4 | Candidate | Expo Router, TypeScript, web export, device development, EAS profiles, tests, and environment separation. |
@@ -144,9 +152,9 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| NET-101 | Private loopback ingress | 3 | Candidate | Route stable project paths to healthy loopback services without opening EC2 inbound ports. |
-| NET-102 | Tailscale Serve manager | 3 | Candidate | Publish the dashboard and private project routes to the tailnet with declarative, recoverable configuration. |
-| NET-103 | Base-path compatibility | 3 | Candidate | Templates work beneath `/projects/<slug>/`, including assets, API calls, redirects, and WebSockets. |
+| NET-101 | Private loopback ingress | 3 | Draft | Route stable project paths to healthy loopback services without opening EC2 inbound ports. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
+| NET-102 | Tailscale Serve manager | 3 | Draft | Publish the dashboard and private project routes to the tailnet with declarative, recoverable configuration. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
+| NET-103 | Base-path compatibility | 3 | Draft | Templates work beneath `/projects/<slug>/`, including assets, API calls, redirects, and WebSockets. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
 | NET-104 | Dedicated private service ports | 4 | Candidate | Support applications that cannot operate under a path while keeping access tailnet-only. |
 | NET-105 | Funnel exposure manager | 4 | Candidate | Owner-confirmed, time-limited, health-gated public exposure with automatic shutdown and audit. |
 | NET-106 | Public exposure authentication | 5 | Candidate | Add application-level identity or share tokens when a Funnel preview is not intentionally anonymous. |
@@ -206,9 +214,9 @@ Priority indicates suggested sequencing, not authorization.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| QLT-001 | Standard quality commands | 2 | Candidate | Every project exposes `format`, `lint`, `typecheck`, `test`, `build`, and `verify` through its manifest. |
+| QLT-001 | Standard quality commands | 2 | Candidate | Every generated project documents `format`, `lint`, `typecheck`, `test`, `build`, and `verify` commands. Manifest v1 declares only build/start/test; broader manifest command support requires a reviewed schema extension. SPEC-018 drafts only its initial build/test workflow. |
 | QLT-002 | Pull-request workflow template | 3 | Candidate | Generated repositories get pinned actions, minimal permissions, caches, tests, scans, and artifacts. |
-| QLT-003 | Dependency automation | 3 | Candidate | Dependabot or an approved equivalent opens bounded, tested update pull requests. |
+| QLT-003 | Dependency automation | 3 | Candidate | Dependabot or an approved equivalent opens bounded, tested update pull requests for generated applications. GptClaw already has Actions/Terraform Dependabot configuration; app dependency coverage remains future work. |
 | QLT-004 | Preview smoke tests | 3 | Candidate | Verify the private URL, assets, health endpoint, and important journeys after each service update. |
 | QLT-005 | Accessibility baseline | 4 | Candidate | Generated web/mobile projects include keyboard, semantics, contrast, and automated accessibility checks. |
 | QLT-006 | Performance budgets | 4 | Candidate | Detect unacceptable bundle, response-time, memory, and startup regressions. |
@@ -262,47 +270,50 @@ Priority indicates suggested sequencing, not authorization.
 
 ## 17. Suggested specification sequence
 
-**Current owner selection (2026-09-30, America/New_York):** Prioritize a working
-private application: create, run, open, and iterate on one app, then prove a
-second instance can run independently. PRJ-001 is the selected first feature;
-[SPEC-013](../013-versioned-project-manifest/spec.md) covers only its manifest,
-validator, and example. Minimal CLI, runtime, template, and private routing
-follow through separately reviewed scope. Further RES work is deferred until
-that milestone is proven; existing backups and safeguards remain in place.
-PRJ-001 implementation was subsequently authorized; other feature implementation
-and existing acceptance remain unchanged.
+**Current owner selection (confirmed October 9, 2026, America/New_York):**
+Create, run, open and iterate on one private application, then run a second
+application independently on the same EC2 host. A second EC2 instance is not
+part of this milestone. PRJ-001's manifest is Delivered; rootless tooling and
+the host profile are Deployed, with remaining acceptance tracked separately.
+Independent SSM recovery and a small container smoke test have passed.
 
-[Draft SPEC-018](../018-first-private-application/spec.md) proposes the minimum
-CLI/template/runtime/private-routing slices for this milestone. Full catalogue
-features remain incomplete; implementation awaits scope review. Formal host
-logout/reboot/replacement acceptance stays pending in its existing initiatives.
+[Draft SPEC-018](../018-first-private-application/spec.md), merged as planning
+in [PR #38](https://github.com/danielbardsley/gptclaw/pull/38), is the next coherent
+slice: PRJ-002, TPL-001, RUN-001–005 and NET-101–103. It does not implement those
+features. Review scope and authorize implementation before starting that work.
+The earlier SPEC-017 acceptance-only draft was closed unmerged; the existing
+host acceptance records remain authoritative and their unrun checks stay pending.
 
-The broader sequence below remains directional; the selection above takes
-precedence for the next work:
+Recommended sequence, subject to owner scope review:
 
-1. **Protect the persistent volume:** RES-001, RES-002, and DSH-008's data
-   source. This closes the only material handover warning from SPEC-001.
-2. **Create the consistent agent/project contract:** AGT-001, AGT-002,
-   AGT-004, PRJ-001, QLT-001.
-3. **Install the safe runtime foundation:** SYS-001, SYS-002, SYS-003,
-   SYS-004, RUN-001 through RUN-005.
-4. **Automate project creation:** PRJ-002 through PRJ-006 and the first
-   golden-path template, normally TPL-001.
-5. **Run and route several private projects:** RUN-006, RUN-008, RUN-010,
-   NET-101 through NET-104, and NET-108.
-6. **Build the read-only dashboard:** DSH-001 through DSH-005, DSH-008, and
-   DSH-014.
-7. **Add data, logs, secrets, and safe controls:** RUN-011, SEC-001 through
-   SEC-007, OBS-001 through OBS-003, DSH-006, DSH-009, and DSH-011.
-8. **Add Expo/mobile development:** TPL-004 and MOB-001 through MOB-005.
-9. **Add temporary public sharing:** NET-105 through NET-107 and DSH-010.
-10. **Add Slack:** COL-001 through COL-008 after the typed control API and audit
-    boundary are proven.
-11. **Add production promotion:** PRD-001 through PRD-009 per product, never as
-    a blanket grant to the development host.
+1. **Deliver the first private-app workflow:** implement SPEC-018's single
+   template, narrow lifecycle CLI, container-contained pinned tools, port/health
+   handling and private routes. No host Terraform/Node installation, dashboard,
+   general broker or full template catalogue is needed for this slice. Resolve
+   actual Serve permissions/ownership and tool pins before dependent changes.
+2. **Prove repeatability:** demonstrate two apps concurrently, change source and
+   see browser updates, stop/restart one without affecting the other, and recreate
+   an app from its template/lockfile. Record creation/start/build times and the
+   edit-to-browser feedback loop to evaluate speed, plus owned cleanup behavior.
+3. **Make real project delivery routine:** add PRJ-004/005's scoped repository
+   creation/credentials when manual setup becomes the next bottleneck; extend
+   QLT-001/002/004/009 for standard checks, PR CI and generated-template regression
+   tests. Reuse existing branch/guidance conventions before building a larger
+   orchestration system. Fit broad manifest commands through reviewed schema work.
+4. **Add data and secrets when the first real app needs them:** scope SEC-001,
+   RUN-011/012, backups and migration checks together. Until then, manifest v1
+   supports ephemeral application data; source retention is a different promise.
+5. **Expand only against demonstrated demand:** API/Python/Expo templates,
+   dashboards, capacity/cache automation, public previews, Slack and production
+   pipelines follow the working-app milestone and their own reviewed scopes.
 
-The owner may reorder features, but each new specification should state which
-catalogue IDs it covers and why its dependencies are ready.
+Keep operational obligations visible alongside app work: resolve the five host
+source-channel exceptions before November 1, record overdue backup retention
+follow-up, and complete outstanding agent/host acceptance with appropriate
+independent observations. Do not claim these checks passed or launch a new
+replacement/reboot merely to tidy catalogue statuses. Restore drills, broader
+RES work and full live release-skill acceptance are not prerequisites for the
+initial private-app slice; retain existing backups and safeguards.
 
 ## 18. Selection checklist
 

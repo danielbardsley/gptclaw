@@ -1,8 +1,8 @@
 # TASKS-015: Host Tool Profile
 
-- **Status:** Implementation merged; deployment authorized, acceptance pending
+- **Status:** Deployed; remaining acceptance pending
 - **Owner:** Daniel
-- **Last updated:** 2026-10-01 (America/New_York)
+- **Last updated:** 2026-10-09 (America/New_York)
 - **Specification:** [SPEC-015](spec.md)
 - **Design:** [TDD-015](technical-design.md)
 
@@ -62,20 +62,18 @@
 
 ## Current handover
 
-Implementation, tests and the operator runbook are complete locally. T-006's
-runbook portion is complete; its review/merge and authorized deployment remain
-pending. T-007's [acceptance record](acceptance.md) exists with pending deployed
-criteria. No host package installation, infrastructure mutation or runtime
-acceptance was performed. See the evidence record for exact checks and PR status.
+Implementation, runbook and bootstrap repairs are merged and deployed. The
+replacement host has successful matching receipts for all 26 tool components;
+current versions/apt inventory and forge AWS CLI usability were inspected on
+October 9. Storage identity/ownership match and Daniel confirmed independent SSM
+access. See [acceptance.md](acceptance.md) for attributed evidence.
 
-October 8 repair: AWS CLI installer permissions and final forge execution are
-covered by code and offline tests. Daniel authorized merge, re-plan and protected
-replacement; recovery readiness and actual deployment acceptance remain required.
+T-006/T-007 remain open for complete protected-deployment/recovery reconciliation
+and Daniel's final acceptance, not initial merge or package installation. The
+five source-channel exceptions still expire November 1. No extension or new
+replacement is authorized by this handover update.
 
-- [ ] T-008: Complete the October 8 absent-dpkg-record repair review and CI,
-  then review recovery readiness and the protected development-host plan before
-  an authorized replacement. Verify bootstrap, automatic Tailscale enrollment,
-  project filesystem/ownership and all profile receipts afterward. The code and
-  regression tests are prepared; 12 selected offline tests passed locally
-  and both PR quality workflows passed with all 23 Linux host-tool tests.
-  See [the acceptance record](acceptance.md) for the diagnosed failure and limits.
+- [ ] T-008: Close evidence for the merged/deployed absent-dpkg-record repair:
+  regression/CI and successful replacement receipts exist. Correlate the current
+  protected run/revision and remaining original acceptance requirements; do not
+  repeat deployment merely to clear the task.
