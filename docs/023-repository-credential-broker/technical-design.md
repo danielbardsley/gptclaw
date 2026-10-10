@@ -1,6 +1,6 @@
 # TDD-023: Repository credential broker
 
-- **Status:** Draft proposal; App/endpoint feasibility and owner setup pending
+- **Status:** Candidate implementation; actual App/endpoint feasibility and live acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Tasks:** [TASKS-023](tasks.md)
@@ -170,3 +170,31 @@ and signing dependency remain substantive implementation-readiness decisions.
 The proposed bootstrap selection is the retained SPEC-022 verification repo, not
 the platform repository. Drafting can complete now; no live mutation or automatic
 permission expansion is authorized by this planning request.
+
+## Implemented interface and remaining feasibility gate
+
+Provider 1.5.0 uses the available `/usr/bin/openssl` RS256 signer (host observation:
+OpenSSL 3.0.13) through a private anonymous fd; no custom cryptography or additional
+host/Python package was introduced. Broker configuration, activation, key rotation
+and project disable/enable use strict version-1 metadata and locks. Canary success
+is required before activation. The API adapter uses installation JWT identity,
+creation-only leases and validated singleton project token responses; no `/user`
+authentication, user refresh store or fallback was added.
+
+`new --plan` reports effective policy/roles, active normal `new` combines setup,
+`--local-only` skips profile/network, and unconfigured normal new stays local.
+Standard Git uses the exact local immutable helper, resets inherited helper
+chains and validates HTTPS host/path. It supports real Git HTTP authentication
+hints; private TLS fixture fetch/push is tested. Interrupted config enrollment
+and lost-create operations retain their IDs and have guarded resume.
+
+[The runbook](../../runbooks/manage-repository-credentials.md) lists actual CLI
+commands, scope profiles, no-bearer-cache policy, helper token residual lifetimes
+and owner rotation/revocation duties. The old stable 1.4.0 CLI does not understand
+the profile: use matching 1.5.0 source/bundled runner until the existing authorized
+private-app provider rollout updates it. Activation does not restart services.
+
+Offline tests establish contracts and native Git transport, not real GitHub App
+creation/access feasibility. The separately requested setup/target approval and
+actual App ID, installation ID and external private-key path are still pending.
+No real App/root credential was read or created by the offline test suite.

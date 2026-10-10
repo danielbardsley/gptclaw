@@ -1,6 +1,6 @@
 # TASKS-023: Repository credential broker
 
-- **Status:** Draft planning complete; implementation not authorized
+- **Status:** Implementation in review; one-time App setup/live acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Design:** [TDD-023](technical-design.md)
@@ -11,31 +11,36 @@
   PAT/Git interfaces; verify current official App creation/installation/token
   documentation. Draft requirements/design/traceability. The project owner selected private
   repos with PR review without enforced branch protection for this proposal.
-- [ ] T-002: the project owner approves full scope/design and authorizes implementation.
-  Review exact App grant/selected bootstrap repo and key handling; authorize
-  owner setup and specific retained live targets separately. Prove or resolve
-  personal-account installation-authenticated creation/automatic inclusion and
-  main default-branch behavior before finalizing the consumer adapter. No broader
-  grant or deploy-key/PAT fallback is automatically authorized. CRD-001/002; AC-001/002.
+- [x] T-002a: The instruction “Ok, now implement the spec” approved the bounded
+  design/scope and authorized implementation. The selected standing policy and
+  owner-neutral naming remain in force.
+- [ ] T-002b: Approve exact private App settings/selected bootstrap/key handling
+  and retained live targets, then provide App/installation IDs and the external
+  private key path. Prove actual personal-account creation/inclusion/main behavior
+  through the canary before activation; no broader grant/PAT fallback. CRD-001/002;
+  AC-001/002. The concrete proposal is in the runbook/settings checklist.
+
+T-002 is split to distinguish completed implementation authorization from the
+pending external setup/feasibility gate; it does not reopen existing approval.
 
 ## Dependency-ordered implementation
 
-- [ ] T-003: Version private setup/profile/binding/receipt contracts and build
+- [x] T-003: Version private setup/profile/binding/receipt contracts and build
   doctor/status, strict safe key/path readers, account/App/installation identity
   checks and selected-repository readiness. CRD-001; AC-001.
-- [ ] T-004: Implement maintained signing/installation-token acquisition with
+- [x] T-004: Implement maintained signing/installation-token acquisition with
   explicit one-repository/permission scope, actual response validation, fresh
   bounded lifetime, sanitized transport and no persisted bearer cache. Select
   pinned isolated tooling if needed. CRD-003/004/005; AC-003/004/005.
-- [ ] T-005: Integrate verified creation capability/automatic inclusion with the
+- [x] T-005: Integrate verified creation capability/automatic inclusion with the
   existing journaled provisioning flow and configured normal new. Explicitly
   record the activated standing policy; keep local-only/unconfigured/manual PAT
   paths and existing apps unchanged. CRD-002/006; AC-002/006.
-- [ ] T-006: Add exact project-local Git helper/enrollment and scoped later-PR
+- [x] T-006: Add exact project-local Git helper/enrollment and scoped later-PR
   path; extend reviewed Git config validation rather than permit arbitrary
   helpers. Preserve source/worktrees/remotes and reject cross-project binding
   or credential-bearing URLs. CRD-004/007; AC-004/007.
-- [ ] T-007: Add concurrency, renewal, response-loss reconciliation, per-project
+- [x] T-007: Add concurrency, renewal, response-loss reconciliation, per-project
   disable/revocation and owner-controlled App key rotation/rollback. Document
   residual lifetimes and actual versus unknown outcomes. CRD-005/007; AC-005/007.
 - [ ] T-008: Add meaningful offline/helper/Git transport negative tests and
@@ -56,18 +61,17 @@
 
 ## Current handover
 
-Planning package is reviewable; only planning documents were authored. No
-broker/runtime/App settings or live project resources changed.
-The desired automatic workflow and current-plan branch policy are explicit. A
-selected-repository GitHub App is proposed using documented automatic access to
-App-created repositories, with actual endpoint/account feasibility as a gate.
-One-time owner registration/installation/key setup is necessary; future ordinary
-projects should need no manual token generation. Revocation or key maintenance
-can require later owner action and is not hidden behind a permanent-token claim.
+Provider 1.5.0 implements private App profile/doctor, OpenSSL-backed JWT signing,
+exact one-repository/permission token leases, native Git helper, new preview and
+combined configured creation, guarded resume, rotation and disable/enable.
+Existing manual PAT, local-only and unrelated runtime interfaces are retained.
+Offline synthetic App tests include real RSA signatures and authenticated native
+Git TLS fetch/push; evidence and counts are in [acceptance.md](acceptance.md).
 
-The project owner reported both SPEC-022 temporary tokens revoked. This report is attributed
-in the spec; no token files were read, deletion performed or API revocation probed
-for this planning task. App settings/grant/bootstrap/live fixtures remain unapproved.
-Next step is the project owner's review, then T-002; no implementation or setup is authorized
-by the request to create this specification. PRJ-004 remains Delivered and its
-existing verification app/source/PR are retained.
+T-008 remains open until final CI is verified. T-002b/T-009 require the separate
+owner App setup/target approval and actual App ID, installation ID and private
+key path. No real App/root credential or remote project was used during tests,
+and actual personal-account creation/inclusion is not claimed proved. Existing
+revoked PATs were not read or reused. No deployment/public callback/new host
+package/service mutation occurred. PR #54 contains reviewable implementation;
+merge/full live acceptance are not implied by the coding request.

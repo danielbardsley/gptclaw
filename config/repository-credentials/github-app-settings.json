@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "purpose": "Review checklist for the private-project App; not an executable GitHub manifest",
+  "account": "danielbardsley",
+  "visibility": "only-this-account",
+  "webhooks": false,
+  "oauth_callbacks": false,
+  "repository_selection": "selected",
+  "bootstrap_repository": "danielbardsley/gptclaw-prj004-verification",
+  "bootstrap_repository_id": 1413668232,
+  "permissions": {
+    "repository_creation": "write",
+    "contents": "write",
+    "pull_requests": "write",
+    "metadata": "read"
+  },
+  "project_policy": "unprotected-private-dev"
+}

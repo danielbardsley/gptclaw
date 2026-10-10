@@ -1,6 +1,6 @@
 # SPEC-023: Repository credential broker
 
-- **Status:** Draft — full specification approval and implementation authorization pending
+- **Status:** In review — implementation authorized; App/live acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** PRJ-005, initial GitHub App broker; bounded PRJ-002/004 integration
@@ -25,9 +25,11 @@ not authority to access an arbitrary existing repository.
 The project owner selected this specification after completing SPEC-022. On October 10 he
 selected a standing policy for this draft: private repositories and PR review
 without GitHub-enforced branch protection on his current plan. This is a known
-scope preference, not an unanswered decision. Full specification/design approval,
-implementation, App registration/installation/key placement and live fixture
-creation remain separate gates. No App or credential is created by this plan.
+scope preference, not an unanswered decision. The subsequent instruction “Ok, now implement the spec” approved the bounded
+spec/design and authorized implementation. App registration/installation/key
+placement and exact live fixtures remain separately scoped owner steps. Candidate
+provider 1.5.0 implements the broker; no real App/key/live project has been created
+by implementation tests. See [acceptance.md](acceptance.md) for actual evidence.
 
 ## Baseline and scope
 

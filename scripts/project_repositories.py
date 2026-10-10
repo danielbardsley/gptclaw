@@ -277,7 +277,9 @@ def check_git_storage(root):
     seen = set()
     permitted = {'core': {'repositoryformatversion': '0', 'filemode': 'true',
                          'bare': 'false', 'logallrefupdates': 'true'},
-                 'remote "origin"': {'fetch': '+refs/heads/*:refs/remotes/origin/*'}}
+                 'remote "origin"': {'fetch': '+refs/heads/*:refs/remotes/origin/*'},
+                 'credential': {'useHttpPath':'true','username':'x-access-token'}}
+    helper_values=[]
     for line in config.read_text().splitlines():
         line = line.strip()
         if not line: continue
@@ -285,10 +287,16 @@ def check_git_storage(root):
             section = line[1:-1]; require(section in permitted, 'repository-drift'); continue
         require(section is not None and '=' in line, 'repository-drift')
         key, value = (piece.strip() for piece in line.split('=', 1))
+        if section == 'credential' and key == 'helper':
+            helper_values.append(value); continue
         require((section, key) not in seen, 'repository-drift'); seen.add((section, key))
         if section == 'remote "origin"' and key == 'url':
             require(re.fullmatch(r'https://github.com/danielbardsley/[a-z][a-z0-9-]{0,47}\.git', value), 'repository-drift')
         else: require(permitted[section].get(key) == value, 'repository-drift')
+    if helper_values:
+        import repository_credentials as broker
+        broker.validate_git_helper(root,helper_values)
+    elif ('credential','useHttpPath') in seen:raise app.AppError('repository-drift')
 
 
 def git(root, *args, api=None, input_bytes=None):
@@ -378,7 +386,7 @@ def starter(receipt):
     persist(receipt)
 
 
-def identity(receipt, remote):
+def identity(receipt, remote, require_admin=True):
     value = receipt['plan']
     require(isinstance(remote, dict) and type(remote.get('id')) is int
             and remote.get('id') == receipt.get('repository_id')
@@ -387,7 +395,7 @@ def identity(receipt, remote):
             and remote.get('owner', {}).get('type') == 'User'
             and remote.get('private') is True and remote.get('archived') is False
             and remote.get('description') == value['description']
-            and remote.get('permissions', {}).get('admin') is True, 'repository-drift')
+            and (not require_admin or remote.get('permissions', {}).get('admin') is True), 'repository-drift')
 
 
 def sha_ref(api, value, branch):
@@ -480,7 +488,7 @@ def observe(receipt, api):
     if receipt.get('repository_id') is None:
         return {'candidate_repository_id': remote.get('id') if isinstance(remote, dict) else None,
                 'reconciliation': 'explicit repository ID confirmation required; never adopted by name alone'}
-    identity(receipt, remote)
+    identity(receipt, remote, getattr(api,'requires_admin',True))
     main = sha_ref(api, value, 'main')
     head = sha_ref(api, value, value['branches']['head'])
     require(main is None or main == receipt.get('bootstrap_sha'), 'repository-drift')
@@ -530,6 +538,7 @@ def apply(value, api, create_only=False):
                    'state': 'in-progress', 'actor': actor, 'repository_id': None,
                    'ongoing_git_access': 'pending-per-repository-credential',
                    'retained_source': str(root/'source'), 'intent': None}
+        if hasattr(api,'prepare_receipt'):api.prepare_receipt(receipt)
         persist(receipt)
         return run(receipt, api, create_only=create_only)
 
@@ -550,7 +559,7 @@ def resume(operation, api, repository_id=None, create_only=False, allow_unprotec
                     and receipt.get('intent') == 'create-repository', 'repository-recovery')
             remote = api.request('GET', prefix(value))
             receipt['repository_id'] = repository_id
-            identity(receipt, remote)
+            identity(receipt, remote, getattr(api,'requires_admin',True))
             persist(receipt)
         return run(receipt, api, create_only=create_only)
 
@@ -575,6 +584,7 @@ def run(receipt, api, create_only=False):
             require(type(receipt['repository_id']) is int and remote.get('full_name') == ACCOUNT+'/'+value['repository']
                     and remote.get('private') is True and remote.get('description') == value['description'], 'repository-drift')
             receipt['intent'] = None; persist(receipt)
+        if hasattr(api,'after_creation'):api.after_creation(receipt)
         if create_only:
             receipt['state'] = 'operator-required'
             receipt['pending'] = ['repository-specific administration/contents/PR credential; resume the same operation']
