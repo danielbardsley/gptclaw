@@ -74,3 +74,6 @@ The implementation uses one operator-owned private Serve prefix and unprivileged
 per-app mappings, avoiding a general Unix operator grant. No privileged broker
 or infrastructure change was introduced. [Acceptance evidence](acceptance.md)
 records failures/fixes and exact remaining obligations.
+
+Implementation CI passed at `0c9d75b` (all three workflows). Review/merge and
+remaining shared-prefix/two-app desktop acceptance are still pending.

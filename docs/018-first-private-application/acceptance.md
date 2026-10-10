@@ -23,7 +23,7 @@ No automatic enrollment credentials, SSH keys or environment dumps are included.
 | AC-003 | passed locally/live | Hello World uses 18080, second app 18081. Stopping the second returned its mapping to 404, removed its listener/activation and retained source; first app health remained 200. Source-preserving warm start and intentional restart passed. Offline port/conflict and unrelated-state preservation tests pass. |
 | AC-004 | pending | Daniel confirmed the first private HTTPS page loads and its counter works. Shared loopback ingress forwards page/health plus 18 JS/CSS assets, and the actual Next HMR WebSocket returned 101. The one-time shared Serve-prefix transition and second desktop URL confirmation remain pending. Funnel is off; unrelated routes were not changed by the agent. |
 | AC-005 | pending | Editing second-app source produced changed HTML through ingress in 4.995 seconds without unit changes; first content was unaffected; edit restored. Source survived stop/start. Full desktop browser-update and two-app confirmation remain pending. |
-| AC-006 | pending | Offline/repository checks and scoped local cleanup passed; runbook and receipt contract written. New generated-app CI is configured but not yet observed for this implementation. Review/merge and final owner acceptance remain pending. |
+| AC-006 | pending | Offline/repository checks and scoped local cleanup passed; runbook and receipt contract written. Generated-app CI and both infrastructure quality workflows passed at `0c9d75b`; review/merge and final owner acceptance remain pending. |
 | AC-007 | pending (desktop proof passed) | Actual app/health returned 200 over private HTTPS at `/projects/hello-world/`; Daniel confirmed page load and counter increment. Agent's daemon write was denied; Daniel applied the exact prototype route from his SSM session. Shared-prefix transition removes that prototype path while preserving source; its completion remains pending. |
 
 ## Executed behavior checks
@@ -96,3 +96,15 @@ Initial private-app CI failed before executing the generated app: Docker looks
 for Dockerfile by default, while the toolchain uses Containerfile. The workflow
 now supplies the explicit file path. This does not change the toolchain pin or
 local passing behavior; corrected CI outcome is recorded separately.
+
+## Corrected CI — October 9, 2026 (America/New_York)
+
+At exact implementation revision `0c9d75bc217df7e582d8218d11e6853017e4f798`:
+
+- [Private application workflow #2](https://github.com/danielbardsley/gptclaw/actions/runs/38011996631): passed, including generated app frozen install, health tests, typecheck and build inside the pinned container.
+- [Development-host quality #121](https://github.com/danielbardsley/gptclaw/actions/runs/38011996627): passed.
+- [Federation quality #28](https://github.com/danielbardsley/gptclaw/actions/runs/38011996620): passed.
+
+The final focused suite has 29 passing cases and the required offline repository
+checker passed. CI proves source/quality checks, not the pending shared-prefix
+operator change or two-app desktop acceptance. No protected apply was dispatched.
