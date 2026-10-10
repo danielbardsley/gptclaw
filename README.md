@@ -24,7 +24,7 @@ code that still needs deployment or acceptance.
 | Project manifest v1 | **Delivered.** A versioned declaration for one private HTTP service, JSON Schema, offline validator, and synthetic example. Validation does not create or run an application. [Reference](docs/project-manifest.md) · [SPEC-013 acceptance](docs/013-versioned-project-manifest/acceptance.md). |
 | Rootless container toolchain | **Deployed; remaining host acceptance pending.** Rootless packages/configuration and matching receipts are installed. October 9 container build/run, network, file ownership, crash restart and cleanup checks passed; independent logout/reboot and synthetic-source replacement checks remain pending. [PR #26](https://github.com/danielbardsley/gptclaw/pull/26) · [SPEC-014 evidence](docs/014-rootless-container-toolchain/acceptance.md). |
 | Declared host tool profile | **Deployed; final acceptance pending.** Successful receipts cover all 26 components and match the reviewed profile/deployment revision. Protected deployment is correlated; recovery/rollback reconciliation and owner acceptance remain pending. Temporary upstream-source exceptions expire November 1, 2026 (America/New_York). [SPEC-015 evidence](docs/015-host-tool-profile/acceptance.md). |
-| Private application workflow | **Deployed; final acceptance pending.** Initial CLI, pinned Next.js template, independent rootless services and shared private routing merged in PR #40. Both desktop apps/counters confirmed; source-update/first-app cleanup acceptance remains. [SPEC-018 evidence](docs/018-first-private-application/acceptance.md). |
+| Private application workflow | **Delivered for the initial single-web slice.** CLI 1.0.1, pinned Next.js template, independent rootless services and shared private routing merged in PR #40/#43. Both desktop apps/counters and automatic source updates confirmed; first-app stop/start retained source and left the second app available. [SPEC-018 evidence](docs/018-first-private-application/acceptance.md). |
 | Automatic replacement-host Tailscale enrollment | **Deployed; final acceptance pending.** Account issuer/trust and matching host receipts are recorded; the node is tagged online, retained storage checks passed, and Daniel confirmed independent SSM access. Recovered October 8 verification records manual-key-free enrollment and protected-run provenance; final owner acceptance remains pending. [PR #28](https://github.com/danielbardsley/gptclaw/pull/28) · [SPEC-016 evidence](docs/016-tailscale-workload-identity/acceptance.md). |
 
 The first private-app workflow is merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40)
@@ -33,8 +33,9 @@ manages independent rootless containers, loopback ports, health and private URLs
 Daniel confirmed both Hello World and Hello Second pages/counters from his desktop.
 One shared Tailscale Serve prefix handles all app routes; subsequent app starts
 need no individual Serve commands. See [the app runbook](runbooks/manage-private-apps.md).
-Desktop source-update and first-app stop/source-retention acceptance remain pending
-in [SPEC-018](docs/018-first-private-application/acceptance.md).
+Desktop automatic source-update and first-app stop/source-retention acceptance
+passed; the provider 1.0.1 port-reuse repair merged in PR #43. The initial workflow
+is Delivered in [SPEC-018](docs/018-first-private-application/acceptance.md).
 
 The planning bootstrap remains a separate local planning-ready starter. Runtime
 and promotion skills use reviewed interfaces; production promotion requires an

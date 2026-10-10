@@ -45,7 +45,8 @@ Priority indicates suggested sequencing, not authorization. When a specification
 covers only an initial slice, the row describes that slice and the remaining
 backlog separately. A merged draft is still Draft until scope approval is recorded. SPEC-018
 implementation was subsequently authorized and merged in PR #40. Its initial
-slices are Deployed on EC2, with remaining live acceptance tracked separately.
+slices are Delivered: live acceptance passed and the provider 1.0.1 closeout
+repair/evidence merged in PR #43. Wider row scope remains future work.
 
 The current target is repeatable private application development on the existing
 EC2 host. The backlog includes later mobile, dashboard, sharing and production
@@ -95,7 +96,7 @@ capabilities; those are not prerequisites for creating the first applications.
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
 | PRJ-001 | Versioned project manifest | 2 | Delivered | Single-web-service `.gptclaw/project.yaml`, versioned schema, offline validator, and synthetic example; first feature toward a working private application. Daniel accepted implementation on 2026-09-30 (America/New_York); [PR #22](https://github.com/danielbardsley/gptclaw/pull/22) merged as `aa55583`. All 134 local tests and final PR CI #74 passed. This completes the manifest contract, not live-app acceptance. [SPEC-013](../013-versioned-project-manifest/spec.md) · [Design](../013-versioned-project-manifest/technical-design.md) · [Tasks](../013-versioned-project-manifest/tasks.md) · [Acceptance](../013-versioned-project-manifest/acceptance.md). |
-| PRJ-002 | `gptclawctl` CLI | 2 | Deployed | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and shared Serve prefix confirmed; local source-preserving operations and CI passed. Desktop source-update/first-app cleanup checks and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
+| PRJ-002 | `gptclawctl` CLI | 2 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
 | PRJ-003 | Template catalogue | 2 | Candidate | Versioned templates cover web, API, Python, Expo, static site, CLI, and multi-package products. |
 | PRJ-004 | New GitHub repository automation | 3 | Candidate | Create repositories, protections, environments, secrets references, and initial pull requests with narrow credentials. |
 | PRJ-005 | Repository credential broker | 3 | Candidate | Prefer a scoped GitHub App; otherwise issue and rotate one deploy key per repository. |
@@ -121,11 +122,11 @@ capabilities; those are not prerequisites for creating the first applications.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| RUN-001 | Rootless project containers | 3 | Deployed | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and shared Serve prefix confirmed; local source-preserving operations and CI passed. Desktop source-update/first-app cleanup checks and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
-| RUN-002 | User systemd/Quadlet lifecycle | 3 | Deployed | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and shared Serve prefix confirmed; local source-preserving operations and CI passed. Desktop source-update/first-app cleanup checks and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
-| RUN-003 | Port registry | 3 | Deployed | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and shared Serve prefix confirmed; local source-preserving operations and CI passed. Desktop source-update/first-app cleanup checks and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
-| RUN-004 | Resource limits | 3 | Deployed | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and shared Serve prefix confirmed; local source-preserving operations and CI passed. Desktop source-update/first-app cleanup checks and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
-| RUN-005 | Health contract | 3 | Deployed | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and shared Serve prefix confirmed; local source-preserving operations and CI passed. Desktop source-update/first-app cleanup checks and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
+| RUN-001 | Rootless project containers | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
+| RUN-002 | User systemd/Quadlet lifecycle | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
+| RUN-003 | Port registry | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
+| RUN-004 | Resource limits | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
+| RUN-005 | Health contract | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
 | RUN-006 | Multi-service projects | 3 | Candidate | Run web, API, database, cache, and worker components as one declared project group. |
 | RUN-007 | Background jobs and schedulers | 4 | Candidate | Declare recurring or asynchronous workers without unmanaged terminal processes. |
 | RUN-008 | Pause, resume, and idle shutdown | 4 | Candidate | Reclaim memory and CPU from inactive projects while preserving data and URLs. |
@@ -138,7 +139,7 @@ capabilities; those are not prerequisites for creating the first applications.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| TPL-001 | Next.js full-stack template | 3 | Deployed | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and shared Serve prefix confirmed; local source-preserving operations and CI passed. Desktop source-update/first-app cleanup checks and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
+| TPL-001 | Next.js full-stack template | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
 | TPL-002 | TypeScript API template | 4 | Candidate | Fastify service with schema validation, OpenAPI, health checks, tests, container, and migrations. |
 | TPL-003 | Python API/AI template | 4 | Candidate | FastAPI, Pydantic, uv, Ruff, pytest, health checks, container, and typed configuration. |
 | TPL-004 | Expo universal application template | 4 | Candidate | Expo Router, TypeScript, web export, device development, EAS profiles, tests, and environment separation. |
@@ -153,9 +154,9 @@ capabilities; those are not prerequisites for creating the first applications.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| NET-101 | Private loopback ingress | 3 | Deployed | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and shared Serve prefix confirmed; local source-preserving operations and CI passed. Desktop source-update/first-app cleanup checks and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
-| NET-102 | Tailscale Serve manager | 3 | Deployed | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and shared Serve prefix confirmed; local source-preserving operations and CI passed. Desktop source-update/first-app cleanup checks and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
-| NET-103 | Base-path compatibility | 3 | Deployed | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and shared Serve prefix confirmed; local source-preserving operations and CI passed. Desktop source-update/first-app cleanup checks and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
+| NET-101 | Private loopback ingress | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
+| NET-102 | Tailscale Serve manager | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
+| NET-103 | Base-path compatibility | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
 | NET-104 | Dedicated private service ports | 4 | Candidate | Support applications that cannot operate under a path while keeping access tailnet-only. |
 | NET-105 | Funnel exposure manager | 4 | Candidate | Owner-confirmed, time-limited, health-gated public exposure with automatic shutdown and audit. |
 | NET-106 | Public exposure authentication | 5 | Candidate | Add application-level identity or share tokens when a Funnel preview is not intentionally anonymous. |
@@ -281,35 +282,32 @@ Independent SSM recovery and a small container smoke test have passed.
 [SPEC-018](../018-first-private-application/spec.md) planning merged in PR #38;
 Daniel then authorized implementation. Its initial PRJ-002/TPL-001/RUN-001–005/
 NET-101–103 slices are merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40).
-Both desktop pages/counters and the shared prefix are confirmed; local lifecycle
-checks and final PR CI passed. Desktop source-update/first-app cleanup checks
-and full acceptance remain. Complete this slice before expanding scope.
+Both desktop pages/counters, automatic source updates and first-app source-retaining
+stop/start are confirmed. The provider 1.0.1 port-reuse repair and final live evidence
+merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); its three CI
+workflows passed. This initial private-app slice is Delivered; broader features
+remain scoped by their own specifications.
 The earlier SPEC-017 acceptance-only draft was closed unmerged; the existing
 host acceptance records remain authoritative and their unrun checks stay pending.
 
 Recommended sequence, subject to owner scope review:
 
-1. **Complete the first private-app workflow:** accept SPEC-018's merged single
-   template, narrow lifecycle CLI, container-contained pinned tools, port/health
-   handling and private routes. No host Terraform/Node installation, dashboard,
-   general broker or full template catalogue is needed for this slice. Resolve
-   the remaining desktop source-update and first-app cleanup acceptance; Serve
-   ownership and tool pins are resolved for this implemented slice.
-2. **Prove repeatability:** demonstrate two apps concurrently, change source and
-   see browser updates, stop/restart one without affecting the other, and recreate
-   an app from its template/lockfile. Record creation/start/build times and the
-   edit-to-browser feedback loop to evaluate speed, plus owned cleanup behavior.
-3. **Make real project delivery routine:** add PRJ-004/005's scoped repository
+1. **Build the first real application:** use the accepted single-web CLI/template
+   workflow on this host. Two-app operation, automatic source updates and scoped
+   stop/start/source retention are proven; keep measuring actual app feedback
+   times as project size grows. No new dashboard or host tool installation is a
+   prerequisite.
+2. **Make real project delivery routine:** add PRJ-004/005's scoped repository
    creation/credentials when manual setup becomes the next bottleneck; extend
    QLT-001/002/004/009 for standard checks, PR CI and generated-template regression
    tests. Reuse existing branch/guidance conventions before building a larger
    orchestration system. Fit broad manifest commands through reviewed schema work.
-4. **Add data and secrets when the first real app needs them:** scope SEC-001,
+3. **Add data and secrets when the first real app needs them:** scope SEC-001,
    RUN-011/012, backups and migration checks together. Until then, manifest v1
    supports ephemeral application data; source retention is a different promise.
-5. **Expand only against demonstrated demand:** API/Python/Expo templates,
+4. **Expand only against demonstrated demand:** API/Python/Expo templates,
    dashboards, capacity/cache automation, public previews, Slack and production
-   pipelines follow the working-app milestone and their own reviewed scopes.
+   pipelines follow their own reviewed scopes.
 
 Keep operational obligations visible alongside app work: resolve the five host
 source-channel exceptions before November 1, record overdue backup retention

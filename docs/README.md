@@ -148,6 +148,8 @@ dispositions independently of feature implementation status.
 [PR #40](https://github.com/danielbardsley/gptclaw/pull/40) and running on EC2.
 Both independent apps are confirmed from Daniel's desktop. The shared private
 Serve prefix routes subsequently started apps without per-app operator commands.
-Remaining acceptance is desktop source-update observation and managed first-app
-cleanup/source retention. Use the [app runbook](../runbooks/manage-private-apps.md)
-for operations; wider roadmap capabilities remain separate.
+Desktop automatic source-update and managed first-app cleanup/source-retention
+checks passed. Provider 1.0.1 and the resulting repair/evidence are merged in
+[PR #43](https://github.com/danielbardsley/gptclaw/pull/43). This initial workflow
+is Delivered. Use the [app runbook](../runbooks/manage-private-apps.md) for
+operations; wider roadmap capabilities remain separate.
