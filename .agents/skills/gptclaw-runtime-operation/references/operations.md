@@ -33,3 +33,20 @@ of the transition, report its outcome unknown and do not resubmit. An explicit
 provider-confirmed non-submission may allow a later authorized attempt; ambiguous
 state never does. Permission denial is an operation failure, not permission to
 change roles. Reverting this skill does not undo runtime operations.
+
+## GptClaw single-web provider v1
+
+The repository-root document `runbooks/manage-private-apps.md` maps the reviewed
+single-web provider contract. Resolve it in the selected GptClaw repository; it
+is project documentation, not a bundled skill resource. Verify the installed runner's `--version`,
+capabilities/receipt schema and the selected root's valid manifest/provider marker
+before using it. It is implemented by the CLI, not by this skill. The stable
+snapshot launcher is `/srv/forge/projects/.gptclaw-runtime/v1/gptclawctl` after
+setup; its presence/version must be observed rather than assumed.
+
+Start/stop/restart/status/logs take `--project-root` as one typed argument. Logs
+also accept bounded `--lines` (1–200). Distinguish local health from configured
+private routing and desktop acceptance. Report operator-required/unknown/busy
+outcomes without changing privileges, substituting raw Podman/systemctl, or
+blindly resubmitting. An unresolved owned job blocks dependent mutations. The
+provider documents deadlines, receipts, source retention and conflict behavior.

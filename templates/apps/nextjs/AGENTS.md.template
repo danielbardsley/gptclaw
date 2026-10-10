@@ -1,0 +1,16 @@
+# Application guidance
+
+This is a private Next.js/TypeScript development app. Follow inherited host rules.
+Use the reviewed GptClaw lifecycle runner; Node and pnpm run inside containers.
+Validate `.gptclaw/project.yaml`; it describes this one private, ephemeral-data
+service. Source lives on retained project storage. No production dependencies,
+secrets, database provisioning, public sharing or host package installation is
+implied. Do not put credentials into source, logs or commits.
+
+Before material changes read this project's approved specification/design/tasks;
+use proportionate planning for routine fixes. Preserve unrelated Git work and
+use reviewable branches/PRs. No product specification is supplied by scaffolding.
+Use the runner's test command for health tests, and container pnpm build/typecheck
+for the corresponding checks. Report exact commands and outcomes. Keep the
+health route and `/projects/<project-id>/` prefix working. Stop preserves source;
+application data is ephemeral. Do not reset/prune shared container storage.

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+runner_entry=$(readlink -f -- "${BASH_SOURCE[0]}")
+runner_root=$(cd -- "$(dirname -- "$runner_entry")/.." && pwd)
+runner_python="$runner_root/.venv-manifest/bin/python"
+if [[ -f "$runner_root/.python-path" ]]; then
+  IFS= read -r runner_python < "$runner_root/.python-path"
+fi
+if [[ ! -x "$runner_python" ]]; then
+  printf '%s\n' 'Prepare the isolated manifest environment using the reviewed setup script.' >&2
+  exit 2
+fi
+exec "$runner_python" "$runner_root/scripts/gptclawctl.py" "$@"

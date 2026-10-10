@@ -1,6 +1,6 @@
 # TDD-018: Minimal private application workflow
 
-- **Status:** Draft
+- **Status:** Implemented on feature branch; live acceptance in progress
 - **Owner:** Daniel
 - **Specification:** [SPEC-018](spec.md)
 - **Tasks:** [TASKS-018](tasks.md)
@@ -13,7 +13,8 @@ Keep runtime state under a platform-owned namespace on the project volume,
 separate from authored manifests/source; keep disposable engine storage on the
 root disk. The CLI is the documented lifecycle provider for the existing runtime
 operation skill once its version, capabilities and receipt mapping are reviewed.
-It is not a new daemon or privileged broker.
+A bounded unprivileged ingress user service forwards only registered healthy
+apps. No privileged broker or general control-plane daemon is introduced.
 
 | Component | Proposed responsibility |
 |---|---|
@@ -81,17 +82,30 @@ addition to the allocation registry. Document bounds and nonzero error categorie
 before connecting the runtime-operation skill. Limit logs by lines/time and avoid
 credentials/raw environment dumps; project output is untrusted data.
 
-The application serves its declared `/projects/<slug>/` prefix. Test and document
-the Serve-to-backend path transformation; configure the target path so the app
-receives that prefix, rather than assuming Serve preserves it automatically.
-Verify Next.js development behavior, assets and browser-update transport through
-the selected mechanism. Stage 2 implements the reusable route adapter based on
-the proven first-stage behavior.
-Before private route mutation, inspect existing Serve configuration and available
-operator permissions. Preserve unrelated routes and refuse ownership conflicts;
-never reset the entire configuration. If routing permissions or prefix forwarding
-need host changes, produce a separate reviewed scoped proposal. No public Funnel
-fallback or new ingress is permitted.
+The application serves its declared `/projects/<slug>/` prefix. The installed
+Serve CLI requires operator access, as demonstrated by forge's denied write.
+Implementation therefore uses one operator-configured private `/projects/` route
+to a loopback user service at port 18079. The CLI owns per-app mappings in its
+validated registry; it never writes daemon preferences or grants itself operator
+rights. This implements NET-101's private loopback ingress and the initial
+NET-102/103 slices while avoiding a per-app privileged operation.
+
+```mermaid
+flowchart LR
+  Desktop[Desktop on tailnet] --> Serve[Private Tailscale Serve /projects/]
+  Serve --> Ingress[Loopback ingress :18079]
+  Ingress --> First[Owned healthy app :18080]
+  Ingress --> Second[Owned healthy app :18081]
+```
+
+The router preserves the requested prefix/query, forwards bounded HTTP responses
+and development WebSocket upgrades, and rejects unknown/stopped targets. Actual
+Next.js 16.4 uses `/_next/hmr` beneath its base path; live handshake verification
+passed through ingress. Both page and health paths passed after setting an
+explicit backend path on Serve. Preserve unrelated Serve entries and reject
+conflicting prefix/specific routes or active Funnel configuration. Existing
+privileged host configuration remains on its reviewed pipeline; no Unix operator
+or IAM grant was changed.
 
 ## Verification and boundaries
 
@@ -139,3 +153,16 @@ route proof supports the first NET-101/102/103 slice, not a complete routing
 manager. The CLI, second-project allocation and broader template behavior remain
 unimplemented until their own tasks pass. Existing host and skill acceptance
 continues in its original records; do not launch interruption tests for this plan.
+
+## Selected implementation defaults
+
+- Official Node base image digest `sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd`; verified Node 24.21.0, pnpm 12.10.1.
+- Next.js 16.4.0, React/React DOM 19.3.0, TypeScript 6.0.3, matching exact type packages and pnpm integrity lock. Package metadata was checked against the official npm registry.
+- Registry ports 18080–18179, one CPU/1536 MiB/256 PIDs per app/job; ingress on 18079 with 192 MiB/50% CPU/64 tasks/16 workers and 2 MiB body caps.
+- Provider v1 exposes new/validate/start/stop/restart/status/logs/test. State and immutable code snapshots stay outside authored manifests; a stable namespace launcher survives branch switches.
+- First preparation installs frozen dependencies and builds; warm restart reuses the matching toolchain/lock fingerprint. Jobs and app services share only their selected source directory; common environment/authentication material is refused.
+
+Observed first-app local health/private HTTPS and Daniel's browser/counter
+confirmation support the first stage. The one-time shared prefix transition and
+full two-app desktop acceptance are recorded separately in acceptance.md. Formal
+logout/reboot/replacement acceptance remains unchanged.

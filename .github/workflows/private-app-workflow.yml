@@ -1,0 +1,58 @@
+name: Private application workflow
+on:
+  pull_request:
+    paths:
+      - .github/workflows/private-app-workflow.yml
+      - scripts/**
+      - schemas/project/**
+      - requirements/**
+      - templates/apps/**
+      - docs/018-first-private-application/**
+      - runbooks/manage-private-apps.md
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/private-app-workflow.yml
+      - scripts/**
+      - schemas/project/**
+      - requirements/**
+      - templates/apps/**
+      - docs/018-first-private-application/**
+      - runbooks/manage-private-apps.md
+permissions:
+  contents: read
+jobs:
+  template:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Prepare Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Prepare isolated validator dependencies
+        run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
+      - name: Offline lifecycle and ingress tests
+        run: .venv-manifest/bin/python scripts/tests/test_private_apps.py
+      - name: Build pinned toolchain and generated app
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v docker
+          docker build --tag gptclaw-toolchain-ci templates/apps/node-toolchain
+          .venv-manifest/bin/python scripts/tests/check_app_template.py "$RUNNER_TEMP/gptclaw-app-template"
+          app_ci_root="$RUNNER_TEMP/gptclaw-app-template/template-ci"
+          for app_ci_step in install test typecheck build; do
+            app_ci_args=(pnpm "$app_ci_step")
+            if [[ "$app_ci_step" == install ]]; then app_ci_args+=(--frozen-lockfile); fi
+            docker run --rm --user "$(id -u):$(id -g)" \
+              --memory=1536m --cpus=1 --pids-limit=256 \
+              --cap-drop=all --security-opt=no-new-privileges \
+              --volume "$app_ci_root:/workspace:rw" \
+              --env GPTCLAW_PROJECT_ID=template-ci \
+              gptclaw-toolchain-ci "${app_ci_args[@]}"
+          done

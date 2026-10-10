@@ -1,11 +1,12 @@
 # SPEC-018: First private application workflow
 
-- **Status:** Draft; planning authorized, implementation pending review
+- **Status:** Implementation authorized and in progress
 - **Owner:** Daniel
 - **Date:** 2026-10-09 (America/New_York)
 - **Features:** Initial slices of PRJ-002, TPL-001, RUN-001–005 and NET-101–103
 - **Design:** [TDD-018](technical-design.md)
 - **Tasks:** [TASKS-018](tasks.md)
+- **Evidence:** [Acceptance](acceptance.md)
 - **Revision:** Desktop Hello World first; original APP-001–006 and AC-001–006 retained
 
 ## Outcome and scope
@@ -15,8 +16,8 @@ independent source, container, port and URL. Daniel selected this milestone in
 September and confirmed returning to it on October 9. Daniel subsequently
 requested a specification that starts with a desktop-accessible Hello World and
 continues through the feature roadmap. This revision stages that work inside
-SPEC-018. Planning is authorized; implementation and private route mutation await
-execution authorization. Earlier smoke-test and deployment authorizations remain
+SPEC-018. Daniel authorized implementation with “implement the spec” in this chat on
+October 9, including the specified private application routes. Earlier smoke-test and deployment authorizations remain
 valid for their recorded scope.
 
 Use the existing [manifest v1](../project-manifest.md), rootless Podman and forge
