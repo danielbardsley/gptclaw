@@ -160,7 +160,7 @@ dispositions independently of feature implementation status.
   [Tasks](./021-template-catalogue/tasks.md) ·
   [Acceptance status](./021-template-catalogue/acceptance.md)
 
-- **022 — New GitHub repository automation (PRJ-004), in review:**
+- **022 — New GitHub repository automation (PRJ-004), initial slice delivered:**
   [Specification](./022-github-repository-automation/spec.md) ·
   [Technical design](./022-github-repository-automation/technical-design.md) ·
   [Tasks](./022-github-repository-automation/tasks.md) ·
