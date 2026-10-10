@@ -1,6 +1,6 @@
 # TASKS-020: Pinned language toolchains
 
-- **Status:** Implementation authorized; code, local/live and CI checks complete; review/merge pending
+- **Status:** Complete — initial web slice merged and accepted
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-020](spec.md)
@@ -28,7 +28,7 @@
   into dependency/build/test/start, state invalidation and inspect/prepare. Add
   explicit new-project metadata and fixed legacy compatibility/adoption; prove
   active-target refusal and unaffected second-app state. (LNG-004/005; AC-004/005)
-- [ ] T-005: Write the support matrix/runbook, update provider snapshots and run
+- [x] T-005: Write the support matrix/runbook, update provider snapshots and run
   relevant repository/CI plus synthetic uncached/cached/legacy/new live acceptance.
   Record versions, commands, timings, migration/rollback, failures and Daniel's
   acceptance. Merge implementation and update only the accepted web slice;
@@ -45,5 +45,9 @@ metadata; no-declaration legacy apps map to the frozen baseline without source
 rewriting. Offline distinct-profile fixtures, failure/conflict/lock checks and
 synthetic EC2 cold/reuse/frozen/build/test/private-page/legacy-adoption acceptance
 are recorded in [acceptance.md](acceptance.md). Existing demo source/state and
-private page/health remained unchanged. All 90 focused tests, the full repository checker and three configured CI
-workflows passed. T-005 retains review, owner acceptance and merge gates. Python/uv/Expo belong to stage 12 and their stack specifications.
+private page/health remained unchanged. All 90 focused tests, the full repository
+checker and three configured CI workflows passed. Daniel accepted the reviewed
+initial web slice by requesting its merge; PR #48 merged as
+`a5e01b220b3508fa1d11a8a522189d000d68f2e9` on October 10. T-005 is complete
+and this initial scope is Delivered. Python/uv/Expo belong to stage 12 and their
+stack specifications.

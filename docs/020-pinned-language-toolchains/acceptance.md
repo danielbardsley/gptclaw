@@ -1,6 +1,6 @@
 # SPEC-020 acceptance evidence
 
-- **Status:** Implemented on feature branch; local/live and configured CI passed; review/owner acceptance/merge pending
+- **Status:** Delivered — initial web slice merged and accepted; local/live and configured CI passed
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-020](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -21,7 +21,7 @@ access, public exposure or additional real language/version pair was introduced.
 | AC-003 | passed locally/live | Task-owned first image acquisition and matching reuse succeeded with actual executable/artifact checks; serialization, missing image/pin, failed acquisition, bad integrity, version/label/cache/provenance conflict and unknown outcome covered by isolated fixtures. Live negative artifact evidence recorded below. |
 | AC-004 | passed locally/live | Synthetic new app used the same selected image for frozen dependencies, build/test and private service. Page/health 200; running prepare refused busy. Distinct reviewed fixture profiles exercise different selection/tag/fingerprint paths offline; no second real pair claimed. Existing demo source/state/image/health/routes unchanged. |
 | AC-005 | passed locally/live | New app has exact sidecar; synthetic no-declaration legacy app test/start passed without generated metadata. Explicit re-adoption preserved dependency files. Inspect performs only parsing/receipt/image metadata reads; malformed selection never falls back. |
-| AC-006 | pending | Focused/local and live evidence recorded. All three configured CI workflows passed; review, Daniel's final acceptance and implementation merge remain delivery gates. Only the initial web slice can be marked Delivered after those gates. |
+| AC-006 | passed | All 90 focused tests, full repository checker, live checks and three configured CI workflows passed. Matrix, runbook, migration/rollback and later-language responsibilities merged in PR #48. Daniel accepted the reviewed initial web slice by instructing its merge on October 10. Delivered covers only this scope. |
 
 ## Artifacts and observed execution
 
@@ -81,10 +81,10 @@ retained for diagnosis; no unknown resources were deleted or permissions changed
 
 ## Remaining delivery
 
-Implementation verification and source/CI references are recorded below. Review
-and owner acceptance/merge remain before marking the initial SYS-002 slice
-Delivered. Python/uv/Expo remain separate stage-12 stack obligations. The synthetic
-service is stopped; owned source/receipts are retained for review.
+Implementation verification and source/CI references are recorded below. Owner
+acceptance and merge are recorded in the final delivery section. The initial
+SYS-002 slice is Delivered; Python/uv/Expo remain separate stage-12 obligations.
+The synthetic service is stopped; owned source/receipts are retained as evidence.
 
 ## Final local and negative-artifact verification
 
@@ -152,5 +152,16 @@ image; its service is stopped and authored source/receipts retained. Failed owne
 acquisition fixtures retain bounded inert diagnosis data; no shared objects were
 pruned. No live operator action remains for implementation verification.
 
-Review, Daniel's final acceptance and merge remain AC-006/T-005. SYS-002 stays
-In review for this initial web scope; Python/uv/Expo obligations remain later.
+## Owner acceptance and merge — October 10, 2026
+
+Daniel instructed “merge the PR” for PR #48. This records acceptance
+of the tested initial web slice. GitHub confirmed its squash merge into main as
+`a5e01b220b3508fa1d11a8a522189d000d68f2e9`. AC-001–006 and T-005 are complete;
+SYS-002 is Delivered for the initial Linux amd64 Node 24.21.0/pnpm 12.10.1 scope.
+Python/uv/Expo and other supported profiles remain later reviewed work.
+
+The final reviewed head `7151604163e33f8430934e3d76cbd4855851d502` also passed:
+
+- [Private application workflow #21](https://github.com/danielbardsley/gptclaw/actions/runs/38080575199).
+- [Development-host quality #140](https://github.com/danielbardsley/gptclaw/actions/runs/38080575197).
+- [Federation quality #44](https://github.com/danielbardsley/gptclaw/actions/runs/38080575205).

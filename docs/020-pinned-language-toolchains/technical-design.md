@@ -1,6 +1,6 @@
 # TDD-020: Project-selected container toolchains
 
-- **Status:** Implemented on feature branch; local/live evidence recorded
+- **Status:** Delivered — initial web slice merged and accepted; local/live and CI evidence recorded
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-020](spec.md)

@@ -1,6 +1,6 @@
 # SPEC-020: Pinned language toolchains (SYS-002)
 
-- **Status:** Implementation authorized; initial web slice implemented; local/live and CI passed, review/merge pending
+- **Status:** Delivered — initial Linux amd64 Node/pnpm web slice
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** SYS-002; initial Node/pnpm web slice
@@ -103,6 +103,7 @@ Daniel authorized implementation with “Ok, let's implement SYS-002” on Octob
 container-only execution and existing pair are implemented. Source artifact
 integrity and actual installed versions were verified on Linux amd64 before live
 app acceptance. [Acceptance evidence](acceptance.md) separates offline tests,
-CI, observed EC2 behavior and remaining owner review/merge. Delivered applies
-only to the accepted Node/pnpm slice after merge and AC-001–006 pass; later
-language support stays explicit.
+CI and observed EC2 behavior. Daniel accepted the reviewed initial web slice
+by instructing its merge on October 10. [PR #48](https://github.com/danielbardsley/gptclaw/pull/48)
+merged as `a5e01b220b3508fa1d11a8a522189d000d68f2e9`; AC-001–006 pass and
+only this initial Node/pnpm slice is Delivered. Later language support stays explicit.
