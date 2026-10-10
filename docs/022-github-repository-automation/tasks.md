@@ -100,3 +100,11 @@ code-revision CI workflows passed at b33bbf7. The fixture remains private/runnin
 for desktop confirmation; retain its 2 framework-generated source edits.
 T-009 awaits Daniel's desktop/owner confirmation, provisioning-token revocation,
 separate ongoing Git handoff and reviewed merges. Do not claim Delivered.
+
+### Desktop confirmation — October 10
+
+Daniel independently confirmed the private fixture page loads correctly. The
+private runtime/desktop checks are complete. T-009 remains open for overall
+owner acceptance, provisioning-token revocation, separately tracked ongoing Git
+handoff and reviewed merges; prior account-plan denial was resolved by the
+explicit recorded waiver, not a plan upgrade. No runtime change occurred here.

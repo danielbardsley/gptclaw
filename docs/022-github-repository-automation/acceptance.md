@@ -128,8 +128,9 @@ Executed live quality/lifecycle checks through provider 1.4.0:
 - Bounded loopback page and health requests returned HTTP 200 for both the fixture and independent `hello-second`; subsequent independent status remained ready with its prior operation unchanged.
 
 [Private fixture URL](https://forge-dev-01-4.tail8c3304.ts.net/projects/gptclaw-prj004-verification/)
-is configured. Host-side checks do not prove desktop access; Daniel's independent
-page confirmation is pending. Fixture remains running/private for that check;
+is configured. Daniel independently confirmed on October 10 (America/New_York),
+“it loads correctly yes.” This records owner-observed desktop page access,
+separately from the executed host checks. Fixture remains running/private;
 no unrelated app restart, public exposure, production or infrastructure change.
 Next.js generated route-type entries in `next-env.d.ts` and `tsconfig.json` during
 startup (2 files, 7 insertions/1 deletion). These uncommitted fixture edits are
@@ -156,7 +157,7 @@ No protected deployment job ran. Subsequent evidence changes are documentation o
 | AC-004 | passed | Empty selections cause no corresponding requests; development environment/readback and secret metadata states pass. No secret writes exist. | Live no-selection path passed; environment/secret-reference variants tested offline, not selected in fixture. |
 | AC-005 | pending | Private-file/type/expiry, wrong actor/plan, anonymous-fd askpass, HTTP redaction and redirected Git configuration rejection pass with synthetic credentials. | Verify actual grants/expiry and revoked provisioning tokens; record separate Git handoff. |
 | AC-006 | passed | Lost creation response never auto-adopts; explicit ID reconciliation, response loss at object/ref/protection/environment/PR boundaries, locks, drift and atomic-local-publication recovery pass. Partial generation preserves owned staging for operator review. | Same operation reconciled after live denial, preserved ID/main, produced one branch/PR and retained source. |
-| AC-007 | pending | Existing template/provider and offline repository regressions pass; bundle includes adapter/helper and local-only interfaces remain supported. | Real GitHub starter/container checks, private runtime/independent-app check, merge and Daniel's acceptance; implementation CI passed. |
+| AC-007 | passed | Offline/CI and live starter build/tests/typecheck/private health passed; independent app stayed ready. Daniel confirmed the desktop page loads October 10. | Implementation/initial PR merges and overall owner acceptance remain separate delivery gates. |
 
 Required owner evidence/actions remain incomplete; the historical AC-003 failure
 was resolved by the authorized waiver, not server enforcement;
@@ -222,3 +223,11 @@ revocation follow-through without values. Ongoing per-repository Git access is
 pending PRJ-005 or separate manual provisioning. No automatic merge, force push,
 remote deletion, production dependency or public exposure is part of completion.
 Merge and full acceptance remain pending; catalogue status stays In review.
+
+## Desktop confirmation closeout
+
+Daniel confirmed the private page loads correctly on October 10. No new runtime
+mutation or technical test was needed to record that independent observation.
+Provisioning-token revocation, ongoing per-repository Git handoff and reviewed
+merges remain pending. The catalogue stays In review; page confirmation alone
+does not authorize either PR merge or establish the full feature as Delivered.
