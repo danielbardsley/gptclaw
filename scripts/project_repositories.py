@@ -36,7 +36,7 @@ ENVIRONMENT = {'deployment_branch_policy': {'protected_branches': True,
                                            'custom_branch_policies': False}}
 MESSAGES = {
     'repository-policy': 'Invalid repository plan, target or unsupported option.',
-    'repository-credential': 'Use an explicit private, owned fine-grained token file outside repositories and a future expiry within 48 hours.',
+    'repository-credential': 'Use an explicit private, owned fine-grained token file outside repositories and a future expiry within seven days.',
     'repository-api': 'GitHub denied or could not verify this scoped request; inspect repo status. No permissions were broadened.',
     'repository-recovery': 'Setup requires reconciliation; inspect repo status and resume the same operation. Source and remote resources were retained.',
     'repository-drift': 'Recorded source or remote identity/settings changed; stop and reconcile with the owner.',
@@ -62,7 +62,7 @@ def expiry(value):
         parsed = dt.datetime.fromisoformat(value.replace('Z', '+00:00'))
         require(parsed.tzinfo is not None, 'repository-credential')
         remaining = parsed - dt.datetime.now(dt.timezone.utc)
-        require(dt.timedelta(0) < remaining <= dt.timedelta(hours=48), 'repository-credential')
+        require(dt.timedelta(0) < remaining <= dt.timedelta(days=7), 'repository-credential')
         return parsed.isoformat()
     except (ValueError, TypeError, AttributeError):
         raise app.AppError('repository-credential') from None
@@ -127,8 +127,8 @@ class GitHub:
         actor = self.request('GET', '/user')
         require(actor.get('login') == ACCOUNT and actor.get('type') == 'User', 'repository-credential')
         plan = actor.get('plan', {}).get('name')
-        require(plan in {'pro', 'business', 'enterprise'}, 'repository-capability')
-        return {'login': ACCOUNT, 'plan': plan, 'credential_kind': 'fine-grained-pat',
+        require(plan is None or plan in {'pro', 'business', 'enterprise'}, 'repository-capability')
+        return {'login': ACCOUNT, 'plan': plan, 'private_protection_readiness': 'endpoint-verification-required' if plan is None else 'supported-plan-reported', 'credential_kind': 'fine-grained-pat',
                 'expires_at': self.expires_at,
                 'permission_verification': 'endpoint-enforced; grants must be operator-reviewed'}
 

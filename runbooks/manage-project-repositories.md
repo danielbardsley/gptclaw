@@ -10,14 +10,17 @@ authorization to publish source, create targets or acquire credentials.
 Use the source runner or its reviewed installed provider with the prepared
 manifest environment. No `gh`, host package installation, AWS change or new
 public access is needed. GitHub Pro or another supported private-protection plan
-is required; `/user` readback must confirm it before creation. Unsupported plans
-stop setup without public visibility or policy fallback. API version is
+is required for configuration. Fine-grained `/user` responses can omit private
+subscription metadata: creation records readiness as unverified in that case.
+Successful protection endpoint write/readback is mandatory before starter
+publication. An explicitly reported unsupported plan stops creation; unavailable
+protection stops configuration without public visibility or policy fallback. API version is
 `2026-03-10`; actual permission/plan enforcement remains GitHub's responsibility.
 
 Daniel approves the exact target and credential scope before apply. The
 provisioning interface accepts only an explicit fine-grained PAT file owned by
 `forge`, mode `0600`, a private owned parent directory (`0700`), outside project
-repositories, with an explicit timezone-aware expiry no more than 48 hours away.
+repositories, with an explicit timezone-aware expiry no more than seven days away.
 The expiry argument is operator-supplied metadata, not proof of GitHub's actual
 expiration; GitHub still validates the token on each authenticated operation.
 Never supply token values in chat, shell arguments, environment dumps or source.

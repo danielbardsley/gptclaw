@@ -285,12 +285,13 @@ class Tests(unittest.TestCase):
         token=self.base/'token';token.write_text('github_pat_'+'synthetic_'*5);token.chmod(0o600)
         expires=(dt.datetime.now(dt.timezone.utc)+dt.timedelta(hours=2)).isoformat()
         api=repos.GitHub(token,expires)
+        repos.GitHub(token,(dt.datetime.now(dt.timezone.utc)+dt.timedelta(days=7)).isoformat())
         self.assertNotIn('synthetic',repr(api))
         for mode in [0o644,0o400]:
             token.chmod(mode)
             with self.assertRaises(app.AppError):repos.GitHub(token,expires)
         token.chmod(0o600)
-        for when in ['yesterday','2020-01-01T00:00:00Z',(dt.datetime.now(dt.timezone.utc)+dt.timedelta(days=3)).isoformat()]:
+        for when in ['yesterday','2020-01-01T00:00:00Z',(dt.datetime.now(dt.timezone.utc)+dt.timedelta(days=8)).isoformat()]:
             with self.assertRaises(app.AppError):repos.GitHub(token,when)
         token.write_text('ghp_'+'synthetic'*10)
         with self.assertRaises(app.AppError):repos.GitHub(token,expires)
@@ -383,6 +384,15 @@ class Tests(unittest.TestCase):
                                     io.BytesIO(b'{"message":"Other conflict"}'))
         with patch.object(api.opener,'open',side_effect=other):
             with self.assertRaises(app.AppError):api.request('GET',path,missing=True)
+
+    def test_fine_grained_actor_without_private_subscription_metadata(self):
+        token=self.base/'token';token.write_text('github_pat_'+'synthetic_'*5);token.chmod(0o600)
+        api=repos.GitHub(token,(dt.datetime.now(dt.timezone.utc)+dt.timedelta(days=7)).isoformat())
+        with patch.object(api,'request',return_value={'login':repos.ACCOUNT,'type':'User'}):
+            actor=api.actor();self.assertIsNone(actor['plan'])
+            self.assertEqual(actor['private_protection_readiness'],'endpoint-verification-required')
+        with patch.object(api,'request',return_value={'login':repos.ACCOUNT,'type':'User','plan':{'name':'free'}}):
+            with self.assertRaises(app.AppError):api.actor()
 
     def test_cli_and_provider_bundle(self):
         output=io.StringIO()

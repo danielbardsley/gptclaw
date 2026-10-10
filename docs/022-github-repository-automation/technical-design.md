@@ -115,7 +115,7 @@ Daniel approved scope/defaults and authorized implementation October 10. The
 reviewed interface uses a private fine-grained PAT file and anonymous-fd Git
 askpass for the bootstrap push; configuration uses a repository-specific token.
 HTTP/Git redirects, global credential/config inheritance and arbitrary local
-Git configuration are rejected. API version is `2026-03-10`. The 48-hour expiry
+Git configuration are rejected. API version is `2026-03-10`. The seven-day expiry
 limit is operator metadata checked locally; GitHub enforces actual expiry/grants.
 Account-plan support and ongoing per-repository access remain live readiness
 checks. The retained verification target is separately authorized. Current personal-account selection is known;
