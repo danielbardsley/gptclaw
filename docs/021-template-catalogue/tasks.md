@@ -54,7 +54,7 @@ failed stages remain owned recovery fixtures. The first release is the accepted
 Next.js web starter with exact Node/pnpm selection. Existing ignored cache was
 preserved at its original location and excluded from release assets/commits.
 
-All 110 focused tests (32 lifecycle, 27 dependency, 31 toolchain, 20 catalogue),
+All 111 focused tests (32 lifecycle, 27 dependency, 31 toolchain, 21 catalogue),
 repository checks and changed-script syntax/whitespace checks passed. Live frozen
 install/test/build/typecheck/private page/health/17 assets, installed list/show
 parity and source-preserving stop passed. A marker-only legacy acceptance app

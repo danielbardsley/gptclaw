@@ -22,7 +22,7 @@ policy installer, credential, public exposure or production change ran.
 | AC-003 | passed locally/live | Default/exact generation, distinct synthetic release bytes, normalized reproducibility and release-selected toolchain independent of registry default pass. Two concurrent real processes publish exactly one complete app; injected competing empty destination is preserved. Failure retains only owned staging and returns its path. |
 | AC-004 | passed locally/live | New manifest/dependency/toolchain/provenance validate; edited source is allowed. Invalid/conflicting provenance fails before runtime calls. Task-owned marker-only app validate/test/start passed without reintroducing release metadata; provenance restored after scoped stop. |
 | AC-005 | passed locally/live | Offline installed snapshot list/create parity and old-snapshot independence from changed source default pass. Live source/installed list/show agree. Provider refresh was a ready no-op; existing app state/operations stayed stable. No provider rollback was performed against existing live apps; snapshot rollback compatibility was tested offline. |
-| AC-006 | local/live passed; final acceptance pending | 110 focused tests, full repository checker and syntax/whitespace checks passed. Scoped live frozen install/test/build/typecheck, private page/health/assets and stop/source retention passed; second apps remain available. Runbook is written. CI/review, Daniel's final acceptance and merge remain pending. |
+| AC-006 | local/live passed; final acceptance pending | 111 focused tests, full repository checker and syntax/whitespace checks passed. Scoped live frozen install/test/build/typecheck, private page/health/assets and stop/source retention passed; second apps remain available. Runbook is written. CI/review, Daniel's final acceptance and merge remain pending. |
 
 ## Live generated-app workflow
 
@@ -77,7 +77,7 @@ for review. No shared images/caches, unrelated fixtures or source were pruned.
 - `scripts/tests/test_private_apps.py`: 32 passed.
 - `scripts/tests/test_project_dependencies.py`: 27 passed.
 - `scripts/tests/test_project_toolchains.py`: 31 passed.
-- `scripts/tests/test_project_templates.py`: 20 passed.
+- `scripts/tests/test_project_templates.py`: 21 passed.
 - Full `./scripts/check-repository.sh` passed in the prepared manifest environment;
   its initial run included 18 catalogue tests, before two added concurrency/default
   tests passed separately. Final full run outcome is recorded below.
@@ -100,7 +100,23 @@ will be recorded below when available. PRJ-003 remains In review, not Delivered.
 
 ## Final local verification
 
-The final full repository checker passed with all 110 focused tests, including
-20 catalogue tests. Relative-link review resolved 169 local targets across eight
+The pre-correction full repository checker passed with all 110 focused tests,
+including 20 catalogue tests. The corrected catalogue suite passes 21 tests;
+its updated full repository run is pending. Relative-link review resolved 169 local targets across eight
 changed documentation files. Git staged/unstaged whitespace checks passed; no
 cache, authentication or environment material is included in the staged changes.
+
+## First implementation CI failure and correction
+
+At `56ecf86e68dfaed94ae6f2d8a330f22dcd6b4e60`, private application workflow
+#25 passed all offline suites and the baseline immutability check, then failed
+its generation helper before app quality commands. The helper redirected
+`PROJECTS` but left the new creation-lock `STORE` at the real EC2 path. It now
+redirects both to its task-owned CI fixture; a subprocess regression verifies
+creation and lock placement. No permission broadening or host path creation is
+used. This failed run is not acceptance evidence.
+
+A standalone live `pnpm typecheck` also passed in 5.493 seconds through the
+existing bounded `run_in_app` container interface on the stopped fixture, with
+read-only dependency metadata. It is distinct from Next.js build's integrated
+TypeScript checks. Final source/CI references follow below.

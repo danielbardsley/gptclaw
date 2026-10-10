@@ -192,6 +192,12 @@ class Tests(unittest.TestCase):
         with patch.object(app,'REPO',bundle):app.target(project)
         self.assertEqual(before,{p.relative_to(project):p.read_bytes() for p in project.rglob('*') if p.is_file()})
 
+    def test_ci_generator_keeps_creation_locks_in_fixture(self):
+        base=self.base/'ci-projects'
+        result=subprocess.run([sys.executable,str(self.repo/'scripts/tests/check_app_template.py'),str(base)],capture_output=True,text=True,check=True)
+        self.assertEqual(result.stdout.strip(),str(base/'template-ci'))
+        self.assertTrue(list((base/'.gptclaw-runtime/v1').glob('create-*.lock')))
+
     def test_historical_release_mutation_rejected(self):
         spec=importlib.util.spec_from_file_location('release_check',Path(__file__).resolve().parents[1]/'check-template-releases.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
         def git(*args):subprocess.run(['git',*args],cwd=self.repo,check=True,capture_output=True)
