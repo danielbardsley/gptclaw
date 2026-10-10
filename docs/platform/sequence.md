@@ -67,14 +67,15 @@ contract extensions. Do not silently put unsupported fields into version 1.
 |---|---|
 | SYS-004, SYS-001 — host tool profile and rootless container toolchain | Define the reviewed installation/update path, then deliver Podman, subordinate IDs, networking, storage, Quadlet, and user-service persistence. Prove the actual host supports a rootless disposable container and persistent user services. |
 | SYS-003 — project dependency policy | [Delivered SPEC-019 initial adapter](../019-project-dependency-policy/acceptance.md): project/container installation boundaries, typed pnpm dependency changes, lockfile review and recovery. Reuses SPEC-018’s reviewed container baseline; local/live checks, CI and owner acceptance are recorded and implementation is merged. |
-| SYS-002 — pinned language toolchains, initial web slice | [SPEC-020 implementation](../020-pinned-language-toolchains/spec.md): extend SPEC-018's working fixed Node/pnpm pair with exact per-project selection, verified acquisition, a supported matrix and legacy compatibility. Integrates the delivered SYS-003 policy for automatic dependency use. Python/uv and additional stacks follow in stage 12. |
+| SYS-002 — pinned language toolchains, initial web slice | [Delivered SPEC-020 initial web slice](../020-pinned-language-toolchains/acceptance.md): extends SPEC-018's working fixed Node/pnpm pair with exact per-project selection, verified acquisition, a supported matrix and legacy compatibility. Integrates the delivered SYS-003 policy for automatic dependency use. Python/uv and additional stacks follow in stage 12. |
 
 **Current stage-2 follow-up:** Daniel requested separate SYS-003 and SYS-002 plans
 on October 10. SPEC-019 reused the reviewed container/toolchain; its initial
 pnpm adapter passed local/live checks and CI, was accepted by Daniel and merged
-in PR #46. SPEC-020 can consume its delivered policy for lifecycle preparation,
-and Daniel authorized its implementation. The initial web slice passed local/live
-checks and configured CI in PR #48; review/merge and final acceptance remain pending. Do not reinstall the already
+in PR #46. SPEC-020 consumes its delivered policy for lifecycle preparation. Its
+initial web slice passed local/live checks and configured CI, was accepted by
+Daniel and merged in PR #48. Later profiles/languages remain separate reviewed
+work. Do not reinstall the already
 deployed SYS-001/SYS-004 foundation or invalidate their separate acceptance.
 
 ## 3. Deliver the runtime that the CLI will control
