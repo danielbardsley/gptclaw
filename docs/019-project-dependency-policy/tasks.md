@@ -1,6 +1,6 @@
 # TASKS-019: Project dependency policy
 
-- **Status:** Implementation authorized; code and local/live checks complete, review/merge pending
+- **Status:** Complete — initial adapter merged and accepted
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-019](spec.md)
@@ -25,7 +25,7 @@
 - [x] T-004: Integrate the gate/fingerprints into frozen startup/test preparation;
   verify no-hook Next.js compatibility, dirty dependency repair, busy refusal,
   integrity failures and two-project isolation. (DEP-002/004/005; AC-002/004/005)
-- [ ] T-005: Update generated guidance/runbook/provider capabilities and tests;
+- [x] T-005: Update generated guidance/runbook/provider capabilities and tests;
   run relevant repository/CI checks and synthetic add/update/remove/frozen-restore
   plus build/test/private-page acceptance. Record commands, timings, file diffs,
   failure/recovery and Daniel's acceptance; deliver/merge the PR and update only
@@ -40,6 +40,8 @@ Startup/test preparation and jobs/services use the policy controls; frozen
 metadata mounts are read-only. No-hook frozen Next.js install/build/test and
 live add/update/remove, unchanged frozen reuse, running-target refusal, actual
 bad-integrity failure/abort/repair and unaffected existing demos were verified.
-The full offline repository checker passed; all three configured implementation CI checks passed; review/merge,
-owner acceptance and final delivery status remain T-005. [Acceptance](acceptance.md)
+The full offline repository checker and all three configured implementation CI
+checks passed. Daniel accepted the reviewed adapter by requesting its merge;
+PR #46 merged as `f3cab9f96304f4fea94c47f4f8c8ec6e4f5dcd68` on October 10.
+T-005 is complete and the initial SYS-003 scope is Delivered. [Acceptance](acceptance.md)
 records the detailed evidence and cleanup disposition. SYS-002 remains Draft.

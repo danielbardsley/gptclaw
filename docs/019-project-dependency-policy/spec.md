@@ -1,6 +1,6 @@
 # SPEC-019: Project dependency policy (SYS-003)
 
-- **Status:** Implementation authorized; implemented on feature branch, acceptance in progress
+- **Status:** Delivered — initial public npm/single-root pnpm adapter
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** SYS-003; initial adapter for the delivered single-web pnpm workflow
@@ -102,9 +102,10 @@ The containers share forge's identity; this policy is not hostile-project isolat
 Daniel requested this specification separately from SYS-002, then authorized
 implementation with “Ok, let's implement SYS-003” on October 10. This authorizes
 this initial pnpm policy/adapter, not SYS-002 implementation. Code and live
-verification are recorded in [acceptance.md](acceptance.md). Review/merge and
-Daniel's final adapter acceptance remain separate; mark only this initial scope
-Delivered after implementation merge and AC-001–006 pass.
+verification are recorded in [acceptance.md](acceptance.md). Daniel accepted the
+reviewed adapter by instructing its merge on October 10. [PR #46](https://github.com/danielbardsley/gptclaw/pull/46)
+merged as `f3cab9f96304f4fea94c47f4f8c8ec6e4f5dcd68`; AC-001–006 pass and only
+this initial scope is Delivered.
 
 Implemented defaults are a public-registry-only, no-install-hooks, single-root
 adapter. The existing Next.js starter passed frozen install/build/test under these

@@ -1,6 +1,6 @@
 # SPEC-019 acceptance evidence
 
-- **Status:** Implemented on feature branch; local/live and implementation CI passed; review/merge and final owner acceptance pending
+- **Status:** Delivered — initial adapter merged and accepted; local/live and implementation CI passed
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-019](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -22,7 +22,7 @@ privilege grants, AWS infrastructure or public exposure changed.
 | AC-003 | passed locally/live | Added is-number 6.0.0 as a development dependency, updated to 7.0.0, removed it, then froze/reinstalled without source changes. Receipts identify manifest/lock diffs/hashes; unrelated synthetic source and existing demos' dependency hashes were retained. No Git reset/stage/commit was performed on apps. |
 | AC-004 | passed locally/live | Running-target mutation refused with busy; selected stopped app mutations obey project/job locks and bounds. Both existing private demo page/health pairs remained 200 and dependency source hashes matched. Startup/test use the policy gate/fingerprint and controlled environment. |
 | AC-005 | passed locally/live | Offline injected fetch/timeout, interrupted multi-file/capture publication, replacement editor races, unknown jobs and same-ID recovery/abort checks passed. Actual valid-format bad Next.js integrity failed on an uncached owned fixture, source remained unchanged, status required recovery, same-ID abort plus frozen repair/test passed. |
-| AC-006 | pending | Focused tests and full offline repository checker passed; runbook, generated guidance, snapshots and generated-app CI added. All three implementation CI workflows passed; owned backup/staging cleanup completed and the synthetic service was stopped with source retained. Review/merge and owner adapter acceptance remain delivery gates. |
+| AC-006 | passed | Focused tests, full offline repository checker and all three implementation CI workflows passed; synthetic app build/test/private-page checks passed. Runbook, generated guidance, snapshots and evidence merged in PR #46. Owned backup/staging cleanup completed and the synthetic service was stopped with source retained. Daniel accepted the reviewed adapter by instructing its merge on October 10. |
 
 ## Live workflow and timings
 
@@ -83,7 +83,7 @@ arguments are kept separate from provider --version metadata. Three cases
 specifically cover capture-time crash, editor replacement during publication
 and scoped read-only metadata mounts. No failed check was treated as a pass.
 
-## Verification and remaining delivery
+## Verification
 
 - Existing lifecycle/proxy suite: 32 tests passed after integration.
 - New dependency suite: 27 tests passed, covering policy/config/lock denial,
@@ -98,9 +98,9 @@ and scoped read-only metadata mounts. No failed check was treated as a pass.
 
 Configured CI now additionally exercises generated synthetic add/update/remove,
 frozen reuse, hook suppression and build/test/typecheck using Docker on the runner.
-Its passing result and exact source/PR references are recorded below. Owner
-acceptance and merge remain separate. SYS-003 stays In review,
-and SYS-002 remains an unimplemented draft. Broader managers, hook exceptions,
+Its passing result and exact source/PR references are recorded below. Daniel
+accepted the reviewed adapter and PR #46 merged; the initial SYS-003 scope is
+Delivered. SYS-002 remains an unimplemented draft. Broader managers, hook exceptions,
 private registries and shared-cache management are not claimed.
 
 ## Implementation CI and cleanup — October 10, 2026 (America/New_York)
@@ -123,5 +123,16 @@ The acceptance app remains stopped with its synthetic source/receipts retained
 for review. Its verified task-owned integrity backup was removed; no shared
 cache/image or user data was deleted. Successful/aborted owned transaction folders
 were cleaned and operation history retained. No further live operation is pending.
-Final source review/merge and Daniel's adapter acceptance remain AC-006; do not
-mark Delivered until those are established.
+
+## Owner acceptance and merge — October 10, 2026
+
+After reviewing PR #46, Daniel instructed “Ok go ahead and merge the PR.” This
+records acceptance of the tested initial adapter. GitHub confirmed the squash
+merge into main as `f3cab9f96304f4fea94c47f4f8c8ec6e4f5dcd68`. All AC-001–006
+are satisfied for this scope; SYS-003 is Delivered. SYS-002 remains Draft.
+
+The final reviewed head `9c45ad9d1263a0c6378610c8810861cda087dd04` also passed:
+
+- [Private application workflow #13](https://github.com/danielbardsley/gptclaw/actions/runs/38074271082).
+- [Development-host quality #134](https://github.com/danielbardsley/gptclaw/actions/runs/38074271087).
+- [Federation quality #38](https://github.com/danielbardsley/gptclaw/actions/runs/38074271131).

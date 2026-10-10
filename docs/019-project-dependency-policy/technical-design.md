@@ -1,6 +1,6 @@
 # TDD-019: Project dependency policy
 
-- **Status:** Implemented on feature branch; local/live evidence recorded
+- **Status:** Delivered — initial adapter merged and accepted; local/live and CI evidence recorded
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-019](spec.md)
