@@ -1,6 +1,6 @@
 # SPEC-020 acceptance evidence
 
-- **Status:** Implemented on feature branch; local/live checks passed; CI/review/owner acceptance/merge pending
+- **Status:** Implemented on feature branch; local/live and configured CI passed; review/owner acceptance/merge pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-020](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -21,7 +21,7 @@ access, public exposure or additional real language/version pair was introduced.
 | AC-003 | passed locally/live | Task-owned first image acquisition and matching reuse succeeded with actual executable/artifact checks; serialization, missing image/pin, failed acquisition, bad integrity, version/label/cache/provenance conflict and unknown outcome covered by isolated fixtures. Live negative artifact evidence recorded below. |
 | AC-004 | passed locally/live | Synthetic new app used the same selected image for frozen dependencies, build/test and private service. Page/health 200; running prepare refused busy. Distinct reviewed fixture profiles exercise different selection/tag/fingerprint paths offline; no second real pair claimed. Existing demo source/state/image/health/routes unchanged. |
 | AC-005 | passed locally/live | New app has exact sidecar; synthetic no-declaration legacy app test/start passed without generated metadata. Explicit re-adoption preserved dependency files. Inspect performs only parsing/receipt/image metadata reads; malformed selection never falls back. |
-| AC-006 | pending | Focused/local and live evidence recorded. Configured CI, review, Daniel's final acceptance and implementation merge remain delivery gates. Only the initial web slice can be marked Delivered after those gates. |
+| AC-006 | pending | Focused/local and live evidence recorded. All three configured CI workflows passed; review, Daniel's final acceptance and implementation merge remain delivery gates. Only the initial web slice can be marked Delivered after those gates. |
 
 ## Artifacts and observed execution
 
@@ -76,7 +76,7 @@ retained for diagnosis; no unknown resources were deleted or permissions changed
 - Dependency tests: 27 passed after recovery integration.
 - New toolchain tests: 25 passed initially, including strict input, two-profile, cache, locks, bounds, version, recovery and source-preservation fixtures. Four additional integration/reuse/race/service-image cases were added for the final suite.
 - Configured CI adds actual Docker profile acquisition/reuse, selected-image
-  frozen install/build/test/typecheck and legacy adoption; CI results pending.
+  frozen install/build/test/typecheck and legacy adoption; Passing CI references are recorded below.
 - No local Terraform checks/apply: no Terraform source changed.
 
 ## Remaining delivery
@@ -128,9 +128,29 @@ build errors. The second run identified the actual fault: Docker defaults to
 Dockerfile, while the generated Podman recipe is Containerfile. The CI adapter now
 passes the explicit filename. These are CI-only changes; Podman acquisition
 already passed live. Neither failed run was counted as passing; the corrected
-CI result remains pending.
+CI result is recorded below.
 
 The final full offline repository checker passed with all 90 focused tests after
 the inspection/range refinements. The synthetic service remains stopped; final
 installed inspect reports the matching verified profile/image. The ready Hello
 World no-op refresh took 1.338 seconds, changed false.
+
+## Implementation CI and final handover
+
+[PR #48](https://github.com/danielbardsley/gptclaw/pull/48) carries the implementation.
+At source `db0cbcc75378a6120016acadaf2d0468ad226f02`, all configured workflows passed:
+
+- [Private application workflow #19](https://github.com/danielbardsley/gptclaw/actions/runs/38080297365): all 90 focused tests; baseline app and dependency workflow; actual integrity-verified image acquisition/reuse, exact runtime checks, selected-image frozen install/build/test/typecheck and legacy adoption.
+- [Development-host quality #138](https://github.com/danielbardsley/gptclaw/actions/runs/38080297388): repository and Terraform quality checks; no apply.
+- [Federation quality #42](https://github.com/danielbardsley/gptclaw/actions/runs/38080297379): quality checks; no apply.
+
+Final installed provider 1.2.0 reports the new toolchain capability/schema; source
+snapshot refresh was a ready no-op and did not restart the app container. Installed
+status reports both original demos ready with configured private routes and no
+busy operation/error. Synthetic selection inspect reports its matching verified
+image; its service is stopped and authored source/receipts retained. Failed owned
+acquisition fixtures retain bounded inert diagnosis data; no shared objects were
+pruned. No live operator action remains for implementation verification.
+
+Review, Daniel's final acceptance and merge remain AC-006/T-005. SYS-002 stays
+In review for this initial web scope; Python/uv/Expo obligations remain later.

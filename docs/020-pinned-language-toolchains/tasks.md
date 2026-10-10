@@ -1,6 +1,6 @@
 # TASKS-020: Pinned language toolchains
 
-- **Status:** Implementation authorized; code and local/live checks complete, CI/review pending
+- **Status:** Implementation authorized; code, local/live and CI checks complete; review/merge pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-020](spec.md)
@@ -45,5 +45,5 @@ metadata; no-declaration legacy apps map to the frozen baseline without source
 rewriting. Offline distinct-profile fixtures, failure/conflict/lock checks and
 synthetic EC2 cold/reuse/frozen/build/test/private-page/legacy-adoption acceptance
 are recorded in [acceptance.md](acceptance.md). Existing demo source/state and
-private page/health remained unchanged. T-005 retains CI, review, owner acceptance
-and merge gates. Python/uv/Expo belong to stage 12 and their stack specifications.
+private page/health remained unchanged. All 90 focused tests, the full repository checker and three configured CI
+workflows passed. T-005 retains review, owner acceptance and merge gates. Python/uv/Expo belong to stage 12 and their stack specifications.

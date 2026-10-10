@@ -74,7 +74,7 @@ on October 10. SPEC-019 reused the reviewed container/toolchain; its initial
 pnpm adapter passed local/live checks and CI, was accepted by Daniel and merged
 in PR #46. SPEC-020 can consume its delivered policy for lifecycle preparation,
 and Daniel authorized its implementation. The initial web slice passed local/live
-checks; CI, review/merge and final acceptance remain pending. Do not reinstall the already
+checks and configured CI in PR #48; review/merge and final acceptance remain pending. Do not reinstall the already
 deployed SYS-001/SYS-004 foundation or invalidate their separate acceptance.
 
 ## 3. Deliver the runtime that the CLI will control

@@ -1,6 +1,6 @@
 # SPEC-020: Pinned language toolchains (SYS-002)
 
-- **Status:** Implementation authorized; initial web slice implemented, verification in progress
+- **Status:** Implementation authorized; initial web slice implemented; local/live and CI passed, review/merge pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** SYS-002; initial Node/pnpm web slice
