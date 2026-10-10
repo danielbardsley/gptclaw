@@ -142,6 +142,10 @@ if ! python3 -B scripts/tests/test_project_repositories.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_repository_credentials.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/check-template-releases.py; then
   status=1
 fi
