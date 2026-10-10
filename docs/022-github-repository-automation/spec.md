@@ -1,6 +1,6 @@
 # SPEC-022: New GitHub repository automation
 
-- **Status:** Draft — scope approval and implementation authorization pending
+- **Status:** In review — implementation authorized; live acceptance pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** PRJ-004, initial personal-account private-repository slice
@@ -16,10 +16,12 @@ creation and resume interrupted setup without duplicating repositories or PRs.
 The new application continues to use the existing private local runtime.
 
 Daniel requested this specification and confirmed `danielbardsley` personal-account
-repositories on October 10. This establishes the target account, not approval
-of the proposed requirements or authorization to create repositories, provision
-credentials, implement the feature or deploy it. Merging planning documents
-alone does not change those gates.
+repositories on October 10. He then instructed “Ok, implement the spec”, approving
+the bounded requirements/defaults and authorizing implementation. He separately
+authorized retaining `danielbardsley/gptclaw-prj004-verification` for live checks
+with an explicitly supplied private provisioning token. No token has yet been
+supplied or live mutation performed. Review, merge and acceptance remain separate;
+see [acceptance.md](acceptance.md).
 
 ## Scope and baseline
 
@@ -109,10 +111,12 @@ Application source publishing is separate from running or exposing an app.
 Daniel owns scope, settings, credentials and acceptance. Proposed default policy
 is private personal-account repositories, no environment/secrets unless selected,
 and PR enforcement with zero approvals until an independent reviewer exists.
-Daniel must approve this scope and authorize implementation before coding.
+Daniel approved this scope and authorized implementation on October 10.
 
-Before the implementation adapter is finalized, Daniel and the implementer must
-select the provisioning credential and confirm account plan/API capabilities.
+The implementation uses an explicitly supplied fine-grained PAT file and a
+creation-only phase followed by a repository-specific provisioning credential.
+Actual grants, expiry and account plan/API capabilities remain live readiness
+checks; no account-wide administration fallback is assumed.
 Private protection/environment availability depends on GitHub plan and feature;
 verify support without changing visibility or silently dropping requirements.
 See official [repository APIs](https://docs.github.com/en/rest/repos/repos),
@@ -126,4 +130,5 @@ a reviewed PR. Authorize the live fixture target and credential separately befor
 remote mutation; retain it unless Daniel separately authorizes removal. Record
 actual acceptance evidence when available. Mark only this initial PRJ-004 slice
 Delivered after implementation merge and all criteria pass; wider scope remains
-future work. No acceptance has been performed by this planning task.
+future work. Offline implementation evidence is recorded in [acceptance.md](acceptance.md);
+live verification and owner acceptance remain pending.

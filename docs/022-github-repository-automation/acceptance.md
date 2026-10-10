@@ -1,0 +1,68 @@
+# SPEC-022 acceptance evidence
+
+- **Status:** Local implementation verified; CI/live/owner acceptance pending
+- **Owner:** Daniel
+- **Evidence date:** 2026-10-10 (America/New_York)
+- **Specification:** [SPEC-022](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
+- **PR:** [#52](https://github.com/danielbardsley/gptclaw/pull/52)
+- **Implementation:** provider 1.4.0 on `codex/prj-004-spec`; verification worktree
+  based on planning commit `9d835a2` (final committed revision is linked by PR #52)
+
+## Authorization and boundaries
+
+Daniel authorized implementation on October 10 and separately approved retaining
+`danielbardsley/gptclaw-prj004-verification` for live verification using an explicitly
+supplied private token. He requested private-file creation instructions; those
+are in the [runbook](../../runbooks/manage-project-repositories.md). No token/path,
+actual expiry or grants have been supplied yet. No application repository,
+credential, environment, infrastructure or private app was mutated in these
+checks. Test data is synthetic; Git remotes are task-owned temporary bare repos.
+
+## Criterion mapping
+
+| Criterion | State | Observed evidence | Remaining action/owner |
+|---|---|---|---|
+| AC-001 | pending | Offline read-only plan, exact release, collision/path/input rejection and no-write tests pass. | Verify actual actor/account/name observations with supplied token. |
+| AC-002 | pending | Real fixture Git proves README-only main, starter history/provenance/guidance and one PR; protection precedes exclusive starter ref. | Run authorized private GitHub fixture and record actual PR/files. |
+| AC-003 | pending | Protection readback/denial/drift tests pass; no implicit policy repair or starter publication after denial. | Verify GitHub settings and actual direct-main denial. |
+| AC-004 | pending | Empty selections cause no corresponding requests; development environment/readback and secret metadata states pass. No secret writes exist. | Record selected/no-selection behavior against actual GitHub. |
+| AC-005 | pending | Private-file/type/expiry, wrong actor/plan, anonymous-fd askpass, HTTP redaction and redirected Git configuration rejection pass with synthetic credentials. | Verify actual grants/expiry and revoked provisioning tokens; record separate Git handoff. |
+| AC-006 | pending | Lost creation response never auto-adopts; explicit ID reconciliation, response loss at object/ref/protection/environment/PR boundaries, locks, drift and atomic-local-publication recovery pass. Partial generation preserves owned staging for operator review. | Record live receipt/resource identity and retained-resource disposition. |
+| AC-007 | pending | Existing template/provider and offline repository regressions pass; bundle includes adapter/helper and local-only interfaces remain supported. | PR CI, real starter/container checks, private runtime/independent-app check, merge and Daniel's acceptance. |
+
+All criteria remain pending because their required live evidence is incomplete;
+offline assertions do not establish deployed behavior or owner acceptance.
+
+## Local verification
+
+- `.venv-manifest/bin/python scripts/tests/test_project_repositories.py`: 35 tests passed (22.825 seconds); earlier 25-test and 33-test runs passed
+  before additional safety cases were added.
+- `.venv-manifest/bin/python scripts/tests/test_project_templates.py`: 21 tests
+  passed, including installed bundle parity, legacy creation and release integrity.
+- `source .venv-manifest/bin/activate; ./scripts/check-repository.sh`: passed with exit code 0; its focused repository
+  subprocess ran the then-current 33 tests before the final JSON/nested-path cases
+  were added; the final focused 35-test run above verifies those additions. Its fixtures do not operate host services.
+- `git diff --check` and `bash -n scripts/check-repository.sh`: passed during
+  implementation; final changed-document relative-link checks also passed.
+
+Terraform commands were not run: no Terraform/host infrastructure changed.
+Live GitHub/configuration, real app/container/runtime checks and deployment were
+not run because the specifically scoped provisioning token is not yet supplied.
+CI outcome is recorded after pushing the implementation, separately from local
+checks. No test output contains token values or environment dumps.
+
+## Delivery and remaining work
+
+The operator interface supports creation-only authority followed by a token
+selected for the new repository. GitHub may not offer the creation-only grant
+in Daniel's UI; any alternative needs exact scope review rather than assumed
+account-wide administration. Token grants cannot be introspected by this
+adapter: actual endpoint enforcement and operator-reviewed metadata are required.
+Local expiry is declared metadata; GitHub enforces its real expiry.
+
+Retain the authorized fixture when live verification is performed. Revoke each
+provisioning credential after its phase and record owner/scope/reason/expiry and
+revocation follow-through without values. Ongoing per-repository Git access is
+pending PRJ-005 or separate manual provisioning. No automatic merge, force push,
+remote deletion, production dependency or public exposure is part of completion.
+Merge and full acceptance remain pending; catalogue status stays In review.

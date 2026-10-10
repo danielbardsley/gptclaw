@@ -18,7 +18,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.3.0'
+VERSION = '1.4.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -619,7 +619,7 @@ WantedBy=default.target
 
 
 def provider_bundle():
- paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','project_dependencies.py','project_toolchains.py','gptclawctl.py','gptclawctl']]
+ paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','project_dependencies.py','project_toolchains.py','gptclawctl.py','gptclawctl','project_repositories.py','repository_askpass.py']]
  paths += [Path('config/project-dependencies/v1.json'),Path('schemas/project-dependencies/v1.schema.json')]
  paths += [Path('config/toolchains/v1.json'),Path('schemas/toolchains/v1.schema.json'),Path('templates/apps/node-toolchain/install-pnpm.cjs')]
  paths += [Path('schemas/project/v1.schema.json'),Path('templates/apps/node-toolchain/Containerfile')]
@@ -636,6 +636,7 @@ def provider_bundle():
  temp=dest.with_name(dest.name+'.'+uuid.uuid4().hex+'.tmp');temp.mkdir(parents=True,mode=0o700)
  for rel in paths:
   source=REPO/rel;safe(source);out=temp/rel;out.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(source,out)
+  if rel == Path('scripts/repository_askpass.py'):out.chmod(0o700)
  (temp/'.python-path').write_text(str(REPO/'.venv-manifest/bin/python')+'\n')
  (temp/'scripts/gptclawctl').chmod(0o755)
  os.rename(temp,dest)

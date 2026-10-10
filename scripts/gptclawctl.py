@@ -36,12 +36,25 @@ def main(argv=None):
  tool_actions=tools.add_subparsers(dest='toolchain_action',required=True)
  for name in ['inspect','prepare']:
   p=tool_actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True)
+ repos=sub.add_parser('repo',help='Opt-in private GitHub repository setup')
+ repo_actions=repos.add_subparsers(dest='repo_action',required=True)
+ for name in ['plan','apply','resume','status']:
+  p=repo_actions.add_parser(name,allow_abbrev=False)
+  p.add_argument('--credential-file');p.add_argument('--credential-expires-at')
+  if name=='plan':
+   p.add_argument('--repository',required=True);p.add_argument('--directory',required=True)
+   p.add_argument('--environment',action='append',default=[],choices=['development','preview'])
+   p.add_argument('--secret-reference',action='append',default=[],help='scope:NAME metadata only')
+  if name=='apply':p.add_argument('--plan-file',required=True)
+  if name in ['resume','status']:p.add_argument('--operation-id',required=True)
+  if name in ['apply','resume']:p.add_argument('--create-only',action='store_true',help='Create private repository, then pause for a repository-specific credential')
+  if name=='resume':p.add_argument('--confirm-repository-id',type=int,help='Explicit owner reconciliation after a lost creation response')
  args=parser.parse_args(argv)
  began=time.monotonic()
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates'],'template_catalogue_schema':1,'receipt_schema':1,'dependency_receipt_schema':1,'toolchain_receipt_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates','repo'],'template_catalogue_schema':1,'receipt_schema':1,'dependency_receipt_schema':1,'toolchain_receipt_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -56,7 +69,21 @@ def main(argv=None):
     templates.validate_provenance(Path(args.project_root).absolute())
    print(json.dumps(result,sort_keys=True));return code
   app.need(os.getuid()==1002 and os.geteuid()!=0,'setup')
-  if args.action=='new':result=app.create(args.slug,args.directory,args.template,args.template_version)
+  if args.action=='repo':
+   import project_repositories as repos
+   app.need(bool(args.credential_file)==bool(args.credential_expires_at),'repository-credential')
+   api=repos.GitHub(args.credential_file,args.credential_expires_at) if args.credential_file else None
+   if args.repo_action!='status':app.need(api is not None,'repository-credential')
+   if args.repo_action=='plan':
+    refs=[]
+    for ref in args.secret_reference:
+     app.need(ref.count(':')==1,'repository-policy')
+     scope,name=ref.split(':');refs.append({'scope':scope,'name':name})
+    result=repos.plan(args.repository,args.directory,api,args.environment,refs)
+   elif args.repo_action=='apply':result=repos.apply(repos.read_plan(args.plan_file),api,args.create_only)
+   elif args.repo_action=='resume':result=repos.resume(args.operation_id,api,args.confirm_repository_id,args.create_only)
+   else:result=repos.status(args.operation_id,api)
+  elif args.action=='new':result=app.create(args.slug,args.directory,args.template,args.template_version)
   elif args.action=='start':result=app.start(args.project_root,args.local_only)
   elif args.action=='stop':result=app.stop(args.project_root)
   elif args.action=='restart':result=app.restart(args.project_root)

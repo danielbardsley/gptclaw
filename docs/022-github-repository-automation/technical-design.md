@@ -1,6 +1,6 @@
 # TDD-022: New GitHub repository automation
 
-- **Status:** Draft proposal; credential adapter selection pending
+- **Status:** Implemented on review branch; live verification pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-022](spec.md) · **Tasks:** [TASKS-022](tasks.md)
@@ -21,8 +21,8 @@ endpoint compatibility during implementation. No host package installation or
 assumed `gh` dependency is required. Git and the existing Python/provider
 packaging remain the local execution baseline.
 
-Credential acquisition is an operator-supplied interface selected before
-implementation. Do not infer authority from global Git/CLI sessions. Review
+Credential acquisition is an explicit private fine-grained PAT file supplied
+by the operator, with a creation-only phase before repository-specific grants. Do not infer authority from global Git/CLI sessions. Review
 endpoint-to-permission requirements for repository creation, contents, PRs,
 administration and optional environments; document precisely which identity can
 create a repository and then configure that new ID. A repository-scoped Git
@@ -42,7 +42,8 @@ future ongoing-access automation, not implicit provisioning authority.
    Establish a minimal README commit on `main`, set default branch and install
    protection. This one-time bootstrap exception is recorded; app code reaches
    main only through the initial PR. Verify settings before further publication.
-4. Push the validated starter commit on a deterministic operation-owned
+4. Publish the locally computed starter blobs/tree/commit through the GitHub
+   Git-data API, verify exact SHAs and exclusively create a deterministic operation-owned
    `codex/` branch, create selected environments and inspect reference metadata
    only when authorized. Open the initial PR and read back final state. Bound
    Git authentication must avoid credentials in argv, remotes and persistent
@@ -52,7 +53,7 @@ future ongoing-access automation, not implicit provisioning authority.
    Runtime startup remains a separate existing lifecycle request.
 
 Keep operation journals outside tracked app content in a user-private directory;
-exact paths/version schema are implementation deliverables. Store only target
+journals use schema version 1 at `private_apps.STORE/repositories/<operation ID>/receipt.json`. Store only target
 IDs, hashes, step states and non-secret metadata. App source records template
 provenance; operational receipts do not expand manifest v1. Use safe writes and
 per-target locks. Bound request bodies/output and redact adapter errors rather
@@ -110,9 +111,18 @@ own scoped operator action. This draft changes no host or GitHub configuration.
 
 ## Readiness decisions
 
-Daniel confirms scope/default policy. Daniel and the implementer select the
-credential transport, account-plan support and ongoing per-repository access
-handoff before coding the adapter. Current personal-account selection is known;
+Daniel approved scope/defaults and authorized implementation October 10. The
+reviewed interface uses a private fine-grained PAT file and anonymous-fd Git
+askpass for the bootstrap push; configuration uses a repository-specific token.
+HTTP/Git redirects, global credential/config inheritance and arbitrary local
+Git configuration are rejected. API version is `2026-03-10`. The 48-hour expiry
+limit is operator metadata checked locally; GitHub enforces actual expiry/grants.
+Account-plan support and ongoing per-repository access remain live readiness
+checks. The retained verification target is separately authorized. Current personal-account selection is known;
 subscription capabilities and provisioning credentials are unverified. Offline
 contract design can proceed independently, but no live mutations or claims of
 operational readiness follow from this proposal.
+
+The [operator runbook](../../runbooks/manage-project-repositories.md) documents
+commands, grants, private-file creation, ambiguity reconciliation, retained
+local generation outcomes and rollback. `repo` ships in provider 1.4.0.

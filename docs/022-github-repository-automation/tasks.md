@@ -1,6 +1,6 @@
 # TASKS-022: New GitHub repository automation
 
-- **Status:** Draft planning complete; implementation not authorized
+- **Status:** Implementation in review; live verification pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-022](spec.md) · **Design:** [TDD-022](technical-design.md)
@@ -11,30 +11,33 @@
   specification workflow; confirm personal account `danielbardsley`; draft
   scope, design, traceability and acceptance criteria. This task records planning
   only; no GitHub fixture creation or implementation acceptance occurred.
-- [ ] T-002: Daniel reviews requirements/defaults and authorizes implementation.
-  Confirm account capabilities, endpoint permissions and a bounded provisioning
-  credential/transport; document PRJ-005 handoff and live fixture approval as
-  separate gates. REP-005; AC-005. Resolve unsupported required capabilities
-  before dependent work rather than substituting public visibility.
+- [x] T-002a: Daniel approved the bounded spec/defaults and authorized implementation
+  with “Ok, implement the spec” on October 10. The adapter uses an explicit private
+  fine-grained token file and creation-only/scoped-configuration phases. Daniel
+  separately authorized retaining `danielbardsley/gptclaw-prj004-verification`.
+- [ ] T-002b: Daniel supplies the private token path, actual expiry and grant
+  metadata. Verify the actual actor/account plan and scoped endpoint permissions;
+  record provisioning-token revocation and ongoing Git handoff separately.
+  REP-005; AC-005. Do not substitute broader credentials after a denial.
 
 ## Implementation order
 
-- [ ] T-003: Define plan/receipt versions, input allowlists, exact template
+- [x] T-003: Define plan/receipt versions, input allowlists, exact template
   integration, safe staging, target locks and no-write preview/status. Include
   unchanged-plan verification and conflicting-operation rejection.
   REP-001/006; AC-001/006.
-- [ ] T-004: Implement reviewed credential/API/Git adapter, private creation,
+- [x] T-004: Implement reviewed credential/API/Git adapter, private creation,
   journaled immutable identity, bootstrap main, protected publication branch,
   initial PR and non-destructive reconciliation. Never auto-merge or retry an
   ambiguous create blindly. REP-002/003/005/006; AC-002/003/005/006.
-- [ ] T-005: Add strict protection readback, optional development environments
+- [x] T-005: Add strict protection readback, optional development environments
   and metadata-only secret-reference reporting; test empty selections, unsupported
   settings, production rejection and pending provisioning. REP-003/004; AC-003/004.
-- [ ] T-006: Add failure injection at each boundary, response-loss, races, drift,
+- [x] T-006: Add failure injection at each boundary, response-loss, races, drift,
   wrong-ID/credential rejection, token-redaction and isolated Git safety tests.
   Prove source/resource retention and one repository/branch/PR per completed
   operation. REP-001–006; AC-001–006.
-- [ ] T-007: Package the operation in source/installed providers; document
+- [x] T-007: Package the operation in source/installed providers; document
   readiness, permissions, commands, single-owner protections, ongoing Git access,
   recovery, rollback and separately authorized retained-resource cleanup. Preserve
   existing local/runtime interfaces. REP-007; AC-007.
@@ -54,9 +57,17 @@
 
 ## Current handover
 
-The initial spec/design/tasks are reviewable. Personal-account ownership is
-confirmed; policy defaults, account-plan readiness and provisioning credentials
-remain proposed/unverified. Next action is Daniel's scope review, followed by
-T-002. Wider organization/public/production, credential brokering and generated
-CI workflows remain separate scope. Documentation checks do not establish
-implementation, CI, GitHub or runtime acceptance.
+Provider 1.4.0 implements plan/apply/resume/status, exact starter publication,
+verified protection/environments, metadata-only references and retained recovery
+journals. Focused offline tests use real isolated Git history/objects and a fake
+GitHub transport; evidence and remaining criterion gates are recorded in
+[acceptance.md](acceptance.md). Source and installed bundles include the adapter
+and executable anonymous-fd askpass helper. Immutable template assets are unchanged.
+
+Scope/defaults and implementation are authorized. The retained live target is
+authorized; no token has been supplied yet, so account capability/API enforcement,
+live private app validation and owner acceptance are pending. Daniel's next
+input is the private file path, actual expiry and permission metadata; no token
+values. No application repository was created during offline verification.
+PR #52 carries implementation for review; merge is not authorized by the coding
+request. T-008 and T-009 retain the unverified CI/live gates.
