@@ -18,15 +18,11 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.2.0'
+VERSION = '1.3.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
 UNITS = Path('/home/forge/.config/containers/systemd')
-TEMPLATE = REPO / 'templates/apps/nextjs'
-TEMPLATE_FILES = ['package.json','pnpm-lock.yaml','pnpm-workspace.yaml','next.config.ts',
- 'next-env.d.ts','tsconfig.json','.gitignore','AGENTS.md.template','app/layout.tsx',
- 'app/page.tsx','app/counter.tsx','app/globals.css','app/api/health/route.ts','tests/health.test.ts','README.md']
 PORTS = range(18080, 18180)
 INGRESS_PORT = 18079
 LABEL = 'com.gptclaw.owner'
@@ -52,6 +48,7 @@ MESSAGES = {
  'toolchain-platform': 'This toolchain supports Linux amd64 only; no fallback was selected.',
  'toolchain-verification': 'The selected image failed its exact executable or artifact verification.',
  'toolchain-recovery': 'An interrupted toolchain acquisition needs scoped operator reconciliation; inspect its receipt before retrying.',
+ 'template-policy': 'Template selection, release assets or provenance do not match a supported reviewed release.',
  'internal': 'Runtime state could not be reconciled; inspect this target before retrying.',
 }
 
@@ -159,6 +156,8 @@ def target(root):
  need(code == 0, 'invalid')
  marker = read_json(root / '.gptclaw/template.json')
  need(marker == {'provider': 'nextjs-v1'}, 'invalid')
+ import project_templates as templates
+ templates.validate_provenance(root)
  need(not any((root/name).exists() for name in ['.env','.env.local','.env.development','.env.production','.npmrc','.ssh','.aws']),'invalid')
  return root, contract
 
@@ -553,32 +552,18 @@ def logs(root,lines):
  return {'project':s['id'],'logs':redact(r.stdout[-32768:]),'max_lines':lines}
 
 
-def create(slug,directory=None):
+def create(slug,directory=None,template=None,template_version=None):
+ import project_templates as templates
  need(re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',slug) and len(slug)<=48,'invalid')
+ release,contents=templates.resolve(template,template_version)
  path=safe(Path(directory).absolute() if directory else PROJECTS/slug)
  need(path.is_relative_to(PROJECTS) and path!=PROJECTS and path!=REPO and '.gptclaw-runtime' not in path.parts,'path')
  need(path.parent.is_dir() and path.parent.stat().st_uid==os.getuid(),'path')
- try:path.mkdir(mode=0o700)
- except FileExistsError:raise AppError('conflict') from None
- for name in TEMPLATE_FILES:
-  source=TEMPLATE/name
-  relative=Path(name)
-  need(not source.is_symlink(),'path')
-  if source.is_file():
-   target_file=path/relative;target_file.parent.mkdir(parents=True,exist_ok=True)
-   if target_file.name=='AGENTS.md.template':target_file=target_file.with_name('AGENTS.md')
-   with target_file.open('xb') as out:out.write(source.read_bytes())
- meta=path/'.gptclaw';meta.mkdir()
- # JSON is a strict YAML subset; reuse the existing validator without a second parser policy.
- contract={'schema_version':1,'project':{'id':slug,'name':slug.replace('-',' ').title(),'kind':'web'},
-           'commands':{'build':['pnpm','build'],'start':['pnpm','dev'],'test':['pnpm','test']},
-           'service':{'internal_port':3000,'health':{'path':'/projects/'+slug+'/api/health/','timeout_seconds':5}},
-           'exposure':{'private':True,'base_path':'/projects/'+slug+'/','funnel':False},'data':{'mode':'ephemeral'}}
- save(meta/'project.yaml',contract);save(meta/'template.json',{'provider':'nextjs-v1'})
- import project_toolchains as tools
- save(meta/'toolchain.json',tools.default_declaration())
- need(validate_project(path)[2]==0,'invalid')
- return {'project':slug,'root':str(path),'state':'created'}
+ # A pathname-derived lock serializes destinations even when slugs differ.
+ key='create-'+hashlib.sha256(str(path).encode()).hexdigest()
+ with locked(key):
+  need(not path.exists() and not path.is_symlink(),'conflict')
+  return templates.generate(path,slug,release,contents)
 
 
 def ensure_ingress():
@@ -638,7 +623,8 @@ def provider_bundle():
  paths += [Path('config/project-dependencies/v1.json'),Path('schemas/project-dependencies/v1.schema.json')]
  paths += [Path('config/toolchains/v1.json'),Path('schemas/toolchains/v1.schema.json'),Path('templates/apps/node-toolchain/install-pnpm.cjs')]
  paths += [Path('schemas/project/v1.schema.json'),Path('templates/apps/node-toolchain/Containerfile')]
- paths += [Path('templates/apps/nextjs')/name for name in TEMPLATE_FILES]
+ import project_templates as templates
+ paths += templates.bundle_paths()
  digest=hashlib.sha256()
  for rel in sorted(paths):digest.update(str(rel).encode()+b'\0'+(REPO/rel).read_bytes())
  # A bundle already executing from installed storage reuses itself.

@@ -1,6 +1,6 @@
 # TDD-021: Bundled, exact-release template selection
 
-- **Status:** Draft — proposed design
+- **Status:** In review — implemented design
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-021](spec.md) · **Tasks:** [TASKS-021](tasks.md)
@@ -116,7 +116,11 @@ metadata, stop/source retention and unchanged independent service. Record comman
 revision, release digest, timings and outcomes. CI success is separate from live
 behavior and Daniel's acceptance; no reboot/replacement/restore is required.
 
-Daniel reviews the proposed single-entry scope and exact/default interface.
-Finalize schema bounds, substitution fields and publication primitive during
-T-001 design review before dependent code. Broader template stacks retain stage-12
+Daniel approved the single-entry scope and exact/default interface by authorizing
+implementation. The [runbook](../../runbooks/manage-project-templates.md) documents
+the implemented release/recovery workflow.
+Implementation settles bounds at 100 files/release, 2 MiB/file, 8 MiB/release,
+256 KiB metadata, 48-character IDs/versions and 200-character paths. Fixed
+substitutions affect generated manifest identity only; Linux renameat2
+RENAME_NOREPLACE publishes under a destination-derived runtime lock. Broader template stacks retain stage-12
 or demand-driven ownership; this design supplies registration mechanics only.

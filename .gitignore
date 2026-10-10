@@ -30,3 +30,6 @@ acceptance-evidence/
 .venv-manifest/
 __pycache__/
 *.pyc
+
+# Project package-manager caches are never release assets.
+**/node_modules/

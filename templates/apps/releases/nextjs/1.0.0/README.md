@@ -25,3 +25,8 @@ in the selected GptClaw repository. Cache/module folders are not source or Git d
 New projects receive an exact `.gptclaw/toolchain.json` selection. Use the reviewed
 `gptclawctl toolchain inspect`/`prepare` workflow; do not install or switch host
 languages. Toolchain changes require this app stopped and a supported profile.
+
+Template discovery uses `gptclawctl templates list` and `templates show`.
+The separate `.gptclaw/template-release.json` records the original starter;
+editing app source does not change that provenance. Template upgrades are manual
+reviewed application changes, not an automatic catalogue operation.

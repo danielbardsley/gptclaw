@@ -29,3 +29,8 @@ Use the exact `.gptclaw/toolchain.json` profile through `gptclawctl toolchain` a
 the reviewed lifecycle. Preserve pins and source; stop the selected app before
 an authorized toolchain switch. Do not run host language installers or select
 arbitrary container images. Unsupported versions need a reviewed profile PR.
+
+Template discovery uses `gptclawctl templates list` and `templates show`.
+The separate `.gptclaw/template-release.json` records the original starter;
+editing app source does not change that provenance. Template upgrades are manual
+reviewed application changes, not an automatic catalogue operation.

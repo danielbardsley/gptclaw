@@ -69,12 +69,13 @@ class ToolchainTests(unittest.TestCase):
         self.assertNotEqual(app.validate_project(self.root)[2], 0)
 
     def test_legacy_selection_is_fixed_and_observation_only(self):
+        store_before = {p.relative_to(app.STORE): (p.read_bytes(), p.stat().st_mtime_ns) for p in app.STORE.rglob('*') if p.is_file()}
         (self.root/'.gptclaw/toolchain.json').unlink()
         before = {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob('*') if p.is_file()}
         observed = tools.inspect(self.root)
         self.assertTrue(observed['legacy']); self.assertEqual(observed['state'], 'unprepared')
         self.assertEqual(before, {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob('*') if p.is_file()})
-        self.assertTrue(all(args[:3] == ['podman','image','exists'] for args, _ in self.calls)); self.assertFalse(app.STORE.exists())
+        self.assertTrue(all(args[:3] == ['podman','image','exists'] for args, _ in self.calls)); self.assertEqual(store_before, {p.relative_to(app.STORE): (p.read_bytes(), p.stat().st_mtime_ns) for p in app.STORE.rglob('*') if p.is_file()})
 
     def test_invalid_unknown_range_and_bool_sidecars_refused_offline(self):
         base = self.selected['declaration']

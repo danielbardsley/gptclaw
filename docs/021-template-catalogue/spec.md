@@ -1,6 +1,6 @@
 # SPEC-021: Versioned template catalogue
 
-- **Status:** Draft — scope approval and implementation authorization pending
+- **Status:** In review — implementation and local/live verification complete
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** PRJ-003, initial supported web-entry slice
@@ -15,8 +15,9 @@ entry packages the existing Next.js/TypeScript starter. Repeated creation from
 one release produces the same reviewed source, dependency pins and toolchain
 selection apart from documented project identity substitutions.
 
-Daniel requested a PRJ-003 specification. This authorizes planning only. The
-proposed first-entry scope needs Daniel's review; implementation is not approved.
+Daniel requested a PRJ-003 specification, then authorized implementation with
+“Ok, now implement the spec” on October 10. Initial scope/design are approved;
+review, merge and final owner acceptance remain separate gates.
 
 ## Scope and existing dependencies
 
@@ -91,7 +92,6 @@ Only mark the initial PRJ-003 web slice Delivered after implementation merge and
 all criteria pass; retain broader stacks as named follow-ups. No deployment or
 operator infrastructure action is required by this draft.
 
-The proposed initial catalogue ID is `nextjs`, exact release `1.0.0`, using the
-current accepted starter/toolchain bytes at implementation baseline. This is a
-proposal, not a claim that a catalogue release already exists. Daniel should
-confirm this bounded initial scope when reviewing the plans.
+The initial catalogue ID is `nextjs`, exact release `1.0.0`, using the
+current accepted starter/toolchain bytes at implementation baseline. Provider 1.3.0 now implements this release. Daniel approved the bounded scope
+by authorizing implementation; final reviewed acceptance and merge remain pending.

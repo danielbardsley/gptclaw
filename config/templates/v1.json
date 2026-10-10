@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "default": {
+    "id": "nextjs",
+    "version": "1.0.0"
+  },
+  "releases": [
+    {
+      "id": "nextjs",
+      "version": "1.0.0",
+      "description": "Private Next.js/React/TypeScript web starter",
+      "kind": "web",
+      "provider": "nextjs-v1",
+      "manifest_schema": 1,
+      "catalogue_schema": 1,
+      "stack": [
+        "Next.js",
+        "React",
+        "TypeScript"
+      ],
+      "toolchain": {
+        "schema_version": 1,
+        "profile": "node-pnpm",
+        "profile_version": 1,
+        "versions": {
+          "node": "24.21.0",
+          "pnpm": "12.10.1"
+        }
+      },
+      "data": "ephemeral",
+      "exposure": "private",
+      "substitutions": [
+        "project-id",
+        "project-name",
+        "base-path"
+      ],
+      "files": [
+        {
+          "source": ".gitignore",
+          "output": ".gitignore",
+          "sha256": "c98d87c67c434e296aad3c8f62f5668d0a927f8188d22217b6f44221c9b9ce59"
+        },
+        {
+          "source": "AGENTS.md.template",
+          "output": "AGENTS.md",
+          "sha256": "6e166f4078a0fabd04e4453dd2ef83fcf166da23ed5fa3fd093dbaf004d51267"
+        },
+        {
+          "source": "README.md",
+          "output": "README.md",
+          "sha256": "cb1dc10938cff4886a126c9d92584662c149e665f44e99bf56213c6b29358f50"
+        },
+        {
+          "source": "app/api/health/route.ts",
+          "output": "app/api/health/route.ts",
+          "sha256": "dd8a79a9fdde25afc06c4903b7229e62c5bfd3fccbaa7983dabc207e38c5bd12"
+        },
+        {
+          "source": "app/counter.tsx",
+          "output": "app/counter.tsx",
+          "sha256": "bb5888fdef7ded7a226829a519e4ccf2bc796636ec1952596b6f0e38444fe529"
+        },
+        {
+          "source": "app/globals.css",
+          "output": "app/globals.css",
+          "sha256": "6b511d8ee5e091b87ee8048a18ed69019ad8d1c17e55eb875a7e8f834e15155f"
+        },
+        {
+          "source": "app/layout.tsx",
+          "output": "app/layout.tsx",
+          "sha256": "dc182c696b00c6a322c948db6e0fe30406e96110e2db9e2cc57ecd90169d81aa"
+        },
+        {
+          "source": "app/page.tsx",
+          "output": "app/page.tsx",
+          "sha256": "932aa5b24a967e20b8ecf1f6b6be8fd29dd01628c8dbe5c8beda84549a93171f"
+        },
+        {
+          "source": "next-env.d.ts",
+          "output": "next-env.d.ts",
+          "sha256": "879741880b6ab48da99dcc06dcc674d381c9826137b0496bf7bb368f302de9fc"
+        },
+        {
+          "source": "next.config.ts",
+          "output": "next.config.ts",
+          "sha256": "4929a57c5f30efd9245748131f781e40ae2e263ccb78875e4c4e09f9de363054"
+        },
+        {
+          "source": "package.json",
+          "output": "package.json",
+          "sha256": "f9c688079d29aad5241e5161406ba9dd14605a010e3c22a29f5d0cb201ed01ca"
+        },
+        {
+          "source": "pnpm-lock.yaml",
+          "output": "pnpm-lock.yaml",
+          "sha256": "6500bf21d43e09537f73b4f076e5cc0951cc5834551e6b7ffffdb6e4ce033a9d"
+        },
+        {
+          "source": "pnpm-workspace.yaml",
+          "output": "pnpm-workspace.yaml",
+          "sha256": "185021bac428281a21e476e8f0b2ad440916d0534f065fbd2a8b3d1213811f07"
+        },
+        {
+          "source": "tests/health.test.ts",
+          "output": "tests/health.test.ts",
+          "sha256": "ef77fd2225a6124e20b4baeaf735663058e4175c893ebec25fd7510800373fcf"
+        },
+        {
+          "source": "tsconfig.json",
+          "output": "tsconfig.json",
+          "sha256": "d9d9a1a73bdb9910470828a675cbd68761ef7bfd3a92ab8fef3c05f30bc4c121"
+        }
+      ],
+      "digest": "de45b2d6e3d5fc3acdca4d275c41472336c04fde05c0f27103840b3abef22662"
+    }
+  ]
+}

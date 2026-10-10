@@ -12,11 +12,15 @@ def main(argv=None):
  parser=argparse.ArgumentParser(description=__doc__,allow_abbrev=False)
  parser.add_argument('--version',dest='provider_version',action='store_true')
  sub=parser.add_subparsers(dest='action')
- new=sub.add_parser('new');new.add_argument('slug');new.add_argument('--directory')
+ new=sub.add_parser('new');new.add_argument('slug');new.add_argument('--directory');new.add_argument('--template');new.add_argument('--template-version')
  for name in ['validate','start','stop','restart','status','logs','test']:
   p=sub.add_parser(name);p.add_argument('--project-root',required=True)
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
+ templates=sub.add_parser('templates',help='Discover bundled exact template releases')
+ template_actions=templates.add_subparsers(dest='template_action',required=True)
+ template_actions.add_parser('list',allow_abbrev=False)
+ show=template_actions.add_parser('show',allow_abbrev=False);show.add_argument('--template',required=True);show.add_argument('--template-version',required=True)
  sub.add_parser('ingress',help=argparse.SUPPRESS)
  deps=sub.add_parser('deps',help='Manage project dependencies inside reviewed containers')
  actions=deps.add_subparsers(dest='dependency_action',required=True)
@@ -37,13 +41,22 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain'],'receipt_schema':1,'dependency_receipt_schema':1,'toolchain_receipt_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates'],'template_catalogue_schema':1,'receipt_schema':1,'dependency_receipt_schema':1,'toolchain_receipt_schema':1}));return 0
   if not args.action:parser.print_help();return 0
+  if args.action=='templates':
+   import project_templates as templates
+   result=templates.discover() if args.template_action=='list' else templates.discover(args.template,args.template_version)
+   print(json.dumps(result,sort_keys=True));return 0
   if args.action=='validate':
    from project_manifest import validate_project
-   result,_,code=validate_project(args.project_root);print(json.dumps(result,sort_keys=True));return code
+   result,_,code=validate_project(args.project_root)
+   if code==0:
+    from pathlib import Path
+    import project_templates as templates
+    templates.validate_provenance(Path(args.project_root).absolute())
+   print(json.dumps(result,sort_keys=True));return code
   app.need(os.getuid()==1002 and os.geteuid()!=0,'setup')
-  if args.action=='new':result=app.create(args.slug,args.directory)
+  if args.action=='new':result=app.create(args.slug,args.directory,args.template,args.template_version)
   elif args.action=='start':result=app.start(args.project_root,args.local_only)
   elif args.action=='stop':result=app.stop(args.project_root)
   elif args.action=='restart':result=app.restart(args.project_root)
@@ -66,9 +79,13 @@ def main(argv=None):
  except ImportError:
   print(json.dumps({'state':'error','error':'setup','message':'Use the prepared isolated Python environment.'}));return 2
  except app.AppError as e:
-  print(json.dumps({'state':'error','error':e.code,'message':str(e)}));return 2 if e.code in {'setup','internal'} else 1
- except (OSError,ValueError,KeyError,TypeError):
-  print(json.dumps({'state':'error','error':'internal','message':'Runtime state could not be reconciled; inspect this target before retrying.'}));return 2
+  failure={'state':'error','error':e.code,'message':str(e)}
+  if hasattr(e,'recovery_path'):failure['retained_staging']=e.recovery_path
+  print(json.dumps(failure));return 2 if e.code in {'setup','internal'} else 1
+ except (OSError,ValueError,KeyError,TypeError) as e:
+  failure={'state':'error','error':'internal','message':'Runtime state could not be reconciled; inspect this target before retrying.'}
+  if hasattr(e,'recovery_path'):failure['retained_staging']=e.recovery_path
+  print(json.dumps(failure));return 2
 
 
 if __name__=='__main__':raise SystemExit(main())
