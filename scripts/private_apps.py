@@ -404,12 +404,12 @@ def start(root, no_route=False, take_lock=True):
   s=reserve(root,contract)
   active,ready=inspect_service(s,contract) if s['unit_sha256']!='0'*64 else (False,False)
   if active and ready:
-   s.update(phase='ready',health_ready=True);s.pop('error',None);save(STORE/(slug+'.json'),s)
+   s.update(phase='ready',health_ready=True,operation_result='passed');s.pop('error',None);save(STORE/(slug+'.json'),s)
    result={'operation_id':s['operation_id'],'project':slug,'state':'ready','changed':False,'port':s['port']}
   else:
    need(not active,'health')
    need(available(s['port']), 'conflict')
-   s.update(operation_id=uuid.uuid4().hex,operation='start',phase='preparing',health_ready=False)
+   s.update(operation_id=uuid.uuid4().hex,operation='start',operation_result='running',phase='preparing',health_ready=False)
    save(STORE/(slug+'.json'),s)
    try:
     s['image']=toolchain();save(STORE/(slug+'.json'),s)
@@ -423,9 +423,9 @@ def start(root, no_route=False, take_lock=True):
      time.sleep(1)
     else:raise AppError('health')
     need(inspect_service(s,contract)[0], 'health')
-    s.update(phase='ready',health_ready=True);s.pop('error',None);save(STORE/(slug+'.json'),s)
+    s.update(phase='ready',health_ready=True,operation_result='passed');s.pop('error',None);save(STORE/(slug+'.json'),s)
    except AppError as error:
-    s.update(phase='failed',health_ready=False,error=error.code);save(STORE/(slug+'.json'),s);raise
+    s.update(phase='failed',health_ready=False,operation_result='failed',error=error.code);save(STORE/(slug+'.json'),s);raise
    result={'operation_id':s['operation_id'],'project':slug,'state':'ready','changed':True,'port':s['port']}
   result['local_url']=f"http://127.0.0.1:{s['port']}"+contract['exposure']['base_path']
   if not no_route:
@@ -445,7 +445,7 @@ def stop(root, take_lock=True):
   if path.exists():verify_unit(s)
   container=object_owned('container',s['name'],s['token'])
   changed=path.exists() or container or s['phase']!='stopped'
-  s.update(phase='stopped',health_ready=False,operation='stop',operation_id=uuid.uuid4().hex)
+  s.update(phase='stopped',health_ready=False,operation='stop',operation_result='running',operation_id=uuid.uuid4().hex)
   save(STORE/(slug+'.json'),s) # Revoke ingress mapping first.
   if path.exists():
    command(['systemctl','--user','stop',s['name']+'.service']);path.unlink()
@@ -453,6 +453,7 @@ def stop(root, take_lock=True):
    command(['systemctl','--user','reset-failed',s['name']+'.service'],optional=True)
   if object_owned('container',s['name'],s['token']):command(['podman','rm','--force',s['name']])
   need(available(s['port']), 'conflict')
+  s['operation_result']='passed';save(STORE/(slug+'.json'),s)
   return {'operation_id':s['operation_id'],'project':slug,'state':'stopped','changed':changed,'source_retained':True}
 
 

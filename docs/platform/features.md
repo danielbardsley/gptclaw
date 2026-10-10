@@ -43,8 +43,10 @@ Feature IDs remain stable even if names, grouping, or delivery order changes.
 
 Priority indicates suggested sequencing, not authorization. When a specification
 covers only an initial slice, the row describes that slice and the remaining
-backlog separately. A merged draft is still Draft until scope approval is
-recorded; it is not implemented runtime code.
+backlog separately. A merged draft is still Draft until scope approval is recorded. SPEC-018
+implementation was subsequently authorized; its implemented initial slices are
+In review until the implementation is reviewed/merged, with live acceptance tracked
+separately.
 
 The current target is repeatable private application development on the existing
 EC2 host. The backlog includes later mobile, dashboard, sharing and production
@@ -94,7 +96,7 @@ capabilities; those are not prerequisites for creating the first applications.
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
 | PRJ-001 | Versioned project manifest | 2 | Delivered | Single-web-service `.gptclaw/project.yaml`, versioned schema, offline validator, and synthetic example; first feature toward a working private application. Daniel accepted implementation on 2026-09-30 (America/New_York); [PR #22](https://github.com/danielbardsley/gptclaw/pull/22) merged as `aa55583`. All 134 local tests and final PR CI #74 passed. This completes the manifest contract, not live-app acceptance. [SPEC-013](../013-versioned-project-manifest/spec.md) · [Design](../013-versioned-project-manifest/technical-design.md) · [Tasks](../013-versioned-project-manifest/tasks.md) · [Acceptance](../013-versioned-project-manifest/acceptance.md). |
-| PRJ-002 | `gptclawctl` CLI | 2 | Draft | [SPEC-018](../018-first-private-application/spec.md) drafts the first `new`, `validate`, `start`, `stop`, `status`, `logs`, and `test` slice for private web apps. Broader `expose` and `archive` operations remain candidates. |
+| PRJ-002 | `gptclawctl` CLI | 2 | In review | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice implemented in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. First desktop Hello World confirmed; second local app and source-preserving operations tested. Shared Serve-prefix transition, both desktop URLs, CI/merge and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
 | PRJ-003 | Template catalogue | 2 | Candidate | Versioned templates cover web, API, Python, Expo, static site, CLI, and multi-package products. |
 | PRJ-004 | New GitHub repository automation | 3 | Candidate | Create repositories, protections, environments, secrets references, and initial pull requests with narrow credentials. |
 | PRJ-005 | Repository credential broker | 3 | Candidate | Prefer a scoped GitHub App; otherwise issue and rotate one deploy key per repository. |
@@ -120,11 +122,11 @@ capabilities; those are not prerequisites for creating the first applications.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| RUN-001 | Rootless project containers | 3 | Draft | Each project runs in its own non-root network, containers, volumes, and namespace. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
-| RUN-002 | User systemd/Quadlet lifecycle | 3 | Draft | Services survive disconnects, restart predictably, and expose status through standard tooling. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
-| RUN-003 | Port registry | 3 | Draft | Allocate collision-free loopback ports and preserve stable assignments across restarts. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
-| RUN-004 | Resource limits | 3 | Draft | Apply per-project CPU, memory, process, storage, and log limits with sensible defaults. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
-| RUN-005 | Health contract | 3 | Draft | Every long-running service has startup, readiness, and ongoing health checks. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
+| RUN-001 | Rootless project containers | 3 | In review | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice implemented in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. First desktop Hello World confirmed; second local app and source-preserving operations tested. Shared Serve-prefix transition, both desktop URLs, CI/merge and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
+| RUN-002 | User systemd/Quadlet lifecycle | 3 | In review | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice implemented in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. First desktop Hello World confirmed; second local app and source-preserving operations tested. Shared Serve-prefix transition, both desktop URLs, CI/merge and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
+| RUN-003 | Port registry | 3 | In review | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice implemented in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. First desktop Hello World confirmed; second local app and source-preserving operations tested. Shared Serve-prefix transition, both desktop URLs, CI/merge and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
+| RUN-004 | Resource limits | 3 | In review | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice implemented in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. First desktop Hello World confirmed; second local app and source-preserving operations tested. Shared Serve-prefix transition, both desktop URLs, CI/merge and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
+| RUN-005 | Health contract | 3 | In review | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice implemented in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. First desktop Hello World confirmed; second local app and source-preserving operations tested. Shared Serve-prefix transition, both desktop URLs, CI/merge and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
 | RUN-006 | Multi-service projects | 3 | Candidate | Run web, API, database, cache, and worker components as one declared project group. |
 | RUN-007 | Background jobs and schedulers | 4 | Candidate | Declare recurring or asynchronous workers without unmanaged terminal processes. |
 | RUN-008 | Pause, resume, and idle shutdown | 4 | Candidate | Reclaim memory and CPU from inactive projects while preserving data and URLs. |
@@ -137,7 +139,7 @@ capabilities; those are not prerequisites for creating the first applications.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| TPL-001 | Next.js full-stack template | 3 | Draft | [SPEC-018](../018-first-private-application/spec.md) drafts the first Next.js/TypeScript/pnpm template with container tooling, health, tests and base-path development updates. The full template catalogue and broader UI/CI defaults remain future scope; no runnable template is implemented yet. |
+| TPL-001 | Next.js full-stack template | 3 | In review | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice implemented in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. First desktop Hello World confirmed; second local app and source-preserving operations tested. Shared Serve-prefix transition, both desktop URLs, CI/merge and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
 | TPL-002 | TypeScript API template | 4 | Candidate | Fastify service with schema validation, OpenAPI, health checks, tests, container, and migrations. |
 | TPL-003 | Python API/AI template | 4 | Candidate | FastAPI, Pydantic, uv, Ruff, pytest, health checks, container, and typed configuration. |
 | TPL-004 | Expo universal application template | 4 | Candidate | Expo Router, TypeScript, web export, device development, EAS profiles, tests, and environment separation. |
@@ -152,9 +154,9 @@ capabilities; those are not prerequisites for creating the first applications.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| NET-101 | Private loopback ingress | 3 | Draft | Route stable project paths to healthy loopback services without opening EC2 inbound ports. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
-| NET-102 | Tailscale Serve manager | 3 | Draft | Publish the dashboard and private project routes to the tailnet with declarative, recoverable configuration. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
-| NET-103 | Base-path compatibility | 3 | Draft | Templates work beneath `/projects/<slug>/`, including assets, API calls, redirects, and WebSockets. [SPEC-018](../018-first-private-application/spec.md) drafts the initial single-web-service slice; no application lifecycle/routing implementation is delivered. |
+| NET-101 | Private loopback ingress | 3 | In review | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice implemented in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. First desktop Hello World confirmed; second local app and source-preserving operations tested. Shared Serve-prefix transition, both desktop URLs, CI/merge and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
+| NET-102 | Tailscale Serve manager | 3 | In review | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice implemented in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. First desktop Hello World confirmed; second local app and source-preserving operations tested. Shared Serve-prefix transition, both desktop URLs, CI/merge and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
+| NET-103 | Base-path compatibility | 3 | In review | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice implemented in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. First desktop Hello World confirmed; second local app and source-preserving operations tested. Shared Serve-prefix transition, both desktop URLs, CI/merge and final acceptance remain pending. Broader catalogue scope is not Delivered. [Evidence](../018-first-private-application/acceptance.md). |
 | NET-104 | Dedicated private service ports | 4 | Candidate | Support applications that cannot operate under a path while keeping access tailnet-only. |
 | NET-105 | Funnel exposure manager | 4 | Candidate | Owner-confirmed, time-limited, health-gated public exposure with automatic shutdown and audit. |
 | NET-106 | Public exposure authentication | 5 | Candidate | Add application-level identity or share tokens when a Funnel preview is not intentionally anonymous. |
@@ -277,16 +279,17 @@ part of this milestone. PRJ-001's manifest is Delivered; rootless tooling and
 the host profile are Deployed, with remaining acceptance tracked separately.
 Independent SSM recovery and a small container smoke test have passed.
 
-[Draft SPEC-018](../018-first-private-application/spec.md), merged as planning
-in [PR #38](https://github.com/danielbardsley/gptclaw/pull/38), is the next coherent
-slice: PRJ-002, TPL-001, RUN-001–005 and NET-101–103. It does not implement those
-features. Review scope and authorize implementation before starting that work.
+[SPEC-018](../018-first-private-application/spec.md) planning merged in PR #38;
+Daniel then authorized implementation. Its initial PRJ-002/TPL-001/RUN-001–005/
+NET-101–103 slices are implemented on [PR #40](https://github.com/danielbardsley/gptclaw/pull/40).
+First desktop access is confirmed; shared-prefix transition, both desktop URLs,
+CI/merge and full acceptance remain. Complete this slice before expanding scope.
 The earlier SPEC-017 acceptance-only draft was closed unmerged; the existing
 host acceptance records remain authoritative and their unrun checks stay pending.
 
 Recommended sequence, subject to owner scope review:
 
-1. **Deliver the first private-app workflow:** implement SPEC-018's single
+1. **Complete the first private-app workflow:** review and accept SPEC-018's single
    template, narrow lifecycle CLI, container-contained pinned tools, port/health
    handling and private routes. No host Terraform/Node installation, dashboard,
    general broker or full template catalogue is needed for this slice. Resolve

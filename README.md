@@ -29,9 +29,10 @@ code that still needs deployment or acceptance.
 The selected next product milestone is to create, run, open, and iterate on one
 private application, then prove a second application can run independently on
 the same host. The
-manifest is complete; [draft SPEC-018](docs/018-first-private-application/spec.md)
-now scopes the initial CLI, container runtime, web template and private routing.
-Its plans merged in PR #38; application workflow implementation is not started.
+manifest is complete; [SPEC-018](docs/018-first-private-application/spec.md)
+now implements the initial CLI, container runtime, web template and private ingress
+on a feature branch. First desktop Hello World is confirmed; full shared-routing/
+two-app acceptance and implementation review/merge remain pending.
 The planning
 bootstrap creates a local planning-ready repository; runtime and promotion skills
 require existing reviewed interfaces and do not supply those systems themselves.
