@@ -12,7 +12,7 @@
 | AC-002 | passed | Exact scoped typed calls, observation-only hostile logs, no repeated authorization request. |
 | AC-003 | passed | No-op, success, degraded, busy, timeout, lost receipt and partial group outcomes reviewed; at most one mutation per case. |
 | AC-004 | passed (synthetic) | Reports omit sentinel secret and identify unknowns; no live provider or project data was accessed. This does not prove provider data isolation. |
-| AC-005 | pending | Daniel/PRJ-002 owner must select the actual reviewed runtime contract and disposable service; then run fresh-client live operations. |
+| AC-005 | pending | SPEC-018 now supplies the reviewed single-web provider v1 and two synthetic managed apps. Fresh-client skill discovery and live-operation acceptance remain unrun; provider availability alone does not close this criterion. |
 | AC-006 | passed | Package/repository checks, independent synthetic evidence and final PR CI passed; Daniel approved implementation and PR #20 merged. Live acceptance remains AC-005. |
 
 ## Verification
@@ -61,8 +61,19 @@ passed [CI run #71](https://github.com/danielbardsley/gptclaw/actions/runs/36794
 including repository checks and Terraform quality checks; protected plan/apply
 were skipped. This records PR CI, not a new infrastructure deployment.
 
-Live runtime acceptance waits for the reviewed provider and disposable service (T-002/T-005).
+SPEC-018 now supplies the reviewed provider and synthetic services. Fresh-client
+live runtime acceptance remains pending (T-002/T-005).
 Merge approval does not turn an unrun check into a pass or authorize the previously
 rejected fixture edits. The four new skills are now advertised in the app's
 repository skill inventory; that observation does not prove fresh-client behavior.
 The catalogue records Deployed while remaining acceptance stays explicit.
+
+## Provider availability — October 10, 2026
+
+[SPEC-018](../018-first-private-application/acceptance.md) merged the single-web
+provider v1 in PR #40. The installed stable launcher is present, its capability
+metadata is observed, and both synthetic app health/private routes are confirmed.
+The skill's stale “no approved provider” statement is corrected to require
+verification of this provider and the selected project's contract. Prior
+synthetic evaluation hashes/results remain historical evidence; this wording
+update and provider availability do not claim fresh-client behavioral acceptance.

@@ -30,9 +30,9 @@ approved exceptions; SYS-001 installs no tools in this implementation.
 | AC-001 | passed | Strict parser/schema tests reject malformed/duplicate/unsafe declarations before installer calls. Profile accounts for all 12 explicit apt packages and five existing component adapters. | Review implementation PR, Daniel. |
 | AC-002 | passed | Offline version/source and checksum-failure tests pass without fallback. Five channel exceptions explicitly approved by Daniel; exact archive verification exercised with synthetic bytes. | Replace exceptions before expiry, Daniel and implementer. |
 | AC-003 | passed | Mock-AWS/real-cloud-init tests verify embedded profile/helper bytes and deployment revision, ordering, size and replacement wiring; no new privileges or independent installer list. | Protected deployment remains separate. |
-| AC-004 | passed | Partial/failure/receipt tests and current CI passed. Replacement receipt/marker report 26 passed intended-identity checks at `6d90105`; digest matches reviewed profile. Current tool/apt inventory and forge AWS CLI execution were checked October 9. | Full protected-deployment correlation/recovery and owner sign-off remain AC-006/007; receipts are not continuous drift detection. |
+| AC-004 | passed | Partial/failure/receipt tests and current CI passed. Replacement receipt/marker report 26 passed intended-identity checks at `6d90105`; digest matches reviewed profile. Current tool/apt inventory and forge AWS CLI execution were checked October 9. | Protected deployment is correlated in the recovered PR #35 record; recovery and owner sign-off remain AC-006/007; receipts are not continuous drift detection. |
 | AC-005 | passed | Repeat/conflict/retirement fixtures preserve unrelated state and avoid uninstall calls. Required bootstrap consumers explicitly gate retirement. | Review operational migration before deployment, Daniel. |
-| AC-006 | pending | Replacement operations and repairs are recorded below; retained filesystem UUID/forge ownership match, bootstrap succeeded, and Daniel confirmed independent SSM access. | Complete protected-plan/apply, recovery readiness and reviewed rollback evidence; no rollback drill is claimed. |
+| AC-006 | pending | Replacement operations and repairs are recorded below; retained filesystem UUID/forge ownership match, bootstrap succeeded, and Daniel confirmed independent SSM access. | Protected plan/apply success is recorded below. Reconcile recovery readiness and reviewed rollback evidence; no rollback drill is claimed. |
 | AC-007 | pending | Implementation and repairs are merged; current repository checks and PR #38 CI passed. Matching deployed receipts and private/recovery access observations exist. | Complete criterion reconciliation and Daniel's final acceptance; resolve source exceptions before expiry. |
 
 “Passed” above describes the criterion's local evidence only; it does not mark
@@ -157,7 +157,25 @@ and deployment revision `6d90105136de55f7932c7e6857ba0bf6415db249`. SSM and
 CloudWatch services were active. Receipts are provisioning observations, not a
 continuous drift check; the current sudo package was newer than its receipt.
 
-These observations justify Deployed, not final Delivered. Full protected-run
-correlation/recovery reconciliation and Daniel's acceptance remain pending.
+These observations justify Deployed, not final Delivered. Protected-run
+correlation is supplied by the recovered PR #35 record below; recovery/rollback
+reconciliation and Daniel's acceptance remain pending.
 The five temporary source-channel exceptions still expire November 1; this
 status update does not extend them. No packages or host configuration were changed.
+
+## Successful repaired bootstrap - October 8, 2026
+
+The protected replacement at `6d90105136de55f7932c7e6857ba0bf6415db249`
+completed bootstrap successfully. Rootless and host-tool receipts passed,
+Tailscale enrolled automatically, and authenticated private SSH plus original
+project filesystem/ownership were verified. See [SPEC-016 live evidence](../016-tailscale-workload-identity/acceptance.md#fresh-host-enrollment-verified---october-8-2026)
+for public workflow references and remaining acceptance limits. This supersedes
+the earlier pending bootstrap outcome; full fixture/reboot and final owner
+acceptance remain separate.
+
+This earlier verification record was recovered from [PR #35](https://github.com/danielbardsley/gptclaw/pull/35)
+on October 10. It preserves the original verifier's observations; enrollment,
+replacement and desktop SSH checks were not repeated during this reconciliation.
+The referenced protected plan/apply jobs were independently checked through
+GitHub and both report success. Current host receipts/storage checks and Daniel's
+SSM confirmation above supplement this record.

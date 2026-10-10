@@ -1,6 +1,6 @@
 # SPEC-016 acceptance evidence
 
-- **Status:** Deployed; replacement connection, online tag and independent recovery observed/reported; final acceptance pending
+- **Status:** Deployed; recorded automatic enrollment/bootstrap and private recovery verified; final owner acceptance pending
 - **Owner:** Daniel
 - **Date:** 2026-10-09 (America/New_York)
 - **Specification:** [SPEC-016](spec.md)
@@ -14,8 +14,8 @@
 |---|---|---|
 | AC-001 | passed locally | 11 offline enrollment tests cover success, retry, version/config/state/tag failures, timeout, credential isolation and migration; rendered helper/no-key/payload assertions pass. |
 | AC-002 | passed | Local IAM bounds and account-stack tests pass. October 8 protected account plan/apply and development-host plan retain deployment identities and project disk; see run evidence below. |
-| AC-003 | pending | Daniel reports successful instance replacement and Tailscale connection on October 9. Daniel supplied successful independent CLI SSM access on October 9; tagged online state was checked locally. Manual-key-free enrollment confirmation and complete private-access/deployment provenance remain pending. |
-| AC-004 | pending | October 9 tool/rootless/bootstrap receipts match the reviewed profile/revision; retained filesystem UUID and forge project ownership match. Installation failure/repair evidence is recorded in SPEC-014/015. Complete deployment provenance and final acceptance remain pending. |
+| AC-003 | passed (recorded live verification) | Recovered October 8 verification from PR #35 records automatic enrollment without a manual key, expected online/tag state and authenticated private SSH through the reviewed replacement. Daniel independently confirmed CLI SSM on October 9. Original checks were not repeated October 10; protected job outcomes were checked. |
+| AC-004 | passed (recorded live verification) | Protected replacement at `6d90105` succeeded; recovered PR #35 verification and October 9 checks record matching bootstrap/profile/rootless receipts plus retained filesystem identity and ownership. Separate host fixture/reboot acceptance and final owner acceptance remain pending. |
 
 ## Executed verification
 
@@ -38,15 +38,16 @@ During the October 1 implementation checks, no local package install, token
 request, AWS mutation or external trust write was performed. Mock test blocks named `apply` do not provision AWS resources. No
 credentials, live tokens, state or plans are included in this evidence.
 
-## Remaining setup
+## Remaining acceptance
 
-Follow [the runbook](../../runbooks/manage-tailscale-federation.md) for the
-recovery readiness and protected development-host apply. The protected remote plan
-now confirms Terraform 1.16.5. Preserve the empty development working directory
-and disabled auto-apply. Tailnet Lock is disabled on the connected host's tailnet;
-confirm recovery point, maintenance window and rollback readiness before replacement.
-At the time of the October 8 setup record, no host replacement or actual automatic enrollment had occurred; the October 9 owner report below supersedes replacement-pending wording.
-Delivered status is not claimed.
+The recovered October 8 verification below and subsequent October 9 checks
+establish automatic enrollment, successful protected replacement, matching
+receipts, retained storage and private/recovery access. Final owner acceptance
+remains pending. Preserve disabled auto-apply and the reviewed workspace setup;
+future replacement still needs recovery readiness and its authorized pipeline.
+Separate SYS-001 fixture/logout/reboot checks remain in their own records.
+Earlier setup/plan observations below are historical; they do not supersede the
+latest verified result. Delivered status is not claimed.
 
 ## Review and CI
 
@@ -168,7 +169,9 @@ messages and repair method were not supplied. No automatic enrollment without
 manual key entry, tag/state, SSM recovery, receipt provenance or preserved-volume
 checks are inferred from the connection report.
 
-Next acceptance actions:
+At the time of that report, the next acceptance actions were listed below.
+Recovered PR #35 evidence now supplies actions 1–3; final owner acceptance remains.
+
 
 1. Associate the replacement with its protected GitHub/HCP apply and deployed
    revision; record the installation failures and repairs without secrets.
@@ -194,7 +197,53 @@ Current matching tool/rootless/bootstrap receipts and storage/ownership checks
 are documented in [SPEC-015 evidence](../015-host-tool-profile/acceptance.md) and
 [SPEC-014 smoke evidence](../014-rootless-container-toolchain/acceptance.md).
 Earlier notes about unknown installation failures are superseded by those
-records. They support Deployed status, alongside the tagged online node and
-Daniel's independent SSM transcript. Explicit confirmation of enrollment without
-a manual auth key, protected deployment correlation and final owner acceptance
-remain pending. No new enrollment or replacement was performed in this review.
+records. The earlier catalogue review had not incorporated PR #35; its recovered
+record below supplies automatic enrollment/private-access and protected-deployment
+provenance. Final owner acceptance remains pending. No new enrollment or
+replacement was performed in this review.
+
+## Fresh-host enrollment verified - October 8, 2026
+
+[PR #33](https://github.com/danielbardsley/gptclaw/pull/33) repaired absent-package
+classification. [PR #34](https://github.com/danielbardsley/gptclaw/pull/34) repaired
+the bootstrap storage-parent ownership that blocked Podman before Tailscale.
+Final deployed source: `6d90105136de55f7932c7e6857ba0bf6415db249`.
+
+The [protected plan](https://github.com/danielbardsley/gptclaw/actions/runs/37845606105)
+passed: two additions, thirteen revision-tag updates, two deletions. Only compute
+and its attachment were replaced; protected project storage was retained.
+The [protected apply](https://github.com/danielbardsley/gptclaw/actions/runs/37846268276)
+succeeded with the same counts. Daniel authorized that replacement and subsequent
+host debugging; Terraform plans/applies remained exclusively in CI/CD.
+
+Post-apply verification observed successful bootstrap completion, passing
+rootless and host-tool receipts, and matching deployment-revision provenance.
+The rootless phase passed before Tailscale enrollment, and subsequent hardening,
+logging, policy and agent-installation phases completed. Tailscale reported
+Running, online, and the exact expected tag. The new instance enrolled through
+the installed AWS workload-identity bootstrap helper without a manually supplied
+auth key or interactive enrollment login.
+
+Desktop Tailscale ping returned two relay pongs. TCP 22 and authenticated private
+SSH succeeded. SSH host identity was verified against the public key obtained
+through SSM; the temporary known-hosts file was removed. Independent SSH checks
+confirmed the original project filesystem identity and expected ownership, plus
+the corrected engine-storage-parent ownership. The desktop SSH alias still needs
+the replacement's current DNS name; no permanent local SSH configuration or old
+tailnet-device record was changed during verification.
+
+Connection addresses, cloud resource identifiers, HCP run links and detailed
+host metadata are omitted from this new public evidence summary. No tokens,
+credentials, Terraform state/plans or raw authentication logs are included.
+
+These observations verify SPEC-016 enrollment and receipt/storage checks.
+Final owner acceptance, full SYS-001 container/logout/reboot/cleanup scenarios
+and any post-replacement agent reauthentication/deploy-key recovery remain
+separate. No broader feature Delivered status or executed rollback is claimed.
+
+This earlier verification record was recovered from [PR #35](https://github.com/danielbardsley/gptclaw/pull/35)
+on October 10. It preserves the original verifier's observations; enrollment,
+replacement and desktop SSH checks were not repeated during this reconciliation.
+The referenced protected plan/apply jobs were independently checked through
+GitHub and both report success. Current host receipts/storage checks and Daniel's
+SSM confirmation above supplement this record.

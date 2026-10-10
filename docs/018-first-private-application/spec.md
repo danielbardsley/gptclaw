@@ -1,6 +1,6 @@
 # SPEC-018: First private application workflow
 
-- **Status:** Implementation authorized and in progress
+- **Status:** Merged and running on EC2; remaining live acceptance pending
 - **Owner:** Daniel
 - **Date:** 2026-10-09 (America/New_York)
 - **Features:** Initial slices of PRJ-002, TPL-001, RUN-001–005 and NET-101–103
@@ -21,10 +21,10 @@ October 9, including the specified private application routes. Earlier smoke-tes
 valid for their recorded scope.
 
 Use the existing [manifest v1](../project-manifest.md), rootless Podman and forge
-user manager. Proposed first template follows the architecture's Next.js,
+user manager. The implemented first template follows the architecture's Next.js,
 TypeScript and pnpm default. Language tools run inside a reviewed container;
-no host Node/npm or Terraform installation is required. Implementation selects
-supported exact tool/dependency versions and a base-image digest before execution.
+no host Node/npm or Terraform installation is required. Selected tool/dependency
+pins and the base-image digest are recorded in the technical design.
 
 Include a small local lifecycle CLI, one web template, bounded per-project
 services, health/logs and private routes under `/projects/<slug>/`. Projects live
@@ -116,18 +116,19 @@ Daniel confirmed independent CLI SSM access on October 9: the session reached
 `forge-dev-01` as `ssm-user`. The earlier host-role registration query was denied;
 that does not prevent operator access and no host permission expansion is needed.
 
-Daniel reviews the proposed template/slice and authorizes implementation. Private
-Serve changes need the existing operator capability and concrete authorized
-scope; a missing capability blocks routing only. Read-only inspection found no
-Serve routes configured and no active Funnel routes. Reading Serve status does
-not prove permission to change it. Desktop-to-service access and HTTPS readiness
-are still unverified. Select approved prerequisite changes before dependent work;
-no new sudo/IAM grant or privileged service is assumed. Any necessary host
-configuration change uses reviewed code and the existing protected pipeline;
-any tailnet HTTPS/access change needs its concrete owner-reviewed scope.
+Daniel authorized implementation and subsequently authorized merging the work
+on October 10. [PR #40](https://github.com/danielbardsley/gptclaw/pull/40) merged
+as `52b57caf1d86e81e1bbb41a77af35ed45e7df1f6`. Both apps run on EC2; Daniel
+confirmed both private pages and counters. The one-time shared `/projects/`
+Serve prefix is configured, the prototype override removed, and Funnel is off.
+The CLI manages app mappings without further per-app daemon writes. Forge's
+original daemon write was denied; Daniel used his existing SSM operator path.
+No new sudo/IAM grant or general Tailscale operator setting was introduced.
+Desktop source-update and managed first-app cleanup acceptance remain pending;
+see [the acceptance record](acceptance.md) for evidence and limits.
 
 Stage 1 may use synthetic Hello World content, followed by real product work once
 the workflow succeeds. It does not change manifest v1 or imply durable app data.
 Daniel supplies the desktop browser confirmation. The agent supplies scoped
-host tests, exact URLs and operation evidence. Creating or merging this planning
-revision does not start the application or alter routing.
+host tests, exact URLs and operation evidence. Merge, live operation and acceptance are recorded separately; merged code alone
+does not establish an unobserved acceptance result.

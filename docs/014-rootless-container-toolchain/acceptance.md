@@ -238,3 +238,20 @@ returned `forge-dev-01`. This is owner-supplied recovery-access evidence, not an
 agent-run session. The session identifier is omitted. No permissions were changed.
 Logout/reboot persistence and synthetic-source replacement acceptance remain
 pending; this connection does not complete those criteria.
+
+## Successful repaired bootstrap - October 8, 2026
+
+The protected replacement at `6d90105136de55f7932c7e6857ba0bf6415db249`
+completed bootstrap successfully. Rootless and host-tool receipts passed,
+Tailscale enrolled automatically, and authenticated private SSH plus original
+project filesystem/ownership were verified. See [SPEC-016 live evidence](../016-tailscale-workload-identity/acceptance.md#fresh-host-enrollment-verified---october-8-2026)
+for public workflow references and remaining acceptance limits. This supersedes
+the earlier pending bootstrap outcome; full fixture/reboot and final owner
+acceptance remain separate.
+
+This earlier verification record was recovered from [PR #35](https://github.com/danielbardsley/gptclaw/pull/35)
+on October 10. It preserves the original verifier's observations; enrollment,
+replacement and desktop SSH checks were not repeated during this reconciliation.
+The referenced protected plan/apply jobs were independently checked through
+GitHub and both report success. Current host receipts/storage checks and Daniel's
+SSM confirmation above supplement this record.

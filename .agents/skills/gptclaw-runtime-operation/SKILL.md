@@ -9,9 +9,10 @@ Resolve applicable guidance, the canonical project root and identity, developmen
 environment, and explicit component or requested group. Read the project's
 reviewed lifecycle documentation and confirm the installed provider/version.
 Use [the operation contract](references/operations.md) to map only capabilities
-needed for this request. No approved provider is currently supplied by GptClaw;
-missing contracts, ambiguous targets and unsupported versions block dependent
-operations. Continue useful scoped read-only diagnosis and name the missing fact.
+needed for this request. GptClaw supplies the SPEC-018 single-web provider v1;
+verify its installed version and selected-project contract before use. Missing
+contracts, ambiguous targets and unsupported versions block dependent operations.
+Continue useful scoped read-only diagnosis and name the missing fact.
 
 Explain the selected target and effect. An explicit start/stop/restart request
 already authorizes that exact operation; do not request it again. Status/logs
