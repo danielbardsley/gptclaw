@@ -146,3 +146,6 @@ mutation are not supported.
 Never commit Terraform state, saved plans, local variable files, access tokens,
 private keys, Codex authentication data, or environment dumps. Preserve private
 host access, persistent-volume protection, and development/production isolation.
+
+For exact per-project Node/pnpm selection, verified image acquisition and legacy
+adoption, see [the toolchain runbook](runbooks/manage-project-toolchains.md).

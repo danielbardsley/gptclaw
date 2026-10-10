@@ -1,6 +1,6 @@
 # TDD-020: Project-selected container toolchains
 
-- **Status:** Draft design; no implementation or installed commands implied
+- **Status:** Implemented on feature branch; local/live evidence recorded
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-020](spec.md)
@@ -8,15 +8,15 @@
 
 ## Approach and contracts
 
-Replace the provider's single hardcoded Containerfile selection with a reviewed
+The provider replaces its single hardcoded Containerfile selection with a reviewed
 profile resolver, keeping rootless execution and the existing lifecycle backend.
-Today `toolchain()` hashes `templates/apps/node-toolchain/Containerfile`, builds
+The SPEC-018 baseline `toolchain()` hashed `templates/apps/node-toolchain/Containerfile`, builds
 an image and verifies its label; `prepare()` includes the image ID in dependency
-fingerprints. The declaration/registry/verified receipt below adds selection and
-actual version/integrity checks rather than claiming those already exist.
+fingerprints. The implemented declaration/registry/verified receipt adds selection and
+actual version/integrity checks.
 
-A separate proposed `.gptclaw/toolchain.json` avoids inserting unsupported fields
-into manifest v1. For example, as draft data only:
+A separate `.gptclaw/toolchain.json` avoids inserting unsupported fields
+into manifest v1. The initial supported selection is:
 
 ```json
 {
@@ -29,7 +29,7 @@ into manifest v1. For example, as draft data only:
 
 Use a bundled strict schema: bounded regular owned files, duplicate/unknown keys
 and symlink refusal, exact version strings and integer profile version. Resolve
-against a proposed `config/toolchains/` registry; declared versions must match
+against the strict `config/toolchains/v1.json` registry; declared versions must match
 that immutable profile. Package.json's `packageManager` and any supported exact
 runtime-version file must agree. Engine ranges are compatibility constraints,
 not version selectors; test them under the selected runtime. Define exactly which
@@ -42,9 +42,10 @@ Each reviewed profile records its stable family/revision, exact versions, OS/
 architecture, OCI base digest, pnpm artifact URL/integrity, controlled build recipe,
 verification arguments and recipe/profile digest. No project-defined URLs or
 commands enter the build path. Start with the existing Node 24.21.0/pnpm 12.10.1
-pair and base digest in the reviewed Containerfile. The pnpm artifact's explicit
-integrity pin must be selected and verified before implementation acquisition;
-current code's exact npm version alone is not that new registry receipt.
+pair and base digest in the reviewed Containerfile. The public pnpm 12.10.1 artifact's SHA-512 is pinned in that registry and verified
+before installation. The original Containerfile remains for explicit baseline
+compatibility/CI; managed acquisition uses a trusted generated recipe and hashed
+`install-pnpm.cjs`, with no project-supplied commands or sources.
 
 Build/download only through the approved rootless image job, with limits and a
 per-profile lock. Verify the pinned artifact before its container installer runs;
@@ -62,10 +63,10 @@ is terminal for that preparation; no floating-tag/current-version fallback.
 Concurrent requests for one profile share serialized preparation, while unrelated
 app services remain available. Shared cache quotas/pruning are SYS-006, not here.
 
-## Proposed interfaces and integration
+## Implemented interfaces and integration
 
 `gptclawctl toolchain inspect --project-root ROOT` and `toolchain prepare` are
-proposed additions, not available in 1.0.1. Inspect parses known metadata and
+provider 1.2.0 additions. Inspect parses known metadata and
 reads receipts/image presence; it does not download/build/launch project code.
 Prepare is an explicit mutation using reviewed fixed acquisition/version checks.
 Normal start/test invokes that same resolver when preparation is required.
@@ -89,7 +90,7 @@ source. An unknown sidecar version remains an error, never a legacy fallback.
 
 ## Components and verification
 
-| Component | Planned change | Requirements |
+| Component | Implemented change | Requirements |
 |---|---|---|
 | Sidecar schema/parser and profile registry | Safe exact selection and support matrix | LNG-001, LNG-002 |
 | Rootless acquisition/version verifier and receipts | Immutable sources, bounded locks/jobs and honest reuse | LNG-002, LNG-003 |
@@ -129,3 +130,47 @@ unless an explicit reviewed change is needed; no alternate live pair is assumed
 approved. SYS-003's accepted adapter is the gate for dependency/lifecycle use.
 Python/uv and Expo toolchain support remain owned by the stage-12 stack initiatives;
 they need exact sources, policy adapters and their own live/CI evidence.
+
+## Resolved implementation contracts
+
+The declaration uses [schema v1](../../schemas/toolchains/v1.schema.json);
+[registry v1](../../config/toolchains/v1.json) accepts only exact reviewed profile
+fields, source origins/digests, platforms and installer hashes. Duplicate keys,
+unsafe/non-owned/non-regular/hardlinked files and unknown values fail. Stable
+engine-range grammar and exact version files are documented in the
+[runbook](../../runbooks/manage-project-toolchains.md); compatibility is checked
+offline and again under the verified runtime. Manifest v1 is unchanged.
+
+Profile receipts use schema 1 with profile/recipe hash, full approved provenance,
+operation ID, acquiring/verified/failed/unknown phase, image ID, observed versions,
+sanitized error and bounded duration. They live under the toolchains subtree,
+with attempt history outside app-state enumeration. Tags are scoped by owned
+provider-store path and profile hash. Matching receipt/image/provenance is required
+for reuse; actual executables are rechecked. A failed reuse invalidates verified
+state. Acquiring/unknown attempts and produced but unverified cache objects refuse
+automatic takeover; operator reconciliation preserves unknown resources.
+
+Cold build limit is 300 seconds, memory 1536 MiB, CPU quota 1 and nproc 256
+(the supported Podman 4.9 build flag). Verification is a named 30-second
+read-only/no-network container with PID 256 and no source/credential mounts.
+Artifact fetch has a 60-second request timeout and 16-MiB limit; npm installation
+runs offline/no hooks with a 60-second timeout. Public acquisition uses a generated
+empty auth file. Output limits reuse the provider's 1-MiB-per-stream command runner.
+Known failure logs are sanitized/bounded. Successful cleanup removes only verified
+fixed owned job files; failure job data is retained. No shared cache/image pruning.
+
+Dependencies and start/test use the same selected verified image and selection
+hash; project locks protect operation/state changes. A stopped selection change
+invalidates dependency/build fingerprints. Active switching fails with busy;
+existing running legacy units permit a ready start no-op without retroactive
+artifact provenance. Future defaults cannot alter the separate fixed legacy
+registry reference. Explicit adoption changes only the sidecar after a managed
+stop, with exact metadata and source/lock retention. Interrupted SYS-003 publication
+resolves against its hash-verified saved manifest until publication is coherent,
+so a missing captured manifest does not block safe same-ID recovery.
+
+CI uses a synthetic Docker adapter for real integrity-checked acquisition/reuse
+and selected-image frozen install/build/test/typecheck, plus the baseline workflow.
+Docker CI build uses a 300-second command/15-minute job bound; Podman build resource
+flags and private service behavior are separately proven on EC2. It adds no host
+language installation, AWS changes, alternate real pair or privileged access.

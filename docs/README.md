@@ -148,10 +148,11 @@ dispositions independently of feature implementation status.
   [Tasks](./019-project-dependency-policy/tasks.md) ·
   [Acceptance](./019-project-dependency-policy/acceptance.md)
 
-- **020 — Pinned language toolchains (SYS-002), initial web slice, draft:**
+- **020 — Pinned language toolchains (SYS-002), initial web slice, implementation in review:**
   [Specification](./020-pinned-language-toolchains/spec.md) ·
   [Technical design](./020-pinned-language-toolchains/technical-design.md) ·
-  [Tasks](./020-pinned-language-toolchains/tasks.md)
+  [Tasks](./020-pinned-language-toolchains/tasks.md) ·
+  [Acceptance](./020-pinned-language-toolchains/acceptance.md)
 
 ## Current application milestone
 

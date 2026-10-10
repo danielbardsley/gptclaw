@@ -1,6 +1,6 @@
 # TASKS-020: Pinned language toolchains
 
-- **Status:** Draft; planning requested, implementation not authorized
+- **Status:** Implementation authorized; code and local/live checks complete, CI/review pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-020](spec.md)
@@ -10,21 +10,21 @@
 
 - [x] T-000: Inspect the fixed SPEC-018 image, manifest v1, sequence and host-tool
   boundaries; draft a separate initial Node/pnpm selection initiative.
-- [ ] T-001: Daniel reviews/authorizes implementation. Settle sidecar/registry/
+- [x] T-001: Daniel reviews/authorizes implementation. Settle sidecar/registry/
   receipt schemas, metadata compatibility, exact artifact integrity and supported
   platform before acquisition. Confirm SYS-003 integration readiness; registry/
   validator work may proceed independently. (LNG-001/002; AC-001/002)
 
 ## Implementation and verification
 
-- [ ] T-002: Implement strict observation-only declaration/registry validation,
+- [x] T-002: Implement strict observation-only declaration/registry validation,
   immutable initial profile and synthetic distinct-profile fixtures. Preserve
   manifest v1 and reject unknown/ranged/conflicting selections. (LNG-001/002;
   AC-001/002)
-- [ ] T-003: Implement bounded rootless acquisition, per-profile serialization,
+- [x] T-003: Implement bounded rootless acquisition, per-profile serialization,
   integrity/actual-version verification, receipts and verified reuse; cover
   missing pins, conflicts and interrupted outcomes. (LNG-003; AC-003)
-- [ ] T-004: After the SYS-003 adapter is accepted, integrate one selected image
+- [x] T-004: After the SYS-003 adapter is accepted, integrate one selected image
   into dependency/build/test/start, state invalidation and inspect/prepare. Add
   explicit new-project metadata and fixed legacy compatibility/adoption; prove
   active-target refusal and unaffected second-app state. (LNG-004/005; AC-004/005)
@@ -37,8 +37,13 @@
 
 ## Current handover
 
-Only planning is complete. No sidecar, registry, new profile/image, provider command
-or live migration was created. Daniel owns scope review/authorization; implement
-SYS-003 first for automatic dependency use. Existing apps stay on their accepted
-fixed toolchain until an explicitly authorized migration. Later languages belong
-to stage 12 and their selected stack specifications.
+Daniel authorized this initial web slice on October 10, after SYS-003 acceptance
+and merge. Provider 1.2.0 adds exact sidecar/profile selection, pinned artifact
+verification, bounded acquisition, actual-version checks, receipts/reuse, typed
+inspect/prepare and shared image/fingerprint integration. New apps have explicit
+metadata; no-declaration legacy apps map to the frozen baseline without source
+rewriting. Offline distinct-profile fixtures, failure/conflict/lock checks and
+synthetic EC2 cold/reuse/frozen/build/test/private-page/legacy-adoption acceptance
+are recorded in [acceptance.md](acceptance.md). Existing demo source/state and
+private page/health remained unchanged. T-005 retains CI, review, owner acceptance
+and merge gates. Python/uv/Expo belong to stage 12 and their stack specifications.

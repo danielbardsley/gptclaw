@@ -4,6 +4,10 @@ on:
     paths:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
+      - config/toolchains/**
+      - schemas/toolchains/**
+      - docs/020-pinned-language-toolchains/**
+      - runbooks/manage-project-toolchains.md
       - config/project-dependencies/**
       - schemas/project-dependencies/**
       - schemas/project/**
@@ -18,6 +22,10 @@ on:
     paths:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
+      - config/toolchains/**
+      - schemas/toolchains/**
+      - docs/020-pinned-language-toolchains/**
+      - runbooks/manage-project-toolchains.md
       - config/project-dependencies/**
       - schemas/project-dependencies/**
       - schemas/project/**
@@ -48,6 +56,7 @@ jobs:
         run: |
           .venv-manifest/bin/python scripts/tests/test_private_apps.py
           .venv-manifest/bin/python scripts/tests/test_project_dependencies.py
+          .venv-manifest/bin/python scripts/tests/test_project_toolchains.py
       - name: Build pinned toolchain and generated app
         shell: bash
         run: |
@@ -75,3 +84,5 @@ jobs:
           done
       - name: Verify generated app dependency operations
         run: .venv-manifest/bin/python scripts/tests/check_dependency_template.py "$RUNNER_TEMP/gptclaw-dependency-template" --image gptclaw-toolchain-ci
+      - name: Verify selected toolchain acquisition and lifecycle preparation
+        run: .venv-manifest/bin/python scripts/tests/check_toolchain_template.py "$RUNNER_TEMP/gptclaw-toolchain-template"

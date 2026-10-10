@@ -24,3 +24,8 @@ and implicit runtime downloads are unsupported. Do not bypass the policy with
 build/test scripts. Keep .gptclaw-cache/ and node_modules/ out of Git.
 On a partial dependency outcome, inspect deps status and recover the same
 operation ID; never overwrite an editor's changes or cancel unknown jobs.
+
+Use the exact `.gptclaw/toolchain.json` profile through `gptclawctl toolchain` and
+the reviewed lifecycle. Preserve pins and source; stop the selected app before
+an authorized toolchain switch. Do not run host language installers or select
+arbitrary container images. Unsupported versions need a reviewed profile PR.

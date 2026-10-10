@@ -21,3 +21,7 @@ this app, add/update/remove through the reviewed container adapter, review the
 package.json/pnpm-lock.yaml diff, test and start it again. Frozen installation
 keeps dependency source files unchanged. See `runbooks/manage-project-dependencies.md`
 in the selected GptClaw repository. Cache/module folders are not source or Git data.
+
+New projects receive an exact `.gptclaw/toolchain.json` selection. Use the reviewed
+`gptclawctl toolchain inspect`/`prepare` workflow; do not install or switch host
+languages. Toolchain changes require this app stopped and a supported profile.
