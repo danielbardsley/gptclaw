@@ -19,8 +19,10 @@ Daniel requested this specification and confirmed `danielbardsley` personal-acco
 repositories on October 10. He then instructed “Ok, implement the spec”, approving
 the bounded requirements/defaults and authorizing implementation. He separately
 authorized retaining `danielbardsley/gptclaw-prj004-verification` for live checks
-with an explicitly supplied private provisioning token. No token has yet been
-supplied or live mutation performed. Review, merge and acceptance remain separate;
+with an explicitly supplied private provisioning token. Daniel subsequently supplied a creation-only token, approved a seven-day
+expiry limit and authorized manual revocation on completion. The retained private
+verification repository now exists; scoped configuration and full acceptance
+remain pending. Review, merge and acceptance remain separate;
 see [acceptance.md](acceptance.md).
 
 ## Scope and baseline

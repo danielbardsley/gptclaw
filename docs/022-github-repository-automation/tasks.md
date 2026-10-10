@@ -15,8 +15,9 @@
   with “Ok, implement the spec” on October 10. The adapter uses an explicit private
   fine-grained token file and creation-only/scoped-configuration phases. Daniel
   separately authorized retaining `danielbardsley/gptclaw-prj004-verification`.
-- [ ] T-002b: Daniel supplies the private token path, actual expiry and grant
-  metadata. Verify the actual actor/account plan and scoped endpoint permissions;
+- [ ] T-002b: Creation token path/expiry/grants and actor are verified. Daniel supplies the
+  repository-specific configuration token path/expiry/grants; verify private
+  protection through actual scoped endpoints (subscription metadata was omitted);
   record provisioning-token revocation and ongoing Git handoff separately.
   REP-005; AC-005. Do not substitute broader credentials after a denial.
 
@@ -68,10 +69,14 @@ GitHub transport; evidence and remaining criterion gates are recorded in
 and executable anonymous-fd askpass helper. Immutable template assets are unchanged.
 
 Scope/defaults and implementation are authorized. The retained live target is
-authorized; no token has been supplied yet, so account capability/API enforcement,
-live private app validation and owner acceptance are pending. Daniel's next
-input is the private file path, actual expiry and permission metadata; no token
-values. No application repository was created during offline verification.
+authorized; creation-only authentication/expiry and remote identity are verified. GitHub
+omitted plan metadata; protection API enforcement, scoped configuration, live
+private app validation and owner acceptance are pending. Daniel's next
+input is the repository-specific configuration token path, actual expiry and
+permission metadata; no token values. Offline verification created no remote application repository. The later live
+creation-only phase created the authorized retained private repository with
+operation `c33aa2188ed84326a0f6bc2dc0fe2ad1`, ID `1413668232`; its scoped configuration
+credential is pending. Daniel approved the seven-day limit and owns revocation.
 PR #52 carries implementation for review; merge is not authorized by the coding
-request. T-008 is complete for implementation revision `6b28922`: all three configured
+request. T-008 is complete for updated implementation revision `ebfe69c`: all three configured
 CI workflows passed. T-009 retains live/merge/owner acceptance gates.

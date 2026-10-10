@@ -13,17 +13,68 @@
 Daniel authorized implementation on October 10 and separately approved retaining
 `danielbardsley/gptclaw-prj004-verification` for live verification using an explicitly
 supplied private token. He requested private-file creation instructions; those
-are in the [runbook](../../runbooks/manage-project-repositories.md). No token/path,
-actual expiry or grants have been supplied yet. No application repository,
-credential, environment, infrastructure or private app was mutated in these
-checks. Test data is synthetic; Git remotes are task-owned temporary bare repos.
+are in the [runbook](../../runbooks/manage-project-repositories.md). At the initial offline baseline, no token/path,
+actual expiry or grants had been supplied. The authorized live creation phase
+has now run as recorded below. The earlier offline checks mutated no application repository, credential,
+environment, infrastructure or private app. Test data is synthetic; Git remotes are task-owned temporary bare repos.
+
+## Live creation phase — October 10
+
+Daniel supplied the private provisioning-token file and reported **All repositories**
+selection with **Repository creation** permission. The directory/file are owned
+by `forge` (UID 1002), mode `0700`/`0600`, regular/no symlink. Read-only GitHub
+metadata authenticated `danielbardsley` and reported actual token expiration
+`2026-10-17T21:01:18Z` (October 17, 5:01 p.m. America/New_York).
+
+Daniel explicitly authorized a seven-day implementation limit and committed to
+manual token removal when finished. Temporary credential scope: owner Daniel;
+reason SPEC-022 retained verification; all-repository selection with creation-only
+permission as reported, actual creation endpoint succeeded; expiry above; removal
+step revoke in GitHub and remove the private file under Daniel's control. Revocation
+is pending; this is not standing application Git access or authority over other
+repositories. Full token grants cannot be introspected by the adapter.
+
+GitHub fine-grained `/user` omitted private subscription metadata. This is recorded
+as `endpoint-verification-required`, not proof of a supported plan. Explicitly
+reported unsupported plans still fail; configuration must verify protection
+through actual endpoint write/readback before starter publication.
+
+Executed on candidate revision `ebfe69c22a217d2ae4355a357df4a5386d5790b7`:
+
+- `scripts/gptclawctl repo plan` for the authorized target succeeded read-only.
+- The first `repo apply --create-only` rejected the saved CLI preview's timing
+  envelope before mutation. The reader now accepts that exact bounded envelope;
+  an offline regression covers apply and rejects unexpected fields.
+- The same `repo apply --create-only` then returned `operator-required` (exit 1,
+  intended credential handoff). Operation `c33aa2188ed84326a0f6bc2dc0fe2ad1` is
+  journaled with immutable repository ID `1413668232`.
+- Independent `GET /repos/danielbardsley/gptclaw-prj004-verification` readback
+  verified owner, private visibility, matching operation description and size 0.
+  [Retained repository](https://github.com/danielbardsley/gptclaw-prj004-verification).
+
+No starter branches, protections, environments, secrets, PR or local app source
+were published in creation-only mode. Resume awaits a second token selected only
+for this repository, with Administration/Contents/Pull requests write permissions.
+No permission fallback, deletion, production operation or app restart occurred.
+The first token can be revoked by Daniel after creation; do not delete the retained
+repository or its journal. Ongoing Git credentials remain a separate handoff.
+
+The final focused suite after expiry/subscription/saved-plan fixes ran 38 tests
+in 24.718 seconds, all passed. The updated full repository checker passed with exit 0 (including 38 focused tests).
+All three code-revision CI workflows passed at `ebfe69c`:
+[app workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38086612822),
+[development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38086612864)
+and [federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38086612890).
+No protected infrastructure deployment was performed. Whitespace, shell syntax
+and updated relative-link checks passed. This subsequent evidence update is
+documentation only; its follow-up PR-head checks remain visible on PR #52.
 
 ## Criterion mapping
 
 | Criterion | State | Observed evidence | Remaining action/owner |
 |---|---|---|---|
-| AC-001 | pending | Offline read-only plan, exact release, collision/path/input rejection and no-write tests pass. | Verify actual actor/account/name observations with supplied token. |
-| AC-002 | pending | Real fixture Git proves README-only main, starter history/provenance/guidance and one PR; protection precedes exclusive starter ref. | Run authorized private GitHub fixture and record actual PR/files. |
+| AC-001 | pending | Offline read-only plan, exact release, collision/path/input rejection and no-write tests pass. | Actual actor/account/target preview observed; final setup readback remains pending. |
+| AC-002 | pending | Real fixture Git proves README-only main, starter history/provenance/guidance and one PR; protection precedes exclusive starter ref. | Private repository ID/owner verified; protected bootstrap/starter PR and files await scoped token. |
 | AC-003 | pending | Protection readback/denial/drift tests pass; no implicit policy repair or starter publication after denial. | Verify GitHub settings and actual direct-main denial. |
 | AC-004 | pending | Empty selections cause no corresponding requests; development environment/readback and secret metadata states pass. No secret writes exist. | Record selected/no-selection behavior against actual GitHub. |
 | AC-005 | pending | Private-file/type/expiry, wrong actor/plan, anonymous-fd askpass, HTTP redaction and redirected Git configuration rejection pass with synthetic credentials. | Verify actual grants/expiry and revoked provisioning tokens; record separate Git handoff. |
@@ -46,8 +97,9 @@ offline assertions do not establish deployed behavior or owner acceptance.
   implementation; final changed-document relative-link checks also passed.
 
 Terraform commands were not run: no Terraform/host infrastructure changed.
-Live GitHub/configuration, real app/container/runtime checks and deployment were
-not run because the specifically scoped provisioning token is not yet supplied.
+Live GitHub creation/readback ran as recorded above. Remaining configuration
+and real app/container/runtime checks await the repository-specific token; no
+host/infrastructure deployment was performed.
 Implementation CI outcomes are recorded below, separately from local checks. No test output contains token values or environment dumps.
 
 ## Verified implementation CI
