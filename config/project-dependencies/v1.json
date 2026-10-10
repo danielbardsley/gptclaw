@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "manager": "pnpm",
+  "manager_version": "12.10.1",
+  "registry": "https://registry.npmjs.org/",
+  "install_hooks": false,
+  "runtime_downloads": false,
+  "release_age_exclusions": [
+    "@types/node@24.19.2"
+  ],
+  "operations": [
+    "install",
+    "add",
+    "update",
+    "remove",
+    "recover"
+  ],
+  "scope": "single-root-public-npm"
+}

@@ -68,7 +68,8 @@ scripts/gptclawctl stop --project-root /srv/forge/projects/my-app
 
 `new` refuses existing destinations and writes a valid v1 manifest, provider
 marker, pinned starter and adapted guidance. Read that project's guidance before
-editing. The first `start` installs from the frozen lockfile and runs the manifest
+editing. The first `start` enforces the [dependency policy](manage-project-dependencies.md),
+installs from the frozen lockfile with hooks/version downloads disabled and runs the manifest
 build vector, then starts the development service and waits for declared health.
 Dependency preparation/build is reused on later starts until its lock/toolchain
 fingerprint changes. Development source edits update Next.js without hand-editing
@@ -124,3 +125,11 @@ broaden IAM/sudo/daemon permissions. Source changes and provider upgrades use th
 repository PR workflow; any needed privileged host configuration follows the
 protected infrastructure pipeline. Existing full host acceptance remains in
 SPEC-014/015/016; this workflow does not run logout, reboot or replacement tests.
+
+## Dependency changes
+
+Provider 1.1.0 adds typed `deps status/install/add/update/remove/recover` operations.
+Use [the dependency runbook](manage-project-dependencies.md) for exact packages,
+source/lock review, stopped-target mutations, frozen repair and operation-ID
+reconciliation. Runtime operations must not be substituted for dependency-policy
+exceptions; startup/test preparation uses the same validator and policy fingerprint.

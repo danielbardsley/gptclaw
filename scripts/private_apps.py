@@ -18,7 +18,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.0.1'
+VERSION = '1.1.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -46,6 +46,9 @@ MESSAGES = {
  'ports': 'No free port is available in the configured range.',
  'operator': 'The private ingress route needs the existing operator to configure it; no permissions were changed.',
  'setup': 'The reviewed Python environment, rootless runtime or toolchain is unavailable.',
+ 'dependency-policy': 'Dependency files, sources or configuration do not satisfy the reviewed project policy.',
+ 'dependency-recovery': 'A dependency operation needs reconciliation with deps status and its operation ID before retrying.',
+ 'internal': 'Runtime state could not be reconciled; inspect this target before retrying.',
 }
 
 
@@ -169,7 +172,7 @@ def valid_state(s):
  need(isinstance(s.get('image'), str) and re.fullmatch(r'sha256:[0-9a-f]{64}', s['image']))
  need(s.get('phase') in {'preparing','starting','ready','stopped','failed'})
  need(type(s.get('health_ready')) is bool)
- need(s.get('operation') in {'start','stop','restart','test'})
+ need(s.get('operation') in {'start','stop','restart','test','deps'})
  need(isinstance(s.get('operation_id'),str) and re.fullmatch(r'(?:prototype-)?[0-9a-f]{32}',s['operation_id']))
  need(s.get('error') is None or s['error'] in MESSAGES)
  need(s.get('operation_result') is None or s['operation_result'] in {'running','passed','failed','unknown'})
@@ -283,7 +286,9 @@ def toolchain():
  image = info['Id']; return image if image.startswith('sha256:') else 'sha256:'+image
 
 
-def run_in_app(s, argv, timeout=300):
+def run_in_app(s, argv, timeout=300, read_only_dependency_files=False):
+ import project_dependencies as deps
+ if argv and argv[0]=='pnpm':argv=[argv[0],'--config.@jsr:registry=https://registry.npmjs.org/',*argv[1:]]
  name = s['name']+'-job'
  # Never replace a pre-existing job, including one whose outcome is unknown after a timeout.
  exists = command(['podman','container','exists',name],optional=True)
@@ -293,12 +298,22 @@ def run_in_app(s, argv, timeout=300):
        '--pids-limit='+str(PIDS),'--cap-drop=all','--security-opt=no-new-privileges',
        '--volume',s['root']+':/workspace:rw','--workdir','/workspace',
        '--env','GPTCLAW_PROJECT_ID='+s['id'],'--env','NEXT_TELEMETRY_DISABLED=1',
-       '--env','NODE_OPTIONS=--max-old-space-size=1024',s['image'],*argv]
+       '--env','NODE_OPTIONS=--max-old-space-size=1024']
+ for key,value in deps.GUARD_ENV.items():args += ['--env',key+'='+value]
+ if read_only_dependency_files:
+  for name in deps.FILES:
+   path=safe(Path(s['root'])/name);deps.read_bytes(path)
+   args += ['--volume',str(path)+':/workspace/'+name+':ro']
+ args += [s['image'],*argv]
  return command(args,timeout=timeout)
 
 
 def dependency_digest(s):
+ import project_dependencies as deps
+ deps.require_clean(Path(s['root']),s['id'])
+ context=deps.context(Path(s['root']))
  digest=hashlib.sha256(s['image'].encode())
+ digest.update(context['policy_hash'].encode())
  for name in ['package.json','pnpm-lock.yaml','pnpm-workspace.yaml']:
   path=safe(Path(s['root'])/name);need(path.is_file(),'invalid')
   digest.update(name.encode()+b'\0'+path.read_bytes())
@@ -306,15 +321,19 @@ def dependency_digest(s):
 
 
 def prepare(s,contract,build):
+ import project_dependencies as deps
  digest=dependency_digest(s)
  if s.get('prepared_digest')==digest and (Path(s['root'])/'node_modules').is_dir() and (not build or s.get('build_digest')==digest):return
- run_in_app(s,['pnpm','install','--frozen-lockfile'])
+ before=deps.context(Path(s['root']))['hashes']
+ run_in_app(s,['pnpm','install','--frozen-lockfile',*deps.INSTALL_FLAGS],read_only_dependency_files=True)
+ deps.verify_original(Path(s['root']),before)
  if build:
   run_in_app(s,contract['commands']['build']);s['build_digest']=digest
  s['prepared_digest']=digest;save(STORE/(s['id']+'.json'),s)
 
 
 def unit_text(s, contract, dns):
+ import project_dependencies as deps
  argv = contract['commands']['start']
  def quote(value):
   # Quadlet Exec uses systemd argv parsing, not a shell. Escape its substitutions as well.
@@ -338,7 +357,8 @@ Environment=GPTCLAW_PROJECT_ID={s['id']}
 Environment=GPTCLAW_DEV_ORIGIN={dns}
 Environment=NEXT_TELEMETRY_DISABLED=1
 Environment=NODE_OPTIONS=--max-old-space-size=1024
-Exec={' '.join(quote(v) for v in argv)}
+{''.join('Environment='+key+'='+value+chr(10) for key,value in deps.GUARD_ENV.items())}\
+Exec={' '.join(quote(v) for v in ([argv[0],'--config.@jsr:registry=https://registry.npmjs.org/',*argv[1:]] if argv and argv[0]=='pnpm' else argv))}
 Pull=never
 NoNewPrivileges=true
 DropCapability=all
@@ -402,8 +422,10 @@ def save_text(path,text):
 
 
 def start(root, no_route=False, take_lock=True):
+ import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
  with (locked(slug) if take_lock else contextlib.nullcontext()):
+  deps.require_clean(root,slug);deps.context(root)
   s=reserve(root,contract)
   active,ready=inspect_service(s,contract) if s['unit_sha256']!='0'*64 else (False,False)
   if active and ready:
@@ -484,8 +506,10 @@ def status(root):
 
 
 def test_app(root):
+ import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
  with locked(slug):
+  deps.require_clean(root,slug);deps.context(root)
   s=reserve(root,contract)
   need(s['phase'] not in ('preparing','starting') or s['unit_sha256']=='0'*64,'busy')
   active,_=inspect_service(s,contract) if unit_path(s).exists() else (False,False)
@@ -600,7 +624,8 @@ WantedBy=default.target
 
 
 def provider_bundle():
- paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','gptclawctl.py','gptclawctl']]
+ paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','project_dependencies.py','gptclawctl.py','gptclawctl']]
+ paths += [Path('config/project-dependencies/v1.json'),Path('schemas/project-dependencies/v1.schema.json')]
  paths += [Path('schemas/project/v1.schema.json'),Path('templates/apps/node-toolchain/Containerfile')]
  paths += [Path('templates/apps/nextjs')/name for name in TEMPLATE_FILES]
  digest=hashlib.sha256()

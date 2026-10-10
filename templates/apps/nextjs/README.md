@@ -15,3 +15,9 @@ Node/pnpm live inside the reviewed toolchain container. The frozen lockfile
 makes dependency preparation repeatable; no host language installation is needed.
 Source and local build caches are retained, but application data is ephemeral.
 Secrets, databases, public sharing and production are outside this first slice.
+
+For dependency work use the GptClaw `deps` interface with exact versions. Stop
+this app, add/update/remove through the reviewed container adapter, review the
+package.json/pnpm-lock.yaml diff, test and start it again. Frozen installation
+keeps dependency source files unchanged. See `runbooks/manage-project-dependencies.md`
+in the selected GptClaw repository. Cache/module folders are not source or Git data.

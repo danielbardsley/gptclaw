@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "manager": {
+      "const": "pnpm",
+      "type": "string"
+    },
+    "manager_version": {
+      "const": "12.10.1",
+      "type": "string"
+    },
+    "registry": {
+      "const": "https://registry.npmjs.org/",
+      "type": "string"
+    },
+    "install_hooks": {
+      "const": false,
+      "type": "boolean"
+    },
+    "runtime_downloads": {
+      "const": false,
+      "type": "boolean"
+    },
+    "release_age_exclusions": {
+      "const": [
+        "@types/node@24.19.2"
+      ],
+      "type": "array"
+    },
+    "operations": {
+      "const": [
+        "install",
+        "add",
+        "update",
+        "remove",
+        "recover"
+      ],
+      "type": "array"
+    },
+    "scope": {
+      "const": "single-root-public-npm",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "manager",
+    "manager_version",
+    "registry",
+    "install_hooks",
+    "runtime_downloads",
+    "release_age_exclusions",
+    "operations",
+    "scope"
+  ],
+  "additionalProperties": false
+}

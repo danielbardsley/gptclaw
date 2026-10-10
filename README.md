@@ -86,6 +86,7 @@ templates/                 App starters, container toolchain, planning and guida
 | Install or update the reviewed host policy | [Manage host guidance](runbooks/manage-host-agents.md) |
 | Deploy and verify the declared tool profile | [Manage host tools](runbooks/manage-host-tools.md) |
 | Deploy and accept the rootless toolchain | [Manage rootless tooling](runbooks/manage-rootless-toolchain.md) |
+| Manage project dependencies | [Manage project dependencies](runbooks/manage-project-dependencies.md) |
 | Create, start, stop and inspect private apps | [Manage private apps](runbooks/manage-private-apps.md) |
 | Configure automatic Tailscale enrollment | [Manage workload identity federation](runbooks/manage-tailscale-federation.md) |
 

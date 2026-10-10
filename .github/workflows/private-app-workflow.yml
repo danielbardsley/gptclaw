@@ -4,9 +4,13 @@ on:
     paths:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
+      - config/project-dependencies/**
+      - schemas/project-dependencies/**
       - schemas/project/**
       - requirements/**
       - templates/apps/**
+      - docs/019-project-dependency-policy/**
+      - runbooks/manage-project-dependencies.md
       - docs/018-first-private-application/**
       - runbooks/manage-private-apps.md
   push:
@@ -14,9 +18,13 @@ on:
     paths:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
+      - config/project-dependencies/**
+      - schemas/project-dependencies/**
       - schemas/project/**
       - requirements/**
       - templates/apps/**
+      - docs/019-project-dependency-policy/**
+      - runbooks/manage-project-dependencies.md
       - docs/018-first-private-application/**
       - runbooks/manage-private-apps.md
 permissions:
@@ -37,7 +45,9 @@ jobs:
       - name: Prepare isolated validator dependencies
         run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
       - name: Offline lifecycle and ingress tests
-        run: .venv-manifest/bin/python scripts/tests/test_private_apps.py
+        run: |
+          .venv-manifest/bin/python scripts/tests/test_private_apps.py
+          .venv-manifest/bin/python scripts/tests/test_project_dependencies.py
       - name: Build pinned toolchain and generated app
         shell: bash
         run: |
@@ -48,11 +58,20 @@ jobs:
           app_ci_root="$RUNNER_TEMP/gptclaw-app-template/template-ci"
           for app_ci_step in install test typecheck build; do
             app_ci_args=(pnpm "$app_ci_step")
-            if [[ "$app_ci_step" == install ]]; then app_ci_args+=(--frozen-lockfile); fi
+            if [[ "$app_ci_step" == install ]]; then
+              app_ci_args+=(--frozen-lockfile --ignore-scripts --no-runtime --pm-on-fail=error --ignore-pnpmfile --registry=https://registry.npmjs.org/)
+            fi
             docker run --rm --user "$(id -u):$(id -g)" \
               --memory=1536m --cpus=1 --pids-limit=256 \
               --cap-drop=all --security-opt=no-new-privileges \
               --volume "$app_ci_root:/workspace:rw" \
               --env GPTCLAW_PROJECT_ID=template-ci \
+              --env pnpm_config_pm_on_fail=error \
+              --env pnpm_config_ignore_scripts=true \
+              --env pnpm_config_runtime=false \
+              --env pnpm_config_ignore_pnpmfile=true \
+              --env pnpm_config_verify_deps_before_run=false \
               gptclaw-toolchain-ci "${app_ci_args[@]}"
           done
+      - name: Verify generated app dependency operations
+        run: .venv-manifest/bin/python scripts/tests/check_dependency_template.py "$RUNNER_TEMP/gptclaw-dependency-template" --image gptclaw-toolchain-ci
