@@ -2,7 +2,7 @@
 
 - **Status:** Recommended delivery order; not implementation authorization
 - **Owner:** Daniel
-- **Last updated:** 2026-09-30 (America/New_York)
+- **Last updated:** 2026-10-10 (America/New_York)
 - **Feature definitions and current status:** [Feature catalogue](./features.md)
 - **Architecture:** [Platform architecture](./architecture.md)
 
@@ -66,12 +66,14 @@ contract extensions. Do not silently put unsupported fields into version 1.
 | Features | Delivery and exit evidence |
 |---|---|
 | SYS-004, SYS-001 — host tool profile and rootless container toolchain | Define the reviewed installation/update path, then deliver Podman, subordinate IDs, networking, storage, Quadlet, and user-service persistence. Prove the actual host supports a rootless disposable container and persistent user services. |
-| SYS-003 — project dependency policy | Define project/container installation boundaries, lockfiles, and permitted setup behavior before automated dependency installation. |
-| SYS-002 — pinned language toolchains, initial web slice | Deliver pinned Node/pnpm for the first web stack inside its reviewed execution environment. Prove a synthetic project can install locked dependencies, build, and test. Python/uv and additional supported stacks follow in stage 12. |
+| SYS-003 — project dependency policy | [Draft SPEC-019](../019-project-dependency-policy/spec.md): formalize project/container installation boundaries and provide typed pnpm dependency changes, lockfile review and recovery. Reuse SPEC-018's existing frozen-install/container baseline; new dependency mutations and policy integration need this initiative's implementation/acceptance. |
+| SYS-002 — pinned language toolchains, initial web slice | [Draft SPEC-020](../020-pinned-language-toolchains/spec.md): extend SPEC-018's working fixed Node/pnpm pair with exact per-project selection, verified acquisition, a supported matrix and legacy compatibility. Implement SYS-003 policy before integrating automatic dependency use. Python/uv and additional stacks follow in stage 12. |
 
-**Next foundation initiative after PRJ-001:** SYS-001 together with the SYS-004
-installation machinery it needs. No lifecycle CLI is required to accept this
-stage; use bounded, reviewed synthetic verification commands.
+**Current stage-2 follow-up:** Daniel requested separate SYS-003 and SYS-002 plans
+on October 10. SPEC-019 can reuse the existing reviewed container/toolchain and
+ship first; SPEC-020 consumes its policy for lifecycle preparation. Both plans
+are Draft, not implementation authorization. Do not reinstall the already
+deployed SYS-001/SYS-004 foundation or invalidate their separate acceptance.
 
 ## 3. Deliver the runtime that the CLI will control
 
@@ -266,7 +268,7 @@ catalogue entries remain optional; this file does not make them mandatory.
 
 | Feature or group | First usable slice | Explicit later responsibility |
 |---|---|---|
-| SYS-002 | Stage 2: Node/pnpm | Stage 12: Python/uv and Expo needs; stage 16: additional selected stacks. Record the supported-version matrix. |
+| SYS-002 | Stage 2: SPEC-018 fixed Node/pnpm baseline; draft SPEC-020 adds project selection/matrix/verification | Stage 12: Python/uv and Expo needs; stage 16: additional selected stacks. Extend SYS-003 adapters and the supported-version matrix with each adopted stack. |
 | SEC-003, SEC-006, OBS-001 | Stage 3: runtime permissions, audit, logs | Each later service/adapter extends and tests these contracts before use; full accepted scope governs completion. |
 | PRJ-003, PRJ-009, QLT-009 | Stages 4–5: first web template and example/tests | Stage 12: additional candidate stacks; stage 16: optional stacks only when selected. Keep unsupported templates explicit. |
 | TPL-001, NET-103 | Stage 4: runnable template/base-path behavior | Stage 5: actual private-ingress acceptance. |
