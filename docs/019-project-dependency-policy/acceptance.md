@@ -1,6 +1,6 @@
 # SPEC-019 acceptance evidence
 
-- **Status:** Implemented on feature branch; local/live verification passed, CI/review/merge pending
+- **Status:** Implemented on feature branch; local/live and implementation CI passed; review/merge and final owner acceptance pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-019](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -22,7 +22,7 @@ privilege grants, AWS infrastructure or public exposure changed.
 | AC-003 | passed locally/live | Added is-number 6.0.0 as a development dependency, updated to 7.0.0, removed it, then froze/reinstalled without source changes. Receipts identify manifest/lock diffs/hashes; unrelated synthetic source and existing demos' dependency hashes were retained. No Git reset/stage/commit was performed on apps. |
 | AC-004 | passed locally/live | Running-target mutation refused with busy; selected stopped app mutations obey project/job locks and bounds. Both existing private demo page/health pairs remained 200 and dependency source hashes matched. Startup/test use the policy gate/fingerprint and controlled environment. |
 | AC-005 | passed locally/live | Offline injected fetch/timeout, interrupted multi-file/capture publication, replacement editor races, unknown jobs and same-ID recovery/abort checks passed. Actual valid-format bad Next.js integrity failed on an uncached owned fixture, source remained unchanged, status required recovery, same-ID abort plus frozen repair/test passed. |
-| AC-006 | pending | Focused tests and full offline repository checker passed; runbook, generated guidance, snapshots and generated-app CI added. Final CI, review/merge, owner adapter acceptance and cleanup disposition recorded below remain delivery gates. |
+| AC-006 | pending | Focused tests and full offline repository checker passed; runbook, generated guidance, snapshots and generated-app CI added. All three implementation CI workflows passed; owned backup/staging cleanup completed and the synthetic service was stopped with source retained. Review/merge and owner adapter acceptance remain delivery gates. |
 
 ## Live workflow and timings
 
@@ -98,7 +98,30 @@ and scoped read-only metadata mounts. No failed check was treated as a pass.
 
 Configured CI now additionally exercises generated synthetic add/update/remove,
 frozen reuse, hook suppression and build/test/typecheck using Docker on the runner.
-Its result, exact source revision and PR reference will be recorded after the
-run completes. Owner acceptance and merge remain separate. SYS-003 stays In review,
+Its passing result and exact source/PR references are recorded below. Owner
+acceptance and merge remain separate. SYS-003 stays In review,
 and SYS-002 remains an unimplemented draft. Broader managers, hook exceptions,
 private registries and shared-cache management are not claimed.
+
+## Implementation CI and cleanup — October 10, 2026 (America/New_York)
+
+[PR #46](https://github.com/danielbardsley/gptclaw/pull/46) carries the implementation
+and preserves both planning packages from superseded PR #45. SYS-002 is still
+Draft; only SYS-003 implementation was authorized. At exact implementation
+revision `2424f6580345cd83f2c7c8ed2009522aa0148e9f`, all configured workflows passed:
+
+- [Private application workflow #12](https://github.com/danielbardsley/gptclaw/actions/runs/38074003556), including generated-app frozen reuse, exact add/update/remove, real package execution, hook suppression, typecheck/build/test and receipt history.
+- [Development-host quality #133](https://github.com/danielbardsley/gptclaw/actions/runs/38074003633).
+- [Federation quality #37](https://github.com/danielbardsley/gptclaw/actions/runs/38074003577).
+
+The final installed provider snapshot was refreshed through a ready no-op start
+(1.353 seconds, changed false); five checked provider/policy/schema files match
+the implementation bytes. The app container was not restarted; only the shared
+owned user ingress was reconciled to the provider snapshot. Both original demo
+source hashes remained unchanged and their private page/health pairs returned 200.
+The acceptance app remains stopped with its synthetic source/receipts retained
+for review. Its verified task-owned integrity backup was removed; no shared
+cache/image or user data was deleted. Successful/aborted owned transaction folders
+were cleaned and operation history retained. No further live operation is pending.
+Final source review/merge and Daniel's adapter acceptance remain AC-006; do not
+mark Delivered until those are established.

@@ -73,7 +73,7 @@ contract extensions. Do not silently put unsupported fields into version 1.
 on October 10. SPEC-019 can reuse the existing reviewed container/toolchain and
 ship first; SPEC-020 consumes its policy for lifecycle preparation. Daniel then
 authorized SYS-003 implementation; its local/live checks are recorded while
-review/CI/merge remain pending. SPEC-020 stays Draft without implementation
+implementation CI passed and review/merge remain pending. SPEC-020 stays Draft without implementation
 authorization. Do not reinstall the already
 deployed SYS-001/SYS-004 foundation or invalidate their separate acceptance.
 

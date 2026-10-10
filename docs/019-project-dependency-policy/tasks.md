@@ -1,6 +1,6 @@
 # TASKS-019: Project dependency policy
 
-- **Status:** Implementation authorized; code and local/live checks complete, review/CI pending
+- **Status:** Implementation authorized; code and local/live checks complete, review/merge pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-019](spec.md)
@@ -40,6 +40,6 @@ Startup/test preparation and jobs/services use the policy controls; frozen
 metadata mounts are read-only. No-hook frozen Next.js install/build/test and
 live add/update/remove, unchanged frozen reuse, running-target refusal, actual
 bad-integrity failure/abort/repair and unaffected existing demos were verified.
-The full offline repository checker passed; final configured CI/review/merge,
+The full offline repository checker passed; all three configured implementation CI checks passed; review/merge,
 owner acceptance and final delivery status remain T-005. [Acceptance](acceptance.md)
 records the detailed evidence and cleanup disposition. SYS-002 remains Draft.
