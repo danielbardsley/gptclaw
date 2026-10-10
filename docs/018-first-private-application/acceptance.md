@@ -21,10 +21,10 @@ No automatic enrollment credentials, SSH keys or environment dumps are included.
 | AC-001 | passed locally | CLI created/validated `hello-second` and a temporary `workflow-template-check`; existing destination refused without overwrite. Temporary source was removed only after exact file/symlink checks. Offline invalid/symlink/duplicate-ID/no-execution cases pass. The initial Hello World was a prototype subsequently adopted using verified ownership. |
 | AC-002 | passed locally/live | Frozen install, manifest build, health tests and TypeScript check passed in the pinned container. Two rootless services are healthy on distinct loopback ports. Cached/repeated start, per-project locking, timeout and failed-health/no-publish behavior verified. |
 | AC-003 | passed locally/live | Hello World uses 18080, second app 18081. Stopping the second returned its mapping to 404, removed its listener/activation and retained source; first app health remained 200. Source-preserving warm start and intentional restart passed. Offline port/conflict and unrelated-state preservation tests pass. |
-| AC-004 | pending | Daniel confirmed the first private HTTPS page loads and its counter works. Shared loopback ingress forwards page/health plus 18 JS/CSS assets, and the actual Next HMR WebSocket returned 101. The one-time shared Serve-prefix transition and second desktop URL confirmation remain pending. Funnel is off; unrelated routes were not changed by the agent. |
-| AC-005 | pending | Editing second-app source produced changed HTML through ingress in 4.995 seconds without unit changes; first content was unaffected; edit restored. Source survived stop/start. Full desktop browser-update and two-app confirmation remain pending. |
-| AC-006 | pending | Offline/repository checks and scoped local cleanup passed; runbook and receipt contract written. Generated-app CI and both infrastructure quality workflows passed at `0c9d75b`; review/merge and final owner acceptance remain pending. |
-| AC-007 | pending (desktop proof passed) | Actual app/health returned 200 over private HTTPS at `/projects/hello-world/`; Daniel confirmed page load and counter increment. Agent's daemon write was denied; Daniel applied the exact prototype route from his SSM session. Shared-prefix transition removes that prototype path while preserving source; its completion remains pending. |
+| AC-004 | pending (both desktop URLs passed) | Daniel confirmed both private pages and counters work. Read-only Serve status shows only the shared `/projects/` proxy to loopback 18079, with the prototype override removed and Funnel off. Both private page/health endpoints return 200; prior asset/HMR checks passed. Desktop observation of a source edit remains pending. |
+| AC-005 | pending | Editing second-app source produced changed HTML through ingress in 4.995 seconds without unit changes; first content was unaffected; edit restored. Source survived stop/start. Both desktop pages/counters are now confirmed; desktop browser-update observation remains pending. |
+| AC-006 | pending | Offline/repository checks and scoped local cleanup passed; runbook and receipt contract written. Generated-app CI and both infrastructure quality workflows passed at `0c9d75b`; Daniel confirmed the two-app desktop result; review/merge and remaining browser-update/cleanup acceptance remain pending. |
+| AC-007 | pending (desktop proof passed) | Actual app/health returned 200 over private HTTPS at `/projects/hello-world/`; Daniel confirmed page load and counter increment. Agent's daemon write was denied; Daniel applied the exact prototype route from his SSM session. Shared-prefix transition is now observed, with the prototype override absent and both apps still healthy. Source-preserving cleanup passed on the second app; a managed first-app stop/removal check remains pending. |
 
 ## Executed behavior checks
 
@@ -77,20 +77,33 @@ No managed app persistence, secrets, database or production capability is claime
 Current services are live development demonstrations from a feature branch,
 not accepted merged delivery. Do not mark complete until remaining criteria pass.
 
-## Remaining operator/owner step
+## Two-app desktop confirmation — October 10, 2026 (UTC)
 
-The existing prototype URL remains available. The shared loopback router is
-verified at 18079; operator action requested but not yet observed:
+At implementation/evidence revision `797bb56262118553cadac7e75783a57e3dede785`,
+Daniel reported “yes, they both work” after being asked to verify both private
+pages and their independent counters:
 
-```sh
-sudo tailscale serve --bg --https=443 --set-path=/projects/ http://127.0.0.1:18079/projects/
-sudo tailscale serve --https=443 --set-path=/projects/hello-world/ off
-```
+- [Hello World](https://forge-dev-01-4.tail8c3304.ts.net/projects/hello-world/)
+- [Hello Second](https://forge-dev-01-4.tail8c3304.ts.net/projects/hello-second/)
 
-After observing the exact prefix and absence of the prototype override, verify
-both private URLs, browser updates and owner acceptance. Keep unrelated Serve
-configuration and active services intact. The agent must not claim that a pending
-operator question or elapsed time established this change.
+This is attributed owner browser evidence, not an agent browser test. Agent
+read-only checks after the report observed:
+
+- `tailscale serve status --json`: the only handler is `/projects/`, proxying to
+  `http://127.0.0.1:18079/projects/`; the old `/projects/hello-world/` override is
+  absent and there is no active Funnel configuration.
+- Stable `gptclawctl status --project-root` for each app: ready health, distinct
+  ports 18080/18081, and configured private URLs.
+- Direct private HTTPS GETs for each page and `api/health`: all four returned 200.
+
+The one-time shared-prefix setup is complete. Subsequent per-app routes are
+managed by the unprivileged CLI/router; no per-app Serve command is required.
+No daemon configuration was changed by the agent. Both apps remain running.
+
+Remaining owner acceptance covers a source edit becoming visible in the desktop
+browser, managed first-app stop/removal with source retention, and review/merge.
+Keep unrelated services/configuration intact. Catalogue slices stay In review
+until merged delivery and all required acceptance are established.
 
 Initial private-app CI failed before executing the generated app: Docker looks
 for Dockerfile by default, while the toolchain uses Containerfile. The workflow
@@ -106,5 +119,5 @@ At exact implementation revision `0c9d75bc217df7e582d8218d11e6853017e4f798`:
 - [Federation quality #28](https://github.com/danielbardsley/gptclaw/actions/runs/38011996620): passed.
 
 The final focused suite has 29 passing cases and the required offline repository
-checker passed. CI proves source/quality checks, not the pending shared-prefix
-operator change or two-app desktop acceptance. No protected apply was dispatched.
+checker passed. CI proves source/quality checks; shared-prefix and two-app desktop
+evidence is recorded separately above. No protected apply was dispatched.

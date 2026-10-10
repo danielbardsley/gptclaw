@@ -163,6 +163,7 @@ continues in its original records; do not launch interruption tests for this pla
 - First preparation installs frozen dependencies and builds; warm restart reuses the matching toolchain/lock fingerprint. Jobs and app services share only their selected source directory; common environment/authentication material is refused.
 
 Observed first-app local health/private HTTPS and Daniel's browser/counter
-confirmation support the first stage. The one-time shared prefix transition and
-full two-app desktop acceptance are recorded separately in acceptance.md. Formal
-logout/reboot/replacement acceptance remains unchanged.
+confirmation support the first stage. The shared prefix transition and both
+desktop pages/counters are now confirmed in acceptance.md; desktop source-update
+and first-app cleanup checks remain pending. Formal logout/reboot/replacement
+acceptance remains unchanged.

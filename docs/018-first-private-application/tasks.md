@@ -55,9 +55,8 @@
 
 Original T-000 discovery/smoke evidence and APP/AC/T IDs are preserved. This
 revision adds T-006/T-007 and AC-007 for the first desktop Hello World, placed
-before the full CLI. No app or route has been created by this planning revision.
-Next: review/authorize the staged implementation, then T-006/T-007. Formal host
-logout/reboot and replacement evidence remain in their existing records. After
+before the full CLI. The original revision was planning only; implementation is
+now authorized and recorded below. Formal host logout/reboot and replacement evidence remain in their existing records. After
 each stage record only the completed feature slice; broad catalogue entries do
 not become Delivered from a prototype.
 
@@ -66,14 +65,18 @@ not become Delivered from a prototype.
 Template/CLI and bounded rootless lifecycle are implemented; local source edit,
 health, build/test/typecheck, stop/start/restart and two-port isolation checks
 passed. A stable provider snapshot and unprivileged loopback ingress are running.
-Daniel confirmed the first private Hello World page and counter on his desktop.
+Daniel confirmed both private pages and their counters on his desktop. The shared
+Serve prefix is configured and the prototype override removed, as verified by
+read-only status; additional apps need no per-app Serve command.
 
-T-007/T-004/T-005 remain open for the shared-prefix operator transition, both
-private desktop URLs and browser updates, CI/review/merge and final acceptance.
+T-007/T-004/T-005 remain open for managed first-app cleanup, desktop source-update
+observation, review/merge and final acceptance. Both desktop URLs and the
+shared-prefix transition have passed; local second-app cleanup/isolation and CI
+also passed.
 The implementation uses one operator-owned private Serve prefix and unprivileged
 per-app mappings, avoiding a general Unix operator grant. No privileged broker
 or infrastructure change was introduced. [Acceptance evidence](acceptance.md)
 records failures/fixes and exact remaining obligations.
 
 Implementation CI passed at `0c9d75b` (all three workflows). Review/merge and
-remaining shared-prefix/two-app desktop acceptance are still pending.
+remaining browser-update/first-app cleanup acceptance are still pending.
