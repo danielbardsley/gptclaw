@@ -6,6 +6,8 @@ on:
       - scripts/**
       - config/templates/**
       - schemas/templates/**
+      - docs/022-github-repository-automation/**
+      - runbooks/manage-project-repositories.md
       - docs/021-template-catalogue/**
       - runbooks/manage-project-templates.md
       - config/toolchains/**
@@ -28,6 +30,8 @@ on:
       - scripts/**
       - config/templates/**
       - schemas/templates/**
+      - docs/022-github-repository-automation/**
+      - runbooks/manage-project-repositories.md
       - docs/021-template-catalogue/**
       - runbooks/manage-project-templates.md
       - config/toolchains/**
@@ -63,6 +67,7 @@ jobs:
         run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
       - name: Offline lifecycle and ingress tests
         run: |
+          .venv-manifest/bin/python scripts/tests/test_project_repositories.py
           .venv-manifest/bin/python scripts/tests/test_project_templates.py
           .venv-manifest/bin/python scripts/tests/test_private_apps.py
           .venv-manifest/bin/python scripts/tests/test_project_dependencies.py
