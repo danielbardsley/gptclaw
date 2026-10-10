@@ -1,9 +1,9 @@
 # SPEC-015: Host Tool Profile
 
-- **Status:** Implementation in review; deployment and acceptance pending
+- **Status:** Deployed; remaining acceptance pending
 - **Owner:** Daniel
 - **Feature catalogue:** SYS-004
-- **Last updated:** 2026-10-01 (America/New_York)
+- **Last updated:** 2026-10-09 (America/New_York)
 - **Design:** [TDD-015](technical-design.md)
 - **Tasks:** [TASKS-015](tasks.md)
 - **Context:** [Architecture](../platform/architecture.md), sections 10 and 14;

@@ -1,12 +1,12 @@
 # ACCEPTANCE-004: Repository AGENTS.md Template
 
-- **Status:** Implementation reviewed and merged; CI and remote acceptance pending
+- **Status:** Deployed; current repository CI passed, fresh-task remote acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-004](./spec.md)
 - **Technical design:** [TDD-004](./technical-design.md)
 - **Tasks:** [TASKS-004](./tasks.md)
 - **Review:** [PR #9](https://github.com/danielbardsley/gptclaw/pull/9)
-- **Last updated:** 2026-09-12
+- **Last updated:** 2026-10-09 (America/New_York)
 
 ## Authorization and baseline
 
@@ -43,7 +43,7 @@ acceptance record remains unchanged.
 | AC-004 | Diff adds root guidance, inert template/fixture, tests, guide, documentation, and two workflow path entries per event. Existing guidance and deployment gates are unchanged. Daniel reviewed and authorized the resulting PR merge. |
 | AC-005 | Pending fresh tasks through the supported remote connection at GptClaw and the synthetic project root. This continuing task and CLI metadata are not qualifying evidence. |
 | AC-006 | Automated isolated Git rehearsal reverts an update, restores prior policy bytes, then reverts first adoption; unrelated later README changes and an uncommitted user note survive. Manual version comparison, review, rollback, and fresh-task procedure are in the guide. Owner review is complete. |
-| AC-007 | This record captures local evidence. Implementation is reviewed and merged at the revision above. CI, remote results, and final acceptance remain pending; catalogue stays Planned with merged status explained. |
+| AC-007 | Implementation is merged and current repository checks/PR #38 CI passed. Historical PR #9 CI statements remain attributed below; fresh-task remote results and final acceptance remain pending. Catalogue status is Deployed. |
 
 ## Command review
 
@@ -101,3 +101,12 @@ the expected head SHA; no required-check override or admin bypass was used.
 
 Daniel owns the remaining remote acceptance. Record CI results and sanitized
 fresh-task outcomes before marking AC-005/007 passed or AGT-002 Delivered.
+
+## Current catalogue status — October 9, 2026
+
+Historical PR #9 CI observations above are preserved. The current repository
+checker and both [PR #38](https://github.com/danielbardsley/gptclaw/pull/38) quality
+workflows passed at `e7abd1be3cba220de3b87a4cb23880730b3e5e44`, including repository
+guidance checks. This is current CI evidence; it does not change an earlier run's
+unverified result or satisfy AC-005's fresh-task remote behavior. AGT-002 remains
+Deployed with that behavior and final acceptance pending.
