@@ -64,12 +64,16 @@ Application source publishing is separate from running or exposing an app.
   exactly one initial PR to `main`; do not merge it. Starter contents preserve
   catalogue provenance, manifest v1, toolchain/dependency declarations and
   adapted repository guidance. Do not overwrite existing Git history or remotes.
-- REP-003: Protect `main` against force pushes and deletion, require a PR and
+- REP-003: By default, protect `main` against force pushes and deletion, require a PR and
   resolved review conversations, and enforce the policy for administrators.
   Propose zero required approvals for the single-owner initial slice, avoiding
   self-review deadlock. Do not require nonexistent CI checks or bypass protection
   to publish starter content. Read back actual settings; unavailable plan/API
   capabilities or unexpected drift produce an incomplete blocked outcome.
+  Daniel may explicitly waive private protection for a recorded operation with
+  no selected environments. Persist that waiver and report protection as
+  `owner-waived`, never verified. Keep the repository private and use the starter
+  branch/initial PR workflow; never remove existing verified protection.
 - REP-004: Create only explicitly selected development environments with their
   reviewed supported settings. Record secret references as names and intended
   repository/environment scope, with pending provisioning clearly distinguished
@@ -102,7 +106,7 @@ Application source publishing is separate from running or exposing an app.
 |---|---|---|
 | AC-001 | Preview lists all proposed changes and exact provenance. Invalid account, public visibility, unsupported template/options, unsafe paths, existing destinations and remote collision fail with no writes or source execution. | REP-001 |
 | AC-002 | Authorized fixture creates one private repository with bootstrap-only main, protected before starter publication; one codex branch and one PR contain valid starter/guidance/provenance. Existing remotes/history and unrelated files are preserved. | REP-002 |
-| AC-003 | Readback demonstrates PR enforcement including admins, zero approvals, conversation resolution and no force pushes/deletion. Unsupported private-plan capabilities, drift and denied administration fail without fallback. A direct starter push to main is rejected in the authorized exercise. | REP-003 |
+| AC-003 | Readback demonstrates PR enforcement including admins, zero approvals, conversation resolution and no force pushes/deletion. Unsupported private-plan capabilities, drift and denied administration fail without fallback. With protection enabled, a direct starter push to main is rejected. For Daniel's explicitly waived verification operation, verify the bound waiver, private visibility, no protection-removal calls and no enforcement claim instead. | REP-003 |
 | AC-004 | Empty selections make no environment/secret writes. Selected development environments match readback; references distinguish pending from verified names. Production selection and secret-value inputs are rejected; logs/receipts contain synthetic names only. | REP-004 |
 | AC-005 | Missing, expired, wrong-account and insufficient credentials stop safely. Synthetic-token tests demonstrate no credential leaks or container injection. Live evidence records credential class/capabilities/expiry without values and separately records ongoing Git handoff readiness. | REP-005 |
 | AC-006 | Fault injection after every remote/local boundary, response loss after successful creation, competing requests and remote drift either resume the same bound operation or stop for reconciliation. One repository/branch/PR exists; retained source/resources and sanitized receipts support recovery without destructive cleanup. | REP-006 |
@@ -134,3 +138,9 @@ actual acceptance evidence when available. Mark only this initial PRJ-004 slice
 Delivered after implementation merge and all criteria pass; wider scope remains
 future work. Offline implementation evidence is recorded in [acceptance.md](acceptance.md);
 live verification and owner acceptance remain pending.
+
+On October 10, after GitHub denied private protection for the retained fixture,
+Daniel instructed “Ignore private branch protection requirement and continue.”
+This authorizes an explicit waiver for that operation, preserves earlier
+implementation/live authorization, and does not authorize public visibility or
+production. Default protection and other requirement IDs remain intact.

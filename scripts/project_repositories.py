@@ -359,10 +359,13 @@ def starter(receipt):
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_bytes(path.read_bytes())
     extra = '\n\nRepository: https://github.com/' + ACCOUNT + '/' + receipt['plan']['repository'] + '\nDefault branch: main. Use codex/ branches and pull requests; never bypass main protection.\n'
+    if receipt.get('protection_waiver'):
+        extra = extra.replace('never bypass main protection.', 'the owner explicitly waived main branch protection for this repository; PR review remains the workflow, with no server enforcement claim.')
     with (root/'AGENTS.md').open('a') as out: out.write(extra)
     adaptation = {'schema_version': 1, 'operation_id': receipt['operation_id'],
                   'repository': ACCOUNT+'/'+receipt['plan']['repository'],
                   'template': receipt['plan']['template'],
+                  'main_protection': 'owner-waived' if receipt.get('protection_waiver') else 'verified',
                   'guidance_sha256': hashlib.sha256((root/'AGENTS.md').read_bytes()).hexdigest()}
     app.save(root/'.gptclaw/repository-bootstrap.json', adaptation)
     # Track only the reviewed inventory, never git add . or unrelated files.
@@ -484,9 +487,13 @@ def observe(receipt, api):
     require(head is None or head == receipt.get('starter_sha'), 'repository-drift')
     if receipt.get('main_published'): require(main == receipt['bootstrap_sha'], 'repository-drift')
     if receipt.get('branch_published'): require(head == receipt['starter_sha'], 'repository-drift')
-    policy = api.request('GET', base+'/branches/main/protection', missing=True) if main else None
-    if policy is not None: policy = protection_readback(policy)
-    if receipt.get('protection_verified'): require(policy is not None, 'repository-drift')
+    if receipt.get('protection_waiver'):
+        require(not receipt.get('protection_verified'), 'repository-drift')
+        policy = {'verified': False, 'state': 'owner-waived', 'repository_id': receipt['repository_id']}
+    else:
+        policy = api.request('GET', base+'/branches/main/protection', missing=True) if main else None
+        if policy is not None: policy = protection_readback(policy)
+        if receipt.get('protection_verified'): require(policy is not None, 'repository-drift')
     envs = {}
     for name in value['environments']:
         actual = api.request('GET', base+'/environments/'+name, missing=True)
@@ -527,10 +534,17 @@ def apply(value, api, create_only=False):
         return run(receipt, api, create_only=create_only)
 
 
-def resume(operation, api, repository_id=None, create_only=False):
+def resume(operation, api, repository_id=None, create_only=False, allow_unprotected_main=False):
     receipt = read_receipt(operation); value = receipt['plan']
     with app.locked('repository-'+value['repository']), app.locked('create-'+hashlib.sha256(value['destination'].encode()).hexdigest()):
         receipt = read_receipt(operation)
+        if allow_unprotected_main:
+            require(receipt['repository_id'] is not None and not receipt.get('protection_verified')
+                    and not value['environments'], 'repository-policy')
+            receipt['protection_waiver'] = {'repository_id': receipt['repository_id'],
+                'account': ACCOUNT, 'authorized_by': 'explicit-owner-request', 'at': timestamp(),
+                'scope': 'this-operation-only; no protection removal or visibility change'}
+            persist(receipt)
         if repository_id is not None:
             require(type(repository_id) is int and repository_id > 0 and receipt['repository_id'] is None
                     and receipt.get('intent') == 'create-repository', 'repository-recovery')
@@ -597,12 +611,13 @@ def run(receipt, api, create_only=False):
             intent('default-branch'); api.request('PATCH', base, {'default_branch': 'main'})
             observed = observe(receipt, api)
             require(observed['default_branch'] == 'main', 'repository-drift')
-        if observed['protection'] is None:
-            require(not receipt.get('protection_verified'), 'repository-drift')
-            intent('protect-main'); api.request('PUT', base+'/branches/main/protection', PROTECTION)
-            observed = observe(receipt, api)
-        require(observed['protection'] is not None, 'repository-drift')
-        receipt['protection_verified'] = observed['protection']; persist(receipt)
+        if not receipt.get('protection_waiver'):
+            if observed['protection'] is None:
+                require(not receipt.get('protection_verified'), 'repository-drift')
+                intent('protect-main'); api.request('PUT', base+'/branches/main/protection', PROTECTION)
+                observed = observe(receipt, api)
+            require(observed['protection'] is not None, 'repository-drift')
+            receipt['protection_verified'] = observed['protection']; persist(receipt)
         if receipt['local_phase'] == 'bootstrap':
             intent('generate-starter'); starter(receipt)
         observed = observe(receipt, api)

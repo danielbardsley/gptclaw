@@ -402,6 +402,25 @@ class Tests(unittest.TestCase):
         value['unexpected']=True;path.write_text(json.dumps(value))
         with self.assertRaises(app.AppError):repos.read_plan(path)
 
+    def test_explicit_operation_protection_waiver_never_claims_enforcement(self):
+        self.apply(create_only=True)
+        self.api.fail_before=('GET',repos.prefix(self.plan)+'/branches/main/protection')
+        receipt=self.resume(allow_unprotected_main=True)
+        self.assertEqual(receipt['state'],'repository-ready')
+        self.assertFalse(receipt['remote_readback']['protection']['verified'])
+        self.assertEqual(receipt['remote_readback']['protection']['state'],'owner-waived')
+        self.assertNotIn('protection_verified',receipt)
+        self.assertFalse(any('/protection' in path for _,path,_ in self.api.calls))
+        self.assertIn('waived',(self.projects/'sample'/'AGENTS.md').read_text())
+        self.resume();self.assertEqual(len(self.api.prs),1)
+    def test_waiver_does_not_remove_verified_protection(self):
+        self.apply()
+        with self.assertRaises(app.AppError):self.resume(allow_unprotected_main=True)
+        self.assertIsNotNone(self.api.protection)
+    def test_waiver_rejects_environment_policy_conflict(self):
+        self.plan=self.new_plan(environments=['development']);self.apply(create_only=True)
+        with self.assertRaises(app.AppError):self.resume(allow_unprotected_main=True)
+
     def test_cli_and_provider_bundle(self):
         output=io.StringIO()
         with contextlib.redirect_stdout(output):self.assertEqual(cli.main(['--version']),0)

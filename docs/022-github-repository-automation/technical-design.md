@@ -126,3 +126,13 @@ operational readiness follow from this proposal.
 The [operator runbook](../../runbooks/manage-project-repositories.md) documents
 commands, grants, private-file creation, ambiguity reconciliation, retained
 local generation outcomes and rollback. `repo` ships in provider 1.4.0.
+
+## Authorized protection waiver
+
+`repo resume --allow-unprotected-main` records an explicit operation-bound owner
+waiver before resuming. It is rejected for already verified protection or selected
+environments. Observe skips unavailable protection endpoints only for that
+recorded waiver; readback reports `verified: false`, `state: owner-waived`. No
+protection removal or public visibility change occurs. Generated guidance and
+bootstrap provenance describe the waived state. Normal operations retain all
+protection gates; Daniel approved this variant for the retained fixture October 10.

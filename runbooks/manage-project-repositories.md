@@ -188,3 +188,14 @@ Local fixture cleanup in automated tests is confined to task-owned temporary
 directories. GitHub deletion, protection changes, production use and app-runtime
 cleanup each need their applicable separately scoped operation. No host reboot,
 IaC deployment or unrelated application restart is part of this workflow.
+
+## Explicit owner waiver for an unsupported private-protection plan
+
+Only when Daniel explicitly approves this recorded operation, resume with
+`--allow-unprotected-main` alongside the existing operation ID/token arguments.
+The receipt permanently binds the waiver to that repository/operation and reports
+protection as owner-waived, not verified. No visibility or protection-removal
+request is made; starter content still reaches a codex branch and an initial PR.
+This variant rejects selected environments and existing verified protection.
+Ordinary setup retains the required-protection gate. Daniel approved the retained
+verification operation after its account-plan denial on October 10.
