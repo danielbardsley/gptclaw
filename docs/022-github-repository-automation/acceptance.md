@@ -1,6 +1,6 @@
 # SPEC-022 acceptance evidence
 
-- **Status:** Local implementation verified; CI/live/owner acceptance pending
+- **Status:** Local and implementation CI verified; live/owner acceptance pending
 - **Owner:** Daniel
 - **Evidence date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-022](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -28,7 +28,7 @@ checks. Test data is synthetic; Git remotes are task-owned temporary bare repos.
 | AC-004 | pending | Empty selections cause no corresponding requests; development environment/readback and secret metadata states pass. No secret writes exist. | Record selected/no-selection behavior against actual GitHub. |
 | AC-005 | pending | Private-file/type/expiry, wrong actor/plan, anonymous-fd askpass, HTTP redaction and redirected Git configuration rejection pass with synthetic credentials. | Verify actual grants/expiry and revoked provisioning tokens; record separate Git handoff. |
 | AC-006 | pending | Lost creation response never auto-adopts; explicit ID reconciliation, response loss at object/ref/protection/environment/PR boundaries, locks, drift and atomic-local-publication recovery pass. Partial generation preserves owned staging for operator review. | Record live receipt/resource identity and retained-resource disposition. |
-| AC-007 | pending | Existing template/provider and offline repository regressions pass; bundle includes adapter/helper and local-only interfaces remain supported. | PR CI, real starter/container checks, private runtime/independent-app check, merge and Daniel's acceptance. |
+| AC-007 | pending | Existing template/provider and offline repository regressions pass; bundle includes adapter/helper and local-only interfaces remain supported. | Real GitHub starter/container checks, private runtime/independent-app check, merge and Daniel's acceptance; implementation CI passed. |
 
 All criteria remain pending because their required live evidence is incomplete;
 offline assertions do not establish deployed behavior or owner acceptance.
@@ -48,8 +48,20 @@ offline assertions do not establish deployed behavior or owner acceptance.
 Terraform commands were not run: no Terraform/host infrastructure changed.
 Live GitHub/configuration, real app/container/runtime checks and deployment were
 not run because the specifically scoped provisioning token is not yet supplied.
-CI outcome is recorded after pushing the implementation, separately from local
-checks. No test output contains token values or environment dumps.
+Implementation CI outcomes are recorded below, separately from local checks. No test output contains token values or environment dumps.
+
+## Verified implementation CI
+
+The exact implementation revision `6b28922798fa4ff6471cf5b214130e6be928650e`
+passed all three configured PR workflows:
+
+- [Private application workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38084743186): offline tests, template integrity, generated starter install/test/typecheck/build, dependency operations and selected toolchain acquisition/preparation passed.
+- [Terraform development host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38084743104): success; protected remote mutation was not performed.
+- [Terraform Tailscale federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38084743139): success; protected remote mutation was not performed.
+
+These establish CI quality for that exact code revision, not live GitHub setup,
+host deployment or Daniel's acceptance. This subsequent evidence/task-status
+update changes documentation only; any follow-up PR-head run is visible on PR #52.
 
 ## CI history
 
@@ -60,7 +72,7 @@ that user with `setup`; the test now checks portable version/help output instead
 without relaxing the host identity gate. The focused 35-test suite passed again
 locally after correction. A further scoped API regression handles GitHub
 empty-repository ref responses (409) without treating other conflicts as missing.
-Full CI for the final revision is pending.
+The final code revision passed as recorded above.
 The related repository-check CI jobs include the same test; first-run failures
 remain historical evidence, not acceptance. See [failed app run](https://github.com/danielbardsley/gptclaw/actions/runs/38084547944)
 and [failed federation run](https://github.com/danielbardsley/gptclaw/actions/runs/38084547901).

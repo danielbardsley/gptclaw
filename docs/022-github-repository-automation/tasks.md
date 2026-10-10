@@ -47,7 +47,7 @@ T-002b (pending live credential readiness) so the latter cannot reopen approval.
 
 ## Verification and delivery
 
-- [ ] T-008: Run focused tests, repository checker and whitespace/link checks;
+- [x] T-008: Run focused tests, repository checker and whitespace/link checks;
   exercise existing local new/test/start/stop regression scenarios. Open an
   implementation PR and record configured CI outcomes. AC-001–007.
 - [ ] T-009: After explicit live-target/credential authorization, exercise a
@@ -73,4 +73,5 @@ live private app validation and owner acceptance are pending. Daniel's next
 input is the private file path, actual expiry and permission metadata; no token
 values. No application repository was created during offline verification.
 PR #52 carries implementation for review; merge is not authorized by the coding
-request. T-008 and T-009 retain the unverified CI/live gates.
+request. T-008 is complete for implementation revision `6b28922`: all three configured
+CI workflows passed. T-009 retains live/merge/owner acceptance gates.

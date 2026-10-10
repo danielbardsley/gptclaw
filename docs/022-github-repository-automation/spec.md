@@ -54,7 +54,7 @@ Application source publishing is separate from running or exposing an app.
   protection settings, selected development environments, secret-reference
   names/scopes and credential capabilities needed. Reject unsupported input,
   unsafe paths, existing destinations and name collisions before mutation.
-  Planning never executes application content or reads secret values.
+  Planning never executes application content or reads application secret values.
 - REP-002: Apply only the reviewed plan to `danielbardsley`; create a private
   repository and bind setup to its immutable repository ID and local target.
   Initialize `main` with only a minimal non-executable bootstrap README, then
@@ -108,7 +108,7 @@ Application source publishing is separate from running or exposing an app.
 
 ## Decisions and completion
 
-Daniel owns scope, settings, credentials and acceptance. Proposed default policy
+Daniel owns scope, settings, credentials and acceptance. Approved default policy
 is private personal-account repositories, no environment/secrets unless selected,
 and PR enforcement with zero approvals until an independent reviewer exists.
 Daniel approved this scope and authorized implementation on October 10.
