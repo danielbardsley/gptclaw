@@ -1,6 +1,6 @@
 # SPEC-018 acceptance evidence
 
-- **Status:** Merged and running on EC2; remaining live acceptance pending
+- **Status:** Live acceptance passed; lifecycle closeout patch awaiting CI/merge
 - **Owner:** Daniel
 - **Date:** 2026-10-09 (America/New_York)
 - **Specification:** [SPEC-018](spec.md)
@@ -22,10 +22,10 @@ No automatic enrollment credentials, SSH keys or environment dumps are included.
 | AC-001 | passed locally | CLI created/validated `hello-second` and a temporary `workflow-template-check`; existing destination refused without overwrite. Temporary source was removed only after exact file/symlink checks. Offline invalid/symlink/duplicate-ID/no-execution cases pass. The initial Hello World was a prototype subsequently adopted using verified ownership. |
 | AC-002 | passed locally/live | Frozen install, manifest build, health tests and TypeScript check passed in the pinned container. Two rootless services are healthy on distinct loopback ports. Cached/repeated start, per-project locking, timeout and failed-health/no-publish behavior verified. |
 | AC-003 | passed locally/live | Hello World uses 18080, second app 18081. Stopping the second returned its mapping to 404, removed its listener/activation and retained source; first app health remained 200. Source-preserving warm start and intentional restart passed. Offline port/conflict and unrelated-state preservation tests pass. |
-| AC-004 | pending (both desktop URLs passed) | Daniel confirmed both private pages and counters work. Read-only Serve status shows only the shared `/projects/` proxy to loopback 18079, with the prototype override removed and Funnel off. Both private page/health endpoints return 200; prior asset/HMR checks passed. Desktop observation of a source edit remains pending. |
-| AC-005 | pending | Editing second-app source produced changed HTML through ingress in 4.995 seconds without unit changes; first content was unaffected; edit restored. Source survived stop/start. Both desktop pages/counters are now confirmed; desktop browser-update observation remains pending. |
-| AC-006 | pending | Offline/repository checks and scoped local cleanup passed; runbook and receipt contract written. Generated-app CI and both infrastructure quality workflows passed at `0c9d75b`; Daniel confirmed the two-app desktop result; PR #40 is merged; remaining browser-update/cleanup acceptance is pending. |
-| AC-007 | pending (desktop proof passed) | Actual app/health returned 200 over private HTTPS at `/projects/hello-world/`; Daniel confirmed page load and counter increment. Agent's daemon write was denied; Daniel applied the exact prototype route from his SSM session. Shared-prefix transition is now observed, with the prototype override absent and both apps still healthy. Source-preserving cleanup passed on the second app; a managed first-app stop/removal check remains pending. |
+| AC-004 | passed live/owner | Both private pages/counters confirmed; shared prefix, loopback bindings, assets/health/HMR and disabled Funnel verified. Daniel confirmed the second app source edit updated automatically in his desktop browser on October 10. |
+| AC-005 | passed live/owner | Daniel confirmed automatic browser update after a source edit; temporary edit restored. All 16 existing first-app source/guidance/manifest files remained byte-identical through stop and start. App-data limits are documented. |
+| AC-006 | pending closeout CI/merge | Prior implementation CI, offline checks, two-app live workflow, scoped cleanup and owner browser evidence passed. Daniel requested the two final checks so this slice could close; both passed. The resulting port-reuse patch and acceptance record await their own CI/merge before Delivered. |
+| AC-007 | passed live/owner | Initial desktop Hello World proof and shared-prefix transition were confirmed. With provider 1.0.1, managed stop removed the owned service/activation and private app mapping (404), retained source and kept the second app available. Start restored readiness/private routing without an operator command. |
 
 ## Executed behavior checks
 
@@ -76,8 +76,8 @@ No logout, reboot, instance replacement or restore test ran. Source/dependency
 caches are on project storage; images and runtime process state are disposable.
 No managed app persistence, secrets, database or production capability is claimed.
 The running provider code matches the merged implementation; immutable provider
-snapshots remain independent of checkout branch changes. Final accepted delivery
-is pending the remaining criteria. The stable snapshot was refreshed after merge
+snapshots remain independent of checkout branch changes. Live acceptance is now complete; final delivery
+awaits the closeout patch CI/merge. The stable snapshot was refreshed after merge
 as recorded below; per-app containers did not restart.
 
 ## Two-app desktop confirmation — October 10, 2026 (UTC)
@@ -103,10 +103,10 @@ The one-time shared-prefix setup is complete. Subsequent per-app routes are
 managed by the unprivileged CLI/router; no per-app Serve command is required.
 No daemon configuration was changed by the agent. Both apps remain running.
 
-Remaining owner acceptance covers a source edit becoming visible in the desktop
-browser and managed first-app stop/removal with source retention. Review/merge
-is complete. Keep unrelated services/configuration intact. Catalogue slices are
-Deployed, with Delivered pending all required acceptance.
+At that checkpoint, desktop source-update and managed first-app cleanup remained
+pending. Both subsequently passed in the closeout below. Initial implementation
+review/merge is complete; the closeout patch still needs its own CI/merge before
+catalogue promotion from Deployed to Delivered.
 
 Initial private-app CI failed before executing the generated app: Docker looks
 for Dockerfile by default, while the toolchain uses Containerfile. The workflow
@@ -153,3 +153,66 @@ files; both status calls reported ready/configured and all four private page/hea
 GETs returned 200. The full offline repository checker, whitespace and relative-file
 link checks also passed for the documentation/runtime-guidance reconciliation. This is runtime installation reconciliation within
 SPEC-018, not a new operator grant or infrastructure deployment.
+
+## Final live checks and port-reuse repair — October 10, 2026 (UTC)
+
+Daniel requested “Do those two checks then so we can close it out.” The exact
+port-reuse patch source is `5536c0f3df83ca88d529e01476e1679256f35a61`; the baseline
+was main `8b6a6ee3f78fcd78117931bfc7e8206df25bf957`.
+
+### Desktop source update
+
+Only Hello Second's existing `app/page.tsx` heading was temporarily changed to
+“Hello Second - live update verified”. The changed private HTTPS HTML was observed
+in 0.136 seconds; this is host-observed response timing, not a measured browser
+latency. Hello World's page stayed unchanged. Daniel answered “Yes, it updated
+automatically” from his desktop. Original second-app bytes were restored only
+after checking the file still matched this task's edit; both original pages
+again returned 200. No unit edit, app restart or per-app Serve operation was
+needed for the source update.
+
+### First-app source-preserving stop/start
+
+The first provider 1.0.0 stop revoked the mapping and removed the owned unit,
+but returned a conflict at its final port probe. Status and scoped service/port
+checks reconciled it as stopped, source intact and private route 404; the second
+page stayed 200. No other process was killed or state overwritten to bypass it.
+An isolated TCP test reproduced the probe treating a cleanly closed connection
+in TIME_WAIT as occupied. Recovery start through the existing CLI succeeded in
+27.966 seconds, including managed preparation/build/readiness.
+
+Provider 1.0.1 probes TCP port reuse with SO_REUSEADDR, while still rejecting an
+active listener. Three real-loopback regression cases cover free ports, active
+listeners and closed-connection reuse. The closed-connection case failed before
+the fix and all three passed after it. A no-op ready start installed the owned
+patched provider snapshot; the app container was not restarted by installation.
+The actual stop/start test then passed:
+
+- Stop: `gptclawctl stop --project-root /srv/forge/projects/hello-world`,
+  operation `8a0fa715a56d44aba776922efae5dfa6`, changed/stopped,
+  source retained; 0.866 seconds. Status recorded terminal result passed.
+- While stopped: first private page returned 404; second private page and health
+  returned 200. Shared Serve prefix stayed configured; only the first app's
+  registry mapping/service/activation was removed.
+- Start: `gptclawctl start --project-root /srv/forge/projects/hello-world`,
+  operation `795e6ce93597465bb2000c714ba9e2b3`, changed/ready,
+  private route configured; 3.647 seconds. Status recorded terminal result passed.
+- All 16 existing known source/guidance/manifest files matched their pre-test
+  SHA-256 fingerprints after stop and start. The adopted prototype lacks a README;
+  an initial fingerprint attempt stopped on that absent file before any mutation,
+  then used the actual existing file set. Runtime/cache/authentication files were
+  excluded. Both private page/health pairs returned 200 after start.
+
+### Verification and delivery boundary
+
+The focused lifecycle/proxy suite passed 32 cases; the full offline repository
+checker passed. Tests use isolated loopback sockets, not existing host ports.
+Private services remain bound to loopback, Funnel stays off, and both apps remain
+running with their original source. No AWS infrastructure, root permission,
+operator grant, host package, public route or data deletion changed.
+Initial prototype creation/standalone build timings were not captured; the measured
+managed recovery start, warm stop/start and private response-edit timings above
+are the available speed evidence. There is no acceptance speed threshold.
+This closes the two live checks. Mark Delivered after the patch and evidence are
+merged and their configured checks pass; retain broader roadmap and host/skill
+acceptance separately.
