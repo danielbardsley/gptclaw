@@ -91,3 +91,8 @@ After observing the exact prefix and absence of the prototype override, verify
 both private URLs, browser updates and owner acceptance. Keep unrelated Serve
 configuration and active services intact. The agent must not claim that a pending
 operator question or elapsed time established this change.
+
+Initial private-app CI failed before executing the generated app: Docker looks
+for Dockerfile by default, while the toolchain uses Containerfile. The workflow
+now supplies the explicit file path. This does not change the toolchain pin or
+local passing behavior; corrected CI outcome is recorded separately.

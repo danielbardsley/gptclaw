@@ -43,7 +43,7 @@ jobs:
         run: |
           set -euo pipefail
           command -v docker
-          docker build --tag gptclaw-toolchain-ci templates/apps/node-toolchain
+          docker build --file templates/apps/node-toolchain/Containerfile --tag gptclaw-toolchain-ci templates/apps/node-toolchain
           .venv-manifest/bin/python scripts/tests/check_app_template.py "$RUNNER_TEMP/gptclaw-app-template"
           app_ci_root="$RUNNER_TEMP/gptclaw-app-template/template-ci"
           for app_ci_step in install test typecheck build; do
