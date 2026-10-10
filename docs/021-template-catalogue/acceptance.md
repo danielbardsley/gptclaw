@@ -1,6 +1,6 @@
 # SPEC-021 acceptance evidence
 
-- **Status:** In review — local/live checks passed; CI/review, final owner acceptance and merge pending
+- **Status:** In review — local/live checks passed; CI passed; review, final owner acceptance and merge pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-021](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -18,11 +18,11 @@ policy installer, credential, public exposure or production change ran.
 | Criterion | State | Evidence / remaining action |
 |---|---|---|
 | AC-001 | passed locally/live | Deterministic source and installed list/show JSON agree; observation-only tests guard calls/writes and file inventory. Unknown/ranged/partial selections fail without fallback. |
-| AC-002 | passed locally | Strict schema/path/type/duplicate/integrity/compatibility fixtures reject before destination creation. Git baseline fixture rejects historical descriptor mutation even with recomputed digest. CI baseline comparison is configured; remote outcome pending. |
+| AC-002 | passed locally | Strict schema/path/type/duplicate/integrity/compatibility fixtures reject before destination creation. Git baseline fixture rejects historical descriptor mutation even with recomputed digest. CI baseline comparison is configured; remote outcome passed on the corrected revision. |
 | AC-003 | passed locally/live | Default/exact generation, distinct synthetic release bytes, normalized reproducibility and release-selected toolchain independent of registry default pass. Two concurrent real processes publish exactly one complete app; injected competing empty destination is preserved. Failure retains only owned staging and returns its path. |
 | AC-004 | passed locally/live | New manifest/dependency/toolchain/provenance validate; edited source is allowed. Invalid/conflicting provenance fails before runtime calls. Task-owned marker-only app validate/test/start passed without reintroducing release metadata; provenance restored after scoped stop. |
 | AC-005 | passed locally/live | Offline installed snapshot list/create parity and old-snapshot independence from changed source default pass. Live source/installed list/show agree. Provider refresh was a ready no-op; existing app state/operations stayed stable. No provider rollback was performed against existing live apps; snapshot rollback compatibility was tested offline. |
-| AC-006 | local/live passed; final acceptance pending | 111 focused tests, full repository checker and syntax/whitespace checks passed. Scoped live frozen install/test/build/typecheck, private page/health/assets and stop/source retention passed; second apps remain available. Runbook is written. CI/review, Daniel's final acceptance and merge remain pending. |
+| AC-006 | local/live passed; final acceptance pending | 111 focused tests, full repository checker and syntax/whitespace checks passed. Scoped live frozen install/test/build/typecheck, private page/health/assets and stop/source retention passed; second apps remain available. Runbook is written. All three configured CI workflows passed; review, Daniel's final acceptance and merge remain pending. |
 
 ## Live generated-app workflow
 
@@ -95,14 +95,13 @@ remain tested. No failed run is counted as passing.
 
 Local Terraform commands were not run because Terraform source did not change.
 No infrastructure deployment, reboot, replacement, restore drill, additional stack
-or automatic template upgrade is claimed. Remote CI and final source revisions
-will be recorded below when available. PRJ-003 remains In review, not Delivered.
+or automatic template upgrade is claimed. Implementation CI and exact source revisions are recorded below. PRJ-003 remains In review, not Delivered.
 
 ## Final local verification
 
 The pre-correction full repository checker passed with all 110 focused tests,
 including 20 catalogue tests. The corrected catalogue suite passes 21 tests;
-its updated full repository run is pending. Relative-link review resolved 169 local targets across eight
+the corrected full repository run also passed with all 111 focused tests. Relative-link review resolved 169 local targets across eight
 changed documentation files. Git staged/unstaged whitespace checks passed; no
 cache, authentication or environment material is included in the staged changes.
 
@@ -120,3 +119,20 @@ A standalone live `pnpm typecheck` also passed in 5.493 seconds through the
 existing bounded `run_in_app` container interface on the stopped fixture, with
 read-only dependency metadata. It is distinct from Next.js build's integrated
 TypeScript checks. Final source/CI references follow below.
+
+## Corrected implementation CI and handover
+
+At exact implementation source `41c12c4d1956008ee9be7a141b72780cf8445f12`, all
+three configured workflows passed:
+
+- [Private application workflow #26](https://github.com/danielbardsley/gptclaw/actions/runs/38082670446): all 111 focused tests, baseline release immutability, generated exact-release frozen install/test/typecheck/build, dependency operations and selected toolchain acquisition/integration.
+- [Development-host quality #143](https://github.com/danielbardsley/gptclaw/actions/runs/38082670403): repository and Terraform quality checks; no apply.
+- [Federation quality #47](https://github.com/danielbardsley/gptclaw/actions/runs/38082670706): quality checks; no apply.
+
+The corrected full local repository checker passed. Stable installed-launcher
+inspection verified byte equality for private_apps.py, gptclawctl.py,
+project_templates.py, catalogue and schema against the checkout. Both original
+demos remained ready; the acceptance fixture remains stopped, source/receipts
+retained and provenance restored. Implementation code, focused tests, release
+assets/schema and runbook are complete. Final review, Daniel's acceptance and
+merge remain pending; no broader template support is claimed.

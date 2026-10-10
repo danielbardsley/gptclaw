@@ -1,6 +1,6 @@
 # TASKS-021: Versioned template catalogue
 
-- **Status:** In review — local/live verification complete; CI/review/acceptance pending
+- **Status:** In review — local/live verification complete; CI passed; review/acceptance pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-021](spec.md) · **Design:** [TDD-021](technical-design.md)
@@ -61,5 +61,6 @@ parity and source-preserving stop passed. A marker-only legacy acceptance app
 validated/tested/started without rewriting metadata. The acceptance app is stopped;
 its source/receipts are retained. Both independent demos remained ready.
 [Acceptance](acceptance.md) records detailed evidence. T-006's local/live portion
-is complete; final CI/review, Daniel's acceptance and merge remain pending. Broader
+is complete; all three implementation CI workflows passed; review, Daniel's acceptance and
+merge remain pending. Broader
 stacks, automatic upgrades, GitHub automation and RES work remain outside scope.
