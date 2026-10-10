@@ -81,10 +81,10 @@ retained for diagnosis; no unknown resources were deleted or permissions changed
 
 ## Remaining delivery
 
-Complete CI and review, record exact source/PR references,
-then obtain owner acceptance/merge before marking the initial SYS-002 slice
-Delivered. Python/uv/Expo remain separate stage-12 stack obligations. Retain only
-owned synthetic source/receipts needed for review; stop its service at completion.
+Implementation verification and source/CI references are recorded below. Review
+and owner acceptance/merge remain before marking the initial SYS-002 slice
+Delivered. Python/uv/Expo remain separate stage-12 stack obligations. The synthetic
+service is stopped; owned source/receipts are retained for review.
 
 ## Final local and negative-artifact verification
 
