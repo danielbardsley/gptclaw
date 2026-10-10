@@ -1,6 +1,6 @@
 # SPEC-018 acceptance evidence
 
-- **Status:** Live acceptance passed; lifecycle closeout patch awaiting CI/merge
+- **Status:** Delivered — accepted initial single-web workflow
 - **Owner:** Daniel
 - **Date:** 2026-10-09 (America/New_York)
 - **Specification:** [SPEC-018](spec.md)
@@ -24,7 +24,7 @@ No automatic enrollment credentials, SSH keys or environment dumps are included.
 | AC-003 | passed locally/live | Hello World uses 18080, second app 18081. Stopping the second returned its mapping to 404, removed its listener/activation and retained source; first app health remained 200. Source-preserving warm start and intentional restart passed. Offline port/conflict and unrelated-state preservation tests pass. |
 | AC-004 | passed live/owner | Both private pages/counters confirmed; shared prefix, loopback bindings, assets/health/HMR and disabled Funnel verified. Daniel confirmed the second app source edit updated automatically in his desktop browser on October 10. |
 | AC-005 | passed live/owner | Daniel confirmed automatic browser update after a source edit; temporary edit restored. All 16 existing first-app source/guidance/manifest files remained byte-identical through stop and start. App-data limits are documented. |
-| AC-006 | pending closeout CI/merge | Prior implementation CI, offline checks, two-app live workflow, scoped cleanup and owner browser evidence passed. Daniel requested the two final checks so this slice could close; both passed. The resulting port-reuse patch and acceptance record await their own CI/merge before Delivered. |
+| AC-006 | passed | Implementation and closeout patch/evidence are merged; all three closeout CI workflows and local checks passed. Two-app live workflow, scoped cleanup, source retention and timings are recorded. Daniel requested these two final checks for closeout and confirmed the browser auto-update; both checks passed. Initial slice accepted with recorded timing/host/skill limits. |
 | AC-007 | passed live/owner | Initial desktop Hello World proof and shared-prefix transition were confirmed. With provider 1.0.1, managed stop removed the owned service/activation and private app mapping (404), retained source and kept the second app available. Start restored readiness/private routing without an operator command. |
 
 ## Executed behavior checks
@@ -76,9 +76,9 @@ No logout, reboot, instance replacement or restore test ran. Source/dependency
 caches are on project storage; images and runtime process state are disposable.
 No managed app persistence, secrets, database or production capability is claimed.
 The running provider code matches the merged implementation; immutable provider
-snapshots remain independent of checkout branch changes. Live acceptance is now complete; final delivery
-awaits the closeout patch CI/merge. The stable snapshot was refreshed after merge
-as recorded below; per-app containers did not restart.
+snapshots remain independent of checkout branch changes. Live acceptance and closeout patch CI/merge are now complete for the initial slice. The stable snapshot was refreshed after merge
+as recorded below; that snapshot refresh did not restart app containers. The
+subsequent explicitly requested stop/start check is recorded in the closeout.
 
 ## Two-app desktop confirmation — October 10, 2026 (UTC)
 
@@ -104,9 +104,8 @@ managed by the unprivileged CLI/router; no per-app Serve command is required.
 No daemon configuration was changed by the agent. Both apps remain running.
 
 At that checkpoint, desktop source-update and managed first-app cleanup remained
-pending. Both subsequently passed in the closeout below. Initial implementation
-review/merge is complete; the closeout patch still needs its own CI/merge before
-catalogue promotion from Deployed to Delivered.
+pending. Both subsequently passed in the closeout below. Initial implementation and closeout patch
+review/CI/merge are complete; this initial slice is Delivered.
 
 Initial private-app CI failed before executing the generated app: Docker looks
 for Dockerfile by default, while the toolchain uses Containerfile. The workflow
@@ -138,7 +137,8 @@ No submitted reviews or unresolved inline review threads were present. GitHub
 accepted the merge with the expected head SHA, producing `52b57caf1d86e81e1bbb41a77af35ed45e7df1f6`.
 The checkout was fast-forwarded to that main revision; prior feature branches
 were retained. Merge triggered quality workflows, not a protected infrastructure
-apply. Remaining owner/live acceptance above is unchanged.
+apply. At that checkpoint the two owner/live checks were still pending; the subsequent
+closeout below records their passing outcomes.
 
 ### Stable provider reconciliation
 
@@ -213,6 +213,26 @@ operator grant, host package, public route or data deletion changed.
 Initial prototype creation/standalone build timings were not captured; the measured
 managed recovery start, warm stop/start and private response-edit timings above
 are the available speed evidence. There is no acceptance speed threshold.
-This closes the two live checks. Mark Delivered after the patch and evidence are
-merged and their configured checks pass; retain broader roadmap and host/skill
+This closes the two live checks. The patch/evidence merge and CI results below
+establish Delivered for this initial slice; retain broader roadmap and host/skill
 acceptance separately.
+
+## Delivery closeout — October 10, 2026 (UTC)
+
+[PR #43](https://github.com/danielbardsley/gptclaw/pull/43) merged the provider 1.0.1
+repair and live evidence as `fdfaf3d0f911caed9f6efa59cf0d490053597ac9`. At its exact
+head `f7ac0472387e4f872073f35347e1b2308dd93610`, all configured PR workflows passed:
+
+- [Private application workflow #8](https://github.com/danielbardsley/gptclaw/actions/runs/38063026085).
+- [Development-host quality #131](https://github.com/danielbardsley/gptclaw/actions/runs/38063025958).
+- [Federation quality #35](https://github.com/danielbardsley/gptclaw/actions/runs/38063026036).
+
+Daniel's instruction to complete the two checks for closeout, his automatic
+browser-update confirmation, and the passing lifecycle evidence fulfill this
+slice's final acceptance. All AC-001–007 pass at their stated local/live/owner
+levels. SPEC-018 is Delivered; catalogue delivery is limited to its implemented
+single-web/Next.js/CLI/private-routing slices. No broader runtime, templates,
+data/secrets, production or fresh-client skill acceptance is inferred.
+Both synthetic apps remain running on their original private URLs. The installed
+1.0.1 provider snapshot matches the merged lifecycle code and remains independent
+of checkout branch changes. No host logout/reboot/replacement test was added.

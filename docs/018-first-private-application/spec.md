@@ -1,6 +1,6 @@
 # SPEC-018: First private application workflow
 
-- **Status:** Merged and running on EC2; remaining live acceptance pending
+- **Status:** Delivered — accepted initial single-web workflow
 - **Owner:** Daniel
 - **Date:** 2026-10-09 (America/New_York)
 - **Features:** Initial slices of PRJ-002, TPL-001, RUN-001–005 and NET-101–103
@@ -124,8 +124,12 @@ Serve prefix is configured, the prototype override removed, and Funnel is off.
 The CLI manages app mappings without further per-app daemon writes. Forge's
 original daemon write was denied; Daniel used his existing SSM operator path.
 No new sudo/IAM grant or general Tailscale operator setting was introduced.
-Desktop source-update and managed first-app cleanup acceptance remain pending;
-see [the acceptance record](acceptance.md) for evidence and limits.
+Desktop automatic source-update and managed first-app stop/start/source-retention
+checks passed on October 10. The resulting provider 1.0.1 port-reuse fix and live
+evidence merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43)
+as `fdfaf3d0f911caed9f6efa59cf0d490053597ac9`; its three CI workflows passed.
+This satisfies Daniel's requested closeout of this initial slice. See
+[the acceptance record](acceptance.md) for commands, attribution and limits.
 
 Stage 1 may use synthetic Hello World content, followed by real product work once
 the workflow succeeds. It does not change manifest v1 or imply durable app data.

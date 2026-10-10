@@ -1,6 +1,6 @@
 # TDD-018: Minimal private application workflow
 
-- **Status:** Merged and running on EC2; remaining live acceptance pending
+- **Status:** Delivered — accepted initial single-web workflow
 - **Owner:** Daniel
 - **Specification:** [SPEC-018](spec.md)
 - **Tasks:** [TASKS-018](tasks.md)
@@ -150,8 +150,9 @@ References checked October 9, 2026:
 
 PR #40 merged the initial CLI, template, second-project allocation and shared
 private ingress. Both apps are running and desktop page/counter access is
-confirmed. The remaining source-update/cleanup acceptance is tracked in
-acceptance.md; broader templates and routing remain future scope. Existing host
+confirmed. The source-update/cleanup acceptance passed and the provider 1.0.1 port-reuse
+repair merged in PR #43; evidence is tracked in acceptance.md. Broader templates
+and routing remain future scope. Existing host
 and skill acceptance continues in its original records.
 
 ## Selected implementation defaults
@@ -164,6 +165,7 @@ and skill acceptance continues in its original records.
 
 Observed first-app local health/private HTTPS and Daniel's browser/counter
 confirmation support the first stage. The shared prefix transition and both
-desktop pages/counters are now confirmed in acceptance.md; desktop source-update
-and first-app cleanup checks remain pending. Formal logout/reboot/replacement
-acceptance remains unchanged.
+desktop pages/counters, automatic source-update and first-app cleanup/source
+retention are confirmed in acceptance.md. Provider 1.0.1 is installed and this
+initial slice is Delivered. Formal logout/reboot/replacement acceptance remains
+unchanged.
