@@ -51,6 +51,18 @@ not run because the specifically scoped provisioning token is not yet supplied.
 CI outcome is recorded after pushing the implementation, separately from local
 checks. No test output contains token values or environment dumps.
 
+## CI history
+
+The first implementation revision `c60bd7a` failed the private-app CI job's
+installed-provider test because it expected a host-only repository status error
+on GitHub's differently numbered unprivileged user. The host correctly rejected
+that user with `setup`; the test now checks portable version/help output instead,
+without relaxing the host identity gate. The focused 35-test suite passed again
+locally after correction. Full CI for the corrected revision is pending.
+The related repository-check CI jobs include the same test; first-run failures
+remain historical evidence, not acceptance. See [failed app run](https://github.com/danielbardsley/gptclaw/actions/runs/38084547944)
+and [failed federation run](https://github.com/danielbardsley/gptclaw/actions/runs/38084547901).
+
 ## Delivery and remaining work
 
 The operator interface supports creation-only authority followed by a token

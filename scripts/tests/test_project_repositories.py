@@ -378,9 +378,10 @@ class Tests(unittest.TestCase):
         app.ensure_store();bundle=app.provider_bundle()
         self.assertTrue((bundle/'scripts/project_repositories.py').is_file())
         self.assertTrue(os.access(bundle/'scripts/repository_askpass.py',os.X_OK))
-        output=subprocess.run([sys.executable,str(bundle/'scripts/gptclawctl.py'),'repo','status','--operation-id','0'*32],capture_output=True,text=True)
-        self.assertNotEqual(output.returncode,0)
-        self.assertIn('repository-recovery',output.stdout)
+        output=subprocess.run([sys.executable,str(bundle/'scripts/gptclawctl.py'),'--version'],capture_output=True,text=True,check=True)
+        self.assertIn('repo',json.loads(output.stdout)['capabilities'])
+        help_result=subprocess.run([sys.executable,str(bundle/'scripts/gptclawctl.py'),'repo','--help'],capture_output=True,text=True,check=True)
+        self.assertIn('plan,apply,resume,status',help_result.stdout)
 
 
 if __name__=='__main__':unittest.main()
