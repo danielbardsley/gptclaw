@@ -80,3 +80,12 @@ credential is pending. Daniel approved the seven-day limit and owns revocation.
 PR #52 carries implementation for review; merge is not authorized by the coding
 request. T-008 is complete for updated implementation revision `ebfe69c`: all three configured
 CI workflows passed. T-009 retains live/merge/owner acceptance gates.
+
+### Latest live handover
+
+The repository-scoped token authenticated and the README-only main commit was
+published. Protection readback returned HTTP 403 requiring a private-protection
+GitHub plan. Setup stopped before starter/PR publication, retaining the same
+operation. T-002b/T-009 remain pending: Daniel resolves account-plan support and
+provides a still-valid scoped token if the current one expires (October 11,
+12:00 a.m. America/New_York). See acceptance.md for exact commit/receipt evidence.

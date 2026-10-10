@@ -69,19 +69,47 @@ No protected infrastructure deployment was performed. Whitespace, shell syntax
 and updated relative-link checks passed. This subsequent evidence update is
 documentation only; its follow-up PR-head checks remain visible on PR #52.
 
+## Live configuration attempt — October 10
+
+The supplied repository-specific token file authenticated `danielbardsley`.
+GitHub reported actual expiration `2026-10-11T04:00:00Z` (October 11 at
+12:00 a.m. America/New_York); the token value was never displayed or recorded.
+Daniel owns its manual revocation/removal after use, under the same retained
+verification scope. `/repos/...` readback reported admin access; grants beyond
+executed endpoints remain operator-declared, not introspected.
+
+`repo resume` used operation `c33aa2188ed84326a0f6bc2dc0fe2ad1` and published
+only the minimal bootstrap README on `main`, commit
+`a822cbc88e4df64a257a40b319e4c1ff174e2ef8`. Subsequent scoped reads verified the
+same immutable repository ID and main commit. Protection observation returned
+HTTP 403 with GitHub's recognized requirement to upgrade to GitHub Pro or use
+public visibility. Public visibility is outside the approved scope; no fallback
+or permission broadening occurred. Journal state is `recovery-required`, intent
+`publish-main`, last error `repository-api`; main publication is remotely proven
+but not yet marked complete because the next readback was denied.
+
+The private retained repository contains bootstrap source only. No starter
+branch, protection write, environments, secrets, initial PR or local application
+publication occurred. Account-plan support is an actual blocking prerequisite,
+not verified readiness. Daniel must enable a plan supporting private protection
+or approve a separately reviewed scope change. Resume the same operation after
+that change with a still-valid repository-scoped token; do not recreate, make
+public, delete or weaken the setup automatically. Full live/runtime acceptance,
+merge and token revocation remain pending.
+
 ## Criterion mapping
 
 | Criterion | State | Observed evidence | Remaining action/owner |
 |---|---|---|---|
 | AC-001 | pending | Offline read-only plan, exact release, collision/path/input rejection and no-write tests pass. | Actual actor/account/target preview observed; final setup readback remains pending. |
 | AC-002 | pending | Real fixture Git proves README-only main, starter history/provenance/guidance and one PR; protection precedes exclusive starter ref. | Private repository ID/owner verified; protected bootstrap/starter PR and files await scoped token. |
-| AC-003 | pending | Protection readback/denial/drift tests pass; no implicit policy repair or starter publication after denial. | Verify GitHub settings and actual direct-main denial. |
+| AC-003 | failed | Protection readback/denial/drift tests pass; no implicit policy repair or starter publication after denial. | Live protection read returned 403 for account-plan support; Daniel resolves that prerequisite, then resume and verify enforcement. |
 | AC-004 | pending | Empty selections cause no corresponding requests; development environment/readback and secret metadata states pass. No secret writes exist. | Record selected/no-selection behavior against actual GitHub. |
 | AC-005 | pending | Private-file/type/expiry, wrong actor/plan, anonymous-fd askpass, HTTP redaction and redirected Git configuration rejection pass with synthetic credentials. | Verify actual grants/expiry and revoked provisioning tokens; record separate Git handoff. |
 | AC-006 | pending | Lost creation response never auto-adopts; explicit ID reconciliation, response loss at object/ref/protection/environment/PR boundaries, locks, drift and atomic-local-publication recovery pass. Partial generation preserves owned staging for operator review. | Record live receipt/resource identity and retained-resource disposition. |
 | AC-007 | pending | Existing template/provider and offline repository regressions pass; bundle includes adapter/helper and local-only interfaces remain supported. | Real GitHub starter/container checks, private runtime/independent-app check, merge and Daniel's acceptance; implementation CI passed. |
 
-All criteria remain pending because their required live evidence is incomplete;
+Required live evidence remains incomplete; AC-003 failed its live plan gate and the other criteria remain pending;
 offline assertions do not establish deployed behavior or owner acceptance.
 
 ## Local verification
