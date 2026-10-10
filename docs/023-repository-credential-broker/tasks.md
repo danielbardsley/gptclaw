@@ -43,7 +43,7 @@ pending external setup/feasibility gate; it does not reopen existing approval.
 - [x] T-007: Add concurrency, renewal, response-loss reconciliation, per-project
   disable/revocation and owner-controlled App key rotation/rollback. Document
   residual lifetimes and actual versus unknown outcomes. CRD-005/007; AC-005/007.
-- [ ] T-008: Add meaningful offline/helper/Git transport negative tests and
+- [x] T-008: Add meaningful offline/helper/Git transport negative tests and
   compatibility/bundle checks; update existing CI and run focused suites,
   repository/whitespace/link checks. Deliver implementation through reviewed PRs.
   CRD-001–008; AC-001–008.
@@ -68,7 +68,9 @@ Existing manual PAT, local-only and unrelated runtime interfaces are retained.
 Offline synthetic App tests include real RSA signatures and authenticated native
 Git TLS fetch/push; evidence and counts are in [acceptance.md](acceptance.md).
 
-T-008 remains open until final CI is verified. T-002b/T-009 require the separate
+T-008 is complete for code revision `30bf742`: all three configured workflows
+passed, alongside 39 focused tests, existing regressions and full repository
+checks. T-002b/T-009 require the separate
 owner App setup/target approval and actual App ID, installation ID and private
 key path. No real App/root credential or remote project was used during tests,
 and actual personal-account creation/inclusion is not claimed proved. Existing

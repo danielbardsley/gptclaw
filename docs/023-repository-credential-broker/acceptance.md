@@ -92,3 +92,18 @@ revoked immediately. Deactivation/disable does not claim server-side revocation.
 Merge, actual App feasibility, live criteria and owner acceptance remain pending.
 The previous SPEC-022 slice remains Delivered, with its retained source/app/PR
 and explicit reported token revocation unchanged.
+
+## Implementation CI verification
+
+Exact code revision `30bf742497ee116db6bf59bb5efd9626ae5df5d1` passed all three
+configured workflows:
+
+- [Private application workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38092377986): 39 broker tests, existing suites, template integrity, generated app build, dependency operations and toolchain preparation passed.
+- [Development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38092377978): success.
+- [Tailscale federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38092377976): success.
+
+No protected infrastructure deployment was performed. These prove code quality
+for this revision; they do not establish the separately pending live App/account
+feasibility or owner acceptance. This follow-up records documentation only.
+The final worktree was clean after implementation push; no private material was
+staged. Only task-owned fixtures were removed by tests.
