@@ -1,13 +1,13 @@
 # TDD-023: Repository credential broker
 
 - **Status:** Draft proposal; App/endpoint feasibility and owner setup pending
-- **Owner:** Daniel
+- **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Tasks:** [TASKS-023](tasks.md)
 
 ## Architecture and grant boundary
 
-Use a private personal-account GitHub App owned by Daniel, initially installed on
+Use a private personal-account GitHub App owned by the project owner, initially installed on
 an explicitly selected bootstrap repository. GitHub documents automatic App
 access to repositories it creates; rely on that supported mechanism only after
 verifying the exact personal-account create/inclusion path. Do not choose an
@@ -32,7 +32,7 @@ creation. Propose an installation-authenticated creation path and prove it in th
 canary; do not assume `/user` authentication works for installation tokens or
 silently introduce an expiring user token/refresh-token store. Bind App JWT/API
 readback to the expected App and installation account. If this path is unavailable,
-stop the affected task and present a concrete alternative grant design to Daniel.
+stop the affected task and present a concrete alternative grant design to the project owner.
 Official references: [personal repository creation](https://docs.github.com/en/rest/repos/repos#create-a-repository-for-the-authenticated-user),
 [App token endpoints](https://docs.github.com/en/rest/apps/apps),
 [installation behavior](https://docs.github.com/en/apps/using-github-apps/installing-your-own-github-app).
@@ -149,7 +149,7 @@ transport as well as the helper protocol; do not rely only on mocked helper outp
 Test source/installed bundle parity, manual PAT/local-only compatibility, dirty
 worktrees and unchanged unrelated services.
 
-After implementation authorization, Daniel separately approves exact App settings,
+After implementation authorization, the project owner separately approves exact App settings,
 bootstrap selection/private-key handling and retained live target names. The first
 canary must prove personal-account App creation and automatic selected-installation
 inclusion without manual reassignment. Then two successive projects prove normal
@@ -164,7 +164,7 @@ preserves repositories/source/remotes/history/bindings. Existing issued tokens m
 remain valid until revoked/expired; rollback does not claim GitHub revocation.
 No compute replacement or production promotion is needed.
 
-Daniel's selected standing branch policy is known. App name/grant/installation and
+The project owner's selected standing branch policy is known. App name/grant/installation and
 bootstrap repository approval, exact creation capability/default-branch behavior,
 and signing dependency remain substantive implementation-readiness decisions.
 The proposed bootstrap selection is the retained SPEC-022 verification repo, not

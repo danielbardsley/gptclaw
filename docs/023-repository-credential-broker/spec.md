@@ -1,7 +1,7 @@
 # SPEC-023: Repository credential broker
 
 - **Status:** Draft — full specification approval and implementation authorization pending
-- **Owner:** Daniel
+- **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** PRJ-005, initial GitHub App broker; bounded PRJ-002/004 integration
 - **Design:** [TDD-023](technical-design.md) · **Tasks:** [TASKS-023](tasks.md)
@@ -9,7 +9,7 @@
 
 ## Outcome
 
-After one owner-controlled GitHub App setup, Daniel can create successive private
+After one owner-controlled GitHub App setup, the project owner can create successive private
 projects under `danielbardsley` with their GitHub repositories, initial PRs and
 ongoing Git access configured automatically. Creating the second and subsequent
 projects requires no new manually generated PAT, per-repository deploy key or
@@ -22,7 +22,7 @@ not ownership or approval of project scope, source publication, merges or deploy
 A new project request must resolve a concrete repository/name/destination; it is
 not authority to access an arbitrary existing repository.
 
-Daniel selected this specification after completing SPEC-022. On October 10 he
+The project owner selected this specification after completing SPEC-022. On October 10 he
 selected a standing policy for this draft: private repositories and PR review
 without GitHub-enforced branch protection on his current plan. This is a known
 scope preference, not an unanswered decision. Full specification/design approval,
@@ -39,7 +39,7 @@ reviewed authentication path. Its bootstrap script and local app runtime remain
 separate interfaces. The planning-only bootstrap skill does not create GitHub
 repositories; this initiative does not turn it into an app generator.
 
-Daniel reported revoking both temporary SPEC-022 tokens after verification. That
+The project owner reported revoking both temporary SPEC-022 tokens after verification. That
 is owner-supplied confirmation, not an API revocation check. Do not reopen or reuse
 them. The GptClaw platform deploy key remains specific to that repository.
 
@@ -128,11 +128,11 @@ are not an automatic substitute or proof of the no-per-project-setup outcome.
 | AC-005 | Offline expiry/skew/rate-limit/response-loss/race tests pass. Live reacquisition and Git operations work after discarding or expiring a prior token, without owner action. Key rotation and installation/token revocation show documented outcomes, residual lifetimes and recoverable journals; no write replay or fallback. | CRD-005/008 |
 | AC-006 | Activated profile gives the combined normal new flow, initial PR and explicit owner-selected unprotected-private-dev policy; local-only/unconfigured creation has no GitHub side effects. Existing manual PAT flow and unrelated apps retain behavior; no immutable template edits or implicit enrollment. | CRD-006 |
 | AC-007 | Each generated repo supports ordinary fetch and branch push without copied tokens/global credential changes; a later requested PR opens through the scoped API path. Dirty sources/worktrees/remotes survive refresh and rollback. Receipts report actual credential readiness, including failures. | CRD-007 |
-| AC-008 | Both retained projects pass existing manifest/provenance/build/test/typecheck and private page/health checks. One app stays ready while the other is operated. Record local tests, final-head CI, GitHub grant/identity readback and Daniel's desktop/owner acceptance separately. | CRD-008 |
+| AC-008 | Both retained projects pass existing manifest/provenance/build/test/typecheck and private page/health checks. One app stays ready while the other is operated. Record local tests, final-head CI, GitHub grant/identity readback and the project owner's desktop/owner acceptance separately. | CRD-008 |
 
 ## Decisions, ownership and completion
 
-Daniel owns the App, selected bootstrap target/grants, private-key custody,
+The project owner owns the App, selected bootstrap target/grants, private-key custody,
 standing profile and acceptance. The proposed primary path uses an App installed
 on selected repositories: GitHub documents access to repositories it creates,
 while installation tokens can be narrowed by repository ID and permission. This
@@ -157,4 +157,4 @@ operator runbook through reviewed PRs after implementation authorization. Add
 acceptance.md when actual evidence is available; no acceptance is claimed by this
 planning task. Mark Delivered only after implementation merge and all required
 criteria pass. Manual token revocation from the previous feature is not a new
-implementation prerequisite; Daniel's supplied report is retained as such.
+implementation prerequisite; the project owner's supplied report is retained as such.

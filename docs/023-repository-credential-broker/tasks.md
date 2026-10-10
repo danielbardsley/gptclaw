@@ -1,7 +1,7 @@
 # TASKS-023: Repository credential broker
 
 - **Status:** Draft planning complete; implementation not authorized
-- **Owner:** Daniel
+- **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Design:** [TDD-023](technical-design.md)
 
@@ -9,9 +9,9 @@
 
 - [x] T-001: Read catalogue/sequence/architecture, delivered SPEC-022 and actual
   PAT/Git interfaces; verify current official App creation/installation/token
-  documentation. Draft requirements/design/traceability. Daniel selected private
+  documentation. Draft requirements/design/traceability. The project owner selected private
   repos with PR review without enforced branch protection for this proposal.
-- [ ] T-002: Daniel approves full scope/design and authorizes implementation.
+- [ ] T-002: the project owner approves full scope/design and authorizes implementation.
   Review exact App grant/selected bootstrap repo and key handling; authorize
   owner setup and specific retained live targets separately. Prove or resolve
   personal-account installation-authenticated creation/automatic inclusion and
@@ -49,7 +49,7 @@
   setup and two successive private projects without per-project credential or
   installation clicks. Verify scoped Git/PR operations, renewal, cross-repository
   denial, rotation/revocation and retained recovery. Run existing starter quality
-  and private app/independent-service checks; obtain Daniel's desktop/owner
+  and private app/independent-service checks; obtain the project owner's desktop/owner
   observations. Record sanitized acceptance.md, actual final-head CI/merge and
   credential/fixture disposition. Mark the accepted slice Delivered only after
   merged implementation and all criteria pass. AC-001–008.
@@ -65,9 +65,9 @@ One-time owner registration/installation/key setup is necessary; future ordinary
 projects should need no manual token generation. Revocation or key maintenance
 can require later owner action and is not hidden behind a permanent-token claim.
 
-Daniel reported both SPEC-022 temporary tokens revoked. This report is attributed
+The project owner reported both SPEC-022 temporary tokens revoked. This report is attributed
 in the spec; no token files were read, deletion performed or API revocation probed
 for this planning task. App settings/grant/bootstrap/live fixtures remain unapproved.
-Next step is Daniel's review, then T-002; no implementation or setup is authorized
+Next step is the project owner's review, then T-002; no implementation or setup is authorized
 by the request to create this specification. PRJ-004 remains Delivered and its
 existing verification app/source/PR are retained.
