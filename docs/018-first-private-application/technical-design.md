@@ -1,11 +1,11 @@
 # TDD-018: Minimal private application workflow
 
-- **Status:** Implemented on feature branch; live acceptance in progress
+- **Status:** Merged and running on EC2; remaining live acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-018](spec.md)
 - **Tasks:** [TASKS-018](tasks.md)
 
-## Proposed approach
+## Implemented approach
 
 A user-scoped Python CLI orchestrates reviewed rootless Podman/user Quadlet
 interfaces. Reuse the strict manifest validator and its isolated environment.
@@ -16,15 +16,15 @@ operation skill once its version, capabilities and receipt mapping are reviewed.
 A bounded unprivileged ingress user service forwards only registered healthy
 apps. No privileged broker or general control-plane daemon is introduced.
 
-| Component | Proposed responsibility |
+| Component | Responsibility |
 |---|---|
 | CLI and bounded state/operation receipt | Resolve project, validate, serialize transitions, allocate port, report health/status/logs |
 | Single Next.js/TypeScript template | Pinned container toolchain, pnpm lockfile, tests, health route, base-path support and adapted guidance |
 | Per-project rootless containers/Quadlet | Dependency/build/test execution and development service with limits and loopback publication |
-| Private routing adapter | Reconcile only selected owned Serve paths to healthy ports, preserving existing configuration |
+| Private routing adapter | Register healthy owned apps behind the one-time shared Serve prefix, preserving existing configuration |
 
-Implementation chooses exact supported Node/pnpm/Next.js versions and an image
-digest using primary documentation. Project commands run with project root as
+Implementation pins Node/pnpm/Next.js versions and an image digest, listed below.
+These choices were checked against primary package/image sources. Project commands run with project root as
 container working directory, matching manifest argument-vector semantics.
 Dependencies/caches are project-specific; no credential/environment material is
 mounted by default. Define writable cache paths needed by Next.js separately
@@ -133,9 +133,9 @@ restore ephemeral app data and must preserve independent projects.
 | APP-006 | T-005 | AC-006 |
 | APP-007 | T-006, T-007 | AC-007 |
 
-Open choices for implementation review: exact toolchain pins, port range/resource
-bounds, runtime-state/operation schema and installed Serve capability. Resolve
-these before their dependent implementation; planning does not install anything.
+Toolchain pins, port/resource bounds, provider receipt schema and Serve capability
+were resolved during implementation; see the selected defaults below and the
+[provider contract](../../runbooks/manage-private-apps.md#provider-contract-and-recovery).
 
 ## Source and feature progress
 
@@ -148,11 +148,11 @@ References checked October 9, 2026:
 - [Serve prerequisites](https://tailscale.com/docs/features/tailscale-serve): HTTPS readiness and applicable tailnet access rules.
 - [Unix operator option](https://tailscale.com/docs/reference/tailscale-cli/up): daemon operation by a selected Unix user.
 
-Record stage-specific progress against the specification's feature map. A one-off
-route proof supports the first NET-101/102/103 slice, not a complete routing
-manager. The CLI, second-project allocation and broader template behavior remain
-unimplemented until their own tasks pass. Existing host and skill acceptance
-continues in its original records; do not launch interruption tests for this plan.
+PR #40 merged the initial CLI, template, second-project allocation and shared
+private ingress. Both apps are running and desktop page/counter access is
+confirmed. The remaining source-update/cleanup acceptance is tracked in
+acceptance.md; broader templates and routing remain future scope. Existing host
+and skill acceptance continues in its original records.
 
 ## Selected implementation defaults
 

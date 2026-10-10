@@ -1,6 +1,6 @@
 # TASKS-018: First private application workflow
 
-- **Status:** Implementation on feature branch; remaining live acceptance pending
+- **Status:** Merged and running on EC2; remaining live acceptance pending
 - **Owner:** Daniel
 - **Specification:** [SPEC-018](spec.md)
 - **Design:** [TDD-018](technical-design.md)
@@ -56,7 +56,8 @@
 Original T-000 discovery/smoke evidence and APP/AC/T IDs are preserved. This
 revision adds T-006/T-007 and AC-007 for the first desktop Hello World, placed
 before the full CLI. The original revision was planning only; implementation is
-now authorized and recorded below. Formal host logout/reboot and replacement evidence remain in their existing records. After
+now authorized and recorded below. Formal host logout/reboot and replacement
+evidence remain in their existing records. After
 each stage record only the completed feature slice; broad catalogue entries do
 not become Delivered from a prototype.
 
@@ -70,7 +71,7 @@ Serve prefix is configured and the prototype override removed, as verified by
 read-only status; additional apps need no per-app Serve command.
 
 T-007/T-004/T-005 remain open for managed first-app cleanup, desktop source-update
-observation, review/merge and final acceptance. Both desktop URLs and the
+observation and final acceptance. PR #40 is merged as `52b57ca`. Both desktop URLs and the
 shared-prefix transition have passed; local second-app cleanup/isolation and CI
 also passed.
 The implementation uses one operator-owned private Serve prefix and unprivileged
@@ -78,5 +79,6 @@ per-app mappings, avoiding a general Unix operator grant. No privileged broker
 or infrastructure change was introduced. [Acceptance evidence](acceptance.md)
 records failures/fixes and exact remaining obligations.
 
-Implementation CI passed at `0c9d75b` (all three workflows). Review/merge and
-remaining browser-update/first-app cleanup acceptance are still pending.
+Implementation CI passed at `0c9d75b` and final PR revision `7850871` (all three
+workflows). PR #40 merged on October 10; remaining browser-update/first-app
+cleanup acceptance is still pending.

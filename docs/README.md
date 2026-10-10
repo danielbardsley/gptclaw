@@ -141,3 +141,13 @@ dispositions independently of feature implementation status.
   [Technical design](./018-first-private-application/technical-design.md) ·
   [Tasks](./018-first-private-application/tasks.md) ·
   [Acceptance](./018-first-private-application/acceptance.md)
+
+## Current application milestone
+
+[SPEC-018](018-first-private-application/acceptance.md) is merged in
+[PR #40](https://github.com/danielbardsley/gptclaw/pull/40) and running on EC2.
+Both independent apps are confirmed from Daniel's desktop. The shared private
+Serve prefix routes subsequently started apps without per-app operator commands.
+Remaining acceptance is desktop source-update observation and managed first-app
+cleanup/source retention. Use the [app runbook](../runbooks/manage-private-apps.md)
+for operations; wider roadmap capabilities remain separate.

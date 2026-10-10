@@ -12,7 +12,7 @@ across compute replacement.
 
 ## Current state
 
-As of October 9, 2026, the repository has progressed beyond the initial host
+As of October 10, 2026, the repository has progressed beyond the initial host
 bootstrap. The statuses below distinguish accepted capabilities from merged
 code that still needs deployment or acceptance.
 
@@ -23,21 +23,23 @@ code that still needs deployment or acceptance.
 | Agent guidance and workflows | **Deployed, with acceptance remaining.** Reviewed host policy, repository and nested guidance templates, specification and project-bootstrap skills, runtime-operation and release-promotion skills, handovers, decision records, and context validation. Fresh-session, client, or live-workflow checks remain outstanding by initiative. [Initiatives 003–012](docs/README.md). |
 | Project manifest v1 | **Delivered.** A versioned declaration for one private HTTP service, JSON Schema, offline validator, and synthetic example. Validation does not create or run an application. [Reference](docs/project-manifest.md) · [SPEC-013 acceptance](docs/013-versioned-project-manifest/acceptance.md). |
 | Rootless container toolchain | **Deployed; remaining host acceptance pending.** Rootless packages/configuration and matching receipts are installed. October 9 container build/run, network, file ownership, crash restart and cleanup checks passed; independent logout/reboot and synthetic-source replacement checks remain pending. [PR #26](https://github.com/danielbardsley/gptclaw/pull/26) · [SPEC-014 evidence](docs/014-rootless-container-toolchain/acceptance.md). |
-| Declared host tool profile | **Deployed; final acceptance pending.** Successful receipts cover all 26 components and match the reviewed profile/deployment revision. Full deployment/recovery reconciliation and owner acceptance remain pending. Temporary upstream-source exceptions expire November 1, 2026 (America/New_York). [SPEC-015 evidence](docs/015-host-tool-profile/acceptance.md). |
-| Automatic replacement-host Tailscale enrollment | **Deployed; final acceptance pending.** Account issuer/trust and matching host receipts are recorded; the node is tagged online, retained storage checks passed, and Daniel confirmed independent SSM access. Manual-key-free enrollment confirmation and full provenance remain pending. [PR #28](https://github.com/danielbardsley/gptclaw/pull/28) · [SPEC-016 evidence](docs/016-tailscale-workload-identity/acceptance.md). |
+| Declared host tool profile | **Deployed; final acceptance pending.** Successful receipts cover all 26 components and match the reviewed profile/deployment revision. Protected deployment is correlated; recovery/rollback reconciliation and owner acceptance remain pending. Temporary upstream-source exceptions expire November 1, 2026 (America/New_York). [SPEC-015 evidence](docs/015-host-tool-profile/acceptance.md). |
+| Private application workflow | **Deployed; final acceptance pending.** Initial CLI, pinned Next.js template, independent rootless services and shared private routing merged in PR #40. Both desktop apps/counters confirmed; source-update/first-app cleanup acceptance remains. [SPEC-018 evidence](docs/018-first-private-application/acceptance.md). |
+| Automatic replacement-host Tailscale enrollment | **Deployed; final acceptance pending.** Account issuer/trust and matching host receipts are recorded; the node is tagged online, retained storage checks passed, and Daniel confirmed independent SSM access. Recovered October 8 verification records manual-key-free enrollment and protected-run provenance; final owner acceptance remains pending. [PR #28](https://github.com/danielbardsley/gptclaw/pull/28) · [SPEC-016 evidence](docs/016-tailscale-workload-identity/acceptance.md). |
 
-The selected next product milestone is to create, run, open, and iterate on one
-private application, then prove a second application can run independently on
-the same host. The
-manifest is complete; [SPEC-018](docs/018-first-private-application/spec.md)
-now implements the initial CLI, container runtime, web template and private ingress
-on a feature branch. First desktop Hello World is confirmed; full shared-routing/
-two-app acceptance and implementation review/merge remain pending.
-The planning
-bootstrap creates a local planning-ready repository; runtime and promotion skills
-require existing reviewed interfaces and do not supply those systems themselves.
-A dashboard, public-preview manager, and product production pipelines are also
-not yet delivered.
+The first private-app workflow is merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40)
+and running on EC2. Its narrow CLI creates a pinned Next.js/TypeScript app and
+manages independent rootless containers, loopback ports, health and private URLs.
+Daniel confirmed both Hello World and Hello Second pages/counters from his desktop.
+One shared Tailscale Serve prefix handles all app routes; subsequent app starts
+need no individual Serve commands. See [the app runbook](runbooks/manage-private-apps.md).
+Desktop source-update and first-app stop/source-retention acceptance remain pending
+in [SPEC-018](docs/018-first-private-application/acceptance.md).
+
+The planning bootstrap remains a separate local planning-ready starter. Runtime
+and promotion skills use reviewed interfaces; production promotion requires an
+existing product pipeline. A dashboard, public-preview manager, databases, secrets
+management and product production pipelines are not yet delivered.
 
 Use the [documentation index](docs/README.md) for specifications, designs, task
 lists, and acceptance records. The [platform architecture](docs/platform/architecture.md)
@@ -61,7 +63,7 @@ requirements/              Hash-pinned manifest validation dependencies
 runbooks/                  Setup, connection, maintenance, and recovery procedures
 schemas/                   Versioned project manifest schema
 scripts/                   Bootstrap, validation, verification, and offline tests
-templates/                 Project planning, agent guidance, and decision templates
+templates/                 App starters, container toolchain, planning and guidance templates
 ```
 
 ## Working with GptClaw
@@ -69,6 +71,7 @@ templates/                 Project planning, agent guidance, and decision templa
 - **Connect to the host:** follow [the remote project connection runbook](runbooks/connect-chatgpt.md).
 - **Prepare another project's guidance:** use [the repository template and adaptation guide](templates/agents/README.md) and [nested guidance pattern](templates/agents/nested/README.md).
 - **Create a local planning starter:** follow [the project bootstrap workflow](.agents/skills/gptclaw-project-bootstrap/SKILL.md), which uses `scripts/bootstrap-project.py`.
+- **Create and run private apps:** follow [the private application runbook](runbooks/manage-private-apps.md), using the source CLI or installed stable launcher.
 - **Validate a project declaration:** follow [the manifest setup and usage reference](docs/project-manifest.md); [the example](examples/project-manifest/web.yaml) is inert.
 - **Plan and review work:** start with [AGENTS.md](AGENTS.md), the applicable initiative, and [architecture decisions](docs/decisions/README.md).
 
@@ -82,6 +85,7 @@ templates/                 Project planning, agent guidance, and decision templa
 | Install or update the reviewed host policy | [Manage host guidance](runbooks/manage-host-agents.md) |
 | Deploy and verify the declared tool profile | [Manage host tools](runbooks/manage-host-tools.md) |
 | Deploy and accept the rootless toolchain | [Manage rootless tooling](runbooks/manage-rootless-toolchain.md) |
+| Create, start, stop and inspect private apps | [Manage private apps](runbooks/manage-private-apps.md) |
 | Configure automatic Tailscale enrollment | [Manage workload identity federation](runbooks/manage-tailscale-federation.md) |
 
 Merging a PR does not deploy infrastructure. Plans and applies use protected
