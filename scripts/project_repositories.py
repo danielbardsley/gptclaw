@@ -111,6 +111,14 @@ class GitHub:
             return json.loads(raw) if raw else {}
         except urllib.error.HTTPError as error:
             if missing and error.code == 404: return None
+            if missing and method == 'GET' and '/git/ref/heads/' in path and error.code == 409:
+                # GitHub reports an empty repository as 409 rather than missing ref 404.
+                try:
+                    raw = error.read(4097)
+                    if len(raw) <= 4096 and json.loads(raw).get('message') == 'Git Repository is empty.':
+                        return None
+                except (OSError, ValueError, AttributeError):
+                    pass
             raise app.AppError('repository-api') from None
         except (OSError, ValueError):
             raise app.AppError('repository-api') from None

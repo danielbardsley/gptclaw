@@ -371,6 +371,19 @@ class Tests(unittest.TestCase):
         parent=self.projects/'existing';parent.mkdir();(parent/'.git').mkdir()
         with self.assertRaises(app.AppError):repos.plan('sample',str(parent/'sample'),self.api)
 
+    def test_empty_github_repository_ref_409_is_observation_only(self):
+        import urllib.error
+        token=self.base/'token';token.write_text('github_pat_'+'synthetic_'*5);token.chmod(0o600)
+        api=repos.GitHub(token,(dt.datetime.now(dt.timezone.utc)+dt.timedelta(hours=2)).isoformat())
+        path='/repos/danielbardsley/sample/git/ref/heads/main'
+        error=urllib.error.HTTPError('https://api.github.com'+path,409,'conflict',{},
+                                    io.BytesIO(b'{"message":"Git Repository is empty."}'))
+        with patch.object(api.opener,'open',side_effect=error):self.assertIsNone(api.request('GET',path,missing=True))
+        other=urllib.error.HTTPError('https://api.github.com'+path,409,'conflict',{},
+                                    io.BytesIO(b'{"message":"Other conflict"}'))
+        with patch.object(api.opener,'open',side_effect=other):
+            with self.assertRaises(app.AppError):api.request('GET',path,missing=True)
+
     def test_cli_and_provider_bundle(self):
         output=io.StringIO()
         with contextlib.redirect_stdout(output):self.assertEqual(cli.main(['--version']),0)

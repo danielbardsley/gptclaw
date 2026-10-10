@@ -20,6 +20,9 @@
   record provisioning-token revocation and ongoing Git handoff separately.
   REP-005; AC-005. Do not substitute broader credentials after a denial.
 
+T-002 is split into T-002a (completed authorization/interface decision) and
+T-002b (pending live credential readiness) so the latter cannot reopen approval.
+
 ## Implementation order
 
 - [x] T-003: Define plan/receipt versions, input allowlists, exact template

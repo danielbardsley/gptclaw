@@ -6,7 +6,7 @@
 - **Specification:** [SPEC-022](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 - **PR:** [#52](https://github.com/danielbardsley/gptclaw/pull/52)
 - **Implementation:** provider 1.4.0 on `codex/prj-004-spec`; verification worktree
-  based on planning commit `9d835a2` (final committed revision is linked by PR #52)
+  based on planning commit `9d835a2` (implementation commit `c60bd7a` and subsequent corrective revisions are linked by PR #52)
 
 ## Authorization and boundaries
 
@@ -35,13 +35,13 @@ offline assertions do not establish deployed behavior or owner acceptance.
 
 ## Local verification
 
-- `.venv-manifest/bin/python scripts/tests/test_project_repositories.py`: 35 tests passed (22.825 seconds); earlier 25-test and 33-test runs passed
-  before additional safety cases were added.
+- `.venv-manifest/bin/python scripts/tests/test_project_repositories.py`: 36 tests passed on the final source, including the empty-repository API conflict case; earlier 25-test and 33-test runs passed
+  before additional safety/API cases were added.
 - `.venv-manifest/bin/python scripts/tests/test_project_templates.py`: 21 tests
   passed, including installed bundle parity, legacy creation and release integrity.
 - `source .venv-manifest/bin/activate; ./scripts/check-repository.sh`: passed with exit code 0; its focused repository
   subprocess ran the then-current 33 tests before the final JSON/nested-path cases
-  were added; the final focused 35-test run above verifies those additions. Its fixtures do not operate host services.
+  were added; the final focused run above verifies those additions. Its fixtures do not operate host services.
 - `git diff --check` and `bash -n scripts/check-repository.sh`: passed during
   implementation; final changed-document relative-link checks also passed.
 
@@ -58,7 +58,9 @@ installed-provider test because it expected a host-only repository status error
 on GitHub's differently numbered unprivileged user. The host correctly rejected
 that user with `setup`; the test now checks portable version/help output instead,
 without relaxing the host identity gate. The focused 35-test suite passed again
-locally after correction. Full CI for the corrected revision is pending.
+locally after correction. A further scoped API regression handles GitHub
+empty-repository ref responses (409) without treating other conflicts as missing.
+Full CI for the final revision is pending.
 The related repository-check CI jobs include the same test; first-run failures
 remain historical evidence, not acceptance. See [failed app run](https://github.com/danielbardsley/gptclaw/actions/runs/38084547944)
 and [failed federation run](https://github.com/danielbardsley/gptclaw/actions/runs/38084547901).

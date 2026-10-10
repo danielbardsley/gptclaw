@@ -71,11 +71,11 @@ steps; drift in protection requires explicit reconciliation, never weakening.
 
 | Requirements | Proposed mechanism/components | Tasks | Acceptance |
 |---|---|---|---|
-| REP-001 | CLI plan/schema and catalogue resolver integration | T-002/003 | AC-001 |
+| REP-001 | CLI plan/schema and catalogue resolver integration | T-002a/002b/003 | AC-001 |
 | REP-002 | New repository adapter, staged Git publication, initial PR | T-004 | AC-002 |
 | REP-003 | Explicit policy profile and settings readback | T-004/005 | AC-003 |
 | REP-004 | Optional environments and metadata-only reference reporting | T-005 | AC-004 |
-| REP-005 | Reviewed credential interface, sanitized transport/output | T-002/004 | AC-005 |
+| REP-005 | Reviewed credential interface, sanitized transport/output | T-002a/002b/004 | AC-005 |
 | REP-006 | Versioned journal, identity reconciliation and target locks | T-003/004/006 | AC-006 |
 | REP-007 | Provider packaging, runbook and regression/live checks | T-007/008/009 | AC-007 |
 
