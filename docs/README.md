@@ -142,10 +142,11 @@ dispositions independently of feature implementation status.
   [Tasks](./018-first-private-application/tasks.md) ·
   [Acceptance](./018-first-private-application/acceptance.md)
 
-- **019 — Project dependency policy (SYS-003), draft:**
+- **019 — Project dependency policy (SYS-003), implementation in review:**
   [Specification](./019-project-dependency-policy/spec.md) ·
   [Technical design](./019-project-dependency-policy/technical-design.md) ·
-  [Tasks](./019-project-dependency-policy/tasks.md)
+  [Tasks](./019-project-dependency-policy/tasks.md) ·
+  [Acceptance](./019-project-dependency-policy/acceptance.md)
 
 - **020 — Pinned language toolchains (SYS-002), initial web slice, draft:**
   [Specification](./020-pinned-language-toolchains/spec.md) ·

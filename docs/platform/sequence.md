@@ -66,13 +66,15 @@ contract extensions. Do not silently put unsupported fields into version 1.
 | Features | Delivery and exit evidence |
 |---|---|
 | SYS-004, SYS-001 — host tool profile and rootless container toolchain | Define the reviewed installation/update path, then deliver Podman, subordinate IDs, networking, storage, Quadlet, and user-service persistence. Prove the actual host supports a rootless disposable container and persistent user services. |
-| SYS-003 — project dependency policy | [Draft SPEC-019](../019-project-dependency-policy/spec.md): formalize project/container installation boundaries and provide typed pnpm dependency changes, lockfile review and recovery. Reuse SPEC-018's existing frozen-install/container baseline; new dependency mutations and policy integration need this initiative's implementation/acceptance. |
+| SYS-003 — project dependency policy | [SPEC-019 implementation](../019-project-dependency-policy/spec.md): formalize project/container installation boundaries and provide typed pnpm dependency changes, lockfile review and recovery. Reuse SPEC-018's existing frozen-install/container baseline; new dependency mutations and policy integration need this initiative's implementation/acceptance. |
 | SYS-002 — pinned language toolchains, initial web slice | [Draft SPEC-020](../020-pinned-language-toolchains/spec.md): extend SPEC-018's working fixed Node/pnpm pair with exact per-project selection, verified acquisition, a supported matrix and legacy compatibility. Implement SYS-003 policy before integrating automatic dependency use. Python/uv and additional stacks follow in stage 12. |
 
 **Current stage-2 follow-up:** Daniel requested separate SYS-003 and SYS-002 plans
 on October 10. SPEC-019 can reuse the existing reviewed container/toolchain and
-ship first; SPEC-020 consumes its policy for lifecycle preparation. Both plans
-are Draft, not implementation authorization. Do not reinstall the already
+ship first; SPEC-020 consumes its policy for lifecycle preparation. Daniel then
+authorized SYS-003 implementation; its local/live checks are recorded while
+review/CI/merge remain pending. SPEC-020 stays Draft without implementation
+authorization. Do not reinstall the already
 deployed SYS-001/SYS-004 foundation or invalidate their separate acceptance.
 
 ## 3. Deliver the runtime that the CLI will control

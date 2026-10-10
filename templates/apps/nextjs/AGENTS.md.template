@@ -14,3 +14,13 @@ Use the runner's test command for health tests, and container pnpm build/typeche
 for the corresponding checks. Report exact commands and outcomes. Keep the
 health route and `/projects/<project-id>/` prefix working. Stop preserves source;
 application data is ephemeral. Do not reset/prune shared container storage.
+
+Use `gptclawctl deps` for dependency installation and exact add/update/remove
+requests. Read the dependency runbook in the selected GptClaw repository.
+Stop only this app before a dependency mutation; retain unrelated source/Git work.
+Review and commit package.json and pnpm-lock.yaml changes in this app's PR.
+Install hooks, private registries, executable pnpm configuration, global installs
+and implicit runtime downloads are unsupported. Do not bypass the policy with
+build/test scripts. Keep .gptclaw-cache/ and node_modules/ out of Git.
+On a partial dependency outcome, inspect deps status and recover the same
+operation ID; never overwrite an editor's changes or cancel unknown jobs.

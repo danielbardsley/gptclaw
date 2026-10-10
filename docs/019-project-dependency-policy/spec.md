@@ -1,6 +1,6 @@
 # SPEC-019: Project dependency policy (SYS-003)
 
-- **Status:** Draft — requested planning; implementation not authorized
+- **Status:** Implementation authorized; implemented on feature branch, acceptance in progress
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** SYS-003; initial adapter for the delivered single-web pnpm workflow
@@ -99,15 +99,15 @@ The containers share forge's identity; this policy is not hostile-project isolat
 
 ## Completion and decisions
 
-Daniel requested this specification separately from SYS-002. That authorizes
-planning only. Approval and implementation authorization remain to be recorded;
-merging this draft does not install packages or establish acceptance. Create an
-acceptance record when implementation evidence exists. Mark only the initial
-pnpm scope Delivered after implementation merge and AC-001–006 pass.
+Daniel requested this specification separately from SYS-002, then authorized
+implementation with “Ok, let's implement SYS-003” on October 10. This authorizes
+this initial pnpm policy/adapter, not SYS-002 implementation. Code and live
+verification are recorded in [acceptance.md](acceptance.md). Review/merge and
+Daniel's final adapter acceptance remain separate; mark only this initial scope
+Delivered after implementation merge and AC-001–006 pass.
 
-Proposed defaults are a public-registry-only, no-install-hooks, single-root
-adapter. Daniel reviews that scope; the implementer must verify the existing
-Next.js starter still builds under it before rollout. If a required hook cannot
-be excluded, prepare a named, tested exception for scope review rather than
-silently enabling scripts. Python/uv and other adapters have explicit later
+Implemented defaults are a public-registry-only, no-install-hooks, single-root
+adapter. The existing Next.js starter passed frozen install/build/test under these
+settings. A package requiring hooks still needs a named, tested policy extension;
+no script allowance was added to make this implementation pass. Python/uv and other adapters have explicit later
 owners under the sequence's additional-stack initiatives.

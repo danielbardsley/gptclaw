@@ -1,6 +1,6 @@
 # TDD-019: Project dependency policy
 
-- **Status:** Draft design; no implementation or installed commands implied
+- **Status:** Implemented on feature branch; local/live evidence recorded
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-019](spec.md)
@@ -16,17 +16,17 @@ hashes package.json, pnpm-lock.yaml, pnpm-workspace.yaml and the image ID. Exten
 that fingerprint with effective policy/configuration so a changed policy cannot
 reuse a previously prepared result. Retain SPEC-018's private routing behavior.
 
-Keep platform policy in a proposed `config/project-dependencies/v1.json` and
+Keep platform policy in `config/project-dependencies/v1.json` and
 bundle its strict schema/validator with the immutable provider snapshot.
-The initial policy fixes supported manager/source, denied setup behaviors and
+The implemented initial policy fixes supported manager/source, denied setup behaviors and
 bounds; it accepts no shell snippets or authentication fields. Repository rules
 may narrow the permitted operations; they cannot replace the platform policy.
 Do not add fields to project manifest v1. Future project exceptions need a
 versioned format plus owner provenance, not an unchecked package-manager flag.
 
-## Proposed operation contract
+## Implemented operation contract
 
-The following CLI surface is proposed, not available in installed 1.0.1:
+Provider 1.1.0 implements the following surface (1.0.1 lacks it):
 
 - `deps status --project-root ROOT`: inspect validity/preparation and operation
   outcome without fetching or executing project code.
@@ -34,6 +34,9 @@ The following CLI surface is proposed, not available in installed 1.0.1:
 - `deps add` / `deps update`: typed package-name, exact-version and dependency-kind
   inputs; no arbitrary command arguments, flags or shell text.
 - `deps remove`: selected package names, with explicit no-op/not-present results.
+- `deps recover --operation-id ID [--abort]`: resume a verified operation or
+  abandon it while retaining current coherent source. Status also accepts an
+  operation ID for archived receipt lookup.
 
 All mutations use the existing project lock and require stopped service/no busy
 job. The caller may stop/start that selected app through its authorized lifecycle
@@ -62,7 +65,9 @@ copies belong in receipts.
 4. Recheck original dependency-file hashes under the project lock. If an editor
    changed them, preserve both the user's files and the staged operation as a
    conflict; do not restore backups over those edits.
-5. Publish the validated manifest/lock pair using a recovery journal; a multi-file
+5. Publish the validated manifest/lock pair using a recovery journal, retained
+   original copies/inodes and exclusive replacement creation. A detected editor
+   replacement is never overwritten. A multi-file
    update is not claimed atomic. On interruption reconcile file hashes and phase
    before resuming. Install disposable project dependencies through a frozen job,
    invalidate old prepared/build fingerprints and mark ready only after success.
@@ -72,8 +77,10 @@ copies belong in receipts.
    a synthetic non-Git fixture still records file diffs/hashes. No GitHub creation
    or automatic commit is included.
 
-Implementation must choose/test exact pnpm 12.10.1 flag precedence and config
-allowlisting. Official [install documentation](https://pnpm.io/cli/install)
+Exact pnpm 12.10.1 flag behavior and configuration allowlisting were verified.
+The no-hook/no-runtime/pmOnFail error controls are applied to installer jobs and
+the job/service environment. Frozen dependency files are also mounted read-only.
+The builtin alternate @jsr scope is pointed explicitly at the approved npm registry. Official [install documentation](https://pnpm.io/cli/install)
 describes frozen installs, lockfile-only resolution, script suppression and
 runtime-download suppression. [Settings documentation](https://pnpm.io/settings)
 identifies workspace/global configuration sources. These sources guide adapter
@@ -108,8 +115,11 @@ when an older provider cannot reconcile it. No AWS/host configuration is planned
 | DEP-004, DEP-005 | Shared locks/bounds, journal and repair | T-003, T-004 | AC-004, AC-005 |
 | DEP-006 | Guidance, live workflow, receipts and delivery | T-005 | AC-006 |
 
-T-001 must settle the exact supported config keys, CLI argument schema, journal
-phases and required no-hook template compatibility. Proposed command names and
-file locations are design choices for review; no new installation permission is
-created by this document. SYS-002 may consume this adapter later, but its new
+T-001 resolved the exact workspace keys, CLI arguments and receipt/journal
+semantics in [the runbook](../../runbooks/manage-project-dependencies.md).
+Native pnpm lock format 9 accepts its two documents; unknown importers/config
+and exotic resolutions fail. Journal phases and per-operation history are
+versioned; a rollback provider that cannot parse the `deps` operation marker
+fails instead of consuming an unresolved dependency transaction. No host
+installation permission or SYS-002 profile registry was introduced. SYS-002 may consume this adapter later, but its new
 profile registry is not a prerequisite to the initial implementation.

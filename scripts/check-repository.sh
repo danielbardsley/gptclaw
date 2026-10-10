@@ -126,4 +126,8 @@ if ! python3 -B scripts/tests/test_private_apps.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_project_dependencies.py; then
+  status=1
+fi
+
 exit "$status"
