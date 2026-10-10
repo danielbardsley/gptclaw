@@ -89,6 +89,8 @@ def satisfies(version, constraint):
         alternative = alternative.strip(); check(bool(alternative))
         hyphen = re.fullmatch(r'(\d+\.\d+\.\d+) - (\d+\.\d+\.\d+)', alternative)
         if hyphen:
+            for bound in (hyphen[1], hyphen[2]):
+                check(all((part == '0' or not part.startswith('0')) and int(part) <= 9007199254740991 for part in bound.split('.')))
             alternatives.append(tuple(map(int, hyphen[1].split('.'))) <= actual <= tuple(map(int, hyphen[2].split('.'))))
             continue
         tokens = alternative.split(); match_all = True
@@ -100,6 +102,7 @@ def satisfies(version, constraint):
             check(all(part in (None, '*') for part in parts[first_open:]))
             check(all(part in (None, '*', '0') or not part.startswith('0') for part in parts))
             lower = tuple(int(part) if part not in (None, '*') else 0 for part in parts)
+            check(all(part <= 9007199254740991 for part in lower))
             if first_open == 0:
                 check(op == '='); good = True
             elif op in {'^', '~'}:
@@ -215,11 +218,12 @@ def image_info(selected):
 
 
 def observed(selected):
-    supported(); receipt = record(selected); image = image_info(selected) if receipt else None
+    supported(); receipt = record(selected); image = image_info(selected)
+    if image is not None: check(receipt is not None, 'conflict')
     if receipt and receipt['phase'] == 'verified' and image is not None: check(image == receipt['image'], 'conflict')
     return {'selection': selected['declaration'], 'legacy': selected['legacy'],
             'profile_hash': selected['profile_hash'], 'selection_hash': selected['selection_hash'],
-            'state': 'verified' if receipt and receipt['phase'] == 'verified' and image else 'recovery-required' if receipt and receipt['phase'] in {'unknown', 'acquiring'} else 'unprepared',
+            'state': 'verified' if receipt and receipt['phase'] == 'verified' and image else 'recovery-required' if receipt and (receipt['phase'] in {'unknown', 'acquiring'} or image is not None and receipt['phase'] == 'failed') else 'unprepared',
             'receipt': receipt, 'image_present': image is not None}
 
 

@@ -114,3 +114,16 @@ Final full repository checker passed again after the service-image safeguard,
 including all **88 focused tests** (32 lifecycle, 27 dependency, 29 toolchain).
 All 208 reviewed relative link targets exist. Final installed-provider app status
 checks are recorded with the PR handover.
+
+Final inspection review now observes image presence even without a receipt and
+refuses an unreceipted image as conflict; produced but failed-verification images
+report recovery-required. Future-default/legacy and unreceipted-inspection tests
+extend the focused total to 90 (32 lifecycle, 27 dependency, 31 toolchain). Stable
+engine ranges also reject leading-zero/unsafe numeric bounds offline.
+
+The first PR app CI run passed offline suites, baseline app build and generated
+dependency operations, but failed the new Docker acquisition adapter before
+image construction. The adapter now uses an owned empty Docker CLI configuration
+rather than relying on the production runner’s forge HOME and prints only bounded
+sanitized build errors. This is a CI-only configuration change; Podman acquisition
+already passed live. The corrected CI result remains pending.

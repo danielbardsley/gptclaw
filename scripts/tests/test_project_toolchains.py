@@ -74,7 +74,7 @@ class ToolchainTests(unittest.TestCase):
         observed = tools.inspect(self.root)
         self.assertTrue(observed['legacy']); self.assertEqual(observed['state'], 'unprepared')
         self.assertEqual(before, {p.relative_to(self.root): p.read_bytes() for p in self.root.rglob('*') if p.is_file()})
-        self.assertFalse(self.calls); self.assertFalse(app.STORE.exists())
+        self.assertTrue(all(args[:3] == ['podman','image','exists'] for args, _ in self.calls)); self.assertFalse(app.STORE.exists())
 
     def test_invalid_unknown_range_and_bool_sidecars_refused_offline(self):
         base = self.selected['declaration']
@@ -109,7 +109,7 @@ class ToolchainTests(unittest.TestCase):
             self.assertTrue(tools.satisfies('24.21.0', range_), range_)
         for range_ in ['25', '<24', '>24', '>=25', '~24.20.0', '^0.0.1', '22 || 23']:
             self.assertFalse(tools.satisfies('24.21.0', range_), range_)
-        for range_ in ['', '* || >', '24.0.0-beta', '024', '24.*.1']:
+        for range_ in ['', '* || >', '24.0.0-beta', '024', '24.*.1', '<99999999999999999999', '024.0.0 - 25.0.0']:
             with self.assertRaises(app.AppError): tools.satisfies('24.21.0', range_)
 
     def test_registry_rejects_unreviewed_source_duplicates_or_helper_drift(self):
@@ -295,6 +295,23 @@ class ToolchainTests(unittest.TestCase):
         with patch.object(app,'command',return_value=subprocess.CompletedProcess([],0,'active\n','')), patch.object(app,'object_owned',return_value=True), patch.object(app,'json_command',return_value=[{'Image':'4'*64}]):
             with self.assertRaises(app.AppError) as error:app.inspect_service(s,contract)
         self.assertEqual(error.exception.code,'conflict')
+
+    def test_inspect_reports_unreceipted_image_as_conflict(self):
+        self.image = IMAGE
+        with self.assertRaises(app.AppError) as error:tools.inspect(self.root)
+        self.assertEqual(error.exception.code,'conflict')
+        self.assertFalse(any(args[:2] in [['podman','run'],['podman','build']] for args, _ in self.calls))
+
+    def test_future_default_does_not_change_frozen_legacy_selection(self):
+        r, profiles = tools.registry(); r = copy.deepcopy(r)
+        second = copy.deepcopy(r['profiles'][0]); second.update(profile_version=2,versions={'node':'26.0.0','pnpm':'12.10.1'})
+        profiles[('node-pnpm',2)] = second; r['default'] = {'profile':'node-pnpm','profile_version':2}
+        (self.root/'.gptclaw/toolchain.json').unlink()
+        with patch.object(tools,'registry',return_value=(r,profiles)):
+            self.assertEqual(tools.default_declaration()['profile_version'],2)
+            legacy = tools.selection(self.root)
+            self.assertTrue(legacy['legacy']);self.assertEqual(legacy['declaration']['profile_version'],1)
+            self.assertEqual(legacy['profile_hash'],self.selected['profile_hash'])
 
     def test_cli_typed_capabilities_and_inspection(self):
         with patch.object(gptclawctl,'os',SimpleNamespace(getuid=lambda:1002,geteuid=lambda:1002)), patch('sys.stdout',new_callable=io.StringIO) as out:

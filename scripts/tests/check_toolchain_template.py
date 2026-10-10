@@ -16,20 +16,26 @@ def main():
     parser = argparse.ArgumentParser(); parser.add_argument('directory'); args = parser.parse_args()
     base = Path(args.directory).absolute(); base.mkdir(mode=0o700)
     app.PROJECTS = base; app.STORE = base/'.gptclaw-runtime/v1'; app.UNITS = base/'units'; app.UNITS.mkdir()
+    docker_config = base/'docker-config'; docker_config.mkdir(mode=0o700)
+    (docker_config/'config.json').write_text('{\"auths\":{}}\n')
     original_command = app.command
     def docker(args, timeout=300, optional=False):
         assert args[0] == 'podman'
         if args[1:3] in (['image','exists'], ['container','exists']):
             kind = 'image' if args[1] == 'image' else 'container'
             # Read scoped existence without executing an image or inspecting credentials.
-            listed = original_command(['docker',kind,'ls','--all','--format','{{.Repository}}:{{.Tag}}' if kind == 'image' else '{{.Names}}'], timeout=30)
+            listed = original_command(['docker','--config',str(docker_config),kind,'ls','--all','--format','{{.Repository}}:{{.Tag}}' if kind == 'image' else '{{.Names}}'], timeout=30)
             present = args[3] in listed.stdout.splitlines()
             return subprocess.CompletedProcess(args, 0 if present else 1, '', '')
         if args[1] == 'build':
             tag = args[args.index('--tag')+1]; label = args[args.index('--label')+1]
             command = ['docker','build','--no-cache','--label',label,'--tag',tag,args[-1]]
         else: command = ['docker',*args[1:]]
-        return original_command(command,timeout=timeout,optional=optional)
+        result = original_command(['docker','--config',str(docker_config),*command[1:]],timeout=timeout,optional=True)
+        if result.returncode and args[1] == 'build':
+            print(app.redact(result.stderr[-4096:]), file=sys.stderr, flush=True)
+        if result.returncode and not optional:raise app.AppError('command')
+        return result
     def inspect(args):
         info = json.loads(docker(args).stdout)
         for item in info:item['Labels'] = item['Config'].get('Labels',{})
