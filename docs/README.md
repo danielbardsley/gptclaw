@@ -142,7 +142,7 @@ dispositions independently of feature implementation status.
   [Tasks](./018-first-private-application/tasks.md) ·
   [Acceptance](./018-first-private-application/acceptance.md)
 
-- **019 — Project dependency policy (SYS-003), implementation in review:**
+- **019 — Project dependency policy (SYS-003), initial pnpm adapter delivered:**
   [Specification](./019-project-dependency-policy/spec.md) ·
   [Technical design](./019-project-dependency-policy/technical-design.md) ·
   [Tasks](./019-project-dependency-policy/tasks.md) ·
