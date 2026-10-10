@@ -1,6 +1,6 @@
 # SPEC-022: New GitHub repository automation
 
-- **Status:** In review — implementation authorized; live acceptance pending
+- **Status:** Delivered — initial private-repository slice merged and accepted
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** PRJ-004, initial personal-account private-repository slice
@@ -144,3 +144,15 @@ Daniel instructed “Ignore private branch protection requirement and continue.�
 This authorizes an explicit waiver for that operation, preserves earlier
 implementation/live authorization, and does not authorize public visibility or
 production. Default protection and other requirement IDs remain intact.
+
+## Completion — October 10
+
+Daniel accepted the verified initial slice by instructing “Merge the platform
+PR and mark as complete.” [PR #52](https://github.com/danielbardsley/gptclaw/pull/52)
+merged as `869b1b7f275c4555ce8ce82acab2de0565d84069` after all three final-head CI workflows passed.
+The approved owner waiver is recorded for the retained fixture; no private
+protection enforcement is claimed there. [Acceptance](acceptance.md) records all
+criteria and actual desktop/live evidence. Creating an initial reviewable app PR
+was required; merging that fixture PR was explicitly not part of provisioning.
+Manual token revocation remains Daniel's operational follow-through, and ongoing
+credential automation is PRJ-005. Neither is represented as completed here.

@@ -1,6 +1,6 @@
 # TDD-022: New GitHub repository automation
 
-- **Status:** Implemented on review branch; live verification pending
+- **Status:** Delivered — initial slice merged and accepted; fixture protection explicitly waived
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-022](spec.md) · **Tasks:** [TASKS-022](tasks.md)

@@ -1,6 +1,6 @@
 # SPEC-022 acceptance evidence
 
-- **Status:** Live repository/private runtime verified under owner waiver; review/owner actions pending
+- **Status:** Delivered — initial slice merged and accepted under recorded owner waiver
 - **Owner:** Daniel
 - **Evidence date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-022](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -155,13 +155,14 @@ No protected deployment job ran. Subsequent evidence changes are documentation o
 | AC-002 | passed | Real fixture Git proves README-only main, starter history/provenance/guidance and one PR; protection precedes exclusive starter ref. | Private ID, bootstrap main, exact starter/PR and source observed; protection explicitly owner-waived. |
 | AC-003 | passed | Protection readback/denial/drift tests pass; no implicit policy repair or starter publication after denial. | Amended criterion: Daniel explicitly waived protection for this operation; receipt/source report not verified. Default enforcement cases still pass offline. |
 | AC-004 | passed | Empty selections cause no corresponding requests; development environment/readback and secret metadata states pass. No secret writes exist. | Live no-selection path passed; environment/secret-reference variants tested offline, not selected in fixture. |
-| AC-005 | pending | Private-file/type/expiry, wrong actor/plan, anonymous-fd askpass, HTTP redaction and redirected Git configuration rejection pass with synthetic credentials. | Verify actual grants/expiry and revoked provisioning tokens; record separate Git handoff. |
+| AC-005 | passed | Offline credential rejection/redaction tests passed. Live creation/configuration authenticated Daniel using private owned files; GitHub-reported expiries and executed capabilities are recorded above. Ongoing Git handoff is explicitly pending. | Daniel owns manual token revocation. Revocation was an operational follow-up, not a required observable AC-005 result; it is not claimed complete. |
 | AC-006 | passed | Lost creation response never auto-adopts; explicit ID reconciliation, response loss at object/ref/protection/environment/PR boundaries, locks, drift and atomic-local-publication recovery pass. Partial generation preserves owned staging for operator review. | Same operation reconciled after live denial, preserved ID/main, produced one branch/PR and retained source. |
 | AC-007 | passed | Offline/CI and live starter build/tests/typecheck/private health passed; independent app stayed ready. Daniel confirmed the desktop page loads October 10. | Implementation/initial PR merges and overall owner acceptance remain separate delivery gates. |
 
-Required owner evidence/actions remain incomplete; the historical AC-003 failure
-was resolved by the authorized waiver, not server enforcement;
-offline assertions do not establish deployed behavior or owner acceptance.
+All seven criteria for the approved initial slice pass using the recorded
+offline/CI/live evidence and Daniel's desktop confirmation and final acceptance.
+The historical protection denial is resolved only by the explicit owner waiver.
+Operational follow-ups remain recorded separately; none is claimed completed.
 
 ## Local verification
 
@@ -176,9 +177,8 @@ offline assertions do not establish deployed behavior or owner acceptance.
   implementation; final changed-document relative-link checks also passed.
 
 Terraform commands were not run: no Terraform/host infrastructure changed.
-Live GitHub creation/readback ran as recorded above. Remaining configuration
-and real app/container/runtime checks await the repository-specific token; no
-host/infrastructure deployment was performed.
+Live GitHub creation/readback ran as recorded above. Subsequent configuration and real app/container/runtime checks passed under
+the explicit waiver as recorded above; no host/infrastructure deployment ran.
 Implementation CI outcomes are recorded below, separately from local checks. No test output contains token values or environment dumps.
 
 ## Verified implementation CI
@@ -231,3 +231,29 @@ mutation or technical test was needed to record that independent observation.
 Provisioning-token revocation, ongoing per-repository Git handoff and reviewed
 merges remain pending. The catalogue stays In review; page confirmation alone
 does not authorize either PR merge or establish the full feature as Delivered.
+
+## Final owner acceptance and merge — October 10
+
+Daniel instructed “Merge the platform PR and mark as complete”, accepting the
+verified initial slice and authorizing its platform merge. PR #52 was squash
+merged as `869b1b7f275c4555ce8ce82acab2de0565d84069`. Its exact final head
+`57def277288eb913582b4c824087a852019bda63` passed all three workflows:
+[app](https://github.com/danielbardsley/gptclaw/actions/runs/38087629588),
+[dev-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38087629539),
+[federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38087629569).
+The protected deployment jobs did not run.
+
+AC-005 required credential/expiry evidence and truthful ongoing-access status;
+those were observed. Its earlier pending note unnecessarily treated manual
+revocation as an acceptance prerequisite. This correction retains revocation as
+a visible Daniel-owned obligation: creation token expires October 17 at 5:01 p.m.
+Eastern; configuration token expires October 11 at 12:00 a.m. Eastern. Revoke the
+provisioning tokens and remove their private files when done; no revocation or
+file deletion is claimed. No credential material is committed.
+
+The verification app's initial PR #1 remains open by design: provisioning
+required opening a reviewable PR, not merging it. The app remains private/running
+and its two generated local configuration edits are retained. PRJ-005's broker
+and ongoing Git access, organization/public/production scope remain separate
+backlog. The delivered scope is the initial personal-account private-repository
+workflow with explicit per-operation owner waiver support.
