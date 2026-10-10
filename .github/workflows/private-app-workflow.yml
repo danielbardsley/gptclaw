@@ -4,6 +4,10 @@ on:
     paths:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
+      - config/templates/**
+      - schemas/templates/**
+      - docs/021-template-catalogue/**
+      - runbooks/manage-project-templates.md
       - config/toolchains/**
       - schemas/toolchains/**
       - docs/020-pinned-language-toolchains/**
@@ -22,6 +26,10 @@ on:
     paths:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
+      - config/templates/**
+      - schemas/templates/**
+      - docs/021-template-catalogue/**
+      - runbooks/manage-project-templates.md
       - config/toolchains/**
       - schemas/toolchains/**
       - docs/020-pinned-language-toolchains/**
@@ -46,6 +54,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: 0
       - name: Prepare Python
         uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
@@ -54,9 +63,14 @@ jobs:
         run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
       - name: Offline lifecycle and ingress tests
         run: |
+          .venv-manifest/bin/python scripts/tests/test_project_templates.py
           .venv-manifest/bin/python scripts/tests/test_private_apps.py
           .venv-manifest/bin/python scripts/tests/test_project_dependencies.py
           .venv-manifest/bin/python scripts/tests/test_project_toolchains.py
+      - name: Check released template immutability
+        env:
+          TEMPLATE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: .venv-manifest/bin/python scripts/check-template-releases.py --baseline "$TEMPLATE_BASE_SHA"
       - name: Build pinned toolchain and generated app
         shell: bash
         run: |

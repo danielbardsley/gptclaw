@@ -154,6 +154,12 @@ dispositions independently of feature implementation status.
   [Tasks](./020-pinned-language-toolchains/tasks.md) ·
   [Acceptance](./020-pinned-language-toolchains/acceptance.md)
 
+- **021 — Versioned template catalogue (PRJ-003), initial web-entry implementation in review:**
+  [Specification](./021-template-catalogue/spec.md) ·
+  [Technical design](./021-template-catalogue/technical-design.md) ·
+  [Tasks](./021-template-catalogue/tasks.md) ·
+  [Acceptance status](./021-template-catalogue/acceptance.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in

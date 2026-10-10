@@ -9,4 +9,5 @@ import private_apps as app
 base=Path(sys.argv[1]).absolute()
 base.mkdir(mode=0o700)
 app.PROJECTS=base
-print(app.create('template-ci')['root'])
+app.STORE=base/'.gptclaw-runtime/v1'
+print(app.create('template-ci',template='nextjs',template_version='1.0.0')['root'])

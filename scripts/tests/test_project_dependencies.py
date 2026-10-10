@@ -60,11 +60,12 @@ class DependencyTests(unittest.TestCase):
         self.assertEqual(deps.context(self.root)['policy']['manager_version'], '12.10.1')
 
     def test_read_only_status_writes_or_executes_nothing(self):
+        store_before = {p.relative_to(app.STORE): (p.read_bytes(), p.stat().st_mtime_ns) for p in app.STORE.rglob('*') if p.is_file()}
         before = self.snapshot()
         with patch.object(app, 'command') as command:
             result = deps.status(self.root)
         self.assertEqual(result['policy'], 'valid'); command.assert_not_called()
-        self.assertEqual(self.snapshot(), before); self.assertFalse(app.STORE.exists()); self.assertFalse(self.calls)
+        self.assertEqual(self.snapshot(), before); self.assertEqual(store_before, {p.relative_to(app.STORE): (p.read_bytes(), p.stat().st_mtime_ns) for p in app.STORE.rglob('*') if p.is_file()}); self.assertFalse(self.calls)
 
     def test_unknown_policy_and_wrong_schema_version_are_rejected(self):
         repo = Path(self.temp.name)/'repo'

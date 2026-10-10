@@ -1,0 +1,198 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "default": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+          "maxLength": 48
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+          "maxLength": 48
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ]
+    },
+    "releases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+            "maxLength": 48
+          },
+          "version": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+            "maxLength": 48
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "kind": {
+            "const": "web"
+          },
+          "provider": {
+            "const": "nextjs-v1"
+          },
+          "manifest_schema": {
+            "const": 1,
+            "type": "integer"
+          },
+          "catalogue_schema": {
+            "const": 1,
+            "type": "integer"
+          },
+          "stack": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50
+            }
+          },
+          "toolchain": {
+            "type": "object",
+            "properties": {
+              "schema_version": {
+                "type": "integer",
+                "const": 1
+              },
+              "profile": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+                "maxLength": 48
+              },
+              "profile_version": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10000
+              },
+              "versions": {
+                "type": "object",
+                "properties": {
+                  "node": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+                    "maxLength": 32
+                  },
+                  "pnpm": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+                    "maxLength": 32
+                  }
+                },
+                "required": [
+                  "node",
+                  "pnpm"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "schema_version",
+              "profile",
+              "profile_version",
+              "versions"
+            ],
+            "additionalProperties": false
+          },
+          "data": {
+            "const": "ephemeral"
+          },
+          "exposure": {
+            "const": "private"
+          },
+          "substitutions": {
+            "const": [
+              "project-id",
+              "project-name",
+              "base-path"
+            ]
+          },
+          "files": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "source": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9._/-]+$",
+                  "maxLength": 200
+                },
+                "output": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9._/-]+$",
+                  "maxLength": 200
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$",
+                  "maxLength": 64
+                }
+              },
+              "required": [
+                "source",
+                "output",
+                "sha256"
+              ]
+            }
+          },
+          "digest": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "description",
+          "kind",
+          "provider",
+          "manifest_schema",
+          "catalogue_schema",
+          "stack",
+          "toolchain",
+          "data",
+          "exposure",
+          "substitutions",
+          "files",
+          "digest"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "default",
+    "releases"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

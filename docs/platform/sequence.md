@@ -8,8 +8,11 @@
 
 ## Goal and sequencing rules
 
-Deliver a usable private development platform first. **Do not schedule remaining
-RES work until the usable-platform milestone in stage 6 has been demonstrated.**
+Deliver a usable private development platform first. **Daniel's current direction
+keeps remaining RES work deferred until a useful real application exists.** The
+accepted Hello World/two-app workflow demonstrates the initial technical path;
+it does not by itself end this owner-directed deferral. Milestone U remains a
+technical prerequisite for later resilience work, not an automatic start signal.
 Existing snapshots, deletion protection, private access, and data safeguards
 remain in place. This deferral does not claim recovery has been tested or close
 outstanding acceptance, exceptions, or owner follow-through.
@@ -97,7 +100,7 @@ competing lifecycle system. Runtime-generated state stays outside source manifes
 | Features | Delivery and exit evidence |
 |---|---|
 | QLT-001, QLT-002, SEC-005 — quality commands, PR workflow template, secret scanning | Define the template's standard checks, language-specific coding style guides, and pinned CI workflow, with an explicit manifest extension where required. Deliver TypeScript/JavaScript conventions for formatting, naming, code organization, and idiomatic usage; encode enforceable rules in formatter/linter configuration and document explanatory conventions in template guidance. Verify the generated configuration and checks in a synthetic project, including rejection of representative style violations. Live new-repository provisioning follows in stage 9. |
-| PRJ-003 — template catalogue, first-entry slice | Deliver template version/selection mechanics for one supported web template. Broader template coverage follows in stages 12 and 16. |
+| PRJ-003 — template catalogue, first-entry slice | [SPEC-021](../021-template-catalogue/spec.md) implements: versioned discovery, exact release selection and provenance for the existing supported web starter. Initial scope approved and implementation authorized October 10; implemented/local/live verified in provider 1.3.0, all three implementation CI workflows passed, review/acceptance/merge pending. Broader template coverage follows in stages 12 and 16. |
 | TPL-001, NET-103 — Next.js template and base-path compatibility | Deliver an actual buildable/testable web app, container definition, health route, and working assets/API/redirect behavior beneath its project path. Use the stage 3 runtime; complete route acceptance in stage 5. |
 | PRJ-009 — example projects, first web slice | Maintain a non-sensitive example that exercises the supported template. Add examples whenever later templates are introduced. |
 
@@ -130,7 +133,7 @@ actual commands, health/routing evidence, and remaining limitations.
 
 A dashboard, automated GitHub creation, databases, mobile support, public exposure,
 and production deployment are not required for this milestone. Neither is any
-remaining RES feature. **Stage 7 begins only once Milestone U is demonstrated.**
+remaining RES feature. **Stage 7 requires Milestone U and Daniel's useful-application gate stated above.**
 
 PRJ-002 remains responsible for subsequent integrations: repository provisioning
 in stage 9, archive/restore in stage 10, and public `expose` in stage 13. Its first
