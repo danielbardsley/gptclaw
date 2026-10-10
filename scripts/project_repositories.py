@@ -236,7 +236,11 @@ def read_metadata(path):
 
 def read_plan(path):
     value = read_metadata(path)
-    if isinstance(value, dict) and set(value) == {'state', 'plan', 'observation'}: value = value['plan']
+    if isinstance(value, dict) and set(value) in ({'state', 'plan', 'observation'}, {'state', 'plan', 'observation', 'duration_seconds'}):
+        require(value['state'] == 'planned' and isinstance(value['observation'], dict))
+        if 'duration_seconds' in value:
+            require(type(value['duration_seconds']) in {int, float} and value['duration_seconds'] >= 0)
+        value = value['plan']
     return validate_plan(value)
 
 

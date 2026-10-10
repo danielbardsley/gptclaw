@@ -394,6 +394,14 @@ class Tests(unittest.TestCase):
         with patch.object(api,'request',return_value={'login':repos.ACCOUNT,'type':'User','plan':{'name':'free'}}):
             with self.assertRaises(app.AppError):api.actor()
 
+    def test_cli_timed_plan_file_can_be_applied_without_widening_schema(self):
+        value={'state':'planned','plan':self.plan,'observation':{'name_observation':'not-found'},'duration_seconds':0.1}
+        path=self.base/'plan.json';path.write_text(json.dumps(value))
+        result=repos.apply(repos.read_plan(path),self.api,create_only=True)
+        self.assertEqual(result['state'],'operator-required');self.assertEqual(result['repository_id'],42)
+        value['unexpected']=True;path.write_text(json.dumps(value))
+        with self.assertRaises(app.AppError):repos.read_plan(path)
+
     def test_cli_and_provider_bundle(self):
         output=io.StringIO()
         with contextlib.redirect_stdout(output):self.assertEqual(cli.main(['--version']),0)
