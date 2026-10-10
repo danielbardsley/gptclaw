@@ -1,6 +1,6 @@
 # SPEC-021: Versioned template catalogue
 
-- **Status:** In review — implementation and local/live verification complete
+- **Status:** Delivered — initial web slice merged and accepted
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** PRJ-003, initial supported web-entry slice
@@ -17,7 +17,8 @@ selection apart from documented project identity substitutions.
 
 Daniel requested a PRJ-003 specification, then authorized implementation with
 “Ok, now implement the spec” on October 10. Initial scope/design are approved;
-review, merge and final owner acceptance remain separate gates.
+Daniel subsequently accepted the reviewed slice by requesting its merge; PR #50
+merged October 10. Review, merge and acceptance are recorded in [acceptance.md](acceptance.md).
 
 ## Scope and existing dependencies
 
@@ -28,8 +29,8 @@ Reuse the delivered SPEC-018 runtime/manifest/private routing, SPEC-019 dependen
 policy and SPEC-020 exact Node/pnpm toolchain registry. Their accepted initial
 slices provide the required web path; separate host/agent acceptance stays open.
 
-The existing CLI copies `templates/apps/nextjs` and requires the exact legacy
-marker `{ "provider": "nextjs-v1" }`. There is no catalogue selection today.
+At the planning baseline, the CLI copied `templates/apps/nextjs` and required the
+exact legacy marker `{ "provider": "nextjs-v1" }`, without catalogue selection.
 This initiative adds selection without creating a second runtime or inserting
 unsupported template fields into manifest v1.
 
@@ -94,4 +95,5 @@ operator infrastructure action is required by this draft.
 
 The initial catalogue ID is `nextjs`, exact release `1.0.0`, using the
 current accepted starter/toolchain bytes at implementation baseline. Provider 1.3.0 now implements this release. Daniel approved the bounded scope
-by authorizing implementation; final reviewed acceptance and merge remain pending.
+by authorizing implementation and accepted the verified slice by requesting PR #50
+merge. The initial web slice is Delivered; wider stack coverage remains future scope.

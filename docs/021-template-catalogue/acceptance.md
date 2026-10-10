@@ -1,6 +1,6 @@
 # SPEC-021 acceptance evidence
 
-- **Status:** In review — local/live checks passed; CI passed; review, final owner acceptance and merge pending
+- **Status:** Delivered — initial web slice merged and accepted
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-021](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -22,7 +22,7 @@ policy installer, credential, public exposure or production change ran.
 | AC-003 | passed locally/live | Default/exact generation, distinct synthetic release bytes, normalized reproducibility and release-selected toolchain independent of registry default pass. Two concurrent real processes publish exactly one complete app; injected competing empty destination is preserved. Failure retains only owned staging and returns its path. |
 | AC-004 | passed locally/live | New manifest/dependency/toolchain/provenance validate; edited source is allowed. Invalid/conflicting provenance fails before runtime calls. Task-owned marker-only app validate/test/start passed without reintroducing release metadata; provenance restored after scoped stop. |
 | AC-005 | passed locally/live | Offline installed snapshot list/create parity and old-snapshot independence from changed source default pass. Live source/installed list/show agree. Provider refresh was a ready no-op; existing app state/operations stayed stable. No provider rollback was performed against existing live apps; snapshot rollback compatibility was tested offline. |
-| AC-006 | local/live passed; final acceptance pending | 111 focused tests, full repository checker and syntax/whitespace checks passed. Scoped live frozen install/test/build/typecheck, private page/health/assets and stop/source retention passed; second apps remain available. Runbook is written. All three configured CI workflows passed; review, Daniel's final acceptance and merge remain pending. |
+| AC-006 | passed | 111 focused tests, full repository checker and syntax/whitespace checks passed. Scoped live frozen install/test/build/typecheck, private page/health/assets and stop/source retention passed; second apps remain available. Runbook is written. All three configured CI workflows passed; Daniel accepted the reviewed slice by requesting PR #50 merge; implementation is merged. |
 
 ## Live generated-app workflow
 
@@ -95,7 +95,7 @@ remain tested. No failed run is counted as passing.
 
 Local Terraform commands were not run because Terraform source did not change.
 No infrastructure deployment, reboot, replacement, restore drill, additional stack
-or automatic template upgrade is claimed. Implementation CI and exact source revisions are recorded below. PRJ-003 remains In review, not Delivered.
+or automatic template upgrade is claimed. Implementation CI and exact source revisions are recorded below. PRJ-003 is Delivered for the initial accepted web slice.
 
 ## Final local verification
 
@@ -134,5 +134,22 @@ inspection verified byte equality for private_apps.py, gptclawctl.py,
 project_templates.py, catalogue and schema against the checkout. Both original
 demos remained ready; the acceptance fixture remains stopped, source/receipts
 retained and provenance restored. Implementation code, focused tests, release
-assets/schema and runbook are complete. Final review, Daniel's acceptance and
-merge remain pending; no broader template support is claimed.
+assets/schema and runbook are complete. Final PR-head CI, owner acceptance and merge are recorded below; no broader
+template support is claimed.
+
+## Owner acceptance and merge — October 10, 2026
+
+Daniel instructed “ok, merge the PR”, accepting the reviewed initial web slice.
+At exact final PR head `36fd2314e065a4262d444a2db06f9a479faf9dd4`, all checks passed:
+
+- [Private application workflow #27](https://github.com/danielbardsley/gptclaw/actions/runs/38082899506).
+- [Development-host quality #144](https://github.com/danielbardsley/gptclaw/actions/runs/38082899499).
+- [Federation quality #48](https://github.com/danielbardsley/gptclaw/actions/runs/38082899508).
+
+No submitted reviews or unresolved inline review threads were present. GitHub
+accepted the expected-head squash merge of PR #50 into main as
+`527f04dfd6db8299418cfada88397b8e76e03d58`. AC-001–006 and T-006 are complete.
+Delivered covers bundled discovery, exact selection/integrity/provenance and
+compatibility for `nextjs@1.0.0`, not additional stacks or automatic upgrades.
+The merge is source delivery, not a new infrastructure apply or runtime operation.
+Existing snapshots and the stopped acceptance fixture/source/receipts are retained.

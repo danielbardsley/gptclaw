@@ -1,6 +1,6 @@
 # TDD-021: Bundled, exact-release template selection
 
-- **Status:** In review — implemented design
+- **Status:** Delivered — initial web slice merged and accepted
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-021](spec.md) · **Tasks:** [TASKS-021](tasks.md)

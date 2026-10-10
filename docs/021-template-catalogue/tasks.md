@@ -1,6 +1,6 @@
 # TASKS-021: Versioned template catalogue
 
-- **Status:** In review — local/live verification complete; CI passed; review/acceptance pending
+- **Status:** Delivered — initial web slice merged and accepted
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-021](spec.md) · **Design:** [TDD-021](technical-design.md)
@@ -37,7 +37,7 @@
   update tests/CI to validate actual release generation and run existing frozen
   dependency/build/test/typecheck checks. Run repository checker, changed script
   syntax, whitespace and relative-link checks; record outcomes. (CAT-006; AC-006)
-- [ ] T-006: Run scoped synthetic private-web acceptance through the reviewed
+- [x] T-006: Run scoped synthetic private-web acceptance through the reviewed
   provider; confirm independent app availability and source-preserving stop.
   Record exact revision/release digest, timings, local/CI/live evidence and
   Daniel's acceptance in acceptance.md. Deliver/merge reviewed PR, mark only
@@ -60,7 +60,8 @@ install/test/build/typecheck/private page/health/17 assets, installed list/show
 parity and source-preserving stop passed. A marker-only legacy acceptance app
 validated/tested/started without rewriting metadata. The acceptance app is stopped;
 its source/receipts are retained. Both independent demos remained ready.
-[Acceptance](acceptance.md) records detailed evidence. T-006's local/live portion
-is complete; all three implementation CI workflows passed; review, Daniel's acceptance and
-merge remain pending. Broader
-stacks, automatic upgrades, GitHub automation and RES work remain outside scope.
+[Acceptance](acceptance.md) records detailed evidence. All three final PR-head
+CI workflows passed. Daniel accepted the reviewed slice with “ok, merge the PR”;
+PR #50 merged as `527f04dfd6db8299418cfada88397b8e76e03d58` October 10.
+T-006 and this initial scope are complete. Broader stacks, automatic upgrades,
+GitHub automation and RES work remain outside scope.
