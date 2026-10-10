@@ -89,3 +89,14 @@ GitHub plan. Setup stopped before starter/PR publication, retaining the same
 operation. T-002b/T-009 remain pending: Daniel resolves account-plan support and
 provides a still-valid scoped token if the current one expires (October 11,
 12:00 a.m. America/New_York). See acceptance.md for exact commit/receipt evidence.
+
+### Successful waived setup and live checks
+
+Daniel explicitly waived private branch protection for the retained operation.
+The same setup reached repository-ready and opened initial PR #1. Fixture
+validation, build/start, tests, container typecheck and page/health checks passed;
+hello-second stayed ready. 41 focused tests, full repository checks and all three
+code-revision CI workflows passed at b33bbf7. The fixture remains private/running
+for desktop confirmation; retain its 2 framework-generated source edits.
+T-009 awaits Daniel's desktop/owner confirmation, provisioning-token revocation,
+separate ongoing Git handoff and reviewed merges. Do not claim Delivered.

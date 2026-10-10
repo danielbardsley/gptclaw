@@ -1,6 +1,6 @@
 # SPEC-022 acceptance evidence
 
-- **Status:** Local and implementation CI verified; live/owner acceptance pending
+- **Status:** Live repository/private runtime verified under owner waiver; review/owner actions pending
 - **Owner:** Daniel
 - **Evidence date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-022](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -97,19 +97,69 @@ that change with a still-valid repository-scoped token; do not recreate, make
 public, delete or weaken the setup automatically. Full live/runtime acceptance,
 merge and token revocation remain pending.
 
+## Authorized waiver and successful setup — October 10
+
+Daniel explicitly instructed “Ignore private branch protection requirement and
+continue.” SPEC-022 now permits this operation-bound waiver while retaining the
+default protection requirement for other operations. The CLI requires
+`repo resume --allow-unprotected-main`; the receipt records owner authorization,
+repository ID and scope. It rejects already verified protection and selected
+environments, never removes protection and never changes visibility. Generated
+guidance/provenance and readback report `owner-waived`, `verified: false`.
+
+Candidate implementation `b33bbf764b1806cf8643e4adde7c7d47c978f801` resumed the same
+operation successfully, returning `repository-ready`. Final authenticated status
+readback confirmed repository `1413668232`, private visibility, main bootstrap
+`a822cbc88e4df64a257a40b319e4c1ff174e2ef8`, starter
+`21bed2dac676e8938bcc4dbd4bffb7f9528f3ac7` and exactly one open
+[initial PR #1](https://github.com/danielbardsley/gptclaw-prj004-verification/pull/1).
+Local source is retained at `/srv/forge/projects/gptclaw-prj004-verification` on
+the operation-owned `codex/` branch. Default branch remains main; no merge occurred.
+Empty environments/references produced empty readback and no corresponding writes.
+Ongoing Git access is explicitly `pending-per-repository-credential`.
+
+Executed live quality/lifecycle checks through provider 1.4.0:
+
+- `scripts/gptclawctl validate --project-root /srv/forge/projects/gptclaw-prj004-verification`: valid manifest/provenance.
+- Initial fixture status was stopped; independent `hello-second` was ready on 18081.
+- `scripts/gptclawctl start --project-root /srv/forge/projects/gptclaw-prj004-verification`: ready in 46.894 seconds; operation `2a47444154034a0dae1c14c48aec8271`; frozen preparation/build passed, loopback port 18085 and existing private route configured.
+- `scripts/gptclawctl test --project-root /srv/forge/projects/gptclaw-prj004-verification`: tests passed, operation `937961734f1c424eac0b3757ad5d69be`, 2.225 seconds.
+- Reviewed `private_apps.run_in_app` with literal `['pnpm','typecheck']` under the fixture lock: passed in the restricted container.
+- Bounded loopback page and health requests returned HTTP 200 for both the fixture and independent `hello-second`; subsequent independent status remained ready with its prior operation unchanged.
+
+[Private fixture URL](https://forge-dev-01-4.tail8c3304.ts.net/projects/gptclaw-prj004-verification/)
+is configured. Host-side checks do not prove desktop access; Daniel's independent
+page confirmation is pending. Fixture remains running/private for that check;
+no unrelated app restart, public exposure, production or infrastructure change.
+Next.js generated route-type entries in `next-env.d.ts` and `tsconfig.json` during
+startup (2 files, 7 insertions/1 deletion). These uncommitted fixture edits are
+retained, not reset or copied into the immutable catalogue. The initial PR retains
+the original starter; normal development edits require separate review.
+
+41 focused repository tests passed (27.895 seconds). The updated full repository
+checker passed with exit 0, including 41 tests (26.940 seconds). All three CI
+workflows passed at exact code revision `b33bbf7`:
+[app workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38087293663),
+[development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38087293844),
+[federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38087293625).
+The historical protection denial remains evidence; it is resolved for this
+fixture by an explicit changed acceptance requirement, not by claiming enforcement.
+No protected deployment job ran. Subsequent evidence changes are documentation only.
+
 ## Criterion mapping
 
 | Criterion | State | Observed evidence | Remaining action/owner |
 |---|---|---|---|
-| AC-001 | pending | Offline read-only plan, exact release, collision/path/input rejection and no-write tests pass. | Actual actor/account/target preview observed; final setup readback remains pending. |
-| AC-002 | pending | Real fixture Git proves README-only main, starter history/provenance/guidance and one PR; protection precedes exclusive starter ref. | Private repository ID/owner verified; protected bootstrap/starter PR and files await scoped token. |
-| AC-003 | failed | Protection readback/denial/drift tests pass; no implicit policy repair or starter publication after denial. | Live protection read returned 403 for account-plan support; Daniel resolves that prerequisite, then resume and verify enforcement. |
-| AC-004 | pending | Empty selections cause no corresponding requests; development environment/readback and secret metadata states pass. No secret writes exist. | Record selected/no-selection behavior against actual GitHub. |
+| AC-001 | passed | Offline read-only plan, exact release, collision/path/input rejection and no-write tests pass. | Read-only preview and final setup readback observed. |
+| AC-002 | passed | Real fixture Git proves README-only main, starter history/provenance/guidance and one PR; protection precedes exclusive starter ref. | Private ID, bootstrap main, exact starter/PR and source observed; protection explicitly owner-waived. |
+| AC-003 | passed | Protection readback/denial/drift tests pass; no implicit policy repair or starter publication after denial. | Amended criterion: Daniel explicitly waived protection for this operation; receipt/source report not verified. Default enforcement cases still pass offline. |
+| AC-004 | passed | Empty selections cause no corresponding requests; development environment/readback and secret metadata states pass. No secret writes exist. | Live no-selection path passed; environment/secret-reference variants tested offline, not selected in fixture. |
 | AC-005 | pending | Private-file/type/expiry, wrong actor/plan, anonymous-fd askpass, HTTP redaction and redirected Git configuration rejection pass with synthetic credentials. | Verify actual grants/expiry and revoked provisioning tokens; record separate Git handoff. |
-| AC-006 | pending | Lost creation response never auto-adopts; explicit ID reconciliation, response loss at object/ref/protection/environment/PR boundaries, locks, drift and atomic-local-publication recovery pass. Partial generation preserves owned staging for operator review. | Record live receipt/resource identity and retained-resource disposition. |
+| AC-006 | passed | Lost creation response never auto-adopts; explicit ID reconciliation, response loss at object/ref/protection/environment/PR boundaries, locks, drift and atomic-local-publication recovery pass. Partial generation preserves owned staging for operator review. | Same operation reconciled after live denial, preserved ID/main, produced one branch/PR and retained source. |
 | AC-007 | pending | Existing template/provider and offline repository regressions pass; bundle includes adapter/helper and local-only interfaces remain supported. | Real GitHub starter/container checks, private runtime/independent-app check, merge and Daniel's acceptance; implementation CI passed. |
 
-Required live evidence remains incomplete; AC-003 failed its live plan gate and the other criteria remain pending;
+Required owner evidence/actions remain incomplete; the historical AC-003 failure
+was resolved by the authorized waiver, not server enforcement;
 offline assertions do not establish deployed behavior or owner acceptance.
 
 ## Local verification
