@@ -133,3 +133,7 @@ Use [the dependency runbook](manage-project-dependencies.md) for exact packages,
 source/lock review, stopped-target mutations, frozen repair and operation-ID
 reconciliation. Runtime operations must not be substituted for dependency-policy
 exceptions; startup/test preparation uses the same validator and policy fingerprint.
+
+Provider 1.2.0 adds [project-selected toolchains](manage-project-toolchains.md).
+New apps declare the exact reviewed Node/pnpm profile; legacy apps retain a fixed
+selection. The resolver supplies the same image to dependencies/build/test/start.

@@ -67,13 +67,14 @@ contract extensions. Do not silently put unsupported fields into version 1.
 |---|---|
 | SYS-004, SYS-001 — host tool profile and rootless container toolchain | Define the reviewed installation/update path, then deliver Podman, subordinate IDs, networking, storage, Quadlet, and user-service persistence. Prove the actual host supports a rootless disposable container and persistent user services. |
 | SYS-003 — project dependency policy | [Delivered SPEC-019 initial adapter](../019-project-dependency-policy/acceptance.md): project/container installation boundaries, typed pnpm dependency changes, lockfile review and recovery. Reuses SPEC-018’s reviewed container baseline; local/live checks, CI and owner acceptance are recorded and implementation is merged. |
-| SYS-002 — pinned language toolchains, initial web slice | [Draft SPEC-020](../020-pinned-language-toolchains/spec.md): extend SPEC-018's working fixed Node/pnpm pair with exact per-project selection, verified acquisition, a supported matrix and legacy compatibility. Implement SYS-003 policy before integrating automatic dependency use. Python/uv and additional stacks follow in stage 12. |
+| SYS-002 — pinned language toolchains, initial web slice | [SPEC-020 implementation](../020-pinned-language-toolchains/spec.md): extend SPEC-018's working fixed Node/pnpm pair with exact per-project selection, verified acquisition, a supported matrix and legacy compatibility. Integrates the delivered SYS-003 policy for automatic dependency use. Python/uv and additional stacks follow in stage 12. |
 
 **Current stage-2 follow-up:** Daniel requested separate SYS-003 and SYS-002 plans
 on October 10. SPEC-019 reused the reviewed container/toolchain; its initial
 pnpm adapter passed local/live checks and CI, was accepted by Daniel and merged
 in PR #46. SPEC-020 can consume its delivered policy for lifecycle preparation,
-but stays Draft without implementation authorization. Do not reinstall the already
+and Daniel authorized its implementation. The initial web slice passed local/live
+checks and configured CI in PR #48; review/merge and final acceptance remain pending. Do not reinstall the already
 deployed SYS-001/SYS-004 foundation or invalidate their separate acceptance.
 
 ## 3. Deliver the runtime that the CLI will control
@@ -94,7 +95,7 @@ competing lifecycle system. Runtime-generated state stays outside source manifes
 
 | Features | Delivery and exit evidence |
 |---|---|
-| QLT-001, QLT-002, SEC-005 — quality commands, PR workflow template, secret scanning | Define the template's standard checks and pinned CI workflow, with an explicit manifest extension where required. Verify the generated configuration and checks in a synthetic project. Live new-repository provisioning follows in stage 9. |
+| QLT-001, QLT-002, SEC-005 — quality commands, PR workflow template, secret scanning | Define the template's standard checks, language-specific coding style guides, and pinned CI workflow, with an explicit manifest extension where required. Deliver TypeScript/JavaScript conventions for formatting, naming, code organization, and idiomatic usage; encode enforceable rules in formatter/linter configuration and document explanatory conventions in template guidance. Verify the generated configuration and checks in a synthetic project, including rejection of representative style violations. Live new-repository provisioning follows in stage 9. |
 | PRJ-003 — template catalogue, first-entry slice | Deliver template version/selection mechanics for one supported web template. Broader template coverage follows in stages 12 and 16. |
 | TPL-001, NET-103 — Next.js template and base-path compatibility | Deliver an actual buildable/testable web app, container definition, health route, and working assets/API/redirect behavior beneath its project path. Use the stage 3 runtime; complete route acceptance in stage 5. |
 | PRJ-009 — example projects, first web slice | Maintain a non-sensitive example that exercises the supported template. Add examples whenever later templates are introduced. |
@@ -206,6 +207,9 @@ Deferral leaves restore/replacement evidence outstanding until this stage runs.
 
 Every newly supported stack extends SYS-002 as needed and receives versioned
 PRJ-003 registration, PRJ-009 examples, and QLT-009 generate/run/route/cleanup tests.
+Each newly supported language also receives a coding style guide and applicable
+formatter/linter configuration following the stage 4 baseline, with conventions
+in template guidance and representative style violations checked in tests.
 These are explicit continuing obligations, not assumed coverage from one web app.
 
 ## 13. Add controlled public previews
@@ -269,7 +273,7 @@ catalogue entries remain optional; this file does not make them mandatory.
 
 | Feature or group | First usable slice | Explicit later responsibility |
 |---|---|---|
-| SYS-002 | Stage 2: SPEC-018 fixed Node/pnpm baseline; draft SPEC-020 adds project selection/matrix/verification | Stage 12: Python/uv and Expo needs; stage 16: additional selected stacks. Extend SYS-003 adapters and the supported-version matrix with each adopted stack. |
+| SYS-002 | Stage 2: SPEC-018 fixed Node/pnpm baseline; SPEC-020 adds project selection/matrix/verification | Stage 12: Python/uv and Expo needs; stage 16: additional selected stacks. Extend SYS-003 adapters and the supported-version matrix with each adopted stack. |
 | SEC-003, SEC-006, OBS-001 | Stage 3: runtime permissions, audit, logs | Each later service/adapter extends and tests these contracts before use; full accepted scope governs completion. |
 | PRJ-003, PRJ-009, QLT-009 | Stages 4–5: first web template and example/tests | Stage 12: additional candidate stacks; stage 16: optional stacks only when selected. Keep unsupported templates explicit. |
 | TPL-001, NET-103 | Stage 4: runnable template/base-path behavior | Stage 5: actual private-ingress acceptance. |

@@ -462,6 +462,16 @@ def operate(root, action, name=None, version=None, kind='runtime', operation_id=
             if journal['phase'] in {'complete', 'aborted'}:
                 if journal['retained_files']:attempt_cleanup(journal)
                 return {**public_result(journal), 'state': journal['phase'], 'changed': False}
+            if not abort:
+                import project_toolchains as tools
+                package = None
+                if journal['action'] != 'install' and journal['after']:
+                    original = read_bytes(workspace(journal).parent/'original/package.json', 65536)
+                    check(hashlib.sha256(original).hexdigest() == journal['before']['package.json'], 'conflict')
+                    package = json_data(original)
+                selected = tools.selection(root, package=package)
+                check(s.get('toolchain_hash') == selected['selection_hash'], 'conflict')
+                check(a.toolchain(root, selected=selected) == journal['image'], 'conflict')
             started = time.monotonic()
             try:
                 if abort:
@@ -497,7 +507,9 @@ def operate(root, action, name=None, version=None, kind='runtime', operation_id=
             manifest.setdefault(group, {})[name] = version
         elif action == 'remove':
             for group in groups: del manifest[group][name]
-        s['image'] = a.toolchain()
+        import project_toolchains as tools
+        selected = tools.selection(root)
+        s['image'] = a.toolchain(root); s['toolchain_hash'] = selected['selection_hash']
         journal = {'schema_version': 1, 'project': slug, 'root': str(root), 'operation_id': uuid.uuid4().hex,
                    'action': action, 'phase': 'resolving', 'before': ctx['hashes'], 'after': {},
                    'policy_hash': ctx['policy_hash'], 'image': s['image'], 'changed_files': [], 'error': None, 'duration_seconds': 0, 'retained_files': False,

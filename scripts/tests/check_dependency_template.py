@@ -17,7 +17,7 @@ def main():
     args=parser.parse_args();base=Path(args.directory).absolute();base.mkdir(mode=0o700)
     app.PROJECTS=base;app.STORE=base/'.gptclaw-runtime/v1';app.UNITS=base/'units';app.UNITS.mkdir()
     image=subprocess.check_output(['docker','image','inspect',args.image,'--format','{{.Id}}'],text=True).strip()
-    app.toolchain=lambda:image
+    app.toolchain=lambda *_,**__:image
     app.object_owned=lambda *_:False
     app.available=lambda _:True
     def container(s,argv,timeout=300,read_only_dependency_files=False):

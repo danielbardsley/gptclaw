@@ -28,12 +28,16 @@ def main(argv=None):
   if name=='add':p.add_argument('--kind',choices=['runtime','development'],default='runtime')
   if name=='recover':
    p.add_argument('--operation-id',required=True);p.add_argument('--abort',action='store_true',help='Abandon the job while preserving current coherent source files')
+ tools=sub.add_parser('toolchain',help='Inspect or prepare a reviewed exact container toolchain')
+ tool_actions=tools.add_subparsers(dest='toolchain_action',required=True)
+ for name in ['inspect','prepare']:
+  p=tool_actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True)
  args=parser.parse_args(argv)
  began=time.monotonic()
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps'],'receipt_schema':1,'dependency_receipt_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain'],'receipt_schema':1,'dependency_receipt_schema':1,'toolchain_receipt_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='validate':
    from project_manifest import validate_project
@@ -50,6 +54,9 @@ def main(argv=None):
    import project_dependencies as deps
    if args.dependency_action=='status':result=deps.status(args.project_root,getattr(args,'operation_id',None))
    else:result=deps.operate(args.project_root,args.dependency_action,getattr(args,'package',None),getattr(args,'version',None),getattr(args,'kind','runtime'),getattr(args,'operation_id',None),getattr(args,'abort',False))
+  elif args.action=='toolchain':
+   import project_toolchains as tools
+   result=tools.inspect(args.project_root) if args.toolchain_action=='inspect' else tools.prepare(args.project_root)
   elif args.action=='ingress':
    from private_ingress import main as ingress
    ingress();return 0

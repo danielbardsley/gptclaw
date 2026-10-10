@@ -18,7 +18,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -48,6 +48,10 @@ MESSAGES = {
  'setup': 'The reviewed Python environment, rootless runtime or toolchain is unavailable.',
  'dependency-policy': 'Dependency files, sources or configuration do not satisfy the reviewed project policy.',
  'dependency-recovery': 'A dependency operation needs reconciliation with deps status and its operation ID before retrying.',
+ 'toolchain-policy': 'Toolchain declarations, versions or metadata do not match a reviewed supported profile.',
+ 'toolchain-platform': 'This toolchain supports Linux amd64 only; no fallback was selected.',
+ 'toolchain-verification': 'The selected image failed its exact executable or artifact verification.',
+ 'toolchain-recovery': 'An interrupted toolchain acquisition needs scoped operator reconciliation; inspect its receipt before retrying.',
  'internal': 'Runtime state could not be reconciled; inspect this target before retrying.',
 }
 
@@ -172,6 +176,7 @@ def valid_state(s):
  need(isinstance(s.get('image'), str) and re.fullmatch(r'sha256:[0-9a-f]{64}', s['image']))
  need(s.get('phase') in {'preparing','starting','ready','stopped','failed'})
  need(type(s.get('health_ready')) is bool)
+ if 'toolchain_hash' in s:need(isinstance(s['toolchain_hash'],str) and re.fullmatch(r'[0-9a-f]{64}',s['toolchain_hash']))
  need(s.get('operation') in {'start','stop','restart','test','deps'})
  need(isinstance(s.get('operation_id'),str) and re.fullmatch(r'(?:prototype-)?[0-9a-f]{32}',s['operation_id']))
  need(s.get('error') is None or s['error'] in MESSAGES)
@@ -272,18 +277,9 @@ def route_info(slug):
                              f'http://127.0.0.1:{INGRESS_PORT}/projects/'] if not owned else None}
 
 
-def toolchain():
- containerfile = REPO/'templates/apps/node-toolchain/Containerfile'
- digest = hashlib.sha256(containerfile.read_bytes()).hexdigest()
- tag = 'localhost/gptclaw-toolchain:'+digest[:16]
- r = command(['podman','image','exists',tag], optional=True)
- need(r.returncode in (0,1), 'command')
- if r.returncode:
-  command(['podman','build','--memory='+MEMORY,'--cpu-period=100000','--cpu-quota=100000','--label','com.gptclaw.toolchain='+digest,
-           '--tag',tag,str(containerfile.parent)],timeout=300)
- info = json_command(['podman','image','inspect',tag])[0]
- need(info.get('Labels',{}).get('com.gptclaw.toolchain') == digest)
- image = info['Id']; return image if image.startswith('sha256:') else 'sha256:'+image
+def toolchain(root, selected=None):
+ import project_toolchains as tools
+ return tools.acquire(selected or tools.selection(root))['receipt']['image']
 
 
 def run_in_app(s, argv, timeout=300, read_only_dependency_files=False):
@@ -312,8 +308,12 @@ def dependency_digest(s):
  import project_dependencies as deps
  deps.require_clean(Path(s['root']),s['id'])
  context=deps.context(Path(s['root']))
+ import project_toolchains as tools
+ selected=tools.selection(Path(s['root']))
+ if s.get('toolchain_hash'):need(s['toolchain_hash']==selected['selection_hash'],'busy')
  digest=hashlib.sha256(s['image'].encode())
  digest.update(context['policy_hash'].encode())
+ digest.update(selected['selection_hash'].encode())
  for name in ['package.json','pnpm-lock.yaml','pnpm-workspace.yaml']:
   path=safe(Path(s['root'])/name);need(path.is_file(),'invalid')
   digest.update(name.encode()+b'\0'+path.read_bytes())
@@ -399,6 +399,8 @@ def inspect_service(s, contract):
  if active:
   need(object_owned('container',s['name'],s['token']))
   obj=json_command(['podman','container','inspect',s['name']])[0]
+  image=obj.get('Image','');image=image if image.startswith('sha256:') else 'sha256:'+image
+  need(image==s['image'],'conflict')
   binding=obj.get('HostConfig',{}).get('PortBindings',{}).get(str(contract['service']['internal_port'])+'/tcp',[])
   need(binding == [{'HostIp':'127.0.0.1','HostPort':str(s['port'])}])
  return active, healthy(s,contract) if active else False
@@ -426,9 +428,12 @@ def start(root, no_route=False, take_lock=True):
  root,contract=target(root);slug=contract['project']['id']
  with (locked(slug) if take_lock else contextlib.nullcontext()):
   deps.require_clean(root,slug);deps.context(root)
+  import project_toolchains as tools
+  selected=tools.selection(root)
   s=reserve(root,contract)
   active,ready=inspect_service(s,contract) if s['unit_sha256']!='0'*64 else (False,False)
   if active and ready:
+   tools.assert_active(selected,s)
    s.update(phase='ready',health_ready=True,operation_result='passed');s.pop('error',None);save(STORE/(slug+'.json'),s)
    result={'operation_id':s['operation_id'],'project':slug,'state':'ready','changed':False,'port':s['port']}
   else:
@@ -437,7 +442,7 @@ def start(root, no_route=False, take_lock=True):
    s.update(operation_id=uuid.uuid4().hex,operation='start',operation_result='running',phase='preparing',health_ready=False)
    save(STORE/(slug+'.json'),s)
    try:
-    s['image']=toolchain();save(STORE/(slug+'.json'),s)
+    s['image']=toolchain(root);s['toolchain_hash']=selected['selection_hash'];save(STORE/(slug+'.json'),s)
     prepare(s,contract,build=True)
     dns=node_identity()
     write_unit(s,unit_text(s,contract,dns));s['phase']='starting';save(STORE/(slug+'.json'),s)
@@ -510,16 +515,19 @@ def test_app(root):
  root,contract=target(root);slug=contract['project']['id']
  with locked(slug):
   deps.require_clean(root,slug);deps.context(root)
+  import project_toolchains as tools
+  selected=tools.selection(root)
   s=reserve(root,contract)
   need(s['phase'] not in ('preparing','starting') or s['unit_sha256']=='0'*64,'busy')
   active,_=inspect_service(s,contract) if unit_path(s).exists() else (False,False)
   s.update(operation='test',operation_id=uuid.uuid4().hex,operation_result='running')
   save(STORE/(slug+'.json'),s)
   try:
-   if not s.get('prepared_digest'):
-    need(not active,'busy')
-    s['image']=toolchain();prepare(s,contract,build=False)
-   else:need(s.get('prepared_digest')==dependency_digest(s),'busy')
+   if not active:
+    s['image']=toolchain(root);s['toolchain_hash']=selected['selection_hash'];prepare(s,contract,build=False)
+   else:
+    tools.assert_active(selected,s)
+    need(s.get('prepared_digest')==dependency_digest(s),'busy')
    run_in_app(s,contract['commands']['test'])
   except AppError as error:
    s.update(operation_result='failed',error=error.code)
@@ -567,6 +575,8 @@ def create(slug,directory=None):
            'service':{'internal_port':3000,'health':{'path':'/projects/'+slug+'/api/health/','timeout_seconds':5}},
            'exposure':{'private':True,'base_path':'/projects/'+slug+'/','funnel':False},'data':{'mode':'ephemeral'}}
  save(meta/'project.yaml',contract);save(meta/'template.json',{'provider':'nextjs-v1'})
+ import project_toolchains as tools
+ save(meta/'toolchain.json',tools.default_declaration())
  need(validate_project(path)[2]==0,'invalid')
  return {'project':slug,'root':str(path),'state':'created'}
 
@@ -624,8 +634,9 @@ WantedBy=default.target
 
 
 def provider_bundle():
- paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','project_dependencies.py','gptclawctl.py','gptclawctl']]
+ paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','project_dependencies.py','project_toolchains.py','gptclawctl.py','gptclawctl']]
  paths += [Path('config/project-dependencies/v1.json'),Path('schemas/project-dependencies/v1.schema.json')]
+ paths += [Path('config/toolchains/v1.json'),Path('schemas/toolchains/v1.schema.json'),Path('templates/apps/node-toolchain/install-pnpm.cjs')]
  paths += [Path('schemas/project/v1.schema.json'),Path('templates/apps/node-toolchain/Containerfile')]
  paths += [Path('templates/apps/nextjs')/name for name in TEMPLATE_FILES]
  digest=hashlib.sha256()

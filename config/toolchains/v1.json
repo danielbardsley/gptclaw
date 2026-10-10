@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "default": {
+    "profile": "node-pnpm",
+    "profile_version": 1
+  },
+  "legacy": {
+    "profile": "node-pnpm",
+    "profile_version": 1
+  },
+  "profiles": [
+    {
+      "profile": "node-pnpm",
+      "profile_version": 1,
+      "versions": {
+        "node": "24.21.0",
+        "pnpm": "12.10.1"
+      },
+      "platform": {
+        "os": "linux",
+        "architecture": "amd64"
+      },
+      "base_image": "docker.io/library/node@sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd",
+      "pnpm_artifact": {
+        "url": "https://registry.npmjs.org/pnpm/-/pnpm-12.10.1.tgz",
+        "integrity": "sha512-ukCjfrGjcNYP6oxM8dNkwTvMzvUY6YrSvO6VT1OdONo3RY5YJho/pV4GUjRQ6g//+fSXsTW+QfLBXBZCusrObA=="
+      },
+      "installer_sha256": "43e29b1a2b518dbc37fc691f97852ec740db8eb4154b62c6d3bb816acd2b7640"
+    }
+  ]
+}

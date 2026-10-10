@@ -1,6 +1,6 @@
 # SPEC-020: Pinned language toolchains (SYS-002)
 
-- **Status:** Draft — requested planning; implementation not authorized
+- **Status:** Implementation authorized; initial web slice implemented; local/live and CI passed, review/merge pending
 - **Owner:** Daniel
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** SYS-002; initial Node/pnpm web slice
@@ -32,10 +32,9 @@ prove distinct-profile handling in tests. Do not require a new language or
 version solely to expand today's scope.
 
 [SYS-003 / SPEC-019](../019-project-dependency-policy/spec.md) owns dependency
-sources, hooks, package changes and frozen installation. Its adapter must be
-implemented/accepted before this initiative routes automatic app dependency
-preparation through the new resolver. Toolchain validation/registry drafting
-can proceed independently; do not duplicate the dependency policy here.
+sources, hooks, package changes and frozen installation. Its adapter was accepted and merged in PR #46 before this implementation. The
+resolver reuses that policy for automatic dependency preparation; it does not
+duplicate or loosen dependency rules.
 
 Python/uv is explicitly deferred to the sequence's stage 12, alongside the
 selected Python template. Expo and other stacks extend the supported matrix in
@@ -99,10 +98,11 @@ projects sharing forge's identity.
 
 ## Completion and decisions
 
-This request authorizes planning only; scope approval and implementation remain
-unrecorded. Proposed choices are the supplementary declaration/profile registry,
-container-only execution and the existing pair as the initial profile. Daniel
-reviews these defaults; implementation re-verifies pins/integrity and resolves
-profile/receipt schemas before executing acquisition. Create acceptance.md when
-there is implementation evidence. Delivered applies only to the accepted Node/
-pnpm slice after merge and AC-001–006 pass; later language support stays explicit.
+Daniel authorized implementation with “Ok, let's implement SYS-002” on October
+10 after SYS-003 delivery. The supplementary declaration/profile registry,
+container-only execution and existing pair are implemented. Source artifact
+integrity and actual installed versions were verified on Linux amd64 before live
+app acceptance. [Acceptance evidence](acceptance.md) separates offline tests,
+CI, observed EC2 behavior and remaining owner review/merge. Delivered applies
+only to the accepted Node/pnpm slice after merge and AC-001–006 pass; later
+language support stays explicit.
