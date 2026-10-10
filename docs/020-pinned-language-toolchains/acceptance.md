@@ -123,7 +123,14 @@ engine ranges also reject leading-zero/unsafe numeric bounds offline.
 
 The first PR app CI run passed offline suites, baseline app build and generated
 dependency operations, but failed the new Docker acquisition adapter before
-image construction. The adapter now uses an owned empty Docker CLI configuration
-rather than relying on the production runner’s forge HOME and prints only bounded
-sanitized build errors. This is a CI-only configuration change; Podman acquisition
-already passed live. The corrected CI result remains pending.
+image construction. The adapter added an owned empty Docker CLI configuration and bounded sanitized
+build errors. The second run identified the actual fault: Docker defaults to
+Dockerfile, while the generated Podman recipe is Containerfile. The CI adapter now
+passes the explicit filename. These are CI-only changes; Podman acquisition
+already passed live. Neither failed run was counted as passing; the corrected
+CI result remains pending.
+
+The final full offline repository checker passed with all 90 focused tests after
+the inspection/range refinements. The synthetic service remains stopped; final
+installed inspect reports the matching verified profile/image. The ready Hello
+World no-op refresh took 1.338 seconds, changed false.

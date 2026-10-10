@@ -29,7 +29,7 @@ def main():
             return subprocess.CompletedProcess(args, 0 if present else 1, '', '')
         if args[1] == 'build':
             tag = args[args.index('--tag')+1]; label = args[args.index('--label')+1]
-            command = ['docker','build','--no-cache','--label',label,'--tag',tag,args[-1]]
+            command = ['docker','build','--file',str(Path(args[-1])/'Containerfile'),'--no-cache','--label',label,'--tag',tag,args[-1]]
         else: command = ['docker',*args[1:]]
         result = original_command(['docker','--config',str(docker_config),*command[1:]],timeout=timeout,optional=True)
         if result.returncode and args[1] == 'build':
