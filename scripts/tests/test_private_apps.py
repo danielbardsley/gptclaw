@@ -173,6 +173,26 @@ class Tests(unittest.TestCase):
   self.assertNotIn('SECRET',text);self.assertIn('[redacted]',text)
 
 
+class PortAvailabilityTests(unittest.TestCase):
+ def test_unused_loopback_port_is_available(self):
+  with socket.socket() as probe:
+   probe.bind(('127.0.0.1',0));port=probe.getsockname()[1]
+  self.assertTrue(app.available(port))
+ def test_active_listener_is_not_available(self):
+  with socket.socket() as listener:
+   listener.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+   listener.bind(('127.0.0.1',0));listener.listen()
+   self.assertFalse(app.available(listener.getsockname()[1]))
+ def test_cleanly_closed_connection_does_not_block_port_reuse(self):
+  with socket.socket() as listener, socket.socket() as client:
+   listener.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+   listener.bind(('127.0.0.1',0));listener.listen()
+   port=listener.getsockname()[1];client.settimeout(5)
+   client.connect(('127.0.0.1',port));connection,_=listener.accept()
+   connection.close();self.assertEqual(client.recv(1),b'')
+  self.assertTrue(app.available(port))
+
+
 class Backend(BaseHTTPRequestHandler):
  def do_GET(self):
   if self.path=='/redirect':

@@ -18,7 +18,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -218,7 +218,10 @@ def object_owned(kind, name, token):
 
 def available(port):
  try:
-  with socket.socket() as sock: sock.bind(('127.0.0.1',port))
+  with socket.socket() as sock:
+   # Closed TCP connections in TIME_WAIT are reusable; active listeners are not.
+   sock.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+   sock.bind(('127.0.0.1',port))
   return True
  except OSError: return False
 
