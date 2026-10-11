@@ -1,0 +1,84 @@
+# TASKS-025: Multi-service projects
+
+- **Status:** Draft — planning complete; implementation not authorized
+- **Owner:** Project owner
+- **Date:** 2026-10-11 (America/New_York)
+- **Specification:** [SPEC-025](spec.md) · **Design:** [TDD-025](technical-design.md)
+
+## Planning and authorization
+
+- [x] T-001: Review RUN-006, existing manifest/lifecycle/catalogue/profile sources
+  and merged SPEC-024 Python implementation/standards. Draft the two-service notes
+  slice, design, measurable acceptance and tasks; update index/catalogue/sequence.
+  Evidence: planning files on this branch and documentation checks recorded below.
+- [ ] T-002: Project owner approves SPEC-025 and authorizes implementation/live
+  synthetic verification. Finalize proposed schema/provider/catalogue versions,
+  component command syntax and compatibility fixtures in review; implement the
+  versioned contract and observation-only validator with unsafe path/topology and
+  legacy tests. MS-001; AC-001, AC-007. Gate: no implementation before authorization.
+
+## Implementation
+
+- [ ] T-003: Add exact-release grouped generation, complete independent locks,
+  component toolchains/provenance/standards/guidance and local repository-generation
+  selection. Keep defaults/published releases unchanged; prove occupied/tampered
+  destination refusal. Depends on T-002. MS-002; AC-002.
+- [ ] T-004: Make preparation, jobs, quality/format and typed dependencies explicitly
+  component-aware under a single group lock; separate fingerprints and owned caches.
+  Test frozen restore, active/busy refusal, transaction conflict and interrupted
+  recovery without cross-component source edits. Depends on T-002/T-003. MS-002,
+  MS-007; AC-002, AC-007.
+- [ ] T-005: Implement owned group network/units/ports, staged receipts, bounded
+  readiness ordering, status/logs, stop/restart, reverse cleanup and same-operation
+  recovery. Test partial startup, absent resources, unknown ownership, collision,
+  busy/interruption and failed cleanup. Include capabilities/assets in snapshots.
+  Depends on T-004. MS-003, MS-007; AC-003, AC-007.
+- [ ] T-006: Extend private ingress with group route sets, segment-safe API namespace,
+  aggregate readiness and dependency outage/recovery. Test mounted UI/assets/API/docs,
+  query/redirects, spoofed headers, stopped/unknown targets and atomic publication.
+  Verify network/loopback/limits; reuse existing private Serve prefix. Depends on
+  T-005. MS-004; AC-004.
+- [ ] T-007: Implement notes service/models/store and Next.js editor/list with full
+  CRUD, bounds/pagination/capacity, safe text/error/draft states, deletion confirmation,
+  keyboard labels and visible shared/ephemeral data explanation. Apply inherited
+  Python standards and locked checks; test synchronized mutation and data reset.
+  Depends on T-003. MS-005, MS-006; AC-005, AC-006.
+- [ ] T-008: Add grouped golden-template and pinned generated CI checks, browser/API
+  contract/CRUD/error tests, Python critical statement and branch coverage >=80%,
+  meaningful seeded quality/security defects and source reload/syntax recovery for
+  both components. Verify group test/verify failures and no implicit lock changes.
+  Depends on T-004/T-006/T-007. MS-006; AC-005, AC-006.
+
+## Verification and delivery
+
+- [ ] T-009: Run relevant focused suites, prepared repository checks, generated
+  container/browser checks, changed shell syntax and diff/link checks. Submit
+  implementation PR, record final-head configured CI and versioned provider rollout.
+  Trial rollback/refusal and preserve v1/v2/template/repository-credential behavior.
+  Depends on T-008. MS-001, MS-008; AC-001–003, AC-006–008.
+- [ ] T-010: After authorized rollout, use named local-only synthetic fixtures on EC2;
+  inspect capacity/network/resource bounds, measure cold/warm preparation, exercise
+  private UI/API/docs, group lifecycle, outage/recovery, reload/data loss and stop/
+  source retention while independent web/API projects remain healthy. Obtain an
+  independent authorized browser's CRUD/source-update confirmation. Write sanitized
+  acceptance.md mapping AC-001–008, local/CI/live/client results, actual revisions,
+  timings, limitations, rollback and owned fixture disposition. Update runbooks.
+  Complete merge and project owner acceptance, then mark only the initial RUN-006
+  slice Delivered and record deferred database/cache/worker graphs. Depends on
+  T-009 and actual CI/runtime evidence. MS-004–008; AC-004–008.
+
+## Current handover
+
+Only planning documents and index/catalogue/sequence references changed. The
+project owner has requested a specification, with Next.js/Python and ephemeral
+notes as explicit constraints. Scope review/implementation authorization is the
+next action; all implementation and live acceptance remain pending. No application,
+new service, repository, infrastructure or data store was created. SPEC-024 is
+merged in PR #56 but retains pending final delivery wording in its own records;
+that status was not rewritten as part of RUN-006 planning.
+
+Documentation verification: 189 relative local links resolve across the six changed
+documents; MS-001–008 are covered by specification, design and tasks. Git staged
+and unstaged whitespace checks passed.
+Runtime/repository test suites and Terraform checks are not required for these
+planning-only changes and are not claimed as executed.

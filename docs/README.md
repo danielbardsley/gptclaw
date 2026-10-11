@@ -179,6 +179,11 @@ dispositions independently of feature implementation status.
   [Python standards](./024-python-fastapi-template/python-standards.md) ·
   [Acceptance](./024-python-fastapi-template/acceptance.md)
 
+- **025 — Multi-service projects (RUN-006), draft two-service notes slice:**
+  [Specification](./025-multi-service-projects/spec.md) ·
+  [Technical design](./025-multi-service-projects/technical-design.md) ·
+  [Tasks](./025-multi-service-projects/tasks.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in

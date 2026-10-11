@@ -180,7 +180,7 @@ Deferral leaves restore/replacement evidence outstanding until this stage runs.
 
 | Features | Delivery and exit evidence |
 |---|---|
-| RUN-006 — multi-service projects | Extend the manifest and runtime contract explicitly for component identity, dependency order, networking, health, and scoped operations. |
+| RUN-006 — multi-service projects | [SPEC-025](../025-multi-service-projects/spec.md) drafts the selected two-service Next.js/FastAPI notes slice with ephemeral API memory, versioned component contracts, ordering, networking, health and scoped recovery. Review pending; implementation not authorized. Database/cache/worker orchestration stays separate. |
 | QLT-007, RUN-011 — migration gates and development databases | Define migration/backup/restore gates, then deliver isolated databases, roles, credentials, and controlled reset. Requires stage 7 recovery evidence and stage 9 secret handling. |
 | RUN-012 — synthetic seed data | Provide reproducible non-sensitive seed/reset operations under the database and destructive-action contracts. |
 | RUN-007 — background jobs and schedulers | Add managed workers/jobs with limits, logs, status, and supported scheduling. |
