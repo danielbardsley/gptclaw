@@ -106,3 +106,10 @@ syntax and published release immutability pass. Final source CI at `ca0080b` is 
 in all three workflows; acceptance.md links exact runs. The notes fixture remains
 ready with source retained. T-010 stays unchecked for review/merge and final delivery;
 no infrastructure apply/public exposure or unrelated data cleanup occurred.
+
+
+Owner-reported follow-up (October 11): the real browser emitted an attribute
+hydration warning. It is recorded in [acceptance](acceptance.md), with diagnosis
+pending; the project owner explicitly treats it as non-blocking for RUN-006.
+Earlier CRUD/source-update evidence is retained. No live/template change or
+warning suppression was made.

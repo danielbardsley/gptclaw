@@ -114,6 +114,23 @@ from the independent project-owner desktop confirmation. The project owner answe
 visible source-update-text check on October 11. This completes the client observation;
 review/merge and final feature delivery remain separate.
 
+## Reported browser rendering warning
+
+On October 11 the project owner reported a React hydration warning in the real
+browser: some server-rendered HTML attributes did not match client properties.
+The project owner explicitly treated this as non-blocking for the RUN-006 service
+orchestration trial. The earlier independent CRUD/source-update confirmation remains
+valid; it does not establish warning-free rendering in every browser.
+
+This warning has not been reproduced or diagnosed independently. The supplied
+message contains generic causes but no specific attribute diff. Source inspection
+found no render-time Date.now/Math.random or server/client window branch; window.confirm
+is confined to the delete event handler. The character counter uses toLocaleString,
+but that alone does not establish the cause of an attribute mismatch. Record a
+later frontend follow-up using the precise React diff and browser context before
+choosing a fix. No suppression, template rewrite or live application change was
+made in response to this report.
+
 ## Remaining work and fixture disposition
 
 Complete implementation review/merge and record the merged
