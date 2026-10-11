@@ -435,6 +435,7 @@ def save_text(path,text):
 def start(root, no_route=False, take_lock=True):
  import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
+ if contract['schema_version']==2 and not no_route: route_info(slug)
  with (locked(slug) if take_lock else contextlib.nullcontext()):
   deps.require_clean(root,slug);deps.context(root)
   import project_toolchains as tools
