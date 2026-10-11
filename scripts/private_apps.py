@@ -11,6 +11,7 @@ import shutil
 import socket
 import stat
 import subprocess
+import sys
 import time
 import urllib.error
 import urllib.request
@@ -18,7 +19,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.5.2'
+VERSION = '1.6.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -155,7 +156,7 @@ def target(root):
  result, contract, code = validate_project(root)
  need(code == 0, 'invalid')
  marker = read_json(root / '.gptclaw/template.json')
- need(marker == {'provider': 'nextjs-v1'}, 'invalid')
+ need(marker == {'provider': 'fastapi-v1' if contract['schema_version'] == 2 else 'nextjs-v1'}, 'invalid')
  import project_templates as templates
  templates.validate_provenance(root)
  need(not any((root/name).exists() for name in ['.env','.env.local','.env.development','.env.production','.npmrc','.ssh','.aws']),'invalid')
@@ -173,10 +174,11 @@ def valid_state(s):
  need(root.is_relative_to(PROJECTS) and root != PROJECTS and root != REPO and '.gptclaw-runtime' not in root.parts, 'path')
  need(isinstance(s.get('unit_sha256'), str) and re.fullmatch(r'[0-9a-f]{64}', s['unit_sha256']))
  need(isinstance(s.get('image'), str) and re.fullmatch(r'sha256:[0-9a-f]{64}', s['image']))
+ if 'adapter' in s: need(s['adapter'] == 'python')
  need(s.get('phase') in {'preparing','starting','ready','stopped','failed'})
  need(type(s.get('health_ready')) is bool)
  if 'toolchain_hash' in s:need(isinstance(s['toolchain_hash'],str) and re.fullmatch(r'[0-9a-f]{64}',s['toolchain_hash']))
- need(s.get('operation') in {'start','stop','restart','test','deps'})
+ need(s.get('operation') in {'start','stop','restart','test','deps','build','format','lint','typecheck','security','verify'})
  need(isinstance(s.get('operation_id'),str) and re.fullmatch(r'(?:prototype-)?[0-9a-f]{32}',s['operation_id']))
  need(s.get('error') is None or s['error'] in MESSAGES)
  need(s.get('operation_result') is None or s['operation_result'] in {'running','passed','failed','unknown'})
@@ -245,6 +247,7 @@ def reserve(root, contract):
   s = {'schema_version':1,'id':slug,'root':str(root),'name':'gptclaw-app-'+slug,
        'token':uuid.uuid4().hex,'port':port,'phase':'preparing','image':'sha256:'+'0'*64,
        'unit_sha256':'0'*64,'operation_id':uuid.uuid4().hex,'operation':'start','health_ready':False}
+  if contract['schema_version'] == 2: s['adapter'] = 'python'
   save(STORE/(slug+'.json'),s); return s
 
 
@@ -294,9 +297,11 @@ def run_in_app(s, argv, timeout=300, read_only_dependency_files=False):
        '--volume',s['root']+':/workspace:rw','--workdir','/workspace',
        '--env','GPTCLAW_PROJECT_ID='+s['id'],'--env','NEXT_TELEMETRY_DISABLED=1',
        '--env','NODE_OPTIONS=--max-old-space-size=1024']
- for key,value in deps.GUARD_ENV.items():args += ['--env',key+'='+value]
+ import project_python as py
+ python_profile = s.get('adapter') == 'python' or py.is_python(s['root'])
+ for key,value in (py.GUARD_ENV if python_profile else deps.GUARD_ENV).items():args += ['--env',key+'='+value]
  if read_only_dependency_files:
-  for name in deps.FILES:
+  for name in py.FILES if python_profile else deps.FILES:
    path=safe(Path(s['root'])/name);deps.read_bytes(path)
    args += ['--volume',str(path)+':/workspace/'+name+':ro']
  args += [s['image'],*argv]
@@ -313,7 +318,8 @@ def dependency_digest(s):
  digest=hashlib.sha256(s['image'].encode())
  digest.update(context['policy_hash'].encode())
  digest.update(selected['selection_hash'].encode())
- for name in ['package.json','pnpm-lock.yaml','pnpm-workspace.yaml']:
+ import project_python as py
+ for name in py.files_for(s['root']):
   path=safe(Path(s['root'])/name);need(path.is_file(),'invalid')
   digest.update(name.encode()+b'\0'+path.read_bytes())
  return digest.hexdigest()
@@ -322,9 +328,12 @@ def dependency_digest(s):
 def prepare(s,contract,build):
  import project_dependencies as deps
  digest=dependency_digest(s)
- if s.get('prepared_digest')==digest and (Path(s['root'])/'node_modules').is_dir() and (not build or s.get('build_digest')==digest):return
+ import project_python as py
+ python_profile = py.is_python(s['root'])
+ if s.get('prepared_digest')==digest and (Path(s['root'])/('.venv' if python_profile else 'node_modules')).is_dir() and (not build or s.get('build_digest')==digest):return
  before=deps.context(Path(s['root']))['hashes']
- run_in_app(s,['pnpm','install','--frozen-lockfile',*deps.INSTALL_FLAGS],read_only_dependency_files=True)
+ if python_profile: py.install(s,Path(s['root']))
+ else: run_in_app(s,['pnpm','install','--frozen-lockfile',*deps.INSTALL_FLAGS],read_only_dependency_files=True)
  deps.verify_original(Path(s['root']),before)
  if build:
   run_in_app(s,contract['commands']['build']);s['build_digest']=digest
@@ -334,6 +343,8 @@ def prepare(s,contract,build):
 def unit_text(s, contract, dns):
  import project_dependencies as deps
  argv = contract['commands']['start']
+ import project_python as py
+ guard = py.GUARD_ENV if contract['schema_version'] == 2 else deps.GUARD_ENV
  def quote(value):
   # Quadlet Exec uses systemd argv parsing, not a shell. Escape its substitutions as well.
   return '"'+value.replace('\\','\\\\').replace('"','\\"').replace('%','%%').replace('$','$$')+'"'
@@ -356,7 +367,7 @@ Environment=GPTCLAW_PROJECT_ID={s['id']}
 Environment=GPTCLAW_DEV_ORIGIN={dns}
 Environment=NEXT_TELEMETRY_DISABLED=1
 Environment=NODE_OPTIONS=--max-old-space-size=1024
-{''.join('Environment='+key+'='+value+chr(10) for key,value in deps.GUARD_ENV.items())}\
+{''.join('Environment='+key+'='+value+chr(10) for key,value in guard.items())}\
 Exec={' '.join(quote(v) for v in ([argv[0],'--config.@jsr:registry=https://registry.npmjs.org/',*argv[1:]] if argv and argv[0]=='pnpm' else argv))}
 Pull=never
 NoNewPrivileges=true
@@ -425,6 +436,7 @@ def save_text(path,text):
 def start(root, no_route=False, take_lock=True):
  import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
+ if contract['schema_version']==2 and not no_route: route_info(slug)
  with (locked(slug) if take_lock else contextlib.nullcontext()):
   deps.require_clean(root,slug);deps.context(root)
   import project_toolchains as tools
@@ -510,8 +522,13 @@ def status(root):
 
 
 def test_app(root):
+ return quality_app(root, 'test')
+
+
+def quality_app(root, action='test'):
  import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
+ need(action in contract['commands'], 'invalid')
  with locked(slug):
   deps.require_clean(root,slug);deps.context(root)
   import project_toolchains as tools
@@ -519,7 +536,8 @@ def test_app(root):
   s=reserve(root,contract)
   need(s['phase'] not in ('preparing','starting') or s['unit_sha256']=='0'*64,'busy')
   active,_=inspect_service(s,contract) if unit_path(s).exists() else (False,False)
-  s.update(operation='test',operation_id=uuid.uuid4().hex,operation_result='running')
+  need(action != 'format' or not active, 'busy')
+  s.update(operation=action,operation_id=uuid.uuid4().hex,operation_result='running')
   save(STORE/(slug+'.json'),s)
   try:
    if not active:
@@ -527,7 +545,7 @@ def test_app(root):
    else:
     tools.assert_active(selected,s)
     need(s.get('prepared_digest')==dependency_digest(s),'busy')
-   run_in_app(s,contract['commands']['test'])
+   run_in_app(s,contract['commands'][action],read_only_dependency_files=contract['schema_version']==2)
   except AppError as error:
    s.update(operation_result='failed',error=error.code)
    if not active:s.update(phase='failed',health_ready=False)
@@ -535,7 +553,7 @@ def test_app(root):
   s.update(operation_result='passed');s.pop('error',None)
   if not active:s.update(phase='stopped',health_ready=False)
   save(STORE/(slug+'.json'),s)
-  return {'project':slug,'operation_id':s['operation_id'],'state':'tests-passed'}
+  return {'project':slug,'operation_id':s['operation_id'],'state':'tests-passed' if action=='test' else action+'-passed'}
 
 
 def redact(text):
@@ -625,7 +643,9 @@ def provider_bundle():
  paths += [Path('schemas/project/v1.schema.json'),Path('templates/apps/node-toolchain/Containerfile')]
  import project_templates as templates
  paths += templates.bundle_paths()
- digest=hashlib.sha256()
+ paths += [Path(p) for p in ['scripts/project_python.py','config/toolchains/v2.json','schemas/toolchains/v2.schema.json','config/project-dependencies/v2.json','schemas/project/v2.schema.json','templates/apps/python-toolchain/Containerfile']]
+ interpreter=Path(sys.executable).absolute()
+ digest=hashlib.sha256(str(interpreter).encode()+b'\0')
  for rel in sorted(paths):digest.update(str(rel).encode()+b'\0'+(REPO/rel).read_bytes())
  # A bundle already executing from installed storage reuses itself.
  if REPO.parent==STORE/'providers':return REPO
@@ -637,7 +657,24 @@ def provider_bundle():
  for rel in paths:
   source=REPO/rel;safe(source);out=temp/rel;out.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(source,out)
   if rel in {Path('scripts/repository_askpass.py'),Path('scripts/repository-credential-helper')}:out.chmod(0o700)
- (temp/'.python-path').write_text(str(REPO/'.venv-manifest/bin/python')+'\n')
+ (temp/'.python-path').write_text(str(interpreter)+'\n')
  (temp/'scripts/gptclawctl').chmod(0o755)
  os.rename(temp,dest)
  return dest
+
+
+def install_hooks(root):
+ root,contract=target(root);need(contract['schema_version']==2,'invalid');slug=contract['project']['id']
+ import project_dependencies as deps
+ with locked(slug):
+  deps.require_clean(root,slug);deps.context(root);deps.stopped_state(root,contract)
+  directory=safe(root/'.git');need(directory.is_dir() and directory.stat().st_uid==os.getuid(),'conflict')
+  hooks=safe(directory/'hooks');hooks.mkdir(exist_ok=True)
+  snapshot=provider_bundle();launcher=snapshot/'scripts/gptclawctl'
+  text='#!/usr/bin/env bash\nset -euo pipefail\nexec '+str(launcher)+' verify --project-root '+str(root)+'\n'
+  path=safe(hooks/'pre-commit')
+  if path.exists():
+   need(deps.read_bytes(path,65536)==text.encode(),'conflict');return {'project':slug,'state':'hooks-installed','changed':False}
+  with path.open('xb') as stream:stream.write(text.encode())
+  path.chmod(0o700)
+  return {'project':slug,'state':'hooks-installed','changed':True}

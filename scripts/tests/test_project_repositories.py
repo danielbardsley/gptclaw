@@ -177,6 +177,18 @@ class Tests(unittest.TestCase):
         self.assertLess(put_index,branch_index)
         self.assertFalse(any('/secrets/' in path or '/environments/' in path for _,path,_ in self.api.calls))
         self.resume();self.assertEqual(len(self.api.prs),1)
+    def test_exact_fastapi_selection_survives_repository_generation(self):
+        self.plan=self.new_plan(template='fastapi',template_version='1.0.0')
+        self.assertEqual(self.plan['template']['id'],'fastapi')
+        result=self.apply();root=self.projects/'sample'
+        self.assertEqual(result['state'],'repository-ready')
+        self.assertEqual(app.validate_project(root)[1]['project']['kind'],'api')
+        templates.validate_provenance(root)
+        self.assertTrue((root/'pyproject.toml').is_file())
+        self.assertFalse((root/'package.json').exists())
+        self.assertEqual(len(self.api.prs),1)
+        self.assertFalse(any('/secrets/' in path or '/environments/' in path for _,path,_ in self.api.calls))
+
     def test_create_only_then_scoped_resume(self):
         receipt=self.apply(create_only=True)
         self.assertEqual(receipt['state'],'operator-required')

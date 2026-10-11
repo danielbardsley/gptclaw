@@ -137,3 +137,11 @@ exceptions; startup/test preparation uses the same validator and policy fingerpr
 Provider 1.2.0 adds [project-selected toolchains](manage-project-toolchains.md).
 New apps declare the exact reviewed Node/pnpm profile; legacy apps retain a fixed
 selection. The resolver supplies the same image to dependencies/build/test/start.
+
+
+## Python APIs
+
+Provider 1.6.0 adds exact `fastapi@1.0.0` selection and API schema v2 alongside
+unchanged Next.js defaults. Use the [Python API runbook](manage-python-apis.md)
+for Python/uv policy, quality commands, source reload, readiness and private docs.
+This is one standalone API service, not RUN-006 orchestration.

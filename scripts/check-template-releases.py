@@ -16,7 +16,11 @@ def verify_baseline(baseline):
     exists = subprocess.run(['git','cat-file','-e',commit+':config/templates/v1.json'], cwd=repo, capture_output=True)
     current, releases = templates.catalogue()
     if exists.returncode: return
-    old = json.loads(subprocess.run(['git','show',commit+':config/templates/v1.json'], cwd=repo, capture_output=True, check=True).stdout)
+    old = {'releases': []}
+    for version in (1, 2):
+        rel = 'config/templates/v'+str(version)+'.json'
+        entry = subprocess.run(['git','show',commit+':'+rel], cwd=repo, capture_output=True)
+        if entry.returncode == 0: old['releases'].extend(json.loads(entry.stdout)['releases'])
     for release in old['releases']:
         key = (release['id'],release['version'])
         templates.check(key in releases and releases[key][0] == release)

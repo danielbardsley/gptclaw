@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 2
+    },
+    "profile": {
+      "const": "python-uv"
+    },
+    "profile_version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10000
+    },
+    "versions": {
+      "type": "object",
+      "properties": {
+        "python": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+          "maxLength": 32
+        },
+        "uv": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+          "maxLength": 32
+        }
+      },
+      "required": [
+        "python",
+        "uv"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "profile",
+    "profile_version",
+    "versions"
+  ],
+  "additionalProperties": false
+}
