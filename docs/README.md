@@ -172,6 +172,11 @@ dispositions independently of feature implementation status.
   [Tasks](./023-repository-credential-broker/tasks.md) ·
   [Acceptance status](./023-repository-credential-broker/acceptance.md)
 
+- **024 — Python FastAPI template (TPL-003), draft standalone API slice:**
+  [Specification](./024-python-fastapi-template/spec.md) ·
+  [Technical design](./024-python-fastapi-template/technical-design.md) ·
+  [Tasks](./024-python-fastapi-template/tasks.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in
