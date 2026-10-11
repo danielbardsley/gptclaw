@@ -39,7 +39,7 @@ installed provider/rootless runtime separately and use task-owned synthetic proj
 Propose project manifest **v2 for standalone APIs**. Keep the v1 schema and behavior
 unchanged. V2 keeps existing identity, one service port/health, private exposure,
 base-path and ephemeral-data constraints, with `project.kind: api` and required
-build/start/test/format/lint/typecheck/verify argument vectors. No environment maps,
+build/start/test/format/lint/typecheck/security/verify argument vectors. No environment maps,
 volumes, service arrays, secrets, assigned host ports or install hooks are added.
 V2 does not imply a v2 web migration or RUN-006 compatibility. Preserve bounded
 YAML parsing, duplicate/unknown-key refusal, safe files, no shell expansion and
@@ -81,8 +81,10 @@ pins in T-002; no `latest` tags or unverified example digests.
 Add a strict Python policy alongside the unchanged pnpm policy. Parse bounded
 `pyproject.toml`, `uv.lock` and an exact `.python-version` as data. Cross-check
 `requires-python` with the selected interpreter. Initial layout is one non-packaged
-application directory, no build system, workspaces or editable/local dependencies.
-Dependencies and named development group are exact pinned PyPI packages; require
+application in a `src/<package>/` layout, no build system, workspaces or editable/
+local dependencies. Set the application import path explicitly to that source tree;
+never discover executable path hooks. Runtime, dev and test dependency groups are
+exact pinned PyPI packages under one uv lock; require
 artifact hashes and supported Linux amd64 wheels for the actual environment.
 Reject Git/path/URL/custom index sources, credentials, source builds and configuration
 that bypasses policy. Treat unsupported native packages as a compatibility error.
@@ -116,37 +118,100 @@ receipt/journal versions without interfering with pnpm projects.
 
 ## Starter, quality commands and update behavior
 
-Release assets contain `app/main.py`, `app/api/`, `app/models.py`, `app/settings.py`,
-`tests/`, `pyproject.toml`, `uv.lock`, exact interpreter metadata, ignored cache
-rules, Python style guide, README/adapted AGENTS guidance, vendored docs assets and
-pinned PR CI. The generator writes trusted manifest/toolchain/provider/provenance
-metadata through its existing exclusive staging and no-overwrite publication.
+Release assets contain `src/<package>/main.py`, domain/services/api modules,
+Pydantic models/settings, structured logging/middleware, mirrored tests,
+`pyproject.toml`, `uv.lock`, exact interpreter metadata, ignored cache rules,
+`docs/python-standards.md`, architecture notes, `config/environment.example.md`,
+README/adapted AGENTS guidance, explicit pre-commit config, vendored docs assets
+and pinned PR CI. The generator writes trusted manifest/toolchain/provider/
+provenance metadata through existing staging/no-overwrite publication.
 
-The proposed sample endpoint `POST /api/echo` accepts a bounded nonempty message
-and returns a typed normalized echo; inputs and responses are synthetic/stateless.
-Provide `GET /health`, interactive `/docs`, `/openapi.json` and a small root response
-linking docs. Pydantic settings use generated non-secret identity/base-path defaults
-and validation; no dotenv or runtime secret interface. Tests cover constraints,
-response types, missing routes, app factory/settings failures and contract operation IDs.
-Avoid package import side effects that open sockets or start background services.
+Apply the [owner-derived standards disposition](python-standards.md) to this
+release. The typed `EchoService` owns normalization/business logic; FastAPI route
+functions inject it and remain thin adapters. Public symbols have complete types
+and Google docstrings. Composition/DI and meaningful unit tests demonstrate the
+object-oriented standard; no empty repository layer or fake persistence. The
+src layout remains a non-packaged app with an explicit controlled import path.
+
+Proposed endpoints inside the mounted child app:
+
+- `POST /api/v1/echo`: bounded nonempty message and typed normalized response.
+- `GET /api/v1/examples`: static synthetic records with validated bounded
+  limit/offset and explicit page metadata; no database.
+- `GET /health`: liveness; `GET /ready`: readiness of initialized configuration/
+  application service. The manifest/provider probe `/projects/<id>/ready`.
+- `/docs`, `/openapi.json` and a small root response linking self-hosted docs.
+
+Pydantic settings use generated non-secret identity/base-path and validation;
+configuration documentation lists types/defaults and future environment names,
+without generating/loading dotenv files or forwarding host variables. Tests cover
+models, sample service via injected dependencies, API status/operation identifiers,
+pagination, startup/shutdown and invalid settings/readiness. Importing modules
+opens no sockets or background jobs.
+
+Use standard-library JSON logging with request IDs generated/validated at the
+boundary, safe domain exception mapping and appropriate levels. Log only method,
+route template, status, duration and safe correlation, never raw paths/query values,
+headers, bodies, personal data or tracebacks exposed to clients. Unmatched routes
+use a fixed safe identifier. Test malformed/secret-like input and exception output.
+
+Middleware denies cross-origin access by default and adds docs-compatible security
+headers. Implement finite in-process request admission with bounded storage,
+recorded limits and a tested 429 response. Health/readiness remain useful during
+API admission pressure. Avoid attacker-selected/untrusted forwarded identities;
+this single-process development limiter is not a distributed quota guarantee.
+Document its reset/reload semantics and test memory/admission bounds, recovery and
+unaffected second-project behavior. No Redis/auth/password/SQL/session features
+are added. Applicable OWASP and async/design conventions require recorded review
+alongside automated checks; future dependencies must satisfy their conditional
+standards before use.
 
 Required command behavior:
 
 | Command | Proposed implementation and effect |
 |---|---|
-| format | Prepared environment runs Ruff formatter explicitly; source mutation allowed only for this operation. |
-| lint | Ruff formatter check plus lint without auto-fix; reports violations. |
-| typecheck | Pinned mypy checks application and applicable test types under committed configuration. |
-| test | Pinned pytest with in-process API/settings tests; uses the shared dependency-preparation path. |
+| format | Prepared environment runs isort then Black explicitly against source/tests; source mutation allowed only for this operation. |
+| lint | isort/Black check-only plus Ruff lint without auto-fix; use Black-compatible isort and narrowly reconciled Ruff rules. Shared proposed PEP 8 line limit is 79. |
+| typecheck | Strict pinned mypy checks fully annotated source and typed tests/fixtures, with narrow documented library exceptions. |
+| test | Pinned pytest/coverage.py with mirrored API/service/settings/middleware tests, synthetic fixtures/factory_boy and parametrized failures. Enforce at least 80% critical statement coverage and 80% critical branch coverage; missing/empty data fails. |
+| security | Bandit plus pinned dependency audit of exact prepared/exported locked packages, without resolving/installing/fixing dependencies or transmitting source/secrets. Bounded public advisory access; findings or unavailable data fail explicitly. |
 | build | No-download Python preflight imports and constructs the app, validates routes and emits/validates OpenAPI into an ignored owned output path; syntax/import/config failures are terminal. No distribution/sdist build required. |
-| verify | Repository-owned Python check runner sequentially executes format check, lint, typecheck, tests and build, propagating the first failure; no shell command concatenation. |
+| verify | Repository-owned Python runner executes format/import checks, lint, types, tests/coverage, static/dependency security and build; propagate failures without shell concatenation or source fixes. |
 | start | Prepared environment runs Uvicorn development reload with fixed app target, container bind/port and owned source watch paths. Host publication remains loopback. |
 
-Add corresponding scoped CLI build/format/lint/typecheck/verify actions for API v2.
+Add corresponding scoped CLI build/format/lint/typecheck/security/verify actions for API v2.
 Reuse job bounds/results/locks and stopped-target mutation rules; format cannot
 mutate active/busy projects. Advertise support rather than claiming these actions
 exist today. Existing v1 test/start and pnpm behavior stay supported; v1 unsupported
 quality actions return an explicit capability error, not invented command defaults.
+
+
+Keep Black/isort/Ruff/mypy/pytest/coverage.py (and any pytest-cov), factory_boy,
+Bandit, audit and pre-commit exact-pinned in dev/test groups. Generate pre-commit
+local/system hooks that invoke the same prepared-container commands; no remote
+floating hooks, hidden virtualenv downloads or automatic `.git/hooks` writes.
+Document an explicit opt-in hook install/run workflow. Apply Google docstring/
+annotation/style checks where supported and test conflicting formatter/linter
+settings rather than globally suppressing them. Review method cohesion/design
+and blocking async calls; lint does not prove these properties.
+
+Initial audit proposal uses pip-audit against public PyPI advisory data, fulfilling
+the supplied Safety scanning intent without a Safety account/runtime secret.
+Inspect pinned scan/export behavior in T-002: use the complete exact locked graph
+(runtime/dev/test) and disable dependency resolution/build/install/autofix. Network
+is restricted to approved advisory origins, transmits only public package names/
+versions, has finite timeout/output and reports unreachable data as a failed gate.
+Offline tests use synthetic vulnerability responses. Review any ignored finding
+with ID/reason/owner/expiry in source; no blanket ignore or silent pass. Actual
+Safety integration needs separately scoped authentication/data handling.
+
+Coverage configuration names the critical source modules explicitly: domain/
+service, models/settings, API routes/middleware, pagination/admission and readiness.
+Record and enforce statement/branch thresholds independently; do not let unrelated
+code or test files inflate them. Generate meaningful edge/error fixtures including
+missing types/docstrings, logging leaks, wrong import order, sub-threshold branch
+coverage, known static/dependency findings and failed advisory access. Tests and
+CI must show that each gate can fail before accepting the template release.
 
 Reload watches application source only, excluding venv, caches, generated output
 and tests unless explicitly selected. A syntax error must not be reported ready;
@@ -187,7 +252,7 @@ concrete scope issue instead of adding a new port/privileged route silently.
 | Dependency policy/uv adapter | Locked restore, typed transactions, failure/conflict/recovery | PYAPI-003 |
 | Catalogue/release checker/generator | Exact FastAPI assets/provenance, frozen Next.js identity and compatible repository selection | PYAPI-001, PYAPI-008 |
 | Runtime jobs/Quadlet/provider snapshots | Shared bounded Python lifecycle and owned state, no pnpm assumptions in API paths | PYAPI-005, PYAPI-008 |
-| Starter/docs/tests/style guide/generated CI | Typed useful API, non-secret settings, quality and private prefix correctness | PYAPI-004, PYAPI-006, PYAPI-007 |
+| Starter/docs/tests/style guide/generated CI | Owner-derived service design, versioned typed API, safe logs/admission/settings, quality/security/coverage, pre-commit and private prefix | PYAPI-004, PYAPI-006, PYAPI-007, PYAPI-010 |
 | Platform tests, runbooks and acceptance | Regression, two-project live/client proof and scoped recovery/rollback | PYAPI-009 |
 
 Run relevant focused offline suites and the existing repository checker in its
@@ -196,8 +261,10 @@ repository-generation and provider-bundle regressions. No application imports or
 network are permitted during observation-only validation/discovery tests. Add
 negative fixtures whose import/config would leave a marker if executed.
 
-CI builds/verifies the exact image and executes generated Python checks, dependency
-policy failures and template generation/immutability. Retain existing Next.js
+CI builds/verifies the exact image and executes generated Python checks, coverage/
+security/standards failures, dependency policy failures and template generation/
+immutability. Advisory lookup is the explicit bounded network check; no account or
+runtime secret is required. Retain existing Next.js
 workflows. CI container tests do not substitute for EC2 Podman/Quadlet checks or a
 client's actual private access; record each separately.
 
@@ -231,6 +298,7 @@ identified disposable fixture outputs. No volume reset or broad cache/image prun
 | PYAPI-007 | Quality actions/config/style guide and pinned generated CI | T-003, T-006, T-008 | AC-007 |
 | PYAPI-008 | Explicit schema/family dispatch, immutable legacy identity and regression | T-003, T-007, T-009 | AC-001, AC-002, AC-008 |
 | PYAPI-009 | Local/CI/live/client evidence, rollout/rollback and acceptance | T-009, T-010, T-011 | AC-009 |
+| PYAPI-010 | Versioned owner guide, injected service/src layout, safe logs/versioned API/admission and automated standards gates | T-006, T-008, T-012 | AC-004, AC-007, AC-010 |
 
 Open technical selections: exact pins/artifact origins/hashes, uv lock/config
 allowlist and fixed flags, v2 field/result schemas and whether relative redirects
@@ -252,3 +320,10 @@ not installed versions or acceptance of this design:
 - [FastAPI proxy behavior](https://fastapi.tiangolo.com/advanced/behind-a-proxy/): forwarded-header trust and root-path semantics.
 - [FastAPI self-hosted docs assets](https://fastapi.tiangolo.com/how-to/custom-docs-ui-assets/): local Swagger UI assets.
 - [FastAPI typed settings](https://fastapi.tiangolo.com/advanced/settings/) and [Ruff configuration](https://docs.astral.sh/ruff/configuration/): settings/style foundations; committed pins and tests establish this slice's behavior.
+
+Additional primary sources checked October 11 for the standards adaptation:
+
+- [Black](https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html) and [isort Black compatibility](https://pycqa.github.io/isort/docs/configuration/black_compatibility.html): formatter/check semantics and compatible import formatting.
+- [Bandit](https://bandit.readthedocs.io/en/latest/) and [pre-commit](https://pre-commit.com/): source scanning and explicit local hook configuration.
+- [Safety scan workflow](https://docs.safetycli.com/safety-docs/safety-cli/scanning-for-vulnerable-and-malicious-packages): authentication precedes current scanning; account use is not assumed authorized.
+- [PyPA pip-audit](https://github.com/pypa/pip-audit): public advisory audit and resolution controls; actual pinned behavior remains an implementation gate.

@@ -175,7 +175,8 @@ dispositions independently of feature implementation status.
 - **024 — Python FastAPI template (TPL-003), draft standalone API slice:**
   [Specification](./024-python-fastapi-template/spec.md) ·
   [Technical design](./024-python-fastapi-template/technical-design.md) ·
-  [Tasks](./024-python-fastapi-template/tasks.md)
+  [Tasks](./024-python-fastapi-template/tasks.md) ·
+  [Python standards](./024-python-fastapi-template/python-standards.md)
 
 ## Current application milestone
 
