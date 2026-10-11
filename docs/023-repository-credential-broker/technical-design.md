@@ -1,6 +1,6 @@
 # TDD-023: Repository credential broker
 
-- **Status:** Implementation in review; All repositories live acceptance passed, merge pending
+- **Status:** Delivered — provider 1.5.2 merged and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Tasks:** [TASKS-023](tasks.md)
