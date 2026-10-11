@@ -221,6 +221,14 @@ class PythonTests(unittest.TestCase):
         self.assertIn(' verify --project-root ',hook.read_text())
         self.assertFalse(app.install_hooks(self.root)['changed'])
 
+    def test_snapshot_retains_the_actual_interpreter_identity(self):
+        bundle=app.provider_bundle()
+        self.assertEqual((bundle/'.python-path').read_text().strip(),str(Path(sys.executable).absolute()))
+        with patch.object(sys,'executable','/tmp/synthetic-python-interpreter'):
+            alternate=app.provider_bundle()
+        self.assertNotEqual(bundle,alternate)
+        self.assertEqual((alternate/'.python-path').read_text().strip(),'/tmp/synthetic-python-interpreter')
+
     def test_bundled_profile_and_assets_include_python_not_cache(self):
         bundle=app.provider_bundle()
         self.assertTrue((bundle/'scripts/project_python.py').is_file())

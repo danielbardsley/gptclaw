@@ -11,6 +11,7 @@ import shutil
 import socket
 import stat
 import subprocess
+import sys
 import time
 import urllib.error
 import urllib.request
@@ -643,7 +644,8 @@ def provider_bundle():
  import project_templates as templates
  paths += templates.bundle_paths()
  paths += [Path(p) for p in ['scripts/project_python.py','config/toolchains/v2.json','schemas/toolchains/v2.schema.json','config/project-dependencies/v2.json','schemas/project/v2.schema.json','templates/apps/python-toolchain/Containerfile']]
- digest=hashlib.sha256()
+ interpreter=Path(sys.executable).absolute()
+ digest=hashlib.sha256(str(interpreter).encode()+b'\0')
  for rel in sorted(paths):digest.update(str(rel).encode()+b'\0'+(REPO/rel).read_bytes())
  # A bundle already executing from installed storage reuses itself.
  if REPO.parent==STORE/'providers':return REPO
@@ -655,7 +657,7 @@ def provider_bundle():
  for rel in paths:
   source=REPO/rel;safe(source);out=temp/rel;out.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(source,out)
   if rel in {Path('scripts/repository_askpass.py'),Path('scripts/repository-credential-helper')}:out.chmod(0o700)
- (temp/'.python-path').write_text(str(REPO/'.venv-manifest/bin/python')+'\n')
+ (temp/'.python-path').write_text(str(interpreter)+'\n')
  (temp/'scripts/gptclawctl').chmod(0o755)
  os.rename(temp,dest)
  return dest
