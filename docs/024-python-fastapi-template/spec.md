@@ -220,20 +220,18 @@ existing platform code is outside this initiative.
 
 ## Decisions, completion and ownership
 
-The draft proposes one wheel-only Linux amd64 profile and explicit FastAPI
-selection. Exact Python/uv/framework/check-tool pins, image digests and docs-asset
-provenance are intentionally unselected until the implementation pin review; T-002
-must record a supported stable combination and verify the pinned executables'
-actual behavior before dependent work. This is ordinary technical selection,
-not permission to use floating runtime defaults. The existing platform Python
-validator environment remains separate and unchanged.
+The approved implementation supports one wheel-only Linux amd64 profile with
+Python 3.13.16 and uv 0.13.0. Exact OCI/profile pins, framework/check-tool versions,
+transitive artifact hashes and Swagger UI 5.33.1 asset provenance are recorded in
+the reviewed configuration/release files and [acceptance record](acceptance.md).
+The platform's existing Python validator environment remains separate; installed
+snapshots retain the actual persistent validator interpreter used for rollout.
 
-The project owner reviews this scope and authorizes implementation separately.
-The implementer owns contract/pin resolution, code/tests, safe fixture lifecycle
-and evidence; the project owner supplies independent client observations and final
-acceptance. No database or secret dependency is required. If the approved template
-cannot fit these boundaries, document the concrete scope change before dependent
-work; retain existing infrastructure and service access gates.
+The project owner approved scope and authorized implementation October 11, then
+confirmed independent private docs/updated-echo behavior. The implementation is
+complete and reviewable; review/merge and final catalogue delivery remain separate.
+No database or secret dependency is required. Future work outside these boundaries
+needs its own concrete scope and existing infrastructure/access gates.
 
 Deliver the template, its versioned owner-derived Python standards/configuration,
 integrated Python profile/policy/contracts, regression and

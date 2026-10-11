@@ -108,18 +108,17 @@
 
 ## Current handover
 
-Planning request: Python/FastAPI is the preferred backend stack; draft TPL-003
-before RUN-006. This initiative is planning only. Observed implementation supports
-Next.js/Node/pnpm, so the proposal includes its necessary Python execution/policy
-and versioned contract extensions. The owner supplied python.md on October 11 and requested incorporation. Its
-original content and scoped adaptations are now preserved in this initiative.
-Existing source inspection and primary tool documentation inform the draft; no Python app, dependency install, host change,
-repository creation or live acceptance was performed.
+Provider 1.6.0 implements the approved standalone Python/FastAPI slice, including
+its exact template, Python/uv execution/policy, versioned contracts, quality/hook
+workflow and managed repository selection. Local, generated CI and scoped runtime
+checks pass, and the project owner confirmed the independent docs/updated-echo
+client check. Source review/merge and final catalogue delivery remain in T-011.
 
-The project owner authorized implementation on October 11. Current action:
-complete implementation verification, CI and scoped live/client acceptance. Exact pins and fixed uv/redirect contracts are implementation tasks,
-with measurable gates above. Planning verification and delivery results are
-recorded here after execution; implementation tasks remain unchecked.
+The code is reviewable in PR #56. Its final-head CI is tracked on the PR; no
+infrastructure apply, public exposure or live application repository creation was
+performed. The two synthetic runtime fixtures remain available for review with
+source retained. Current evidence is sanitized; prior branch commits retain the
+earlier operational metadata as explained in acceptance.md.
 
 Initial planning verification on October 11 passed relative-link review for all
 181 local links across the original six changed documents, coverage of the original
@@ -152,8 +151,8 @@ HTTPS docs/assets/schema/API working, 2.767-second source reload, syntax-error
 unavailability and recovery, active tests, real restart/stop/source retention,
 actual busy refusal and pre-Python provider rejection without source mutation.
 The installed snapshot uses the persistent validator environment. API and web
-fixtures remain available for the requested independent client check; that check
-and final owner/merge acceptance are pending. T-011 remains unchecked until then.
+fixtures remain available for review; independent client confirmation is complete
+and review/merge delivery remain pending. T-011 remains unchecked until then.
 
 
 Independent client evidence: October 11 the project owner confirmed “Docs load and

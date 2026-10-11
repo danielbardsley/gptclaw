@@ -1,6 +1,6 @@
 # TDD-024: FastAPI on the existing managed runtime
 
-- **Status:** Implementation authorized — code and local verification in progress
+- **Status:** Implemented — local/CI/live/client verification recorded; review/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-024](spec.md) · **Tasks:** [TASKS-024](tasks.md)
@@ -36,7 +36,7 @@ installed provider/rootless runtime separately and use task-owned synthetic proj
 
 ## Versioned authored contracts
 
-Propose project manifest **v2 for standalone APIs**. Keep the v1 schema and behavior
+Implement project manifest **v2 for standalone APIs**. Keep the v1 schema and behavior
 unchanged. V2 keeps existing identity, one service port/health, private exposure,
 base-path and ephemeral-data constraints, with `project.kind: api` and required
 build/start/test/format/lint/typecheck/security/verify argument vectors. No environment maps,
@@ -63,7 +63,7 @@ Extend the release immutability checker to compare historical identities across
 both catalogues and forbid conflicting copies. Keep any retained v1 compatibility
 inventory consistent through checked generation, rather than manual divergence.
 
-Proposed new identity: `fastapi@1.0.0`, marker `fastapi-v1`, API manifest v2,
+Implemented release identity: `fastapi@1.0.0`, marker `fastapi-v1`, API manifest v2,
 Python toolchain v2 and existing creation-provenance semantics. This is a release
 proposal, not an already installed asset. An older provider must reject it while
 leaving its files/services intact; the latest provider preserves old Next.js markers.
@@ -300,14 +300,11 @@ identified disposable fixture outputs. No volume reset or broad cache/image prun
 | PYAPI-009 | Local/CI/live/client evidence, rollout/rollback and acceptance | T-009, T-010, T-011 | AC-009 |
 | PYAPI-010 | Versioned owner guide, injected service/src layout, safe logs/versioned API/admission and automated standards gates | T-006, T-008, T-012 | AC-004, AC-007, AC-010 |
 
-Open technical selections: exact pins/artifact origins/hashes, uv lock/config
-allowlist and fixed flags, v2 field/result schemas and whether relative redirects
-satisfy all mounted docs paths. Implementer resolves these in T-002/T-003 with
-primary sources and executable fixtures; project owner reviews resulting source
-through the normal implementation PR. These are proposed decisions. If evidence
-requires secrets, source builds, extra host tools, different exposure or multi-service
-scope, that is a scope amendment before the dependent action. Independent contract
-and starter drafting can continue within the approved boundaries.
+Pins, exact uv flags/configuration refusal, versioned field/result contracts and
+mounted docs/relative redirects are resolved in the implementation and acceptance
+record. The approved adaptations keep uv, defer dotenv and use credential-free
+public advisory auditing; no extra host tools, secrets, public exposure or service
+groups were introduced. Future scope changes require the existing review gates.
 
 Primary documentation checked October 11, 2026; these describe tool semantics,
 not installed versions or acceptance of this design:
