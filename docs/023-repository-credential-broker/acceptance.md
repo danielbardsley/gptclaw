@@ -40,7 +40,7 @@ operationally verified, while merge/full acceptance remain pending.
 | AC-005 | passed | Fresh reacquisition, API token revocation, disable/enable, retained recovery and actual different-key rotation passed live; owner confirmed GitHub old-key retirement. | Old local key is absent, so no post-retirement old-key HTTP authentication result is claimed; issued-token lifetimes remain documented. |
 | AC-006 | passed | Activated normal new completed; explicit local-only preview has no GitHub effects; compatibility/regression tests and independent runtime checks passed. | No automatic initial-PR merge or production promotion. |
 | AC-007 | passed | Native fetch/worktree branch push and later scoped PRs passed in both projects; refresh/disable/enable preserved dirty source hashes. | Four retained fixture PRs await ordinary owner review. |
-| AC-008 | passed | Both projects passed manifest/provenance/build/test/typecheck/private page/health; owner confirmed both desktop URLs; independent app remained ready. All three CI workflows passed code revision `445d15b`. | Evidence-only follow-up CI is tracked separately; implementation merge remains. |
+| AC-008 | passed | Both projects passed manifest/provenance/build/test/typecheck/private page/health; owner confirmed both desktop URLs; independent app remained ready. Code/final-head and all three merged-main workflows passed. | No remaining acceptance gate; protected infrastructure deployment was not performed. |
 
 Offline fixtures prove implementation contracts, RSA signing and native Git wire
 behaviour, not GitHub App endpoint/account feasibility or full acceptance.
