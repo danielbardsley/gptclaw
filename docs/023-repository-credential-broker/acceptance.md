@@ -1,6 +1,6 @@
 # SPEC-023 acceptance evidence
 
-- **Status:** Candidate implementation locally verified; live canary blocked on automatic App inclusion
+- **Status:** Candidate implementation locally verified; automatic inclusion and explicit enrollment failed live
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -149,3 +149,43 @@ all-repositories selection, Administration grant, PAT reuse or infrastructure
 mutation was performed. Recover only the same operation after reviewing a
 supported automatic-inclusion path; do not replay its create request or count
 manual selection as AC-002 passing.
+
+## Explicit enrollment amendment — October 11
+
+The project owner followed the proposed additional permission change, then found
+and approved GitHub's permission-update email. Signed App and installation
+readback now both report exactly Contents write, Pull requests write, Repository
+creation write, `installation_repositories:write` and Metadata read, with
+`repository_selection:selected`. Initially only the App reported the new grant;
+the broker did not attempt enrollment until installation approval was verified.
+
+Candidate provider 1.5.1 adds a separate enrollment role, journal/binding/App
+validation, durable intent, bounded membership readback and recovery. Project
+Git/PR tokens retain their previous exact grants and exclude installation access.
+The focused suite passed 43 tests in 60.201 seconds, including two explicit
+enrollments, denied enrollment, mismatched binding, missing updated grant and
+lost-response reconciliation without repeating create or a completed PUT.
+The initial expanded run exposed enrollment metadata being overwritten by the
+provisioning receipt; preserving that metadata corrected the regression.
+The full repository checker also passed with exit 0, including 43 broker tests
+in 64.232 seconds, 41 provisioning tests and 21 template tests. Changed Markdown
+links and `git diff --check` passed. These are candidate source/local checks;
+final-head CI for the enrollment amendment is not yet claimed.
+
+Executed `credentials resume --operation-id
+148056feb07746a5be813c8e0f2dfac5` using the tested candidate after permission
+approval. GitHub issued an enrollment token with exactly installation repository
+access write and Metadata read, reported expiry 12:15:02 p.m. America/New_York,
+then rejected/could not verify the membership PUT. The resume exited 1 with
+`last_error:repository-api`; the receipt retained enrollment state `requested`
+and token revocation outcome `revoked`. No bearer value was displayed or stored.
+Later doctor still returned `credential-scope`: no installation access to
+repository `1414446320` was established. The transport intentionally suppresses
+raw error bodies, so the exact HTTP failure reason was not retained or inferred.
+
+AC-001's actual updated grant approval/readback is verified; AC-002 remains failed.
+Profile remains inactive, no local destination or initial PR completed, and the
+second repository remains uncreated. No additional permission/installation
+selection change was attempted. The [design alternatives](technical-design.md)
+require a new owner scope decision; the existing approvals remain valid for
+their bounded targets and grants. The App/key are retained privately.

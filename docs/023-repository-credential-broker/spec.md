@@ -34,6 +34,18 @@ approved both retained live targets/activation. Actual personal creation passed,
 but automatic selected-installation inclusion failed the first canary; the
 profile remains inactive. See [acceptance.md](acceptance.md) for actual evidence.
 
+On October 11 the project owner approved the proposed additional **GitHub App
+installation repository access: write** permission by updating the App settings.
+This amends CRD-001/002's access mechanism: provider 1.5.1 may explicitly enroll
+an App-created repository through GitHub's installation API when automatic
+inclusion is absent. Enrollment is limited to this App/installation and the
+immutable repository ID in its matching creation journal/binding. No arbitrary
+import, all-repositories installation, Administration or project Git enrollment
+authority is added. The installation must accept the updated grant before use;
+App settings alone are insufficient. The no-per-project-owner-action outcome
+and all other acceptance requirements remain unchanged. This candidate mechanism
+still requires live proof before activation.
+
 ## Baseline and scope
 
 SPEC-022 provider 1.4.0 is Delivered (PR #52, completion PR #53). It creates a

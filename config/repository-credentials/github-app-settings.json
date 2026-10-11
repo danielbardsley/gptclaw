@@ -10,6 +10,7 @@
   "bootstrap_repository_id": 1413668232,
   "permissions": {
     "repository_creation": "write",
+    "installation_repositories": "write",
     "contents": "write",
     "pull_requests": "write",
     "metadata": "read"

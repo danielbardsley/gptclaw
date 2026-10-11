@@ -54,6 +54,16 @@ pending external setup/feasibility gate; it does not reopen existing approval.
 
 ## Live acceptance and delivery
 
+- [ ] T-010: Implement/test the October 11 owner-approved explicit installation
+  enrollment amendment, verify the updated installation grant, resume the same
+  retained canary and prove two successive projects without owner selection
+  clicks. Require exact creation-journal/binding identity; keep installation
+  management out of project credentials. No broader fallback. CRD-001/002/003;
+  AC-001/002/003/005.
+  Provider 1.5.1 and 43 focused tests pass; actual updated installation approval
+  was verified. The same-operation live enrollment attempt still failed; task
+  remains open for feasibility/access-policy decision, not further grant retries.
+
 - [ ] T-009: With explicitly approved App/installation/key/targets, prove one-time
   setup and two successive private projects without per-project credential or
   installation clicks. Verify scoped Git/PR operations, renewal, cross-repository

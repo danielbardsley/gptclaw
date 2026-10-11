@@ -11,7 +11,10 @@ Register a GitHub App under the personal account using a unique App name. Set
 visibility to **Only on this account**, disable webhooks, and leave OAuth callback
 URLs empty. No public service or callback is needed. Homepage can reference the
 GptClaw repository. Grant **Repository creation: write**, **Contents: write**,
-**Pull requests: write**, and automatic **Metadata: read** only. Do not substitute
+**Pull requests: write**, **GitHub App installation repository access: write**,
+and automatic **Metadata: read** only. The installation-access permission is the
+October 11 owner-approved amendment for explicit enrollment of recorded newly
+created repositories; it is excluded from project Git/API tokens. Do not substitute
 Administration, all repositories, a PAT or a user access token if an option is
 unavailable; return the exact missing capability for review.
 
@@ -23,7 +26,10 @@ No permission to select the platform repository or unrelated projects is implied
 The October 11 live canary created its private personal repository, but the
 selected installation did not automatically gain access. The profile remains
 inactive; see [actual evidence](../docs/023-repository-credential-broker/acceptance.md).
-These creation/activation commands are not a currently accepted operational path.
+Provider 1.5.1 adds a candidate explicit installation enrollment path approved by
+the project owner; the live enrollment attempt also failed after grant approval.
+These creation/activation
+commands are not a currently accepted operational path.
 Do not manually select each new repository and claim automatic inclusion passed,
 or replay a retained creation operation. Resolve the supported access mechanism
 through a reviewed design/scope decision before continuing that same operation.
@@ -49,13 +55,13 @@ same-user security boundary. Every forge process shares the development identity
 Implementation commands, rotation/revocation and recovery details follow below
 as the adapter is implemented and verified.
 
-## Implemented provider 1.5.0 interface
+## Implemented provider 1.5.1 interface
 
 Use the source runner for setup and check `scripts/gptclawctl --version` first.
 Older installed 1.4.0 launchers do not consume the new profile. The existing
 private-app provider rollout updates the stable launcher during an authorized
 app start; profile activation itself changes no service/unit/host configuration.
-Owned project helpers run from an immutable 1.5.0 bundle regardless of branch
+Owned project helpers run from an immutable 1.5.1 bundle regardless of branch
 switches. Signing uses the existing `/usr/bin/openssl` implementation; no host
 package or new Python crypto dependency is installed.
 
@@ -70,7 +76,12 @@ chmod 700 /home/forge/.config/gptclaw-credentials
 chmod 600 /home/forge/.config/gptclaw-credentials/app.pem
 ```
 
-These are owner setup instructions, not commands already executed by this task.
+These are owner setup instructions; actual executed setup is in the acceptance
+record. For permission changes, save the App settings and separately approve
+the updated installation grant. GitHub sends the owner a permission-update email;
+App settings may show the new permission while installation readback still has
+the old grant. No uninstall, reinstall or replacement key is required merely to
+request a permission update.
 Once the exact setup is approved, configure using real IDs and the private path:
 
 ```sh
@@ -111,8 +122,13 @@ release already delivered; it does not add templates or upgrade existing apps.
 Creation uses a short-lived creation-only token inside the provisioning adapter.
 Project tokens always carry exactly one repository ID and actual matching
 permissions/expiry. Unexpected/omitted scope is rejected and best-effort revoked.
-Automatic inclusion polls only a bounded read; denied grants are not retried with
-broader permission. The default branch must read back as main; an unsupported
+If automatic inclusion is absent, explicit enrollment validates the App creation
+journal and immutable binding, then issues a separate installation-management
+token for the same configured installation and created repository only. It
+records intent, uses the idempotent membership PUT, revokes that token and reads
+back actual access before project issuance. Resume reconciles membership first;
+it never recreates the repository. Denied grants are not retried with broader
+permission. The default branch must read back as main; an unsupported
 branch-setting path stops with retained bootstrap state rather than request
 Administration implicitly. No environments, secret values, workflow writes or
 public URLs are provisioned. The initial PR is opened, not merged.

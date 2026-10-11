@@ -16,8 +16,10 @@ import urllib.request
 import private_apps as app
 import project_repositories as repos
 
-GRANTS = {'repository_creation': 'write', 'contents': 'write', 'pull_requests': 'write', 'metadata': 'read'}
+GRANTS = {'repository_creation': 'write', 'installation_repositories': 'write',
+          'contents': 'write', 'pull_requests': 'write', 'metadata': 'read'}
 ROLES = {'audit': {'metadata': 'read'}, 'create': {'repository_creation': 'write', 'metadata': 'read'},
+         'enroll': {'installation_repositories': 'write', 'metadata': 'read'},
          'git': {'contents': 'write', 'metadata': 'read'},
          'provision': {'contents': 'write', 'pull_requests': 'write', 'metadata': 'read'},
          'pr': {'contents': 'read', 'pull_requests': 'write', 'metadata': 'read'}}
@@ -244,7 +246,7 @@ class Broker:
                 'account':repos.ACCOUNT,'permissions':GRANTS,'repository_selection':'selected'}
     def issue(self, role, repo_id=None, name=None):
         check(role in ROLES)
-        check((role in {'audit','create'}) == (repo_id is None),'credential-scope')
+        check((role in {'audit','create','enroll'}) == (repo_id is None),'credential-scope')
         body={'permissions':ROLES[role]}
         if repo_id is not None:body['repository_ids']=[repo_id]
         data=self.api().request('POST','/app/installations/'+str(self.profile['installation_id'])+'/access_tokens',body)
@@ -304,6 +306,36 @@ class Broker:
             check(value['app_id']==self.profile['app_id'] and value['installation_id']==self.profile['installation_id'])
             self.identity()
             return self.issue(role,value['repository_id'],value['name'])
+
+    def enroll_created(self, operation):
+        # Only the durable App creation receipt and matching immutable binding
+        # authorize this installation-management operation. No arbitrary import.
+        receipt=repos.read_receipt(operation);value=receipt['plan']
+        provider=receipt.get('credential_provider',{});actor=receipt.get('actor',{})
+        binding=bound(value['destination'])
+        check(provider.get('kind')=='github-app'
+              and provider.get('app_id')==self.profile['app_id']
+              and provider.get('installation_id')==self.profile['installation_id']
+              and actor.get('credential_kind')=='github-app-installation'
+              and actor.get('app_id')==self.profile['app_id']
+              and actor.get('installation_id')==self.profile['installation_id'],'credential-policy')
+        check(binding['operation_id']==operation and binding['repository_id']==receipt['repository_id']
+              and binding['name']==value['repository'] and binding['app_id']==self.profile['app_id']
+              and binding['installation_id']==self.profile['installation_id'],'credential-policy')
+        with app.locked('credential-profile'):
+            current=profile()
+            check(current==self.profile,'credential-recovery');self.identity()
+            entry={'state':'requested','repository_id':binding['repository_id'],
+                   'installation_id':self.profile['installation_id']}
+            receipt['installation_enrollment']=entry;repos.persist(receipt)
+            # Idempotent membership PUT is attempted only after readback showed
+            # missing access. A lost response is reconciled by resume's read first.
+            token=self.issue('enroll')
+            try:
+                token.request('PUT','/user/installations/'+str(self.profile['installation_id'])+
+                              '/repositories/'+str(binding['repository_id']))
+            finally:
+                token.close();entry['credential']=token.metadata;repos.persist(receipt)
 
 
 def configure(app_id,installation_id,key_file,bootstrap_ids):
@@ -379,12 +411,12 @@ class Provision:
     requires_admin=False
     def __init__(self, broker, value, receipt=None, canary=False):
         self.broker=broker;self.value=value;self.repo_id=receipt.get('repository_id') if receipt else None
-        self.token=None;self.canary=canary
+        self.token=None;self.canary=canary;self.receipt=receipt
     def actor(self):return {'login':repos.ACCOUNT,'credential_kind':'github-app-installation',**self.broker.identity()}
     def prepare_receipt(self,receipt):
         receipt['credential_provider']={'kind':'github-app','app_id':self.broker.profile['app_id'],'installation_id':self.broker.profile['installation_id'],'canary':self.canary}
     def after_creation(self,receipt):
-        self.repo_id=receipt['repository_id'];bind_created(self.broker,receipt)
+        self.repo_id=receipt['repository_id'];self.receipt=receipt;bind_created(self.broker,receipt)
     def scoped(self):
         if self.token is not None:
             expires=dt.datetime.fromisoformat(self.token.expires_at)
@@ -395,8 +427,20 @@ class Provision:
             if installed is not None:
                 check(installed.get('id')==self.broker.profile['installation_id']
                       and installed.get('app_id')==self.broker.profile['app_id'],'credential-scope')
+                receipt=self.receipt
+                if receipt.get('installation_enrollment'):
+                    entry=receipt['installation_enrollment']
+                    check(entry.get('repository_id')==self.repo_id
+                          and entry.get('installation_id')==self.broker.profile['installation_id'],'credential-policy')
+                    entry['state']='verified';repos.persist(receipt)
                 self.token=self.broker.issue('provision',self.repo_id,self.value['repository'])
                 return self.token
+            if attempt==0:
+                try:self.broker.enroll_created(self.value['operation_id'])
+                finally:
+                    saved=repos.read_receipt(self.value['operation_id'])
+                    if saved.get('installation_enrollment'):
+                        self.receipt['installation_enrollment']=saved['installation_enrollment']
             if attempt==3:raise app.AppError('credential-recovery')
             time.sleep(0.25)  # Only absent-inclusion observations are retried.
     def request(self,method,path,body=None,missing=False):
@@ -513,7 +557,8 @@ def preview(name,directory=None,template=None,version=None,local_only=False):
                 'policy':{'id':'unprotected-private-dev','protection_enforced':False},
                 'credential_provider':{'app_id':value['app_id'],'installation_id':value['installation_id'],
                   'creation':ROLES['create'],'provision':ROLES['provision'],'ongoing_git':ROLES['git']},
-                'side_effects':['create private repository','publish starter branch','open initial PR','enroll scoped Git helper'],
+                'installation_enrollment':ROLES['enroll'],
+                'side_effects':['create private repository','add created repository to selected installation','publish starter branch','open initial PR','enroll scoped Git helper'],
                 'environments':[],'secret_references':[]}
     check(destination.is_relative_to(app.PROJECTS) and destination not in {app.PROJECTS,app.REPO}
           and '.gptclaw-runtime' not in destination.parts,'path')

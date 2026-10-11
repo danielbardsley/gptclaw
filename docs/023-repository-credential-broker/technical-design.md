@@ -16,8 +16,9 @@ long-lived root authority for the selected installation and future App-created
 projects; every normal project token is narrowed separately. The key is private
 owner material, not an application credential or a shared project token.
 
-Proposed App grants are Repository creation write, Contents write, Pull requests
-write and automatically needed Metadata read. Ongoing Git tokens request only
+App grants are Repository creation write, Contents write, Pull requests
+write, Metadata read and, under the October 11 owner-approved amendment,
+GitHub App installation repository access write. Ongoing Git tokens request only
 one repository ID with Contents write/Metadata read; PR API operations request
 only their required PR/content read permissions. Creation-only tokens carry the
 minimum supported creation grant and never enter Git helpers/containers. Review
@@ -201,3 +202,51 @@ identity/minimal grants; live personal creation succeeded, but automatic
 installation inclusion failed for the first repository. Activation and the
 second project remain gated on that failure. No real App/root credential was
 read or created by the offline test suite. See [acceptance.md](acceptance.md).
+
+## Owner-approved explicit enrollment amendment
+
+Provider 1.5.1 separates an installation-management token from creation and
+ordinary project tokens. Its exact grants are `installation_repositories:write`
+and Metadata read; it never enters Git or containers. When the App JWT lookup
+reports no installation for an already created repository, the broker validates
+the durable creation journal, App actor/installation and matching enabled
+immutable binding, records enrollment intent, then calls
+`PUT /user/installations/{installation_id}/repositories/{repository_id}` once.
+Only the configured installation and recorded created ID are eligible. No
+generic enrollment CLI or arbitrary repository adoption is exposed.
+
+The broker verifies both the App and installation grant dictionaries before
+issuance. It revokes the enrollment token after the bounded request, retains safe
+scope/expiry/outcome metadata, and reads back installation identity before issuing
+a singleton provisioning token. Failed or ambiguous responses retain the same
+creation operation. Resume observes membership first: completed enrollment is
+not replayed; still-absent membership can retry the same idempotent PUT after
+revalidation, never a create or push. Project Git/PR grants remain unchanged.
+
+GitHub's [installation endpoint](https://docs.github.com/en/rest/apps/installations#add-a-repository-to-an-app-installation)
+documents installation-token support and requires this additional permission
+plus repository admin authority. That documentation is a candidate mechanism;
+actual success for the created personal repository must be demonstrated. Failure
+does not authorize Administration, all repositories or OAuth/PAT alternatives.
+
+## Access-policy alternatives after the live enrollment failure
+
+The approved explicit enrollment candidate also failed live after GitHub accepted
+the new installation grant. This does not establish a supported unattended path
+for the selected personal-account installation. Preserve the journal/repository
+and inactive profile. No alternative below is approved or implemented.
+
+| Alternative | Concrete behavior and scope | Acceptance effect |
+|---|---|---|
+| Personal installation on All repositories | Owner changes the same App installation to All repositories. App root authority then includes every existing/future repository in the account, including the platform and unrelated private repositories. Contents/PR write is account-wide; project-issued tokens would still be restricted to one managed immutable ID. Broker must explicitly record/verify this broader policy and reject its use without approval. | Could provide unattended access to new repositories; requires live two-project proof and new approval of account-wide App access. No Administration/PAT/OAuth grant is proposed. Remove installation-access write if it is unnecessary under the reviewed implementation. |
+| Keep selected repositories and owner enrollment | Owner adds each new repository in installation settings. Broker resumes the recorded operation and retains singleton project tokens. No account-wide installation or new credential type. | Can recover the fixture, but adds a per-project owner click and fails the current unattended-creation outcome. Only acceptable as an explicitly revised narrower milestone. |
+
+For the All repositories proposal, profile policy, doctor and token validation
+must distinguish installation-wide audit/creation leases from singleton project
+leases; unexpected App grants still fail. Managed bindings remain the authority
+for project issuance. Deactivation stops new issuance but does not remove the
+App's GitHub access; rollback to selected repositories is an explicit owner action
+and can interrupt repositories omitted from the selection. Previously issued
+tokens retain their documented lifetime/revocation behavior. This proposal does
+not authorize writes to other repositories, platform enrollment, production
+credentials, merges or infrastructure changes.

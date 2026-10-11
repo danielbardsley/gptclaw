@@ -35,6 +35,7 @@ class Factory:
         self.base=base;self.repos={};self.selected={100:row(100,'bootstrap')};self.next_id=101
         self.tokens={};self.calls=[];self.root_calls=[];self.selection='selected';self.account=repos.ACCOUNT
         self.grants=copy.deepcopy(broker.GRANTS);self.mutate=None;self.auto_include=True;self.suspended=False
+        self.allow_enroll=True;self.lose_enroll_response=False
         self.token_count=0
     def request(self,method,path,body=None,missing=False):
         self.root_calls.append((method,path,copy.deepcopy(body)))
@@ -64,6 +65,18 @@ class Factory:
         if path=='/installation/token' and method=='DELETE':info['revoked']=True;return {}
         if path.startswith('/installation/repositories'):
             return {'repositories':[self.selected[i] for i in (info['ids'] if info['ids'] is not None else self.selected)]}
+        if path.startswith('/user/installations/') and method=='PUT':
+            if not self.allow_enroll:raise app.AppError('repository-api')
+            if info['data']['permissions']!=broker.ROLES['enroll']:raise app.AppError('credential-scope')
+            self_outer,installation,_,repository_id=path.rsplit('/',3)
+            if self_outer!='/user/installations' or installation!='19':raise app.AppError('credential-scope')
+            repository_id=int(repository_id)
+            name=next((n for n,a in self.repos.items() if a.remote['id']==repository_id),None)
+            if name is None:raise app.AppError('credential-scope')
+            self.selected[repository_id]=row(repository_id,name)
+            if self.lose_enroll_response:
+                self.lose_enroll_response=False;raise app.AppError('repository-api')
+            return {}
         if path=='/user/repos':
             if 'repository_creation' not in info['data']['permissions']:raise app.AppError('credential-scope')
             name=body['name'];repo_id=self.next_id;self.next_id+=1
@@ -173,7 +186,7 @@ class Tests(unittest.TestCase):
         self.factory.selected[999]=row(999,'unrelated')
         with self.assertRaises(app.AppError):self.configure()
     def test_missing_auto_inclusion_stops_after_one_create(self):
-        self.configure();self.factory.auto_include=False
+        self.configure();self.factory.auto_include=False;self.factory.allow_enroll=False
         with self.assertRaises(app.AppError):broker.create('first',str(self.projects/'first'),canary=True)
         receipt=list((app.STORE/'repositories').glob('*/receipt.json'))[0]
         data=repos.read_metadata(receipt);self.assertEqual(data['repository_id'],101)
@@ -181,6 +194,39 @@ class Tests(unittest.TestCase):
         self.assertFalse(broker.profile()['creation_verified'])
         self.assertEqual(sum(path=='/user/repos' for _,path,_,_ in self.factory.calls),1)
         self.assertFalse((self.projects/'first').exists())
+    def test_explicit_enrollment_completes_two_projects_without_selection_clicks(self):
+        self.factory.auto_include=False
+        first=self.first();second=broker.create('second',str(self.projects/'second'))
+        self.assertEqual(first['state'],'repository-ready');self.assertEqual(second['state'],'repository-ready')
+        calls=[c for c in self.factory.calls if c[0]=='PUT']
+        self.assertEqual([c[1] for c in calls],['/user/installations/19/repositories/101','/user/installations/19/repositories/102'])
+        for result in [first,second]:
+            saved=repos.read_receipt(result['operation_id'])
+            self.assertEqual(saved['installation_enrollment']['state'],'verified')
+            self.assertEqual(saved['installation_enrollment']['credential']['revocation'],'revoked')
+        token=broker.Broker().project_token(self.projects/'first','git')
+        self.assertNotIn('installation_repositories',token.metadata['permissions']);token.close()
+    def test_lost_enrollment_response_is_read_back_without_second_put(self):
+        self.configure();self.factory.auto_include=False;self.factory.lose_enroll_response=True
+        with self.assertRaises(app.AppError):broker.create('first',str(self.projects/'first'),canary=True)
+        operation=broker.bindings()[0]['operation_id']
+        result=broker.resume(operation)
+        self.assertEqual(result['state'],'repository-ready')
+        self.assertEqual(sum(c[0]=='PUT' for c in self.factory.calls),1)
+        self.assertEqual(sum(c[1]=='/user/repos' for c in self.factory.calls),1)
+        self.assertTrue(broker.profile()['creation_verified'])
+    def test_enrollment_rejects_mismatched_binding_before_write(self):
+        self.configure();self.factory.auto_include=False;self.factory.allow_enroll=False
+        with self.assertRaises(app.AppError):broker.create('first',str(self.projects/'first'),canary=True)
+        binding=broker.bindings()[0];operation=binding['operation_id']
+        binding['repository_id']=999;app.save(broker.binding_path(binding['root']),binding)
+        before=len(self.factory.calls)
+        with self.assertRaises(app.AppError):broker.Broker().enroll_created(operation)
+        self.assertEqual(len(self.factory.calls),before)
+    def test_enrollment_requires_updated_installation_grant(self):
+        self.factory.grants.pop('installation_repositories')
+        with self.assertRaises(app.AppError):self.configure()
+        self.assertFalse(any(c[0]=='PUT' for c in self.factory.calls))
     def test_scoped_resume_retains_operation_and_one_pr(self):
         self.first();binding=broker.bound(self.projects/'first')
         result=broker.resume(binding['operation_id'])
