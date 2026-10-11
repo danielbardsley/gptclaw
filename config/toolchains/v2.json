@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "default": {
+    "profile": "python-uv",
+    "profile_version": 1
+  },
+  "profiles": [
+    {
+      "profile": "python-uv",
+      "profile_version": 1,
+      "versions": {
+        "python": "3.13.16",
+        "uv": "0.13.0"
+      },
+      "platform": {
+        "os": "linux",
+        "architecture": "amd64"
+      },
+      "base_image": "docker.io/library/python@sha256:8fb4cfa1a2616d7b8e0c2175cc6ad68f5729c34ea8488c0b360d2934b7be9024",
+      "uv_image": "ghcr.io/astral-sh/uv@sha256:22fbda6ef3b6466750a6fb1c7ce1d23a2a63a53be91e03d408b6e4274753998d"
+    }
+  ]
+}

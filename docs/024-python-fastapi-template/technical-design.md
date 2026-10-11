@@ -1,6 +1,6 @@
 # TDD-024: FastAPI on the existing managed runtime
 
-- **Status:** Draft proposal — no implementation authorized or executed
+- **Status:** Implementation authorized — code and local verification in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-024](spec.md) · **Tasks:** [TASKS-024](tasks.md)
@@ -327,3 +327,32 @@ Additional primary sources checked October 11 for the standards adaptation:
 - [Bandit](https://bandit.readthedocs.io/en/latest/) and [pre-commit](https://pre-commit.com/): source scanning and explicit local hook configuration.
 - [Safety scan workflow](https://docs.safetycli.com/safety-docs/safety-cli/scanning-for-vulnerable-and-malicious-packages): authentication precedes current scanning; account use is not assumed authorized.
 - [PyPA pip-audit](https://github.com/pypa/pip-audit): public advisory audit and resolution controls; actual pinned behavior remains an implementation gate.
+
+
+## Resolved implementation contracts
+
+The approved scope was authorized October 11. Python 3.13.16 and uv 0.13.0 are
+actual executable versions observed in digest-pinned official images. Registry
+pins are in config/toolchains/v2.json; framework/check pins and all transitive
+artifact hashes are in the released pyproject.toml/uv.lock. Swagger UI 5.33.1
+is hash-verified from its exact npm tarball; assets/licenses/provenance are bundled.
+
+Catalogue v2 is an independently versioned extension containing API descriptors;
+the reader validates and merges it with v1. V1 still owns unchanged web defaults/
+release identities. This avoids rewriting or duplicating published descriptors.
+Release immutability compares both catalogues against the selected Git baseline.
+Python policy/journals use version 2; image receipts retain version 1 with a strict
+full Python profile/recipe/image identity. Prior providers reject the API manifest.
+
+Pinned uv add writes a project index override by default. Actual executable tests
+established `--raw --no-sync` preserves the no-override policy; typed changes still
+resolve/check a candidate graph and do locked wheel-only restoration before
+journaled publication. Stale locks, source/config overrides, missing/failed jobs,
+concurrent edits and interrupted publication retain their existing refusal/recovery
+contracts. Both statements and branches are independently gated at 80%.
+
+The optional hooks CLI installs only into an owned ordinary Git checkout with
+no existing unknown hook, references an immutable provider snapshot and invokes
+its verified container workflow. It writes no global hook settings or host tools.
+Actual EC2/client/CI evidence and remaining acceptance are recorded separately in
+[acceptance](acceptance.md); this design text is not completion evidence.

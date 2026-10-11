@@ -49,6 +49,11 @@ class Handler(BaseHTTPRequestHandler):
    s=state_for(slug)
    if not s or s['phase']!='ready' or not s.get('health_ready'):return self.fail(404)
    verify_unit(s)
+   if s.get('adapter') == 'python':
+    from pathlib import Path
+    from private_apps import target, healthy
+    _, contract = target(Path(s['root']))
+    if not healthy(s, contract): return self.fail(503)
    if self.headers.get('Transfer-Encoding'):return self.fail(400)
    length=int(self.headers.get('Content-Length','0'))
    if length<0 or length>MAX_BODY:return self.fail(413)

@@ -44,6 +44,13 @@ def catalogue():
     value = data(app().REPO/'config/templates/v1.json')
     schema = data(app().REPO/'schemas/templates/v1.schema.json')
     check(not list(deps.StrictValidator(schema).iter_errors(value)))
+    extension_path = app().REPO/'config/templates/v2.json'
+    has_extension = extension_path.exists() or extension_path.is_symlink()
+    if has_extension:
+        extension = data(extension_path)
+        extension_schema = data(app().REPO/'schemas/templates/v2.schema.json')
+        check(not list(deps.StrictValidator(extension_schema).iter_errors(extension)))
+        value = {**value, 'schema_version': 2, 'releases': [*value['releases'], *extension['releases']]}
     releases = {}
     _, profiles = tools.registry()
     for release in value['releases']:
@@ -64,6 +71,12 @@ def catalogue():
             total += len(content); check(total <= 8*1024*1024)
             check(hashlib.sha256(content).hexdigest() == item['sha256'])
             sources.add(source); outputs.add(output); contents[output] = content
+        if release['provider'] == 'fastapi-v1':
+            import project_python as py
+            check({'pyproject.toml','uv.lock','.python-version','AGENTS.md','README.md','src/fastapi_app/main.py','scripts/quality.py','docs/python-standards.md','Containerfile','.pre-commit-config.yaml'} <= outputs)
+            manifest = py.toml(contents['pyproject.toml']); py.dependencies(manifest)
+            check(contents['.python-version'].decode().strip() == declaration['versions']['python'])
+            releases[key] = (release, contents); continue
         check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','AGENTS.md','README.md','app/api/health/route.ts'} <= outputs)
         package = deps.json_data(contents['package.json'])
         check(package.get('packageManager') == 'pnpm@'+declaration['versions']['pnpm'])
@@ -88,7 +101,7 @@ def resolve(template=None, version=None):
 def discover(template=None, version=None):
     if template is not None or version is not None:
         release, _ = resolve(template, version)
-        return {'schema_version': 1, 'release': release}
+        return {'schema_version': release['catalogue_schema'], 'release': release}
     value, _ = catalogue()
     return value
 
@@ -99,7 +112,9 @@ def provenance(release):
 
 def validate_provenance(root):
     path = root/'.gptclaw/template-release.json'
-    if not path.exists() and not path.is_symlink(): return
+    if not path.exists() and not path.is_symlink():
+        check(app().read_json(root/'.gptclaw/template.json') == {'provider':'nextjs-v1'})
+        return
     value = data(path)
     check(set(value) == {'schema_version', 'id', 'version', 'digest'} and type(value['schema_version']) is int and value['schema_version'] == 1)
     check(isinstance(value['id'], str) and isinstance(value['version'], str))
@@ -135,6 +150,9 @@ def generate(path, slug, release, contents):
             'commands':{'build':['pnpm','build'],'start':['pnpm','dev'],'test':['pnpm','test']},
             'service':{'internal_port':3000,'health':{'path':'/projects/'+slug+'/api/health/','timeout_seconds':5}},
             'exposure':{'private':True,'base_path':'/projects/'+slug+'/','funnel':False},'data':{'mode':'ephemeral'}}
+        if release['provider'] == 'fastapi-v1':
+            import project_python as py
+            contract = py.contract(slug)
         app().save(meta/'project.yaml', contract)
         app().save(meta/'template.json', {'provider':release['provider']})
         app().save(meta/'toolchain.json', release['toolchain'])
@@ -157,6 +175,8 @@ def generate(path, slug, release, contents):
 def bundle_paths():
     value, _ = catalogue()
     paths = [Path('scripts/project_templates.py'),Path('config/templates/v1.json'),Path('schemas/templates/v1.schema.json')]
+    if (app().REPO/'config/templates/v2.json').exists():
+        paths += [Path('config/templates/v2.json'), Path('schemas/templates/v2.schema.json')]
     for release in value['releases']:
         base = Path('templates/apps/releases')/release['id']/release['version']
         paths += [base/item['source'] for item in release['files']]

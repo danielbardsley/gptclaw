@@ -13,7 +13,7 @@ def main(argv=None):
  parser.add_argument('--version',dest='provider_version',action='store_true')
  sub=parser.add_subparsers(dest='action')
  new=sub.add_parser('new');new.add_argument('slug');new.add_argument('--directory');new.add_argument('--template');new.add_argument('--template-version');new.add_argument('--local-only',action='store_true');new.add_argument('--plan',action='store_true',help='Preview local or activated-profile GitHub creation without publishing source')
- for name in ['validate','start','stop','restart','status','logs','test']:
+ for name in ['validate','start','stop','restart','status','logs','test','build','format','lint','typecheck','security','verify','hooks']:
   p=sub.add_parser(name);p.add_argument('--project-root',required=True)
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
@@ -29,7 +29,7 @@ def main(argv=None):
   if name in ['add','update','remove']:p.add_argument('--package',required=True)
   if name in ['add','update']:p.add_argument('--version',required=True)
   if name=='status':p.add_argument('--operation-id')
-  if name=='add':p.add_argument('--kind',choices=['runtime','development'],default='runtime')
+  if name=='add':p.add_argument('--kind',choices=['runtime','development','test'],default='runtime')
   if name=='recover':
    p.add_argument('--operation-id',required=True);p.add_argument('--abort',action='store_true',help='Abandon the job while preserving current coherent source files')
  tools=sub.add_parser('toolchain',help='Inspect or prepare a reviewed exact container toolchain')
@@ -70,7 +70,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates','repo','credentials'],'template_catalogue_schema':1,'receipt_schema':1,'dependency_receipt_schema':1,'toolchain_receipt_schema':1,'credential_profile_schema':2,'credential_binding_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2],'toolchain_schemas':[1,2],'template_catalogue_schema':2,'receipt_schema':1,'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':2,'credential_binding_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -128,6 +128,8 @@ def main(argv=None):
   elif args.action=='restart':result=app.restart(args.project_root)
   elif args.action=='status':result=app.status(args.project_root)
   elif args.action=='test':result=app.test_app(args.project_root)
+  elif args.action in {'build','format','lint','typecheck','security','verify'}:result=app.quality_app(args.project_root,args.action)
+  elif args.action=='hooks':result=app.install_hooks(args.project_root)
   elif args.action=='logs':result=app.logs(args.project_root,args.lines)
   elif args.action=='deps':
    import project_dependencies as deps

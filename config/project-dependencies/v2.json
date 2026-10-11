@@ -1,0 +1,13 @@
+{
+  "schema_version": 2,
+  "manager": "uv",
+  "manager_version": "0.13.0",
+  "index": "https://pypi.org/simple",
+  "artifact_origin": "https://files.pythonhosted.org",
+  "groups": [
+    "dev",
+    "test"
+  ],
+  "source_builds": false,
+  "python_downloads": false
+}

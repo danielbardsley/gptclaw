@@ -1,6 +1,6 @@
 # SPEC-024: Python FastAPI template and supported execution
 
-- **Status:** Draft — planning requested; specification approval and implementation authorization pending
+- **Status:** Approved — implementation authorized; acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Primary feature:** TPL-003 — Python API/AI template, initial standalone API slice
@@ -17,11 +17,11 @@ and stopped through the existing GptClaw workflow. A synthetic sample API must
 exercise the whole path, rather than leaving a template that the runtime cannot
 execute. This prepares a proven API service for later RUN-006 orchestration.
 
-This request authorizes planning and a reviewable planning PR. It does not approve
-this draft, authorize implementation, or authorize installing host tools,
-changing infrastructure, publishing a service or creating application repositories.
-Specification approval, implementation authorization, code review/merge and
-behavioral acceptance are separate records.
+On October 11 the project owner instructed “ok, go ahead and implement the spec,”
+approving this scope and authorizing implementation and its scoped synthetic
+verification. Infrastructure changes, public exposure and application repository
+creation remain excluded. Code review/merge and behavioral/client acceptance remain
+separate records.
 
 ## Scope and observed starting point
 

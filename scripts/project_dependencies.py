@@ -225,6 +225,8 @@ def validate_lock(documents, manifest, p, coherent=True):
 
 
 def context(root, coherent=True):
+    import project_python as py
+    if py.is_python(root): return py.context(root, coherent)
     root = app().safe(Path(root)); p, digest = policy()
     for name in FORBIDDEN:
         path = root/name
@@ -252,7 +254,7 @@ def load_journal(slug, root, operation_id=None):
     value = json_data(read_bytes(path, 65536))
     keys = {'schema_version', 'project', 'root', 'operation_id', 'action', 'phase', 'before', 'after',
             'policy_hash', 'image', 'changed_files', 'error', 'duration_seconds', 'retained_files', 'request'}
-    check(set(value) == keys and type(value.get('schema_version')) is int and value['schema_version'] == 1)
+    check(set(value) == keys and type(value.get('schema_version')) is int and value['schema_version'] == (2 if __import__('project_python').is_python(root) else 1))
     check(value.get('project') == slug and value.get('root') == str(root), 'conflict')
     check(isinstance(value.get('operation_id'), str) and re.fullmatch(r'[0-9a-f]{32}', value['operation_id']))
     check(operation_id is None or value['operation_id']==operation_id, 'conflict')
@@ -261,15 +263,15 @@ def load_journal(slug, root, operation_id=None):
     if request:
         package_name(request.get('package'))
         if 'version' in request: exact_version(request['version'])
-        check(request.get('kind','runtime') in {'runtime','development','optional'})
+        check(request.get('kind','runtime') in {'runtime','development','optional','test'})
     check(value.get('phase') in PHASES and value.get('action') in {'install', 'add', 'update', 'remove'})
     for field in ('before', 'after'):
         hashes = value.get(field, {})
-        check(isinstance(hashes, dict) and (set(hashes) == set(FILES) if hashes else field == 'after'))
+        check(isinstance(hashes, dict) and (set(hashes) == set(__import__('project_python').files_for(root)) if hashes else field == 'after'))
         check(all(isinstance(v, str) and re.fullmatch(r'[0-9a-f]{64}', v) for v in hashes.values()))
     check(isinstance(value.get('policy_hash'),str) and re.fullmatch(r'[0-9a-f]{64}', value['policy_hash']) is not None)
     check(isinstance(value.get('image'),str) and re.fullmatch(r'sha256:[0-9a-f]{64}', value['image']) is not None)
-    check(isinstance(value.get('changed_files'), list) and set(value['changed_files']) <= set(FILES))
+    check(isinstance(value.get('changed_files'), list) and set(value['changed_files']) <= set(__import__('project_python').files_for(root)))
     check(value.get('error') is None or value['error'] in app().MESSAGES)
     check(type(value.get('duration_seconds')) in (int, float) and 0 <= value['duration_seconds'] <= 86400)
     return value
@@ -320,7 +322,7 @@ def status(root, operation_id=None):
               'operation': public_result(journal) if journal else None}
     try:
         ctx = context(root); result.update(policy='valid', policy_hash=ctx['policy_hash'], files=ctx['hashes'])
-        if journal and journal['phase']=='complete' and (journal['policy_hash']!=ctx['policy_hash'] or journal['after']!=ctx['hashes'] or not (root/'node_modules').is_dir()):
+        if journal and journal['phase']=='complete' and (journal['policy_hash']!=ctx['policy_hash'] or journal['after']!=ctx['hashes'] or not (root/('.venv' if __import__('project_python').is_python(root) else 'node_modules')).is_dir()):
             result['state']='unprepared'
     except a.AppError as error:
         result.update(policy='invalid', error=error.code, state='error')
@@ -350,6 +352,8 @@ def invalidate(s, complete=False, operation_id=None):
 
 
 def job(s, root, args):
+    import project_python as py
+    if py.is_python(root): return py.install(s,root)
     selected = {**s, 'root': str(app().safe(root))}
     return app().run_in_app(selected, ['pnpm', *args, *INSTALL_FLAGS], read_only_dependency_files='--frozen-lockfile' in args)
 
@@ -371,7 +375,7 @@ def captured_files(journal):
 
 
 def check_captured(journal):
-    for name in FILES:
+    for name in journal['before']:
         value = file_hash(captured_files(journal)/name)
         check(value is None or value == journal['before'][name], 'conflict')
 
@@ -406,15 +410,15 @@ def publish_file(root, name, journal):
 
 def finish(root, s, journal):
     candidate = workspace(journal); check(context(candidate)['hashes'] == journal['after'], 'conflict')
-    check(journal['policy_hash'] == policy()[1] and s['image'] == journal['image'], 'conflict')
+    check(journal['policy_hash'] == context(candidate)['policy_hash'] and s['image'] == journal['image'], 'conflict')
     # A publishing crash may leave a mix of old/new files; only those exact states can resume.
-    for name in FILES:
+    for name in journal['before']:
         current = file_hash(root/name)
         check(current in {journal['before'][name], journal['after'][name]} or
               current is None and file_hash(captured_files(journal)/name) == journal['before'][name], 'conflict')
     check_captured(journal)
     journal['phase'] = 'publishing'; save_journal(journal)
-    for name in FILES: publish_file(root, name, journal)
+    for name in journal['before']: publish_file(root, name, journal)
     verify_original(root, journal['after'])
     journal['phase'] = 'repairing'; save_journal(journal)
     job(s, root, ['install', '--frozen-lockfile'])
@@ -446,6 +450,8 @@ def attempt_cleanup(journal):
 
 
 def operate(root, action, name=None, version=None, kind='runtime', operation_id=None, abort=False):
+    import project_python as py
+    if py.is_python(root): return py.operate(root,action,name,version,kind,operation_id,abort)
     a = app(); root, contract = a.target(root); slug = contract['project']['id']
     check(action in {'install', 'add', 'update', 'remove', 'recover'})
     check(kind in {'runtime', 'development'})

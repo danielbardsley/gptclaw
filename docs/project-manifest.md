@@ -165,3 +165,16 @@ Rollback is a reviewed revert of these tooling files; preserve independently
 authored manifests and data. Remove only an environment you created and no longer
 need. Removing the validator cannot undo later runtime operations. No live app,
 private-route, or AGT-006 runtime acceptance is claimed by PRJ-001.
+
+
+## Standalone API extension (schema 2)
+
+[SPEC-024](024-python-fastapi-template/spec.md) adds an explicit separate
+`schemas/project/v2.schema.json`: one `kind: api` service, the same identity/health/
+private prefix/ephemeral-data rules, and required format/lint/typecheck/security/
+verify vectors in addition to build/start/test. Version 1 remains unchanged.
+The offline validator chooses a bundled schema by the strict integer version;
+it never loads a project-provided schema or executes source. Exact generation,
+Python/uv metadata and runtime checks are described in the
+[Python API runbook](../runbooks/manage-python-apis.md). V2 adds neither multiple
+services nor environment/secrets/volumes/host-port declarations.

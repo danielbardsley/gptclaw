@@ -112,3 +112,22 @@ jobs:
         run: .venv-manifest/bin/python scripts/tests/check_dependency_template.py "$RUNNER_TEMP/gptclaw-dependency-template" --image gptclaw-toolchain-ci
       - name: Verify selected toolchain acquisition and lifecycle preparation
         run: .venv-manifest/bin/python scripts/tests/check_toolchain_template.py "$RUNNER_TEMP/gptclaw-toolchain-template"
+
+  python-api:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Prepare platform validator Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Prepare isolated validator dependencies
+        run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
+      - name: Offline Python policy and recovery tests
+        run: .venv-manifest/bin/python scripts/tests/test_project_python.py
+      - name: Verified Python image and generated quality/failure workflow
+        run: .venv-manifest/bin/python scripts/tests/check_python_template.py "$RUNNER_TEMP/gptclaw-python-template"

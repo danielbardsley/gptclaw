@@ -26,7 +26,7 @@ MESSAGES = {
     'yaml_feature': 'Aliases, anchors, explicit tags and merge keys are unsupported.',
     'document': 'Provide exactly one mapping document.',
     'mapping_key': 'Mapping keys must be unique strings.',
-    'version': 'Use the supported integer schema_version: 1.',
+    'version': 'Use a supported integer schema_version: 1 (web) or 2 (API).',
     'field_required': 'A required field is missing.',
     'field_unknown': 'This object contains unsupported fields.',
     'field_type': 'The field has the wrong type.',
@@ -157,9 +157,10 @@ StrictValidator = validators.extend(Draft202012Validator, type_checker=
     Draft202012Validator.TYPE_CHECKER.redefine('integer', lambda checker, value: type(value) is int))
 
 
-def load_schema():
-    schema = json.loads(SCHEMA_PATH.read_text(encoding='utf-8'))
-    if schema.get('$id') != 'urn:gptclaw:project:v1' or schema.get('type') != 'object':
+def load_schema(version=1):
+    path = SCHEMA_PATH if version == 1 else SCHEMA_PATH.with_name("v2.schema.json")
+    schema = json.loads(path.read_text(encoding='utf-8'))
+    if schema.get('$id') != 'urn:gptclaw:project:v'+str(version) or schema.get('type') != 'object':
         raise ValueError('unexpected bundled schema')
     # No network retrieval, even if a future schema mistakenly adds an external ref.
     def check_refs(value):
@@ -204,10 +205,13 @@ def validate_project(project_root):
             return failure('setup', 2)
         document = parse_manifest(read_manifest(project_root))
         version = document.get('schema_version')
-        if type(version) is not int or version != 1:
+        if type(version) is not int or version not in (1, 2):
             result, contract, code = failure('version')
             result['errors'][0]['path'] = '/schema_version'
             return result, contract, code
+        if version == 2:
+            try: schema, validator = load_schema(version)
+            except Exception: return failure("setup", 2)
         errors = []
         for error in validator.iter_errors(document):
             code = {'type': 'field_type', 'required': 'field_required',
@@ -232,7 +236,7 @@ def validate_project(project_root):
             ordered = [unique[key] for key in sorted(unique)]
             return ({'valid': False, 'schema_version': None, 'project_id': None,
                      'errors': ordered[:MAX_ERRORS], 'truncated': len(ordered) > MAX_ERRORS}, None, 1)
-        return ({'valid': True, 'schema_version': 1, 'project_id': document['project']['id'],
+        return ({'valid': True, 'schema_version': version, 'project_id': document['project']['id'],
                  'errors': [], 'truncated': False}, document, 0)
     except ManifestError as error:
         return failure(error.code)

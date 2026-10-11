@@ -1,6 +1,6 @@
 # TASKS-024: Python FastAPI template
 
-- **Status:** Draft planning complete; approval and implementation authorization pending
+- **Status:** Implementation authorized and in progress; acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-024](spec.md) · **Design:** [TDD-024](technical-design.md)
@@ -12,10 +12,11 @@
   Draft this specification/design/task set in an isolated branch; preserve the
   active checkout's unrelated credential-broker work. Source inspection and
   planning request establish context only, not installed Python capability.
-- [ ] T-001: Project owner reviews SPEC-024/TDD-024 scope and separately authorizes
+- [x] T-001: Project owner reviews SPEC-024/TDD-024 scope and separately authorizes
   implementation. Record those decisions without treating a planning PR merge
   as permission to implement. No duplicate authorization is needed if already
-  supplied in the subsequent session.
+  supplied in the subsequent session. Authorization: October 11 user instruction
+  “ok, go ahead and implement the spec.”
 
 ## Dependency-ordered implementation
 
@@ -115,8 +116,8 @@ original content and scoped adaptations are now preserved in this initiative.
 Existing source inspection and primary tool documentation inform the draft; no Python app, dependency install, host change,
 repository creation or live acceptance was performed.
 
-Next action: project owner reviews the planning PR and authorizes implementation
-when ready. Exact pins and fixed uv/redirect contracts are implementation tasks,
+The project owner authorized implementation on October 11. Current action:
+complete implementation verification, CI and scoped live/client acceptance. Exact pins and fixed uv/redirect contracts are implementation tasks,
 with measurable gates above. Planning verification and delivery results are
 recorded here after execution; implementation tasks remain unchecked.
 

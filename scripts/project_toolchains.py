@@ -44,7 +44,7 @@ def digest(value):
 
 
 def declaration(value):
-    schema = data(app().REPO/'schemas/toolchains/v1.schema.json')
+    schema = data(app().REPO/('schemas/toolchains/v2.schema.json' if value.get('schema_version') == 2 else 'schemas/toolchains/v1.schema.json'))
     check(not list(deps.StrictValidator(schema).iter_errors(value)))
     return value
 
@@ -73,6 +73,10 @@ def registry():
         check(isinstance(ref, dict) and set(ref) == {'profile', 'profile_version'})
         check(isinstance(ref['profile'], str) and type(ref['profile_version']) is int)
         check((ref['profile'], ref['profile_version']) in profiles)
+    python_registry = app().REPO/'config/toolchains/v2.json'
+    if python_registry.exists():
+        import project_python as py
+        _, additional = py.registry(); check(not set(profiles) & set(additional)); profiles.update(additional)
     return value, profiles
 
 
@@ -122,6 +126,8 @@ def satisfies(version, constraint):
 
 
 def selection(root, package=None):
+    import project_python as py
+    if py.is_python(root): return py.selection(root,package)
     root = app().safe(Path(root)); r, profiles = registry()
     path = root/'.gptclaw/toolchain.json'
     legacy = not path.exists() and not path.is_symlink()
@@ -163,6 +169,9 @@ def selection(root, package=None):
 
 
 def recipe_for(profile):
+    if profile['profile'] == 'python-uv':
+        import project_python as py
+        return py.recipe_for(profile)
     return (f"FROM {profile['base_image']}\n"
             "COPY install-pnpm.cjs profile.json /tmp/\n"
             "RUN node /tmp/install-pnpm.cjs && rm /tmp/install-pnpm.cjs /tmp/profile.json\n"
@@ -232,15 +241,22 @@ def verify(selected, image, operation_id):
     name = 'gptclaw-toolchain-'+namespace+'-'+selected['profile_hash'][:24]+'-verify'
     exists = a.command(['podman', 'container', 'exists', name], optional=True)
     check(exists.returncode == 1, 'busy' if exists.returncode == 0 else 'command')
+    python_profile = selected['profile']['profile'] == 'python-uv'
+    if python_profile:
+        import project_python as py
+        executable = ['python','-c',py.VERIFY]
+    else: executable = ['node','-e',VERIFY_JS,json.dumps(selected['engines'])]
     result = a.command(['podman', 'run', '--rm', '--name', name, '--label', LABEL+'='+selected['profile_hash'],
                         '--network=none', '--read-only', '--tmpfs', '/tmp:rw,size=64m',
                         '--user', '1002:1002', '--memory='+a.MEMORY, '--cpus='+a.CPU,
                         '--pids-limit='+str(a.PIDS), '--cap-drop=all', '--security-opt=no-new-privileges',
                         '--env', 'pnpm_config_pm_on_fail=error', '--env', 'pnpm_config_runtime=false',
-                        image, 'node', '-e', VERIFY_JS, json.dumps(selected['engines'])], timeout=30, optional=True)
+                        image, *executable], timeout=30, optional=True)
     check(result.returncode == 0, 'toolchain-verification')
     try: actual = json.loads(result.stdout)
     except ValueError: raise a.AppError('toolchain-verification') from None
+    if python_profile:
+        check(actual == selected['profile']['versions'], 'toolchain-verification'); return
     check(actual == {'versions': selected['profile']['versions'], 'installed_versions': selected['profile']['versions'],
                      'artifact_integrity': selected['profile']['pnpm_artifact']['integrity']}, 'toolchain-verification')
 
@@ -269,7 +285,8 @@ def acquire(selected):
         job = a.safe(directory/'jobs'/receipt['operation_id']); job.mkdir(parents=True, mode=0o700)
         (job/'Containerfile').write_bytes(recipe_for(selected['profile']))
         (job/'profile.json').write_text(json.dumps(selected['profile'])+'\n')
-        (job/'install-pnpm.cjs').write_bytes(deps.read_bytes(a.REPO/'templates/apps/node-toolchain/install-pnpm.cjs', 65536))
+        if selected['profile']['profile'] == 'node-pnpm':
+            (job/'install-pnpm.cjs').write_bytes(deps.read_bytes(a.REPO/'templates/apps/node-toolchain/install-pnpm.cjs', 65536))
         (job/'auth.json').write_text('{"auths":{}}\n'); (job/'auth.json').chmod(0o600)
         a.save(directory/'receipt.json', receipt)
         try:
@@ -292,7 +309,9 @@ def acquire(selected):
             a.save(history/(receipt['operation_id']+'.json'), receipt)
         # Only fixed, verified owned job files; do not prune images or unknown builder objects.
         for name in ('Containerfile', 'profile.json', 'install-pnpm.cjs', 'auth.json'):
-            path = job/name; deps.read_bytes(path, 65536); path.unlink()
+            path = job/name
+            if name == 'install-pnpm.cjs' and selected['profile']['profile'] != 'node-pnpm': continue
+            deps.read_bytes(path, 65536); path.unlink()
         job.rmdir()
         return {**observed(selected), 'changed': True}
 
