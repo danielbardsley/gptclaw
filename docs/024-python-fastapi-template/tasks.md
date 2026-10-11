@@ -1,6 +1,6 @@
 # TASKS-024: Python FastAPI template
 
-- **Status:** Implementation complete; CI/live evidence recorded, independent client and merge pending
+- **Status:** Implementation and verification complete; review/merge and delivery pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-024](spec.md) · **Design:** [TDD-024](technical-design.md)
@@ -90,7 +90,7 @@
   checks. Submit implementation PR(s), record final-head configured CI and retain
   existing Next.js release/source/state/credential behavior. Record code revisions
   and skipped checks honestly. PYAPI-008, PYAPI-009; AC-001, AC-002, AC-003, AC-007, AC-008, AC-009.
-- [ ] T-010: Through the reviewed provider on EC2, exercise a task-owned API and
+- [x] T-010: Through the reviewed provider on EC2, exercise a task-owned API and
   independently running synthetic Next.js project. Record acquisition/preparation
   cold/warm timings, exact image/versions, limits/loopback, health, docs/API valid
   and invalid input, queries/redirects, source update/syntax-error recovery,
@@ -154,3 +154,9 @@ actual busy refusal and pre-Python provider rejection without source mutation.
 The installed snapshot uses the persistent validator environment. API and web
 fixtures remain available for the requested independent client check; that check
 and final owner/merge acceptance are pending. T-011 remains unchecked until then.
+
+
+Independent client evidence: October 11 the project owner confirmed “Docs load and
+echo works” for the explicit private docs/updated-echo check. T-010 is complete;
+review/merge and final catalogue delivery remain in T-011. The running synthetic
+fixtures are retained for review and can be stopped through their named lifecycle.

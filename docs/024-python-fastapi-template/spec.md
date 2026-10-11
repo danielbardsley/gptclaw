@@ -1,6 +1,6 @@
 # SPEC-024: Python FastAPI template and supported execution
 
-- **Status:** Implemented — local/CI/live checks recorded; independent client, review/merge and final acceptance pending
+- **Status:** Implemented — local/CI/live/client checks passed; review/merge and final delivery pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Primary feature:** TPL-003 — Python API/AI template, initial standalone API slice

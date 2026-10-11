@@ -1,6 +1,6 @@
 # SPEC-024 implementation acceptance
 
-- **Status:** Implementation and local/CI/live checks complete; independent client, review/merge and final owner acceptance pending
+- **Status:** Implementation and local/CI/live/client checks complete; review/merge and final delivery pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-024](spec.md) · **Design:** [TDD-024](technical-design.md) · **Tasks:** [TASKS-024](tasks.md)
@@ -11,7 +11,8 @@ The project owner approved the scope and authorized implementation October 11
 with “ok, go ahead and implement the spec.” No public exposure, infrastructure/
 host package installation or live application GitHub repository creation occurred.
 The runtime trial uses the existing reviewed private lifecycle and owned ingress.
-This record does not establish merged delivery or independent client acceptance.
+The project owner confirmed independent docs/echo behavior on October 11. This
+record does not establish merged delivery or completion of the merge gate.
 
 | Criterion | State | Evidence / remaining action |
 |---|---|---|
@@ -20,7 +21,7 @@ This record does not establish merged delivery or independent client acceptance.
 | AC-003 | passed | Locked source-preserving restoration and real uv add/update/remove succeed. Offline denied sources/hooks/config/auth/downloads, conflict/abort, failed installation and same-operation interrupted-publication recovery pass. |
 | AC-004 | passed | Typed versioned echo, pagination bounds/statuses, invalid input/settings, liveness/readiness and OpenAPI tested in the real generated container and against private HTTPS. |
 | AC-005 | passed | Actual EC2 lifecycle/status/bounded logs/tests/reload/syntax recovery/restart/stop/busy behavior passed for the task-owned API, with source retention and owned loopback/resource bounds. Interrupted publication and failure-state scenarios are covered by the isolated suite; no live process was killed to manufacture an interruption. |
-| AC-006 | pending | Actual HTTPS docs/assets/schema/API/query forwarding passed from EC2. Mounted nonce/self-hosted docs and hostile-header relative redirects passed in container tests. Stopped URL returned 404; syntax outage produced no successful readiness and recovered. Independent tailnet-browser docs/echo observation is requested and pending. |
+| AC-006 | passed | Actual HTTPS docs/assets/schema/API/query forwarding passed from EC2. Mounted nonce/self-hosted docs and hostile-header relative redirects passed in container tests. Stopped URL returned 404; syntax outage produced no successful readiness and recovered. The project owner confirmed from the independent tailnet browser: “Docs load and echo works,” including the requested updated response. |
 | AC-007 | passed | Exact-container Black/isort/Ruff/strict mypy/pytest/coverage/Bandit/pip-audit/build/verify pass. Real seeded format/docstring/type/API/import/static-security/coverage defects are rejected. Synthetic advisory findings/unavailability fail; explicit hook preservation/idempotency and real pinned pre-commit config validation pass. The first config-validation attempt used a read-only default cache; a task-owned writable cache corrected that environment setup. |
 | AC-008 | passed | Existing Node/Next.js/provider/dependency/toolchain/repository/credential regressions pass. Synthetic real-Git repository creation carries the exact FastAPI release without credential-policy changes. The independent web fixture stayed healthy during API failure/restart/stop; ports/ownership remain independent. |
 | AC-009 | pending | Sanitized evidence recorded below. Final-head CI review/merge and project-owner acceptance remain; only the initial standalone slice may be marked Delivered after these gates. |
@@ -112,14 +113,14 @@ Python environment; its host path is not exported here.
 
 ## Remaining acceptance and fixture disposition
 
-The API and web fixture remain running with synthetic data/source for the requested
-independent client check. The project owner has the private docs link in this chat and should execute
-echo with `{"message":"synthetic"}`, observing `{"message":"updated: synthetic"}`.
-No response has yet been recorded. Local HTTPS, CI or an ambient browser URL does
-not substitute for that observation.
+The API and web fixture remain running with synthetic data/source. On October 11
+the project owner answered “Docs load and echo works” to the explicit independent
+client check, which requested echo with `{"message":"synthetic"}` and the updated
+`{"message":"updated: synthetic"}` response. This is attributed client evidence,
+separate from local HTTPS/CI or ambient browser state.
 
-After client confirmation, stop only the selected fixtures through the lifecycle
-if no longer needed; retain source by default. Golden/authoring directories under
+Client confirmation is complete. Stop only the selected fixtures through the
+lifecycle if no longer needed; retain source by default. Golden/authoring directories under
 /tmp are task-owned disposable verification data; no unknown project, shared image,
 volume or credential material is removed. Existing snapshots/private access and
 host/reboot/replacement acceptance remain unchanged and separately tracked.
