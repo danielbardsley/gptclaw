@@ -52,11 +52,13 @@ def main(argv=None):
   if name=='resume':p.add_argument('--confirm-repository-id',type=int,help='Explicit owner reconciliation after a lost creation response')
  credentials=sub.add_parser('credentials',help='Private GitHub App setup and managed repository access')
  credential_actions=credentials.add_subparsers(dest='credential_action',required=True)
- for name in ['configure','doctor','status','activate','deactivate','rotate','disable','enable','canary','resume','pull-request']:
+ for name in ['configure','installation-policy','doctor','status','activate','deactivate','rotate','disable','enable','canary','resume','pull-request']:
   p=credential_actions.add_parser(name,allow_abbrev=False)
   if name=='configure':
    p.add_argument('--app-id',type=int,required=True);p.add_argument('--installation-id',type=int,required=True)
    p.add_argument('--key-file',required=True);p.add_argument('--bootstrap-repository-id',type=int,action='append',required=True)
+   p.add_argument('--repository-selection',choices=['selected','all'],default='selected')
+  if name=='installation-policy':p.add_argument('--repository-selection',choices=['selected','all'],required=True)
   if name=='rotate':p.add_argument('--key-file',required=True)
   if name in ['disable','enable','pull-request']:p.add_argument('--project-root',required=True)
   if name=='canary':p.add_argument('--repository',required=True);p.add_argument('--directory',required=True)
@@ -68,7 +70,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates','repo','credentials'],'template_catalogue_schema':1,'receipt_schema':1,'dependency_receipt_schema':1,'toolchain_receipt_schema':1,'credential_profile_schema':1,'credential_binding_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates','repo','credentials'],'template_catalogue_schema':1,'receipt_schema':1,'dependency_receipt_schema':1,'toolchain_receipt_schema':1,'credential_profile_schema':2,'credential_binding_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -86,7 +88,8 @@ def main(argv=None):
   if args.action=='credentials':
    import repository_credentials as broker
    action=args.credential_action
-   if action=='configure':result=broker.configure(args.app_id,args.installation_id,args.key_file,args.bootstrap_repository_id)
+   if action=='configure':result=broker.configure(args.app_id,args.installation_id,args.key_file,args.bootstrap_repository_id,args.repository_selection)
+   elif action=='installation-policy':result=broker.set_installation_policy(args.repository_selection)
    elif action=='doctor':result=broker.Broker().doctor()
    elif action=='status':
     profile=broker.configured()

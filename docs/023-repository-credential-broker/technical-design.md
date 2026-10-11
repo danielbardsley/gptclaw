@@ -1,24 +1,23 @@
 # TDD-023: Repository credential broker
 
-- **Status:** Candidate implementation; live creation verified, automatic inclusion blocked
+- **Status:** Candidate implementation; All repositories amendment approved, live verification pending
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Tasks:** [TASKS-023](tasks.md)
 
 ## Architecture and grant boundary
 
-Use a private personal-account GitHub App owned by the project owner, initially installed on
-an explicitly selected bootstrap repository. GitHub documents automatic App
-access to repositories it creates; rely on that supported mechanism only after
-verifying the exact personal-account create/inclusion path. Do not choose an
-all-repositories installation as a convenience workaround. Its signing key is
-long-lived root authority for the selected installation and future App-created
-projects; every normal project token is narrowed separately. The key is private
+Use the private personal-account GitHub App owned by the project owner with the
+explicitly approved All repositories installation. The selected-installation
+and explicit-enrollment candidates failed live; the owner approved the broader
+scope after reviewing those results. Its signing key is long-lived root
+authority for all existing/future account repositories, while project credentials
+remain narrowed independently. The key is private
 owner material, not an application credential or a shared project token.
 
 App grants are Repository creation write, Contents write, Pull requests
-write, Metadata read and, under the October 11 owner-approved amendment,
-GitHub App installation repository access write. Ongoing Git tokens request only
+write and Metadata read. The now-unused installation repository access grant
+from the previous candidate is removed. Ongoing Git tokens request only
 one repository ID with Contents write/Metadata read; PR API operations request
 only their required PR/content read permissions. Creation-only tokens carry the
 minimum supported creation grant and never enter Git helpers/containers. Review
@@ -55,7 +54,8 @@ Proposed commands are `credentials doctor/status/rotate/revoke` and a configured
 has no command that prints reusable bearer tokens. Plans/status are observation
 interfaces returning non-secret IDs, permissions, lifetimes and actions only.
 
-1. Owner configures one private App/installation/key and approves the standing
+1. Owner configures one private App/installation/key and explicitly approves its
+   All repositories scope plus the standing
    unprotected-private-dev profile. Doctor verifies actual identity/grants and
    explicit bootstrap selection. Profile activation opts new project requests
    into private GitHub setup; absent activation keeps existing local-only behavior.
@@ -200,7 +200,9 @@ creation/access feasibility. The owner has now approved setup/live targets and
 provided the App/installation IDs and external private key. Configure verified
 identity/minimal grants; live personal creation succeeded, but automatic
 installation inclusion failed for the first repository. Activation and the
-second project remain gated on that failure. No real App/root credential was
+second project were gated on that failure; the later approved All repositories
+amendment recovered the first operation, activated the profile and created the
+second project. No real App/root credential was
 read or created by the offline test suite. See [acceptance.md](acceptance.md).
 
 ## Owner-approved explicit enrollment amendment
@@ -234,7 +236,9 @@ does not authorize Administration, all repositories or OAuth/PAT alternatives.
 The approved explicit enrollment candidate also failed live after GitHub accepted
 the new installation grant. This does not establish a supported unattended path
 for the selected personal-account installation. Preserve the journal/repository
-and inactive profile. No alternative below is approved or implemented.
+and inactive profile until successful recovery. The project owner subsequently
+approved the All repositories alternative with “Lets do all repos”; the selected
+manual-enrollment alternative remains unselected.
 
 | Alternative | Concrete behavior and scope | Acceptance effect |
 |---|---|---|
@@ -250,3 +254,15 @@ and can interrupt repositories omitted from the selection. Previously issued
 tokens retain their documented lifetime/revocation behavior. This proposal does
 not authorize writes to other repositories, platform enrollment, production
 credentials, merges or infrastructure changes.
+
+Provider 1.5.2 adds schema-2 `repository_selection` and an explicit inactive-profile
+`credentials installation-policy --repository-selection all` migration. Legacy
+schema-1 profiles remain selected; an API-observed All installation never migrates
+them implicitly. Migration verifies actual App/installation identity, the exact
+four grants and required bootstrap/managed inventory before saving the new
+inactive policy and previous profile. Audit/creation leases can report All scope;
+project/provision/PR leases always request exactly one repository ID and must
+read back Selected scope plus exact grants/identity. Enrollment is disabled in
+All mode. Doctor inspects only inventory metadata for unrelated repositories,
+allows public/noncanonical names there, and strictly validates managed private
+repositories. It returns managed IDs and installation count, not source content.

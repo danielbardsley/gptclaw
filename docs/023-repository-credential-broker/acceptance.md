@@ -1,6 +1,6 @@
 # SPEC-023 acceptance evidence
 
-- **Status:** Candidate implementation locally verified; automatic inclusion and explicit enrollment failed live
+- **Status:** All repositories verified live; signing-key rotation, final-head CI and merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -25,21 +25,22 @@ revoked PATs were not read/reused.
 
 App personal creation succeeded, but automatic access under the selected
 installation failed the live canary. The candidate requires a successful canary before profile
-activation and does not broaden permissions or introduce a PAT fallback when
-capabilities are missing. It is not marked Delivered or operationally ready.
+activation and does not implicitly broaden permissions or introduce a PAT
+fallback. The later explicitly approved All repositories mode is now active and
+operationally verified, while merge/full acceptance remain pending.
 
 ## Criteria
 
-| Criterion | State | Actual local evidence | Remaining evidence/owner action |
+| Criterion | State | Actual local/live evidence | Remaining evidence/owner action |
 |---|---|---|---|
-| AC-001 | passed | Owner completed the proposed setup; configure and initial doctor validated App/installation identity, exactly the minimal grants and sole bootstrap selection. Key metadata passed. | Later doctor correctly rejects the incomplete canary's missing installation access; profile stays inactive. |
-| AC-002 | failed | Real installation-authenticated personal creation returned private repository ID `1414446320`; subsequent installation lookup/inventory and restricted-token probe did not grant access. No-inclusion recovery retained the repository/receipt. | Resolve actual automatic inclusion without manually selecting every new repository or broadening scope. Second creation was not attempted. |
-| AC-003 | pending | Singleton repository_ids and exact permission response checks reject missing/extra grants and cross-repo use; creation leases cannot enter Git. | Real token scope/readback and denied access to another private repo/platform. |
-| AC-004 | pending | Key/fd/argv/token-shape/redaction/config/bundle tests pass using synthetic material. Live key metadata and minimal grants verified; no bearer values printed or persisted. | Full live project credential/container evidence remains pending. |
-| AC-005 | pending | Fresh token/revocation, near-expiry renewal, locks, real different-key rotation, lost response and partial enrollment recovery pass offline. | Live renewal, signing-key rotation and installation/token revocation outcomes and owner key retirement. |
-| AC-006 | pending | Activated-profile normal new, explicit local-only, unconfigured compatibility and effective no-publication preview tests pass. Manual PAT regressions remain valid; manual operations cannot be implicitly adopted. | Real configured normal new flow and independent runtime compatibility. |
-| AC-007 | pending | Actual Git fetch/branch push over authenticated private TLS fixture through the production helper passed; later PR and dirty-source/remote preservation tests pass. | Real GitHub fetch/push/later PR after fresh token acquisition and worktree/owner observations. |
-| AC-008 | pending | Existing template/provider checks passed; new source/installed bundle includes broker/helper with no keys. | Real two-app quality/page/health and independent-service checks, final-head CI and owner desktop acceptance. |
+| AC-001 | passed | Explicit All repositories approval/migration; actual App/installation identity, exact four grants, key metadata and ready doctor/status verified. | No further setup action; root account-wide authority remains documented. |
+| AC-002 | passed | Retained canary recovered and successive configured normal new completed with initial PRs/bindings; no per-project token, deploy key or selection click. Earlier failures retained below. | Evidence is recovery plus one fresh creation under final policy, not two fresh All-mode creates. |
+| AC-003 | passed | Exact singleton grant/ID/Selected token response; actual other-private-repo HTTP 404; platform has no token write authority; both helpers reject foreign paths. | Platform public metadata remains readable; no false private-read denial claim. |
+| AC-004 | passed | Offline secret/path/argv/bundle/container checks and real bounded metadata/receipts; key stays outside source/containers, tokens are not logged/persisted. | Issued Git leases retain bounded reported expiry as documented. |
+| AC-005 | pending | Fresh reacquisition, API token revocation, disable/enable and retained recovery passed live; different-key rotation/expiry/race/response-loss checks passed offline. | Actual owner signing-key rotation/retirement remains. |
+| AC-006 | passed | Activated normal new completed; explicit local-only preview has no GitHub effects; compatibility/regression tests and independent runtime checks passed. | No automatic initial-PR merge or production promotion. |
+| AC-007 | passed | Native fetch/worktree branch push and later scoped PRs passed in both projects; refresh/disable/enable preserved dirty source hashes. | Four retained fixture PRs await ordinary owner review. |
+| AC-008 | pending | Both projects passed manifest/provenance/build/test/typecheck/private page/health; owner confirmed both desktop URLs; independent app remained ready. | Exact final-head CI/implementation merge pending. |
 
 Offline fixtures prove implementation contracts, RSA signing and native Git wire
 behaviour, not GitHub App endpoint/account feasibility or full acceptance.
@@ -87,14 +88,15 @@ single-repository project credentials. If real account/API support fails, retain
 resources and present a reviewed scope alternative; do not silently request
 Administration, all repositories, OAuth/user refresh material or PATs.
 
-The real profile is configured but inactive. Use matching provider
+The real All repositories profile is active with provider
 1.5.0 for setup, prove the canary, then activate once. Normal future projects
 should need no manual token creation; App grant/key revocation or maintenance
 can still require an owner action. Ordinary Git helper tokens expire at reported
 times because they must remain valid after helper exit; API leases are best-effort
 revoked immediately. Deactivation/disable does not claim server-side revocation.
 
-Merge, automatic-inclusion feasibility, remaining live criteria and owner acceptance remain pending.
+Merge, final-head CI and actual signing-key rotation remain pending; current All
+mode and desktop acceptance have passed as recorded below.
 The previous SPEC-022 slice remains Delivered, with its retained source/app/PR
 and explicit reported token revocation unchanged.
 
@@ -189,3 +191,97 @@ second repository remains uncreated. No additional permission/installation
 selection change was attempted. The [design alternatives](technical-design.md)
 require a new owner scope decision; the existing approvals remain valid for
 their bounded targets and grants. The App/key are retained privately.
+
+## Approved All repositories recovery — October 11
+
+The owner instructed “Lets do all repos”, approving the concrete account-wide
+proposal, and removed the unused installation-access permission. Actual App and
+installation readback now show All repositories and exactly Repository creation,
+Contents and Pull requests write plus Metadata read. App root authority covers
+all existing/future account repositories; project credentials remain singleton.
+No unrelated source was read/enrolled and no unrelated write was attempted.
+
+Provider 1.5.2/profile schema 2 passed 47 focused tests in 66.264 seconds. The full
+repository checker passed exit 0, including 47 broker tests in 82.667 seconds,
+41 provisioning tests and 21 template tests. Whitespace and changed Markdown
+relative links passed. Exact final revision/CI follows the PR; no private file
+is staged. Previous selected/enrollment failures remain historical evidence.
+
+Executed inactive `credentials installation-policy --repository-selection all`,
+retaining the previous profile, then resumed operation
+`148056feb07746a5be813c8e0f2dfac5`. It completed the first retained repository
+without replaying creation, opened initial PR #1 and published the local starter.
+The previous failed PUT is marked superseded, not falsely verified successful.
+Then `credentials activate`, `new gptclaw-prj005-two --plan` and normal
+`new gptclaw-prj005-two` completed. This proves first-canary recovery plus one
+successive fresh configured creation, not two fresh creates under the final
+policy. No per-project PAT/deploy key/installation selection was required.
+
+| Project | Repository ID / operation | Main / starter SHA | Initial / later PR |
+|---|---|---|---|
+| gptclaw-prj005-one | `1414446320` / `148056feb07746a5be813c8e0f2dfac5` | `ee364671806f64ea136ddf24defa59a35a7f98a7` / `8225e9e34cc924a0834135d44118bf3e874a6748` | [#1](https://github.com/danielbardsley/gptclaw-prj005-one/pull/1) / [#2](https://github.com/danielbardsley/gptclaw-prj005-one/pull/2) |
+| gptclaw-prj005-two | `1414488910` / `ddf88444efa54a1ea92e870d1c2deef6` | `8324fd7ea41628102f95c3d2c66aa6e738afeee4` / `5c1e8fdd625eaba67aaf93b56f8e5a560f613186` | [#1](https://github.com/danielbardsley/gptclaw-prj005-two/pull/1) / [#2](https://github.com/danielbardsley/gptclaw-prj005-two/pull/2) |
+
+Doctor reports ready/active/creation verified, 16 installation repositories and
+managed IDs `1413668232`, `1414446320`, `1414488910`. Both default branches read
+back as main and protection is explicitly owner-waived, `verified:false`. All
+four fixture PRs are open; no fixture merge is implied or performed.
+
+### Git isolation, renewal and source preservation
+
+Native fetch passed in both projects. A parallel second fetch failed while a
+scope probe issued credentials; its serialized read-only retry passed. No broader
+fallback was used. Each project token's response proved exactly one immutable ID,
+Selected token scope and Contents-write/Metadata-read grants despite the All
+installation. Actual GitHub reads to the other private project returned 404.
+Fresh reacquisition after discarding/revoking previous leases passed; explicit
+API lease revocation returned `revoked`. No one-hour expiry wait is claimed.
+
+The platform repository is public (`private:false`): metadata GET returned 200
+with admin/maintain/push/triage/pull permissions all false for these tokens.
+Public read is not denied private access; AC-003 now states that distinction.
+Both helpers rejected platform/foreign URL requests before issuing credentials,
+with empty output. No platform write was attempted.
+
+Native pushes from two task-owned worktrees to `codex/credential-verification`
+passed. Minimal singleton PR leases (Contents read, Pull requests write, Metadata
+read) opened the later PRs above and revoked afterwards. Temporary worktrees were
+removed normally; branches/PRs are retained. Disable of the first binding denied
+new issuance while the second's fresh fetch passed; enable and first fetch passed.
+Hash comparison proved dirty `next-env.d.ts` and `tsconfig.json` files unchanged
+across refresh/recovery. Next generated those edits; they remain uncommitted.
+
+An initial diagnostic used a non-context-manager token object and exited before
+revoking one singleton Git lease. No bearer was displayed/persisted; its exact
+expiry was not recorded but issuance validation bounds it within 65 minutes.
+Subsequent diagnostics used explicit finally/revocation. Ordinary native Git
+handoffs also stay valid until reported expiry; immediate revocation is not
+claimed. `new prj005-local-preview --local-only --plan` reported no GitHub action
+or provider; no additional local/remote project was created.
+
+### Private runtime and owner checks
+
+Both manifest/provenance validations passed. Scoped start passed frozen dependency
+installation/build and private readiness. First start operation
+`998ee5ed316740b490f5129b9779387c` took 48.433 seconds, second
+`d121000baa2641f39b90f6450d9052ff` 36.585 seconds. Declared tests passed in
+operations `7fae3195611a4508a5748197f903c6cf` and
+`0caa48b8e900422dab574a02c17d3f5a`. Explicit container `pnpm typecheck` passed
+for each through the reviewed resource-limited provider job.
+
+Both private HTTPS pages and health endpoints returned 200 and matching project
+identity. The owner answered “Both load correctly” for
+[one](https://forge-dev-01-4.tail8c3304.ts.net/projects/gptclaw-prj005-one/) and
+[two](https://forge-dev-01-4.tail8c3304.ts.net/projects/gptclaw-prj005-two/).
+They remain ready on loopback ports 18086/18087. `hello-second` remained ready on
+18081 before, between and after operations and passed private page/health checks.
+The stable installed runner reports 1.5.2/schema 2. No unrelated runtime, public
+exposure, host package, infrastructure or production mutation occurred.
+
+Current disposition: AC-001/002/003/004/006/007 pass for the explicitly approved
+All repositories slice and observed recovery path. AC-005 still needs actual
+owner signing-key rotation/retirement; renewal/token revocation/disable/enable/
+recovery passed and real different-key rotation passed offline. AC-008's live
+app/independent-service/owner checks pass; final-head CI remains pending. Merge
+and Delivered remain pending. App/key, both repositories/projects/private apps
+and four open fixture PRs are retained as authorized. Revoked PATs were not reused.

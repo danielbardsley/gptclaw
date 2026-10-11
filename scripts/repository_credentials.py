@@ -18,6 +18,7 @@ import project_repositories as repos
 
 GRANTS = {'repository_creation': 'write', 'installation_repositories': 'write',
           'contents': 'write', 'pull_requests': 'write', 'metadata': 'read'}
+ALL_GRANTS = {key:value for key,value in GRANTS.items() if key!='installation_repositories'}
 ROLES = {'audit': {'metadata': 'read'}, 'create': {'repository_creation': 'write', 'metadata': 'read'},
          'enroll': {'installation_repositories': 'write', 'metadata': 'read'},
          'git': {'contents': 'write', 'metadata': 'read'},
@@ -57,9 +58,13 @@ def load(path, optional=False):
 
 def profile(value=None):
     if value is None: value = load(location()/'profile.json')
-    check(isinstance(value, dict) and set(value) == {'schema_version','account','app_id','installation_id',
-          'key_file','bootstrap_repository_ids','policy','active','creation_verified'})
-    check(type(value['schema_version']) is int and value['schema_version'] == 1 and value['account'] == repos.ACCOUNT)
+    fields={'schema_version','account','app_id','installation_id',
+            'key_file','bootstrap_repository_ids','policy','active','creation_verified'}
+    check(isinstance(value,dict) and type(value.get('schema_version')) is int
+          and value['schema_version'] in {1,2})
+    check(set(value)==(fields if value['schema_version']==1 else fields|{'repository_selection'}))
+    check(value['account']==repos.ACCOUNT)
+    if value['schema_version']==2:check(value['repository_selection'] in {'selected','all'})
     for field in ['app_id','installation_id']:
         check(type(value[field]) is int and value[field] > 0)
     ids = value['bootstrap_repository_ids']
@@ -69,6 +74,14 @@ def profile(value=None):
           and type(value['creation_verified']) is bool)
     check(isinstance(value['key_file'],str))
     return value
+
+
+def selection(value):
+    return value.get('repository_selection','selected')
+
+
+def grants(value):
+    return ALL_GRANTS if selection(value)=='all' else GRANTS
 
 
 def operations():
@@ -236,16 +249,18 @@ class Broker:
     def identity(self):
         api=self.api();actual=api.request('GET','/app')
         check(actual.get('id')==self.profile['app_id'] and actual.get('owner',{}).get('login')==repos.ACCOUNT,'credential-auth')
-        check(actual.get('permissions')==GRANTS,'credential-scope')
+        check(actual.get('permissions')==grants(self.profile),'credential-scope')
         install=api.request('GET','/app/installations/'+str(self.profile['installation_id']))
         check(install.get('id')==self.profile['installation_id'] and install.get('app_id')==self.profile['app_id']
               and install.get('account',{}).get('login')==repos.ACCOUNT
               and install.get('account',{}).get('type')=='User' and install.get('suspended_at') is None,'credential-auth')
-        check(install.get('repository_selection')=='selected' and install.get('permissions')==GRANTS,'credential-scope')
+        check(install.get('repository_selection')==selection(self.profile)
+              and install.get('permissions')==grants(self.profile),'credential-scope')
         return {'app_id':self.profile['app_id'],'installation_id':self.profile['installation_id'],
-                'account':repos.ACCOUNT,'permissions':GRANTS,'repository_selection':'selected'}
+                'account':repos.ACCOUNT,'permissions':grants(self.profile),'repository_selection':selection(self.profile)}
     def issue(self, role, repo_id=None, name=None):
         check(role in ROLES)
+        if role=='enroll':check(selection(self.profile)=='selected','credential-policy')
         check((role in {'audit','create','enroll'}) == (repo_id is None),'credential-scope')
         body={'permissions':ROLES[role]}
         if repo_id is not None:body['repository_ids']=[repo_id]
@@ -254,7 +269,8 @@ class Broker:
         try:
             check(isinstance(data,dict),'credential-scope')
             perms=data.get('permissions');check(perms==ROLES[role],'credential-scope')
-            check(data.get('repository_selection')=='selected','credential-scope')
+            expected='selected' if repo_id is not None else selection(self.profile)
+            check(data.get('repository_selection')==expected,'credential-scope')
             expires=data.get('expires_at');parsed=dt.datetime.fromisoformat(expires.replace('Z','+00:00'))
             check(parsed.tzinfo is not None,'credential-scope')
             remaining=parsed-dt.datetime.now(dt.timezone.utc)
@@ -264,7 +280,8 @@ class Broker:
                 check(isinstance(returned,list) and len(returned)==1,'credential-scope')
                 check_repo(returned[0],repo_id,name)
             token=Access(data.get('token'),parsed.isoformat(),{'expires_at':parsed.isoformat(),
-                'repository_id':repo_id,'repository':None if repo_id is None else returned[0]['full_name'],'permissions':perms,'role':role})
+                'repository_id':repo_id,'repository':None if repo_id is None else returned[0]['full_name'],
+                'repository_selection':expected,'permissions':perms,'role':role})
             return token
         except (ValueError,TypeError,AttributeError):
             raise app.AppError('credential-scope') from None
@@ -275,21 +292,27 @@ class Broker:
             raise
     def doctor(self):
         identity=self.identity()
+        registered=bindings()
+        approved=set(self.profile['bootstrap_repository_ids']) | {b['repository_id'] for b in registered}
+        required=set(self.profile['bootstrap_repository_ids']) | {b['repository_id'] for b in registered if b['enabled']}
         with self.lease('audit') as token:
             observed=set()
             for page in range(1,11):
                 result=token.request('GET','/installation/repositories?per_page=100&page='+str(page))
                 items=result.get('repositories');check(isinstance(items,list) and len(items)<=100,'credential-scope')
-                for item in items:observed.add(check_repo(item)['id'])
+                for item in items:
+                    check(type(item.get('id')) is int and item['id']>0
+                          and item.get('owner',{}).get('login')==repos.ACCOUNT,'credential-scope')
+                    if selection(self.profile)=='selected' or item['id'] in approved:check_repo(item)
+                    observed.add(item['id'])
                 if len(items)<100:break
             else:raise app.AppError('credential-scope')
-        registered=bindings()
-        approved=set(self.profile['bootstrap_repository_ids']) | {b['repository_id'] for b in registered}
-        required=set(self.profile['bootstrap_repository_ids']) | {b['repository_id'] for b in registered if b['enabled']}
-        check(required<=observed<=approved,'credential-scope')
+        check(required<=observed,'credential-scope')
+        if selection(self.profile)=='selected':check(observed<=approved,'credential-scope')
         return {**identity,'state':'ready' if self.profile['creation_verified'] else 'canary-required',
                 'active':self.profile['active'],'creation_verified':self.profile['creation_verified'],
-                'selected_repository_ids':sorted(observed),'policy':self.profile['policy']}
+                'selected_repository_ids':sorted(observed&approved),'installation_repository_count':len(observed),
+                'policy':self.profile['policy']}
     @contextlib.contextmanager
     def lease(self, role, repo_id=None, name=None):
         token=self.issue(role,repo_id,name)
@@ -308,6 +331,7 @@ class Broker:
             return self.issue(role,value['repository_id'],value['name'])
 
     def enroll_created(self, operation):
+        check(selection(self.profile)=='selected','credential-policy')
         # Only the durable App creation receipt and matching immutable binding
         # authorize this installation-management operation. No arbitrary import.
         receipt=repos.read_receipt(operation);value=receipt['plan']
@@ -338,8 +362,9 @@ class Broker:
                 token.close();entry['credential']=token.metadata;repos.persist(receipt)
 
 
-def configure(app_id,installation_id,key_file,bootstrap_ids):
-    value=profile({'schema_version':1,'account':repos.ACCOUNT,'app_id':app_id,'installation_id':installation_id,
+def configure(app_id,installation_id,key_file,bootstrap_ids,repository_selection='selected'):
+    value=profile({'schema_version':2,'repository_selection':repository_selection,
+        'account':repos.ACCOUNT,'app_id':app_id,'installation_id':installation_id,
         'key_file':str(app.safe(Path(key_file).absolute())),'bootstrap_repository_ids':sorted(bootstrap_ids),
         'policy':'unprotected-private-dev','active':False,'creation_verified':False})
     with app.locked('credential-profile'):
@@ -347,6 +372,17 @@ def configure(app_id,installation_id,key_file,bootstrap_ids):
         result=Broker(value).doctor()
         private_directory(location());app.save(location()/'profile.json',value)
     return result
+
+
+def set_installation_policy(repository_selection):
+    # Explicit owner action, never inferred from a changed GitHub installation.
+    with app.locked('credential-profile'):
+        old=profile();check(not old['active'],'credential-disabled')
+        value=profile({**old,'schema_version':2,'repository_selection':repository_selection})
+        result=Broker(value).doctor()
+        app.save(location()/'previous-installation-profile.json',old)
+        app.save(location()/'profile.json',value)
+    return {**result,'state':'installation-policy-updated','active':False}
 
 
 def set_active(active):
@@ -432,10 +468,11 @@ class Provision:
                     entry=receipt['installation_enrollment']
                     check(entry.get('repository_id')==self.repo_id
                           and entry.get('installation_id')==self.broker.profile['installation_id'],'credential-policy')
-                    entry['state']='verified';repos.persist(receipt)
+                    entry['state']='verified' if selection(self.broker.profile)=='selected' else 'superseded-by-all-repositories'
+                    repos.persist(receipt)
                 self.token=self.broker.issue('provision',self.repo_id,self.value['repository'])
                 return self.token
-            if attempt==0:
+            if attempt==0 and selection(self.broker.profile)=='selected':
                 try:self.broker.enroll_created(self.value['operation_id'])
                 finally:
                     saved=repos.read_receipt(self.value['operation_id'])
@@ -557,8 +594,9 @@ def preview(name,directory=None,template=None,version=None,local_only=False):
                 'policy':{'id':'unprotected-private-dev','protection_enforced':False},
                 'credential_provider':{'app_id':value['app_id'],'installation_id':value['installation_id'],
                   'creation':ROLES['create'],'provision':ROLES['provision'],'ongoing_git':ROLES['git']},
-                'installation_enrollment':ROLES['enroll'],
-                'side_effects':['create private repository','add created repository to selected installation','publish starter branch','open initial PR','enroll scoped Git helper'],
+                'installation_enrollment':ROLES['enroll'] if selection(value)=='selected' else None,
+                'installation_selection':selection(value),
+                'side_effects':['create private repository']+(['add created repository to selected installation'] if selection(value)=='selected' else [])+['publish starter branch','open initial PR','enroll scoped Git helper'],
                 'environments':[],'secret_references':[]}
     check(destination.is_relative_to(app.PROJECTS) and destination not in {app.PROJECTS,app.REPO}
           and '.gptclaw-runtime' not in destination.parts,'path')

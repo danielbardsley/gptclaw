@@ -11,25 +11,25 @@ Register a GitHub App under the personal account using a unique App name. Set
 visibility to **Only on this account**, disable webhooks, and leave OAuth callback
 URLs empty. No public service or callback is needed. Homepage can reference the
 GptClaw repository. Grant **Repository creation: write**, **Contents: write**,
-**Pull requests: write**, **GitHub App installation repository access: write**,
-and automatic **Metadata: read** only. The installation-access permission is the
-October 11 owner-approved amendment for explicit enrollment of recorded newly
-created repositories; it is excluded from project Git/API tokens. Do not substitute
-Administration, all repositories, a PAT or a user access token if an option is
+**Pull requests: write**, and automatic **Metadata: read** only. The unused
+installation-access permission from the previous candidate is removed.
+Do not substitute Administration, a PAT or a user access token if an option is
 unavailable; return the exact missing capability for review.
 
-Install on **Only select repositories**, initially selecting only
-`gptclaw-prj004-verification` (ID `1413668232`). App-created repositories should
-be included automatically; live canary verification must demonstrate it.
-No permission to select the platform repository or unrelated projects is implied.
+Install on **All repositories** under the October 11 explicit owner approval.
+The App root key has Contents/PR authority across existing/future account
+repositories, including the platform and unrelated repositories. Normal project
+tokens are still restricted to one approved immutable binding. This is access
+authority, not permission to perform unrelated writes or project enrollment.
+`gptclaw-prj004-verification` (ID `1413668232`) remains the required bootstrap
+reference. New-repository access still requires actual live readback.
 
 The October 11 live canary created its private personal repository, but the
 selected installation did not automatically gain access. The profile remains
-inactive; see [actual evidence](../docs/023-repository-credential-broker/acceptance.md).
-Provider 1.5.1 adds a candidate explicit installation enrollment path approved by
-the project owner; the live enrollment attempt also failed after grant approval.
-These creation/activation
-commands are not a currently accepted operational path.
+inactive at that point; see [actual evidence](../docs/023-repository-credential-broker/acceptance.md).
+Provider 1.5.1's explicit enrollment attempt also failed after grant approval.
+The owner then approved All repositories; provider 1.5.2 records that policy
+explicitly and disables the unnecessary enrollment role in All mode.
 Do not manually select each new repository and claim automatic inclusion passed,
 or replay a retained creation operation. Resolve the supported access mechanism
 through a reviewed design/scope decision before continuing that same operation.
@@ -45,7 +45,7 @@ No client secret is needed by the proposed installation-only path.
 The initial policy is private repositories with PR review without enforced branch
 protection, as selected by the project owner. It has no Secrets/Environments,
 Workflows or organization permission. App-created repository ownership, main
-branch behavior and automatic selected-installation inclusion must be verified
+branch behavior and automatic access to successive new repositories must be verified
 before readiness is claimed. Failure never broadens privileges.
 
 [GitHub installation behavior](https://docs.github.com/en/apps/using-github-apps/installing-your-own-github-app)
@@ -55,13 +55,13 @@ same-user security boundary. Every forge process shares the development identity
 Implementation commands, rotation/revocation and recovery details follow below
 as the adapter is implemented and verified.
 
-## Implemented provider 1.5.1 interface
+## Implemented provider 1.5.2 interface
 
 Use the source runner for setup and check `scripts/gptclawctl --version` first.
 Older installed 1.4.0 launchers do not consume the new profile. The existing
 private-app provider rollout updates the stable launcher during an authorized
 app start; profile activation itself changes no service/unit/host configuration.
-Owned project helpers run from an immutable 1.5.1 bundle regardless of branch
+Owned project helpers run from an immutable 1.5.2 bundle regardless of branch
 switches. Signing uses the existing `/usr/bin/openssl` implementation; no host
 package or new Python crypto dependency is installed.
 
@@ -88,15 +88,24 @@ Once the exact setup is approved, configure using real IDs and the private path:
 scripts/gptclawctl credentials configure \
   --app-id <app-id> --installation-id <installation-id> \
   --key-file /home/forge/.config/gptclaw-credentials/app.pem \
-  --bootstrap-repository-id 1413668232
+  --bootstrap-repository-id 1413668232 --repository-selection all
 scripts/gptclawctl credentials doctor
 ```
 
 Configure verifies the signed App identity, personal installation, exact minimal
 grants and selected repository inventory before writing an inactive profile.
+For an existing inactive selected profile, after the owner changes the GitHub
+installation and removes installation repository access, run the explicit
+`credentials installation-policy --repository-selection all` command instead
+of reconfiguring. It verifies actual scope/grants/inventory, retains the previous
+profile and saves inactive schema-2 policy. Legacy schema-1 stays selected;
+an observed GitHub scope change cannot implicitly migrate or activate it.
+
 Doctor cannot establish personal creation support without the canary. It returns
 `canary-required` until an actual App-created repository has completed setup;
-it never treats all-repositories access or an additional privilege as a fallback.
+it never treats an unapproved policy/privilege as a fallback. Doctor reports
+managed repository IDs and total installation inventory count; unrelated source
+is not read or enrolled.
 The configuration command refuses an existing profile rather than overwrite it.
 
 With separately authorized retained targets, perform the first creation canary:
@@ -122,7 +131,9 @@ release already delivered; it does not add templates or upgrade existing apps.
 Creation uses a short-lived creation-only token inside the provisioning adapter.
 Project tokens always carry exactly one repository ID and actual matching
 permissions/expiry. Unexpected/omitted scope is rejected and best-effort revoked.
-If automatic inclusion is absent, explicit enrollment validates the App creation
+All mode relies on the approved installation scope and bounded access readback;
+it never uses an installation-management token/PUT. The historical selected
+candidate, if deliberately configured, validates the App creation
 journal and immutable binding, then issues a separate installation-management
 token for the same configured installation and created repository only. It
 records intent, uses the idempotent membership PUT, revokes that token and reads

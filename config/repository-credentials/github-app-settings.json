@@ -5,12 +5,11 @@
   "visibility": "only-this-account",
   "webhooks": false,
   "oauth_callbacks": false,
-  "repository_selection": "selected",
+  "repository_selection": "all",
   "bootstrap_repository": "danielbardsley/gptclaw-prj004-verification",
   "bootstrap_repository_id": 1413668232,
   "permissions": {
     "repository_creation": "write",
-    "installation_repositories": "write",
     "contents": "write",
     "pull_requests": "write",
     "metadata": "read"

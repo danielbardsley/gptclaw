@@ -1,6 +1,6 @@
 # SPEC-023: Repository credential broker
 
-- **Status:** In review — App configured; live automatic-inclusion canary blocked
+- **Status:** In review — All repositories policy approved; live acceptance in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** PRJ-005, initial GitHub App broker; bounded PRJ-002/004 integration
@@ -32,7 +32,8 @@ provider 1.5.0 implements the broker; no real App/key/live project has been crea
 by offline implementation tests. The owner subsequently completed App setup and
 approved both retained live targets/activation. Actual personal creation passed,
 but automatic selected-installation inclusion failed the first canary; the
-profile remains inactive. See [acceptance.md](acceptance.md) for actual evidence.
+profile was left inactive at that point. The later All repositories amendment
+recovered that operation and activated the profile; see [acceptance.md](acceptance.md).
 
 On October 11 the project owner approved the proposed additional **GitHub App
 installation repository access: write** permission by updating the App settings.
@@ -45,6 +46,19 @@ authority is added. The installation must accept the updated grant before use;
 App settings alone are insufficient. The no-per-project-owner-action outcome
 and all other acceptance requirements remain unchanged. This candidate mechanism
 still requires live proof before activation.
+
+After that candidate also failed live, the project owner instructed “Lets do all
+repos” on October 11, approving the concrete account-wide installation proposal
+in the design. The current accepted setup is the same private App installed on
+**All repositories**, with Repository creation/Contents/Pull requests write and
+Metadata read; the unused installation-access permission is removed. This grants
+App root authority over every existing/future account repository, including the
+platform and unrelated repositories. It does not authorize new writes to those
+repositories or enroll them as managed projects. Project Git/API tokens remain
+restricted to one approved immutable binding and exclude creation/administration.
+Schema-2 profile policy records All repositories explicitly; a GitHub change
+alone cannot implicitly migrate or activate the broker. The two authorized
+retained targets and successful-canary activation gate remain in force.
 
 ## Baseline and scope
 
@@ -70,8 +84,9 @@ installation and private routing remain the delivered SPEC-018–021 path.
 Exclude organizations, production/cloud credentials, public repos/previews,
 webhook servers or public OAuth callbacks, app runtime secrets, automatic merges,
 GitHub Actions workflow-file writes, environments/secrets administration,
-arbitrary repository import, dashboards and account-wide installation by default.
-Existing-repository onboarding is limited to explicitly selected owner-managed
+arbitrary repository import and dashboards. Account-wide installation is included
+only under the explicit October 11 approval, not inferred after a denial.
+Existing-repository onboarding is limited to explicitly approved owner-managed
 verification/bootstrap repositories, with exact IDs approved during setup.
 Deploy keys are a separately reviewed fallback if App feasibility fails; they
 are not an automatic substitute or proof of the no-per-project-setup outcome.
@@ -81,8 +96,8 @@ are not an automatic substitute or proof of the no-per-project-setup outcome.
 - CRD-001: Provide a one-time setup/readiness workflow recording the approved
   account, App/installation IDs, selected bootstrap repository IDs, concrete
   permissions, private key location, project defaults and owner. Verify actual
-  App/installation identity and authority before reporting ready. Prefer selected
-  repositories and automatic inclusion of App-created repositories; never
+  App/installation identity and authority before reporting ready. Record the
+  approved All repositories policy separately from singleton project scope; never
   silently broaden to all repositories, add unrelated repositories, enable a
   public callback or substitute user/account-wide credentials after a denial.
 - CRD-002: Automatically create each newly requested private repository using
@@ -138,9 +153,9 @@ are not an automatic substitute or proof of the no-per-project-setup outcome.
 
 | ID | Required observable evidence | Requirements |
 |---|---|---|
-| AC-001 | Owner-reviewed App permissions/selected-repository setup and key handling are documented. Doctor/status verifies actual account/App/installation binding and rejects wrong account/key/install/grants, with no unauthorized mutation. | CRD-001 |
+| AC-001 | Owner-reviewed App permissions, explicit All repositories policy and key handling are documented. Doctor/status verifies actual account/App/installation binding and rejects wrong account/key/install/grants or an unapproved policy switch, with no unauthorized mutation. | CRD-001 |
 | AC-002 | After one setup, two authorized new private projects independently complete repository creation, automatic App inclusion, bound credentials and initial PRs without another PAT, deploy key or installation-selection click. Missing inclusion/creation support stops without widening scope. | CRD-002/006/008 |
-| AC-003 | Actual token metadata matches one immutable repository ID and minimal operation permissions. A credential issued for A cannot read/push B or the unrelated platform repo. Missing restriction/extra grants are rejected offline. Creation authority is never handed to project Git. | CRD-003/004 |
+| AC-003 | Actual token metadata matches one immutable repository ID and minimal operation permissions. A credential issued for A cannot read/push private B or obtain platform write authority; its helper rejects platform/foreign URL credential requests. Public metadata is inherently readable and is not claimed private. Missing restriction/extra grants are rejected offline. Creation authority is never handed to project Git. | CRD-003/004 |
 | AC-004 | Synthetic-secret tests cover stdout/stderr/errors/receipts/remotes/argv/environment/container/bundle boundaries, unsafe key files, Git rewrites/helpers and binding substitution. Live evidence contains IDs/grant/expiry metadata only. | CRD-004 |
 | AC-005 | Offline expiry/skew/rate-limit/response-loss/race tests pass. Live reacquisition and Git operations work after discarding or expiring a prior token, without owner action. Key rotation and installation/token revocation show documented outcomes, residual lifetimes and recoverable journals; no write replay or fallback. | CRD-005/008 |
 | AC-006 | Activated profile gives the combined normal new flow, initial PR and explicit owner-selected unprotected-private-dev policy; local-only/unconfigured creation has no GitHub side effects. Existing manual PAT flow and unrelated apps retain behavior; no immutable template edits or implicit enrollment. | CRD-006 |
@@ -150,20 +165,20 @@ are not an automatic substitute or proof of the no-per-project-setup outcome.
 ## Decisions, ownership and completion
 
 The project owner owns the App, selected bootstrap target/grants, private-key custody,
-standing profile and acceptance. The proposed primary path uses an App installed
-on selected repositories: GitHub documents access to repositories it creates,
-while installation tokens can be narrowed by repository ID and permission. This
-is documented capability, not evidence that the current host/account already has
-such an App or that its exact creation path works. Gate implementation adapter
+standing profile and acceptance. The primary path now uses the approved All
+repositories installation. The earlier selected path and explicit enrollment
+candidate failed live; those observations are preserved in acceptance. Project
+installation tokens are narrowed by repository ID and permission. Gate adapter
 selection on a concrete endpoint/permission review and live canary after explicit
 setup/fixture authorization. [Installation](https://docs.github.com/en/apps/using-github-apps/installing-your-own-github-app),
 [token scope/lifetime](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app),
 [App permissions](https://docs.github.com/en/rest/authentication/permissions-required-for-github-apps).
 
 Propose the existing retained SPEC-022 verification repository as the sole initial
-bootstrap selection; exact App name/ID, installation ID and grant are reviewed
-before enrollment. No permission is implied to select GptClaw or other existing
-projects. App creation/installation/private-key placement is one owner setup;
+bootstrap reference; exact App name/ID, installation ID and grants are reviewed
+before activation. Account-wide App access is explicitly approved, while writes
+to/enrollment of GptClaw or other existing projects require their own task scope.
+App creation/installation/private-key placement is one owner setup;
 periodic key maintenance or revoked-grant reauthorization remains possible,
 without a repeated setup for every project. Automatic personal-account creation
 must be proven using the chosen App credential class; if it cannot satisfy the

@@ -51,7 +51,7 @@ class Factory:
             if ids is not None and any(i not in self.selected for i in ids):raise app.AppError('credential-scope')
             self.token_count+=1;secret='synthetic_'+str(self.token_count)+'.format-variable-token'
             expires=(dt.datetime.now(dt.timezone.utc)+dt.timedelta(minutes=59)).isoformat()
-            data={'token':secret,'expires_at':expires,'permissions':body['permissions'],'repository_selection':self.selection,
+            data={'token':secret,'expires_at':expires,'permissions':body['permissions'],'repository_selection':'selected' if ids is not None else self.selection,
                   'repositories':[self.selected[i] for i in (ids if ids is not None else self.selected)]}
             if self.mutate:self.mutate(data)
             self.tokens[secret]={'data':copy.deepcopy(data),'ids':ids,'revoked':False}
@@ -227,6 +227,39 @@ class Tests(unittest.TestCase):
         self.factory.grants.pop('installation_repositories')
         with self.assertRaises(app.AppError):self.configure()
         self.assertFalse(any(c[0]=='PUT' for c in self.factory.calls))
+    def test_approved_all_repositories_keeps_project_tokens_singleton(self):
+        self.factory.selection='all';self.factory.grants=copy.deepcopy(broker.ALL_GRANTS)
+        # Broad installation inventory can include an unrelated public repository.
+        self.factory.selected[999]={**row(999,'Unrelated_Repo'),'private':False}
+        broker.configure(17,19,str(self.key),[100],repository_selection='all')
+        first=broker.create('first',str(self.projects/'first'),canary=True);broker.set_active(True)
+        second=broker.new_project('second')
+        self.assertEqual(first['state'],'repository-ready');self.assertEqual(second['state'],'repository-ready')
+        self.assertEqual(broker.Broker().doctor()['selected_repository_ids'],[100,101,102])
+        self.assertEqual(broker.Broker().doctor()['installation_repository_count'],4)
+        token=broker.Broker().project_token(self.projects/'first','git')
+        self.assertEqual(token.metadata['repository_selection'],'selected')
+        self.assertEqual(self.factory.tokens[token._token]['ids'],[101])
+        with self.assertRaises(app.AppError):token.request('GET','/repos/'+repos.ACCOUNT+'/second')
+        token.close();self.assertFalse(any(c[0]=='PUT' for c in self.factory.calls))
+    def test_all_repositories_requires_explicit_inactive_profile_update(self):
+        self.configure();self.factory.selection='all';self.factory.grants=copy.deepcopy(broker.ALL_GRANTS)
+        with self.assertRaises(app.AppError):broker.Broker().identity()
+        result=broker.set_installation_policy('all')
+        self.assertEqual(result['state'],'installation-policy-updated');self.assertFalse(broker.profile()['active'])
+        self.assertEqual(broker.selection(broker.profile()),'all')
+        self.assertTrue((broker.location()/'previous-installation-profile.json').exists())
+    def test_all_installation_token_cannot_enter_project_git(self):
+        self.factory.selection='all';self.factory.grants=copy.deepcopy(broker.ALL_GRANTS)
+        broker.configure(17,19,str(self.key),[100],repository_selection='all')
+        self.factory.mutate=lambda data:data.update(repository_selection='all')
+        with self.assertRaises(app.AppError):broker.Broker().issue('git',100,'bootstrap')
+        self.assertTrue(list(self.factory.tokens.values())[-1]['revoked'])
+        with self.assertRaises(app.AppError):broker.Broker().issue('enroll')
+    def test_failed_all_policy_update_preserves_selected_profile(self):
+        self.configure();before=broker.profile();self.factory.selection='all'
+        with self.assertRaises(app.AppError):broker.set_installation_policy('all')
+        self.assertEqual(before,broker.profile())
     def test_scoped_resume_retains_operation_and_one_pr(self):
         self.first();binding=broker.bound(self.projects/'first')
         result=broker.resume(binding['operation_id'])
