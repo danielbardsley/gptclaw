@@ -84,6 +84,15 @@ class Groups(unittest.TestCase):
         self.assertNotIn('/home/forge:',text)
         self.assertEqual(children['web'][1]['service']['health']['path'],'/projects/notes/')
 
+    def test_internal_dependency_address_follows_declared_api_port(self):
+        self.value['components']['api']['service']['internal_port']=8080
+        self.save_contract(self.value)
+        with patch.object(a,'available',return_value=True):s,children=self.runtime()
+        web=a.state_for(s['components']['web'])
+        self.assertEqual(web['runtime_api_url'],'http://api:8080/projects/notes/api/ready')
+        a.valid_state(web)
+        with self.assertRaises(a.AppError):a.valid_state({**web,'runtime_api_url':'http://external.invalid/ready'})
+
     def test_schema2_group_receipt_refuses_tampered_ownership(self):
         with patch.object(a,'available',return_value=True):s,_=self.runtime()
         for updates in [{'network':'foreign'},{'root':'/etc'},{'components':{'api':'foreign','web':'foreign'}},{'phase':'invented'},{'token':'bad'}]:

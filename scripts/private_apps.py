@@ -14,6 +14,7 @@ import subprocess
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 
@@ -186,7 +187,11 @@ def valid_state(s):
   need(isinstance(s['group'],str) and re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',s['group']) and len(s['group'])<=48)
   need(s.get('component') in groups.ORDER and s['id']==groups.identity(s['group'],s['component']))
   need(s.get('network')=='gptclaw-group-'+s['group'] and s.get('network_alias')==s['component'])
-  need(s.get('runtime_project_id')==s['group'] and s.get('runtime_api_url')==f"http://api:8000/projects/{s['group']}/api/ready")
+  need(s.get('runtime_project_id')==s['group'] and isinstance(s.get('runtime_api_url'),str))
+  try:api_url=urllib.parse.urlsplit(s['runtime_api_url']);api_port=api_url.port
+  except ValueError:raise AppError('conflict') from None
+  need(api_url.scheme=='http' and api_url.hostname=='api' and api_url.username is None and api_url.password is None and not api_url.query and not api_url.fragment)
+  need(type(api_port) is int and 1024<=api_port<=65535 and re.fullmatch(r'/[A-Za-z0-9._/-]*',api_url.path) and not any(p in {'.','..'} for p in api_url.path.split('/')))
  need(s.get('phase') in {'preparing','starting','ready','stopped','failed'})
  need(type(s.get('health_ready')) is bool)
  if 'toolchain_hash' in s:need(isinstance(s['toolchain_hash'],str) and re.fullmatch(r'[0-9a-f]{64}',s['toolchain_hash']))
@@ -253,7 +258,12 @@ def reserve(root, contract):
  with locked('registry'):
   s = state_for(slug)
   if s:
-   need(s['schema_version']==1 and s['root'] == str(root)); return s
+   need(s['schema_version']==1 and s['root'] == str(root))
+   import project_groups as groups
+   runtime=groups.component_runtime(root)
+   if runtime and any(s.get(k)!=v for k,v in runtime.items()):
+    need(s['phase']=='stopped','busy');s.update(runtime);save(STORE/(slug+'.json'),s)
+   return s
   used = {x['port'] for x in states()}
   port = next((p for p in PORTS if p not in used and available(p)), None)
   need(port is not None, 'ports')

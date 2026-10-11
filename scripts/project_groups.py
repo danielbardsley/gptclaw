@@ -78,7 +78,9 @@ def children(root, value):
 def scope(root, value):
     resolved = children(root, value)
     slug = value['project']['id']
-    entries = {path: {'contract': child, 'group': slug, 'component': name} for name,(path,child) in resolved.items()}
+    api_service=value['components']['api']['service']
+    api_url=f"http://api:{api_service['internal_port']}"+api_service['health']['path']
+    entries = {path: {'contract': child, 'group': slug, 'component': name, 'api_url': api_url} for name,(path,child) in resolved.items()}
     token = SCOPE.set(entries)
     try: yield resolved
     finally: SCOPE.reset(token)
@@ -97,7 +99,7 @@ def component_runtime(root):
     slug = entry['group']
     return {'group': slug, 'component': entry['component'], 'runtime_project_id': slug,
             'network': 'gptclaw-group-'+slug, 'network_alias': entry['component'],
-            'runtime_api_url': f'http://api:8000/projects/{slug}/api/ready'}
+            'runtime_api_url': entry['api_url']}
 
 
 def valid_state(s):
@@ -378,7 +380,7 @@ def cross_service(s, resolved):
         for key,value in py.GUARD_ENV.items():args+=['--env',key+'='+value]
         args += [api['image'],*resolved['api'][1]['commands']['start']]
         a.command(args)
-        a.run_in_app({**web,'job_network':net,'job_env':{'GPTCLAW_CONTRACT_API_URL':f"http://api:8000/projects/{s['id']}"}},['pnpm','contract'])
+        a.run_in_app({**web,'job_network':net,'job_env':{'GPTCLAW_CONTRACT_API_URL':f"http://api:{resolved['api'][1]['service']['internal_port']}/projects/{s['id']}"}},['pnpm','contract'])
     finally:
         # Never remove an unresolved web job; status retains the owned test resources.
         if not a.object_owned('container',web['name']+'-job',web['token']):
