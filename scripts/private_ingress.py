@@ -47,6 +47,7 @@ class Handler(BaseHTTPRequestHandler):
    import re
    if not re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',slug) or len(slug)>48:return self.fail(404)
    s=state_for(slug)
+   if s and s.get('group'):return self.fail(404)
    if not s or s['phase']!='ready' or not s.get('health_ready'):return self.fail(404)
    if s.get('schema_version')==2:
     import project_groups as groups
@@ -54,7 +55,7 @@ class Handler(BaseHTTPRequestHandler):
     if s is False:return self.fail(404)
     if s is None:return self.fail(503)
    verify_unit(s)
-   if s.get('adapter') == 'python':
+   if s.get('adapter') == 'python' and not s.get('group'):
     from pathlib import Path
     from private_apps import target, healthy
     _, contract = target(Path(s['root']))

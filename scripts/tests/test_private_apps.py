@@ -218,6 +218,21 @@ class ProxyTests(unittest.TestCase):
   for path in ['/projects/unknown/','/admin/','/projects/../']:
    with self.assertRaises(urllib.error.HTTPError) as e:urllib.request.urlopen(base+path)
    self.assertEqual(e.exception.code,404)
+ def test_group_api_proxy_uses_validated_group_upstream_without_child_target(self):
+  self.record.update(schema_version=2)
+  child={'phase':'ready','health_ready':True,'port':self.backend.server_port,'adapter':'python','group':'alpha'}
+  import project_groups as groups
+  with patch.object(groups,'upstream',return_value=child),patch.object(app,'target') as target:
+   with urllib.request.urlopen(f'http://127.0.0.1:{self.proxy.server_port}/projects/alpha/api/v1/notes?x=1') as response:
+    self.assertEqual(response.read(),b'served /projects/alpha/api/v1/notes?x=1')
+   target.assert_not_called()
+ def test_component_receipt_never_publishes_independent_route(self):
+  self.record.update(group='parent',schema_version=1)
+  with urllib.request.urlopen(f'http://127.0.0.1:{self.proxy.server_port}/healthz') as response:
+   self.assertEqual(response.status,200)
+  with self.assertRaises(urllib.error.HTTPError) as error:
+   urllib.request.urlopen(f'http://127.0.0.1:{self.proxy.server_port}/projects/alpha/')
+  self.assertEqual(error.exception.code,404)
  def test_stopped_mapping_is_not_published(self):
   self.record['phase']='stopped'
   with self.assertRaises(urllib.error.HTTPError) as e:urllib.request.urlopen(f'http://127.0.0.1:{self.proxy.server_port}/projects/alpha/')

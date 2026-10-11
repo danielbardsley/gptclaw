@@ -80,6 +80,7 @@ class Groups(unittest.TestCase):
         self.assertIn('GPTCLAW_API_READY_URL=http://api:8000/projects/notes/api/ready',text)
         self.assertIn('PublishPort=127.0.0.1:',text)
         self.assertNotIn('/home/forge:',text)
+        self.assertEqual(children['web'][1]['service']['health']['path'],'/projects/notes/')
 
     def test_schema2_group_receipt_refuses_tampered_ownership(self):
         with patch.object(a,'available',return_value=True):s,_=self.runtime()
@@ -151,6 +152,8 @@ class Groups(unittest.TestCase):
             self.assertEqual(g.upstream(s,'/projects/notes/api/v1/notes')['component'],'api')
             self.assertEqual(g.upstream(s,'/projects/notes/api-other/')['component'],'web')
             self.assertFalse(g.upstream(s,'/projects/notes/api/admin'))
+        with patch.object(a,'verify_unit'),patch.object(a,'healthy',side_effect=[True,False]):
+            self.assertIsNone(g.upstream(s,'/projects/notes/'))
         with patch.object(a,'verify_unit'),patch.object(a,'healthy',return_value=False):
             self.assertIsNone(g.upstream(s,'/projects/notes/'))
 

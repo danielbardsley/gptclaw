@@ -74,8 +74,9 @@ Use the existing private gateway for deterministic longest-prefix routing:
 
 Reserve the API namespace in web; route segment boundaries prevent `/api-other`
 from matching `/api/`. Probe components directly at declared upstream health paths;
-web readiness also verifies its declared API dependency with a short timeout via
-the owned network. Forward paths, query strings and redirects consistently with
+web readiness probes the rendered UI so syntax/compilation failures cannot appear
+healthy. Its separate `/health/` diagnostic also verifies the declared API dependency
+with a short timeout via the owned network. Group readiness requires both components. Forward paths, query strings and redirects consistently with
 existing mounted FastAPI routing. Do not trust arbitrary forwarded hosts or allow
 open-proxy requests. Keep existing router body/time/worker limits; notes payloads
 fit within them. Browser calls use base-path-aware relative same-origin API URLs,

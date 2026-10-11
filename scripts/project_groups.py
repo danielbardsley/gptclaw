@@ -23,7 +23,7 @@ def contract(slug, toolchains):
            'commands': {'build': ['pnpm', 'build'], 'start': ['pnpm', 'dev'], 'test': ['pnpm', 'test'],
                         'typecheck': ['pnpm', 'typecheck'], 'lint': ['pnpm', 'typecheck'],
                         'verify': ['pnpm', 'verify']},
-           'service': {'internal_port': 3000, 'health': {'path': f'/projects/{slug}/health/', 'timeout_seconds': 5}}}
+           'service': {'internal_port': 3000, 'health': {'path': f'/projects/{slug}/', 'timeout_seconds': 5}}}
     api['service']['health']['path'] = f'/projects/{slug}/api/ready'
     components = {}
     for name, child in [('api', api), ('web', web)]:
@@ -204,6 +204,7 @@ def start(root, no_route=False, take_lock=True):
             for path,_ in resolved.values():
                 import project_toolchains as tools
                 tools.assert_active(tools.selection(path),a.state_for(component_target(path)[1]['project']['id']))
+            if not no_route:a.ensure_ingress()
             return {**status(root),'changed':False}
         # Partial or interrupted groups must be reconciled by stop before another start.
         a.need(not any(c.get('active') for c in current.values()),'health')
