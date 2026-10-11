@@ -1,6 +1,6 @@
 # TASKS-024: Python FastAPI template
 
-- **Status:** Implementation authorized and in progress; acceptance pending
+- **Status:** Implementation complete; CI/live evidence recorded, independent client and merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-024](spec.md) · **Design:** [TDD-024](technical-design.md)
@@ -20,33 +20,33 @@
 
 ## Dependency-ordered implementation
 
-- [ ] T-002: Resolve one exact stable Linux amd64 Python/uv/framework/check-tool
+- [x] T-002: Resolve one exact stable Linux amd64 Python/uv/framework/check-tool
   combination and Python/uv OCI digests from primary sources. Record supported
   versions/platforms, docs-asset hashes/licenses and acquisition verification.
   Specify and exercise wheel-only sources/hashes, uv no-build/download/config/auth
   controls, lock freshness and owned venv/cache placement. Do not commit floating
   defaults. PYAPI-002, PYAPI-003; AC-002, AC-003. Gate: supported wheel graph and pin-specific
   flags proven before enabling ordinary preparation.
-- [ ] T-003: Implement/review bounded project v2 API, Python toolchain/registry v2
+- [x] T-003: Implement/review bounded project v2 API, Python toolchain/registry v2
   and catalogue v2 contracts plus family-specific validation/dispatch and
   capabilities/errors/results. Preserve v1 schemas, Node legacy mapping and exact
   Next.js release identity/default. Extend immutability checks across catalogue
   versions. Specify quality action and state/receipt compatibility. Validation/
   discovery must not execute/import/fetch project code. PYAPI-001, PYAPI-007, PYAPI-008;
   AC-001, AC-007, AC-008. Gate: positive/negative contract fixtures and legacy regressions.
-- [ ] T-004: Implement immutable bounded rootless Python/uv image acquisition,
+- [x] T-004: Implement immutable bounded rootless Python/uv image acquisition,
   exact executable verification, scoped receipts and honest warm reuse/recovery.
   Integrate the selected image/profile with shared jobs. Test bad artifacts,
   wrong platform/versions, missing/corrupt images, concurrent acquisition and
   interrupted ownership. PYAPI-002; AC-002.
-- [ ] T-005: Implement the Python dependency-policy adapter for status, locked
+- [x] T-005: Implement the Python dependency-policy adapter for status, locked
   install, typed add/update/remove and recover/abort. Reuse shared locks/limits,
   staged candidate checks, original-hash conflict refusal and publication journal.
   Test stale locks, denied source/config/build/download/auth inputs, concurrent
   edits, partial publish/install and repair without rewriting coherent source.
   Maintain pnpm behavior. PYAPI-003; AC-003. Gate: no dependent ordinary service
   execution until preparation/policy and recovery tests pass.
-- [ ] T-012: Bake the owner-supplied standards into the versioned generated guide,
+- [x] T-012: Bake the owner-supplied standards into the versioned generated guide,
   pyproject/config/CI and AGENTS/README references. Preserve source provenance and
   a disposition for every coding section; review uv/groups, dotenv deferral and
   proposed pip-audit/Safety adaptation before accepting them. Configure Black/
@@ -57,7 +57,7 @@
   Dependencies: T-002/T-003; co-deliver with T-006 before T-008 acceptance. PYAPI-010;
   AC-004, AC-007, AC-010.
 
-- [ ] T-006: Create/register the exact FastAPI release, typed non-secret settings,
+- [x] T-006: Create/register the exact FastAPI release, typed non-secret settings,
   stateless synthetic sample, mounted prefix, health, OpenAPI and self-hosted docs.
   Apply PYAPI-010 and [the owner-derived standards](python-standards.md): src layout,
   injected service objects, versioned/paginated API, distinct readiness, safe JSON
@@ -67,14 +67,14 @@
   generation refuses occupied/unsafe destinations and validates staged output;
   implement no generation hooks. PYAPI-001, PYAPI-004, PYAPI-006, PYAPI-007, PYAPI-010;
   AC-001, AC-004, AC-006, AC-007, AC-010.
-- [ ] T-007: Integrate API target selection, preparation/fingerprints, shared
+- [x] T-007: Integrate API target selection, preparation/fingerprints, shared
   lifecycle/Quadlet/ports/health/logs and scoped quality CLI jobs. Prove reload
   and syntax-error recovery, stopped-target format/dependency changes, no implicit
   sync/toolchain switch and private prefixed docs/redirect behavior. Include Python
   schemas/policy/code/assets in provider snapshots; preserve selected templates
   through existing repository generation without credential-policy changes.
   PYAPI-005, PYAPI-006, PYAPI-008; AC-005, AC-006, AC-008.
-- [ ] T-008: Run generated-container checks and deliberate format/import/lint/
+- [x] T-008: Run generated-container checks and deliberate format/import/lint/
   type/API/docstring/coverage/security failure cases, including missing coverage
   and unavailable advisory data. Record critical statement/branch coverage (each
   at least 80%), scan thresholds and explicit hook behavior. Prove build rejects
@@ -84,7 +84,7 @@
 
 ## Verification and delivery
 
-- [ ] T-009: Run focused offline manifest, catalogue/release, toolchain, dependency,
+- [x] T-009: Run focused offline manifest, catalogue/release, toolchain, dependency,
   lifecycle/snapshot and repository-generation regressions; run the prepared
   repository checker, changed shell syntax checks where applicable and diff/link
   checks. Submit implementation PR(s), record final-head configured CI and retain
@@ -136,3 +136,21 @@ attachment after trailing-whitespace normalization; both original and archived
 SHA-256 values are recorded. Implementation/acceptance tasks remain unchecked.
 Whitespace checks passed after staging the seven amendment files. No runtime,
 repository-suite, Terraform or live checks were run for this documentation change.
+
+
+Implementation evidence (October 11): T-002–008/T-012 implemented in provider 1.6.0,
+with actual pinned image/wheel acquisition and generated checks. The combined local
+repository gate passed 411 tests; follow-up Python, repository generation and
+credential suites passed 25, 42 and 47 tests respectively after snapshot/provenance/
+routing/selection changes. T-009 implementation review is PR #56; all three CI
+workflows passed at c07a0fd and 4498077, with final selection/evidence-head checks
+tracked in acceptance.md. These checkboxes establish implemented/verified code,
+not a merged catalogue delivery.
+
+T-010 managed EC2 evidence: API and synthetic Next.js independently ready, private
+HTTPS docs/assets/schema/API working, 2.767-second source reload, syntax-error
+unavailability and recovery, active tests, real restart/stop/source retention,
+actual busy refusal and pre-Python provider rejection without source mutation.
+The installed snapshot uses the persistent validator environment. API and web
+fixtures remain available for the requested independent client check; that check
+and final owner/merge acceptance are pending. T-011 remains unchecked until then.

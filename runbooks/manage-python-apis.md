@@ -109,7 +109,7 @@ routes or receipts are conflicts, never permission to overwrite/prune/reset them
 
 Rollback uses a still-reviewed provider/profile and explicitly selected matching
 source/lock revisions for an owned stopped target. A pre-Python provider rejects
-API v2 without converting it to web or deleting files. Keep the validator environment
-referenced by running immutable snapshots; branch/worktree cleanup is not safe
-while those snapshots depend on its Python path. No reboot, infrastructure,
+API v2 without converting it to web or deleting files. Snapshots retain the actual launching validator interpreter in their identity.
+Use the existing persistent validator environment for host rollout; keep any
+environment still referenced by a running snapshot. No reboot, infrastructure,
 public exposure or broad cache removal belongs to this workflow.

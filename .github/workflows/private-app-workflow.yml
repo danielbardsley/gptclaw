@@ -11,6 +11,8 @@ on:
       - runbooks/manage-repository-credentials.md
       - docs/022-github-repository-automation/**
       - runbooks/manage-project-repositories.md
+      - docs/024-python-fastapi-template/**
+      - runbooks/manage-python-apis.md
       - docs/021-template-catalogue/**
       - runbooks/manage-project-templates.md
       - config/toolchains/**
@@ -38,6 +40,8 @@ on:
       - runbooks/manage-repository-credentials.md
       - docs/022-github-repository-automation/**
       - runbooks/manage-project-repositories.md
+      - docs/024-python-fastapi-template/**
+      - runbooks/manage-python-apis.md
       - docs/021-template-catalogue/**
       - runbooks/manage-project-templates.md
       - config/toolchains/**

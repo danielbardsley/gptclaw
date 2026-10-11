@@ -1,65 +1,128 @@
 # SPEC-024 implementation acceptance
 
-- **Status:** In progress — local implementation evidence; CI/live/client/merge pending
+- **Status:** Implementation and local/CI/live checks complete; independent client, review/merge and final owner acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-024](spec.md) · **Design:** [TDD-024](technical-design.md) · **Tasks:** [TASKS-024](tasks.md)
 - **Implementation review:** [PR #56](https://github.com/danielbardsley/gptclaw/pull/56)
-- **Revision:** Working implementation after `e85105d`; final committed revision to be recorded
+- **Code revision:** `cce026c` (exact repository selection); final documentation/evidence revision tracked by the PR head
 
-The project owner approved the scope and authorized implementation on October 11
-with “ok, go ahead and implement the spec.” This includes scoped synthetic checks;
-no public exposure, AWS/host package installation or application GitHub repository
-creation was performed. This record does not establish merged delivery or client
-acceptance.
+The project owner approved the scope and authorized implementation October 11
+with “ok, go ahead and implement the spec.” No public exposure, infrastructure/
+host package installation or live application GitHub repository creation occurred.
+The runtime trial uses the existing reviewed private lifecycle and owned ingress.
+This record does not establish merged delivery or independent client acceptance.
 
 | Criterion | State | Evidence / remaining action |
 |---|---|---|
-| AC-001 | pending | Exact generation and offline observation/path/provenance tests pass; final release/CI checks pending. |
-| AC-002 | pending | Actual Python 3.13.16/uv 0.13.0 cold acquisition and warm reuse passed in the real generated Podman workflow; final CI/live record pending. |
-| AC-003 | pending | Offline locked preparation, denied inputs, conflict/abort and same-operation interrupted-publication recovery pass. Real uv source-preserving add/update/remove workflow is being completed. |
-| AC-004 | pending | Starter API tests pass for typed versioned sample/pagination, safe input failures, health/readiness, OpenAPI/settings. Final generated CI record pending. |
-| AC-005 | pending | Shared lifecycle integration and bounded unit/job tests pass; actual managed EC2 service/reload/restart/stop evidence remains. |
-| AC-006 | pending | In-process mounted docs/assets/schema and relative/query-preserving hostile-header redirect tests pass. Actual private HTTPS and independent client observation remain. |
-| AC-007 | pending | Real starter Black/isort/Ruff/mypy/pytest/coverage/Bandit/audit/build passed. Generated seeded defects, final CI and explicit hook behavior are being verified. |
-| AC-008 | pending | Existing offline Next.js/provider/dependency/toolchain/repository/credential regression suites passed. Final combined gate and independent running Next.js check remain. |
-| AC-009 | pending | Sanitized recording underway. Review/merge, client/owner acceptance and fixture/rollback disposition remain. |
-| AC-010 | pending | Owner-derived guide/config and typed service design are present; standards checks and narrow factory-boy typing adaptation tested. Final gates/review remain. |
+| AC-001 | passed | Exact catalogue/API generation, no-execution observation, unsafe/occupied-path/provenance refusal and published Next.js identity checked locally and in CI. API provenance is required; frozen Node legacy mapping remains supported. |
+| AC-002 | passed | Actual Python 3.13.16/uv 0.13.0 cold acquisition/warm reuse in generated Podman and Docker CI. Receipt/profile/recipe/image identity, version/platform failures and active switching tested. |
+| AC-003 | passed | Locked source-preserving restoration and real uv add/update/remove succeed. Offline denied sources/hooks/config/auth/downloads, conflict/abort, failed installation and same-operation interrupted-publication recovery pass. |
+| AC-004 | passed | Typed versioned echo, pagination bounds/statuses, invalid input/settings, liveness/readiness and OpenAPI tested in the real generated container and against private HTTPS. |
+| AC-005 | passed | Actual EC2 lifecycle/status/bounded logs/tests/reload/syntax recovery/restart/stop/busy behavior passed for spec024-api, with source retention and owned loopback/resource bounds. Interrupted publication and failure-state scenarios are covered by the isolated suite; no live process was killed to manufacture an interruption. |
+| AC-006 | pending | Actual HTTPS docs/assets/schema/API/query forwarding passed from EC2. Mounted nonce/self-hosted docs and hostile-header relative redirects passed in container tests. Stopped URL returned 404; syntax outage produced no successful readiness and recovered. Independent tailnet-browser docs/echo observation is requested and pending. |
+| AC-007 | passed | Exact-container Black/isort/Ruff/strict mypy/pytest/coverage/Bandit/pip-audit/build/verify pass. Real seeded format/docstring/type/API/import/static-security/coverage defects are rejected. Synthetic advisory findings/unavailability fail; explicit hook preservation/idempotency and real pinned pre-commit config validation pass. The first config-validation attempt used a read-only default cache; a task-owned writable cache corrected that environment setup. |
+| AC-008 | passed | Existing Node/Next.js/provider/dependency/toolchain/repository/credential regressions pass. Synthetic real-Git repository creation carries the exact FastAPI release without credential-policy changes. On EC2 spec024-web stayed healthy during API failure/restart/stop; ports/ownership remain independent. |
+| AC-009 | pending | Sanitized evidence recorded below. Final-head CI review/merge and project-owner acceptance remain; only the initial standalone slice may be marked Delivered after these gates. |
+| AC-010 | passed | Owner-derived guide/config/AGENTS, injected service/src design, complete types/docstrings, safe logs/versioned pagination/readiness/admission/CORS/headers and standards fault cases are implemented. uv/dotenv/Safety adaptations remain explicit; tool-usage material is absent from the normative guide. |
 
-## Local verification
+## Local and generated verification
 
-The rootless authoring image was built from official pinned Python/uv OCI digests;
-actual Python 3.13.16 and uv 0.13.0 were observed. Package candidates came from the
-public PyPI registry and Swagger assets from a verified exact npm tarball. Exact
-pins are committed in the profile and release metadata; no source hooks were run.
+Exact OCI pins are in config/toolchains/v2.json; all package/artifact pins are in
+released pyproject.toml/uv.lock. Swagger UI 5.33.1 came from its exact SHA-512-verified
+npm tarball; assets, notices, source provenance and file hashes are bundled. Image
+execution verified Python 3.13.16 and uv 0.13.0, with no source/credentials mounted
+for tool verification. Host app frameworks were not installed.
 
-Executed local checks so far:
+Executed:
 
-- `.venv-manifest/bin/python scripts/tests/test_project_python.py`: 21 tests pass,
-  including acquisition/reuse, policy, stopped/busy operations, source conflict,
-  same-operation publication recovery, read-only guards, hooks and snapshot ownership.
-- Pinned-container `scripts/quality.py verify`: Black/isort/Ruff, strict mypy,
-  API/quality tests, independent critical statement/branch coverage, Bandit,
-  locked-graph pip-audit and build passed in the authoring environment.
-- Prepared repository checker: existing suites passed after updating v2 contract
-  expectations; the first full attempt also exposed a mistaken mock in the new
-  Python runner test, corrected and passing in the focused suite. Final combined
-  execution remains pending.
-- Bash syntax and Python compilation checks passed for changed controller code.
+- Prepared `./scripts/check-repository.sh`: 411 tests passed across the combined
+  offline suites plus catalogue integrity/immutability. Later focused source
+  changes passed Python 25, repository generation 42 and credential 47 tests.
+- `.venv-manifest/bin/python scripts/tests/check_python_template.py /tmp/spec024-python-golden-4 --engine podman`: uncached owned profile acquisition/reuse, actual versions, locked preparation/build/full quality, real seeded defect failures, coherent typed uv add/update/remove and frozen restoration passed. CI repeats this with its Docker adapter and final positive gates.
+- Changed Bash syntax, Python compilation, relative links and staged/unstaged
+  whitespace checks passed; published-release immutability passed against origin/main.
+- Generated app checks: 19 pytest tests; actual live critical coverage is 174/176
+  statements (98.86%) and 10/10 branches (100%). Both independent 80% gates pass.
+  Strict mypy, import/format checks, Ruff, Bandit, locked-graph pip-audit and app
+  construction/OpenAPI preflight pass. Public advisory failure is never a clean scan.
 
-Real generated-project verification exposed uv's default index-writing behavior;
-the policy refused it before publication. Pinned CLI `--raw` was proven to avoid
-that behavior in a task-owned fixture. The corrected full workflow is rerunning.
-Earlier admission preflight ordering and test-boundary typing failures were
-corrected, with passing reruns. These failures are not reported as acceptance.
+Corrected failures are preserved here: CORS preflight initially consumed admission;
+a middleware response annotation and factory-boy dynamic typing boundary needed
+correction; an authoring cache was accidentally considered for inventory and was
+excluded/moved outside release assets. Pinned uv add wrote a project index entry,
+which the policy refused before publication; verified `--raw --no-sync` avoids
+that entry. The golden fixture's incidental TOML byte-equality assertion was
+replaced with dependency semantics plus frozen-source preservation. A new job test
+mock bypassed the real runner and was corrected. A final review found legacy hardcoded
+repository selection; exact plan/render/broker propagation now has real-Git
+synthetic coverage. These failures are not claimed as passed acceptance before correction.
 
-## Outstanding verification and disposition
+## GitHub CI
 
-Record final command/revision/CI results, cold/warm timings and coverage values;
-prove the managed API privately alongside a synthetic Next.js project, source edit
-and syntax-error recovery, lifecycle/logs, route refusal and source retention.
-Observe the actual HTTPS API/docs from an authorized independent client and trial
-older-provider refusal on a stopped owned API. Preserve running fixtures/source
-until that observation; remove only identified disposable task verification data.
-No Terraform checks are needed because this initiative changes no Terraform or
-host bootstrap. Existing backup/reboot/replacement acceptance remains separate.
+Code revision `4498077` passed all configured PR workflows:
+
+- [Private application workflow #58](https://github.com/danielbardsley/gptclaw/actions/runs/38162375279): existing web/toolchain paths plus new real Python Docker/golden job.
+- [Development-host workflow #168](https://github.com/danielbardsley/gptclaw/actions/runs/38162375323): repository quality and its configured Terraform mock/validation gates.
+- [Tailscale federation workflow #72](https://github.com/danielbardsley/gptclaw/actions/runs/38162375280): its configured validation gates.
+
+Earlier `c07a0fd` passed the same three workflows. Repository-selection code `cce026c` also passed all three workflows:
+[private application #59](https://github.com/danielbardsley/gptclaw/actions/runs/38163477625),
+[development host #169](https://github.com/danielbardsley/gptclaw/actions/runs/38163477540),
+and [federation #73](https://github.com/danielbardsley/gptclaw/actions/runs/38163477650).
+The final documentation/path-filter head is tracked separately when observed. No local Terraform checks were required because
+no Terraform/bootstrap changed, and no protected apply/promotion workflow was invoked.
+
+## Actual EC2 behavior
+
+Named task-owned synthetic targets:
+
+- `/srv/forge/projects/spec024-api`: private API on loopback host port 18088,
+  internal 8000, 1536 MiB and 256 PIDs. Cold project start 17.675 seconds; warm
+  start after stop 6.342 seconds. Image base blobs were already cached: “cold”
+  means this profile/project preparation, not a clean host or cache-prune trial.
+- `/srv/forge/projects/spec024-web`: independent accepted Next.js template,
+  loopback host port 18089, internal 3000; initial start 54.988 seconds.
+
+The API URL is [private API docs](https://forge-dev-01-4.tail8c3304.ts.net/projects/spec024-api/docs).
+Current node DNS is observed, not a permanent hostname contract. EC2 requests
+returned 200 for readiness/liveness/docs/schema/assets/versioned pagination/echo;
+CSS and JS payloads are 186154 and 1586002 bytes and load locally. They require
+no CDN/Swagger validator service. Actual binding inspection confirmed only
+127.0.0.1 for both services and API memory/PID limits; container commands/unit
+ownership/limits are covered by the shared tests.
+
+A task-owned source change changed echo to `updated: synthetic` within 2.767 seconds.
+Injected syntax failure produced no successful readiness (the bounded client timed
+out while the gateway's health probe ran), while the web health stayed 200. Fixing
+source recovered the updated response. Do not label that timeout an observed 503.
+Updated managed API tests passed (10.524 seconds; initial tests 11.691 seconds).
+Actual restart (6.49 seconds) recorded stop/start transitions and a fresh operation
+ID. Stop (1.036 seconds) revoked the mapping and preserved source; private readiness
+returned 404, with independent web health 200. Actual lock contention returned busy
+without changing the healthy service. Bounded eight-line logs contained allowlisted
+JSON request metadata; no environment/payload/credential dump was collected.
+
+A stopped-target rollback trial using provider 1.5.2 refused API schema 2 with
+`invalid` before execution; selected source/manifest/lock hashes stayed identical.
+This proves safe unsupported-version refusal, not successful Python execution on
+an older provider. A warm start restored the updated API. The installed immutable
+snapshot records the actual existing persistent validator interpreter at
+`/srv/forge/projects/gptclaw/.venv-manifest/bin/python`, independent of the temporary
+implementation worktree's Python environment.
+
+## Remaining acceptance and fixture disposition
+
+The API and web fixture remain running with synthetic data/source for the requested
+independent client check. The project owner should open private docs and execute
+echo with `{"message":"synthetic"}`, observing `{"message":"updated: synthetic"}`.
+No response has yet been recorded. Local HTTPS, CI or an ambient browser URL does
+not substitute for that observation.
+
+After client confirmation, stop only the selected fixtures through the lifecycle
+if no longer needed; retain source by default. Golden/authoring directories under
+/tmp are task-owned disposable verification data; no unknown project, shared image,
+volume or credential material is removed. Existing snapshots/private access and
+host/reboot/replacement acceptance remain unchanged and separately tracked.
+Review/merge and final owner acceptance remain. Catalogue status stays Planned;
+implementation is not marked Delivered merely because CI and live trials pass.
