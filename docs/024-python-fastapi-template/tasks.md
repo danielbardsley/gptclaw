@@ -47,7 +47,7 @@
   execution until preparation/policy and recovery tests pass.
 - [ ] T-012: Bake the owner-supplied standards into the versioned generated guide,
   pyproject/config/CI and AGENTS/README references. Preserve source provenance and
-  a disposition for every source section; review uv/groups, dotenv deferral and
+  a disposition for every coding section; review uv/groups, dotenv deferral and
   proposed pip-audit/Safety adaptation before accepting them. Configure Black/
   isort/Ruff without competing fixes, strict types/Google docstrings, complete
   critical statement/branch coverage and Bandit/advisory gates. Prove DI/service

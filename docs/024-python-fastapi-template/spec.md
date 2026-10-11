@@ -179,7 +179,7 @@ by these planning documents.
 ### PYAPI-010 — Apply the project owner's Python standards
 
 The [standards disposition](python-standards.md) preserves the supplied document
-and maps each section to generated code, automation, review or conditional work.
+and maps each coding section to generated code, automation, review or conditional work.
 Generate an object-oriented application/domain service with injected collaborators,
 thin FastAPI routes, complete annotations and public Google docstrings, PEP 8
 conventions, focused methods and src/tests boundaries. No unused repository classes
@@ -200,8 +200,8 @@ non-secret configuration documentation instead of dotenv loading, and the propos
 credential-free pip-audit alternative to Safety are explicit draft adaptations,
 not silent claims of literal equivalence. Review each source section's disposition,
 exercise meaningful standards violations and record thresholds/suppression rationale
-before AC-010 passes. Do not import the source's assistant/tool directives as host
-policy or retroactively impose this guide on existing platform code.
+before AC-010 passes. These standards apply to generated API code; adoption by
+existing platform code is outside this initiative.
 
 ## Acceptance criteria
 
@@ -216,7 +216,7 @@ policy or retroactively impose this guide on existing platform code.
 | AC-007 | Format/import checks, Ruff, strict mypy, pytest, critical statement/branch coverage (each at least 80%), Bandit, dependency audit and build pass in the exact container and generated CI. Explicit pre-commit uses the same pins. Deliberate format/import/lint/type/API/coverage/security defects and unavailable audit data fail; build rejects broken app construction and verify propagates failures. | PYAPI-007, PYAPI-010 |
 | AC-008 | Legacy/current Next.js fixtures pass generation, frozen dependency preparation, build/test and lifecycle regression checks. During live Python operations an independent Next.js service retains its route, resources and health. Repository generation selection passes synthetic integration without credential changes. | PYAPI-008, PYAPI-005 |
 | AC-009 | Sanitized acceptance records final revisions, local/CI/live/client results, timings, failure recovery, rollback trial and owned fixture disposition; implementation is reviewed/merged and project owner accepts the initial slice with follow-up scopes named. | PYAPI-009 |
-| AC-010 | Generated guide/config/AGENTS and working service design implement every in-scope supplied standard; each adaptation/conditional section is documented and reviewed. Tests prove safe JSON exception/correlation logs, types/docstrings, default-deny CORS, headers, pagination, readiness and bounded 429 behavior; source provenance and critical coverage are recorded. No dotenv/credentials/unused persistence or unavailable agent-tool requirement is introduced. | PYAPI-010, PYAPI-004, PYAPI-007 |
+| AC-010 | Generated guide/config/AGENTS and working service design implement every in-scope supplied standard; each adaptation/conditional section is documented and reviewed. Tests prove safe JSON exception/correlation logs, types/docstrings, default-deny CORS, headers, pagination, readiness and bounded 429 behavior; source provenance and critical coverage are recorded. No dotenv/credentials or unused persistence is introduced. | PYAPI-010, PYAPI-004, PYAPI-007 |
 
 ## Decisions, completion and ownership
 

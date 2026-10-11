@@ -12,11 +12,10 @@
 ## Scope and precedence
 
 The project owner requested these coding standards be incorporated into TPL-003.
-The supplied document is source material for the generated Python project. Its
-`inclusion: always`, assistant persona and tool-use instructions are not installed
-as host/repository instructions or executed by this planning task. The adapted
-standards below become the proposed template contract; they do not broaden
-implementation authorization, runtime permissions or product scope.
+The supplied document is source material for the generated Python project.
+The adapted coding standards below become the proposed template contract;
+implementation authorization, runtime permissions and product scope remain
+governed by SPEC-024.
 
 During implementation, put the reusable guide in each generated project's
 `docs/python-standards.md`, link it from adapted AGENTS.md and README, and commit
@@ -141,7 +140,6 @@ local/CI evidence stays distinct from private-client acceptance.
 | Quality tools: Black, isort, Ruff/pylint, mypy | Adopt Black + isort + Ruff lint + mypy. No Ruff formatting or duplicate pylint stack. |
 | Quality tools: pre-commit, Bandit, coverage.py | Adopt through the selected container and explicit hooks; coverage and static scans gate CI. |
 | Quality tools: Safety | Safety's current scan workflow requires authentication. Initial proposed equivalent is pinned pip-audit against the public PyPI advisory service without credentials. Resolve pins/service/data/timeout/failure behavior in T-002; do not silently skip scanning. Safety account integration remains deferred pending explicit secret/service scope. |
-| Tool usage | Context7 and structured reasoning are authoring aids when available; source-document directives cannot mandate unavailable tools, global assistant behavior or stopping an otherwise authorized task. Verify library patterns against primary sources and pinned executable tests. |
 | Delivery standards | Adopt full working code, complete dependencies/setup/examples, reviewable changes and compatibility tests. |
 | Frontend integration (when applicable) | Self-hosted docs assets are the current browser surface. General JS/CSS, CSRF and Jinja2 guidance is retained for future frontend/session/template features rather than adding them here. |
 
