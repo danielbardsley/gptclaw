@@ -1,6 +1,6 @@
 # TDD-025: Two-service project orchestration
 
-- **Status:** Implemented — local/CI/live/client verified; review/merge pending
+- **Status:** Delivered — initial two-service slice merged and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-025](spec.md) · **Tasks:** [TASKS-025](tasks.md)
@@ -211,6 +211,5 @@ The approved implementation uses provider 1.7.0, project/catalogue schema v3,
 explicit group receipt v2 and `notes@1.0.0`. Component stack receipts retain v1;
 trusted in-memory component contracts reuse the existing adapters while generated
 component metadata blocks independent CLI operations. Installed Quadlet 4.9 uses
-`PodmanArgs=--network-alias=...` rather than the newer NetworkAlias key. Existing
-SPEC-024 final acceptance wording is retained in its own record. Local/CI/live
+`PodmanArgs=--network-alias=...` rather than the newer NetworkAlias key. SPEC-024 standalone acceptance is recorded independently in its Delivered record. Local/CI/live
 and independent browser outcomes are recorded separately in acceptance.md when observed.

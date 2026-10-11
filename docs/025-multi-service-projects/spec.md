@@ -1,6 +1,6 @@
 # SPEC-025: Multi-service projects with a notes application
 
-- **Status:** Implemented — local/CI/live/client verified; review/merge pending
+- **Status:** Delivered — initial two-service slice merged and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Primary feature:** RUN-006, initial two-service HTTP slice
@@ -36,8 +36,8 @@ repository generation must support the new selection under its separate authoriz
 The broader RUN-006 catalogue scope stays open.
 
 Observed dependencies: SPEC-024 code is merged in PR #56 at `f8b83e8`, with
-standalone API local/CI/live/client evidence recorded. Its documents still describe
-final delivery as pending; this draft does not silently close that acceptance gate.
+standalone API local/CI/live/client evidence recorded. Its initial standalone slice is now Delivered, with acceptance in
+[the SPEC-024 record](../024-python-fastapi-template/acceptance.md).
 Existing source provides Next.js/pnpm and FastAPI/uv adapters, exact profiles,
 rootless lifecycle, ingress, transactional dependencies and provider snapshots.
 These are reusable foundations, not proof that group orchestration exists.
@@ -158,7 +158,10 @@ owner acceptance. Planning merge alone does not authorize implementation.
 ## Decisions and completion
 
 The project owner approved SPEC-025 and authorized implementation on October 11.
-Code review/merge and independent browser acceptance remain pending.
+The project owner confirmed independent CRUD/source-update behavior, then accepted
+this initial slice with “ok, merge the PR.” Implementation merged in
+[PR #58](https://github.com/danielbardsley/gptclaw/pull/58) as `c1afac9` on October 11;
+[acceptance](acceptance.md) records AC-001–008 passed and the non-blocking hydration follow-up.
 The proposed design uses exactly two services, shared same-origin routing and
 single-process ephemeral notes. No database prerequisite or infrastructure change
 is necessary. Deliver platform contracts/orchestration, a versioned starter,
