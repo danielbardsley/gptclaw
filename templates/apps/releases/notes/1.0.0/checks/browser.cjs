@@ -42,7 +42,7 @@ const { chromium } = require('playwright-core');
   await page.route('**' + prefix + '/api/v1/notes/**', route => route.fulfill({ status: 503, body: '' }));
   await page.getByLabel('Note', { exact: true }).fill('Unsaved synthetic draft');
   await page.getByRole('button', { name: 'Save note', exact: true }).click();
-  await page.getByRole('alert').waitFor();
+  await page.locator('main [role="alert"]').waitFor();
   assert.equal(await page.getByLabel('Note', { exact: true }).inputValue(), 'Unsaved synthetic draft');
   await page.unroute('**' + prefix + '/api/v1/notes/**');
   page.once('dialog', dialog => dialog.accept());

@@ -267,7 +267,7 @@
         {
           "source": "checks/browser.cjs",
           "output": "checks/browser.cjs",
-          "sha256": "df3026846568e02103ac2f4ae1d3687ae77e28bb98e4fca7c67be24b5e4d8ec9"
+          "sha256": "33d180c5773be7ba1b4a6b4ac3b7670989d294012763d854155ef8a16b295608"
         },
         {
           "source": "checks/browser.json",
@@ -287,7 +287,7 @@
         {
           "source": "checks/verify.py",
           "output": "checks/verify.py",
-          "sha256": "50e153ea7f49e0346b145b395631333ac2d8ef7be07242c436c77c330f08779a"
+          "sha256": "5916f44c5a0ecf6786471bfbba44a10a221c32ca631132e9a82f82fe776e6168"
         },
         {
           "source": "web/.gitignore",
@@ -375,7 +375,7 @@
           "sha256": "40e7a1bf47b78401d6408040addf5e1c07f2e821461fb035e02ecc651961d562"
         }
       ],
-      "digest": "df65d5765e799569cb4a64e0ba733a25bd2c1446233df837eec54f1a4d5e82f7"
+      "digest": "1fcc61c0878b519bd622fea81ce854a624141863f5200c640430d7e782bea59e"
     }
   ]
 }

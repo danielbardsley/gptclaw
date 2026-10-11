@@ -48,7 +48,7 @@ def main():
                     (context/'node-profile.json').rename(context/'profile.json')
                     text=(context/'Containerfile').read_text().replace('node-profile.json','profile.json');(context/'Containerfile').write_text(text)
                 flags=['--authfile',str(auth)] if engine=='podman' else []
-                run(['build',*flags,'--memory=1536m','--label',label,'--tag',image,str(context)])
+                run(['build',*flags,'--file',str(context/'Containerfile'),'--memory=1536m','--label',label,'--tag',image,str(context)])
             images[component]=image
             env=[arg for key,value in guards[component].items() for arg in ('--env',key+'='+value)]
             def job(vector):
@@ -63,7 +63,7 @@ def main():
         subprocess.run(['python3',str(root/'checks/acquire-browser.py'),str(work/'browser')],check=True,timeout=60)
         browser_image='localhost/gptclaw-check:'+token+'-browser'
         flags=['--authfile',str(auth)] if engine=='podman' else []
-        run(['build',*flags,'--memory=1536m','--label',label,'--tag',browser_image,str(work/'browser')])
+        run(['build',*flags,'--file',str(work/'browser/Containerfile'),'--memory=1536m','--label',label,'--tag',browser_image,str(work/'browser')])
         run(['network','create','--internal','--label',label,network])
         try:
             for component in ('api','web'):
