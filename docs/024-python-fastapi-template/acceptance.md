@@ -19,10 +19,10 @@ This record does not establish merged delivery or independent client acceptance.
 | AC-002 | passed | Actual Python 3.13.16/uv 0.13.0 cold acquisition/warm reuse in generated Podman and Docker CI. Receipt/profile/recipe/image identity, version/platform failures and active switching tested. |
 | AC-003 | passed | Locked source-preserving restoration and real uv add/update/remove succeed. Offline denied sources/hooks/config/auth/downloads, conflict/abort, failed installation and same-operation interrupted-publication recovery pass. |
 | AC-004 | passed | Typed versioned echo, pagination bounds/statuses, invalid input/settings, liveness/readiness and OpenAPI tested in the real generated container and against private HTTPS. |
-| AC-005 | passed | Actual EC2 lifecycle/status/bounded logs/tests/reload/syntax recovery/restart/stop/busy behavior passed for spec024-api, with source retention and owned loopback/resource bounds. Interrupted publication and failure-state scenarios are covered by the isolated suite; no live process was killed to manufacture an interruption. |
+| AC-005 | passed | Actual EC2 lifecycle/status/bounded logs/tests/reload/syntax recovery/restart/stop/busy behavior passed for the task-owned API, with source retention and owned loopback/resource bounds. Interrupted publication and failure-state scenarios are covered by the isolated suite; no live process was killed to manufacture an interruption. |
 | AC-006 | pending | Actual HTTPS docs/assets/schema/API/query forwarding passed from EC2. Mounted nonce/self-hosted docs and hostile-header relative redirects passed in container tests. Stopped URL returned 404; syntax outage produced no successful readiness and recovered. Independent tailnet-browser docs/echo observation is requested and pending. |
 | AC-007 | passed | Exact-container Black/isort/Ruff/strict mypy/pytest/coverage/Bandit/pip-audit/build/verify pass. Real seeded format/docstring/type/API/import/static-security/coverage defects are rejected. Synthetic advisory findings/unavailability fail; explicit hook preservation/idempotency and real pinned pre-commit config validation pass. The first config-validation attempt used a read-only default cache; a task-owned writable cache corrected that environment setup. |
-| AC-008 | passed | Existing Node/Next.js/provider/dependency/toolchain/repository/credential regressions pass. Synthetic real-Git repository creation carries the exact FastAPI release without credential-policy changes. On EC2 spec024-web stayed healthy during API failure/restart/stop; ports/ownership remain independent. |
+| AC-008 | passed | Existing Node/Next.js/provider/dependency/toolchain/repository/credential regressions pass. Synthetic real-Git repository creation carries the exact FastAPI release without credential-policy changes. The independent web fixture stayed healthy during API failure/restart/stop; ports/ownership remain independent. |
 | AC-009 | pending | Sanitized evidence recorded below. Final-head CI review/merge and project-owner acceptance remain; only the initial standalone slice may be marked Delivered after these gates. |
 | AC-010 | passed | Owner-derived guide/config/AGENTS, injected service/src design, complete types/docstrings, safe logs/versioned pagination/readiness/admission/CORS/headers and standards fault cases are implemented. uv/dotenv/Safety adaptations remain explicit; tool-usage material is absent from the normative guide. |
 
@@ -70,27 +70,27 @@ Earlier `c07a0fd` passed the same three workflows. Repository-selection code `cc
 [private application #59](https://github.com/danielbardsley/gptclaw/actions/runs/38163477625),
 [development host #169](https://github.com/danielbardsley/gptclaw/actions/runs/38163477540),
 and [federation #73](https://github.com/danielbardsley/gptclaw/actions/runs/38163477650).
-The final documentation/path-filter head is tracked separately when observed. No local Terraform checks were required because
+Documentation/path-filter head `778b3db` passed
+[private application #60](https://github.com/danielbardsley/gptclaw/actions/runs/38163933646),
+[development host #170](https://github.com/danielbardsley/gptclaw/actions/runs/38163933638),
+and [federation #74](https://github.com/danielbardsley/gptclaw/actions/runs/38163933654).
+The subsequent evidence-redaction head is tracked separately when observed. No local Terraform checks were required because
 no Terraform/bootstrap changed, and no protected apply/promotion workflow was invoked.
 
 ## Actual EC2 behavior
 
-Named task-owned synthetic targets:
+A task-owned synthetic API and independent Next.js fixture were created through
+the reviewed lifecycle. Both bind only loopback, with the approved per-project
+resource limits. Actual private HTTPS readiness/liveness/docs/schema/assets/
+versioned pagination/echo checks passed; current address, target paths, port
+assignments and host identity are intentionally omitted from repository evidence.
+They are available in the project owner's private chat/runtime receipts.
 
-- `/srv/forge/projects/spec024-api`: private API on loopback host port 18088,
-  internal 8000, 1536 MiB and 256 PIDs. Cold project start 17.675 seconds; warm
-  start after stop 6.342 seconds. Image base blobs were already cached: “cold”
-  means this profile/project preparation, not a clean host or cache-prune trial.
-- `/srv/forge/projects/spec024-web`: independent accepted Next.js template,
-  loopback host port 18089, internal 3000; initial start 54.988 seconds.
-
-The API URL is [private API docs](https://forge-dev-01-4.tail8c3304.ts.net/projects/spec024-api/docs).
-Current node DNS is observed, not a permanent hostname contract. EC2 requests
-returned 200 for readiness/liveness/docs/schema/assets/versioned pagination/echo;
-CSS and JS payloads are 186154 and 1586002 bytes and load locally. They require
-no CDN/Swagger validator service. Actual binding inspection confirmed only
-127.0.0.1 for both services and API memory/PID limits; container commands/unit
-ownership/limits are covered by the shared tests.
+The first API start completed in 17.675 seconds; warm start after stop took
+6.342 seconds. The independent web fixture started in 54.988 seconds. Base image
+blobs were cached: these timings measure new profile/project preparation, not a
+clean host or cache-prune trial. Interactive docs use local bundled assets and
+require no external CDN or validator service.
 
 A task-owned source change changed echo to `updated: synthetic` within 2.767 seconds.
 Injected syntax failure produced no successful readiness (the bounded client timed
@@ -106,15 +106,14 @@ JSON request metadata; no environment/payload/credential dump was collected.
 A stopped-target rollback trial using provider 1.5.2 refused API schema 2 with
 `invalid` before execution; selected source/manifest/lock hashes stayed identical.
 This proves safe unsupported-version refusal, not successful Python execution on
-an older provider. A warm start restored the updated API. The installed immutable
-snapshot records the actual existing persistent validator interpreter at
-`/srv/forge/projects/gptclaw/.venv-manifest/bin/python`, independent of the temporary
-implementation worktree's Python environment.
+an older provider. A warm start restored the updated API. The installed immutable snapshot records the actual existing persistent
+validator interpreter, independent of the temporary implementation worktree's
+Python environment; its host path is not exported here.
 
 ## Remaining acceptance and fixture disposition
 
 The API and web fixture remain running with synthetic data/source for the requested
-independent client check. The project owner should open private docs and execute
+independent client check. The project owner has the private docs link in this chat and should execute
 echo with `{"message":"synthetic"}`, observing `{"message":"updated: synthetic"}`.
 No response has yet been recorded. Local HTTPS, CI or an ambient browser URL does
 not substitute for that observation.
@@ -126,3 +125,14 @@ volume or credential material is removed. Existing snapshots/private access and
 host/reboot/replacement acceptance remain unchanged and separately tracked.
 Review/merge and final owner acceptance remain. Catalogue status stays Planned;
 implementation is not marked Delivered merely because CI and live trials pass.
+
+
+## Evidence disclosure correction
+
+Automatic approval review rejected a PR-description update that included a private
+runtime URL and host metadata. The current evidence/PR summary omit that operational
+identity. Earlier branch commits retain the previous evidence version; this follow-up
+redacts the current review diff and does not claim a Git-history rewrite. No access
+credential, key, authentication file, environment dump or application dataset was
+included in that evidence. Private addresses remain available only in this chat's
+requested client check and local runtime receipts going forward.

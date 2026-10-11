@@ -147,7 +147,7 @@ workflows passed at c07a0fd and 4498077, with final selection/evidence-head chec
 tracked in acceptance.md. These checkboxes establish implemented/verified code,
 not a merged catalogue delivery.
 
-T-010 managed EC2 evidence: API and synthetic Next.js independently ready, private
+T-010 managed EC2 evidence: task-owned API and synthetic Next.js independently ready, private
 HTTPS docs/assets/schema/API working, 2.767-second source reload, syntax-error
 unavailability and recovery, active tests, real restart/stop/source retention,
 actual busy refusal and pre-Python provider rejection without source mutation.
