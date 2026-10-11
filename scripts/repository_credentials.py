@@ -542,14 +542,14 @@ def validate_git_helper(root, supplied=None):
     return value
 
 
-def create(name,directory=None,canary=False):
+def create(name,directory=None,canary=False,template=None,version=None):
     broker=Broker();broker.doctor()
     check(canary or broker.profile['active'],'credential-disabled')
     destination=directory or str(app.PROJECTS/name)
     # Creation-only adapter can observe availability, not authenticate as a human.
     provisional={'repository':name}
     adapter=Provision(broker,provisional,canary=canary)
-    value=repos.plan(name,destination,adapter)['plan'];adapter.value=value
+    value=repos.plan(name,destination,adapter,template=template,template_version=version)['plan'];adapter.value=value
     try:result=repos.apply(value,adapter)
     finally:adapter.close()
     enroll(value['destination'])
@@ -586,9 +586,8 @@ def preview(name,directory=None,template=None,version=None,local_only=False):
     check(isinstance(name,str) and re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',name) and len(name)<=48)
     destination=app.safe(Path(directory).absolute() if directory else app.PROJECTS/name)
     if value and value['active']:
-        check((release['id'],release['version'])==('nextjs','1.0.0'))
         b=Broker(value);b.doctor();adapter=Provision(b,{'repository':name})
-        planned=repos.plan(name,str(destination),adapter)['plan']
+        planned=repos.plan(name,str(destination),adapter,template=template,template_version=version)['plan']
         return {'state':'planned','project':name,'root':str(destination),'template':planned['template'],
                 'private':True,'repository':repos.ACCOUNT+'/'+name,'branches':planned['branches'],
                 'policy':{'id':'unprotected-private-dev','protection_enforced':False},
@@ -609,9 +608,9 @@ def preview(name,directory=None,template=None,version=None,local_only=False):
 def new_project(name,directory=None,template=None,version=None,local_only=False):
     value=None if local_only else configured()
     if value and value['active']:
-        check((template is None)==(version is None))
-        check(template in {None,'nextjs'} and version in {None,'1.0.0'})
-        return create(name,directory)
+        import project_templates as templates
+        templates.resolve(template,version)
+        return create(name,directory,template=template,version=version)
     return app.create(name,directory,template,version)
 
 

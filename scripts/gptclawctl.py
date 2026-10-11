@@ -43,6 +43,7 @@ def main(argv=None):
   p.add_argument('--credential-file');p.add_argument('--credential-expires-at')
   if name=='plan':
    p.add_argument('--repository',required=True);p.add_argument('--directory',required=True)
+   p.add_argument('--template');p.add_argument('--template-version')
    p.add_argument('--environment',action='append',default=[],choices=['development','preview'])
    p.add_argument('--secret-reference',action='append',default=[],help='scope:NAME metadata only')
   if name=='apply':p.add_argument('--plan-file',required=True)
@@ -116,7 +117,7 @@ def main(argv=None):
     for ref in args.secret_reference:
      app.need(ref.count(':')==1,'repository-policy')
      scope,name=ref.split(':');refs.append({'scope':scope,'name':name})
-    result=repos.plan(args.repository,args.directory,api,args.environment,refs)
+    result=repos.plan(args.repository,args.directory,api,args.environment,refs,args.template,args.template_version)
    elif args.repo_action=='apply':result=repos.apply(repos.read_plan(args.plan_file),api,args.create_only)
    elif args.repo_action=='resume':result=repos.resume(args.operation_id,api,args.confirm_repository_id,args.create_only,args.allow_unprotected_main)
    else:result=repos.status(args.operation_id,api)

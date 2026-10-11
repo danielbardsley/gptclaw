@@ -169,7 +169,9 @@ def validate_plan(value, vacant=False):
     path = target_path(value['destination'])
     if vacant: require(not path.exists() and not path.is_symlink(), 'conflict')
     require(value['destination'] == str(path))
-    release, _ = templates.resolve('nextjs', '1.0.0')
+    selected = value['template']
+    require(isinstance(selected,dict) and set(selected)=={'schema_version','id','version','digest'})
+    release, _ = templates.resolve(selected['id'],selected['version'])
     require(value['template'] == templates.provenance(release))
     require(value['branches'] == {'base': 'main', 'head': 'codex/bootstrap-' + value['operation_id']})
     require(value['protection'] == PROTECTION)
@@ -197,10 +199,10 @@ def capabilities(environments, refs):
         ['environments:write'] if environments else []) + (['secrets:read-metadata'] if refs else [])
 
 
-def plan(name, destination, api, environments=(), secret_references=()):
+def plan(name, destination, api, environments=(), secret_references=(), template=None, template_version=None):
     # Validate every input locally before observation. No journals/locks/source writes.
     operation = uuid.uuid4().hex
-    release, _ = templates.resolve('nextjs', '1.0.0')
+    release, _ = templates.resolve(template,template_version)
     value = {'schema_version': 1, 'operation_id': operation, 'account': ACCOUNT,
              'repository': name, 'private': True, 'destination': str(target_path(destination)),
              'template': templates.provenance(release),
@@ -356,7 +358,8 @@ def bootstrap(receipt):
 def starter(receipt):
     root = workspace(receipt['operation_id'])/'source'
     require(inventory(root) == receipt['bootstrap_inventory'], 'repository-drift')
-    release, contents = templates.resolve('nextjs', '1.0.0')
+    selected=receipt['plan']['template']
+    release, contents = templates.resolve(selected['id'],selected['version'])
     generated = workspace(receipt['operation_id'])/'generated'
     # Generate first; retain an interrupted staging outcome rather than overwrite.
     templates.generate(generated, receipt['plan']['repository'], release, contents)

@@ -229,6 +229,15 @@ class PythonTests(unittest.TestCase):
         self.assertNotEqual(bundle,alternate)
         self.assertEqual((alternate/'.python-path').read_text().strip(),'/tmp/synthetic-python-interpreter')
 
+    def test_broker_forwards_exact_api_selection_without_permission_changes(self):
+        import repository_credentials as broker
+        with patch.object(broker,'configured',return_value={'active':True}),patch.object(broker,'create',return_value={'state':'synthetic'}) as create:
+            self.assertEqual(broker.new_project('future-api',template='fastapi',version='1.0.0')['state'],'synthetic')
+            create.assert_called_once_with('future-api',None,template='fastapi',version='1.0.0')
+        with patch.object(broker,'configured',return_value={'active':True}),patch.object(broker,'create') as create:
+            with self.assertRaises(app.AppError):broker.new_project('future-api',template='fastapi',version='unknown')
+            create.assert_not_called()
+
     def test_bundled_profile_and_assets_include_python_not_cache(self):
         bundle=app.provider_bundle()
         self.assertTrue((bundle/'scripts/project_python.py').is_file())
