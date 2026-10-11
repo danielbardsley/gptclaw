@@ -1,6 +1,6 @@
 # SPEC-023 acceptance evidence
 
-- **Status:** All repositories verified live; signing-key rotation, final-head CI and merge pending
+- **Status:** Live acceptance passed; implementation merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
@@ -37,10 +37,10 @@ operationally verified, while merge/full acceptance remain pending.
 | AC-002 | passed | Retained canary recovered and successive configured normal new completed with initial PRs/bindings; no per-project token, deploy key or selection click. Earlier failures retained below. | Evidence is recovery plus one fresh creation under final policy, not two fresh All-mode creates. |
 | AC-003 | passed | Exact singleton grant/ID/Selected token response; actual other-private-repo HTTP 404; platform has no token write authority; both helpers reject foreign paths. | Platform public metadata remains readable; no false private-read denial claim. |
 | AC-004 | passed | Offline secret/path/argv/bundle/container checks and real bounded metadata/receipts; key stays outside source/containers, tokens are not logged/persisted. | Issued Git leases retain bounded reported expiry as documented. |
-| AC-005 | pending | Fresh reacquisition, API token revocation, disable/enable and retained recovery passed live; different-key rotation/expiry/race/response-loss checks passed offline. | Actual owner signing-key rotation/retirement remains. |
+| AC-005 | passed | Fresh reacquisition, API token revocation, disable/enable, retained recovery and actual different-key rotation passed live; owner confirmed GitHub old-key retirement. | Old local key is absent, so no post-retirement old-key HTTP authentication result is claimed; issued-token lifetimes remain documented. |
 | AC-006 | passed | Activated normal new completed; explicit local-only preview has no GitHub effects; compatibility/regression tests and independent runtime checks passed. | No automatic initial-PR merge or production promotion. |
 | AC-007 | passed | Native fetch/worktree branch push and later scoped PRs passed in both projects; refresh/disable/enable preserved dirty source hashes. | Four retained fixture PRs await ordinary owner review. |
-| AC-008 | pending | Both projects passed manifest/provenance/build/test/typecheck/private page/health; owner confirmed both desktop URLs; independent app remained ready. | Exact final-head CI/implementation merge pending. |
+| AC-008 | passed | Both projects passed manifest/provenance/build/test/typecheck/private page/health; owner confirmed both desktop URLs; independent app remained ready. All three CI workflows passed code revision `445d15b`. | Evidence-only follow-up CI is tracked separately; implementation merge remains. |
 
 Offline fixtures prove implementation contracts, RSA signing and native Git wire
 behaviour, not GitHub App endpoint/account feasibility or full acceptance.
@@ -83,20 +83,20 @@ not fixed token prefixes/lengths or user-entered PAT lifetimes.
 
 Implementation authorization is complete. External setup/live targets are a
 separate owner step and have not been inferred from the code request. The primary
-path is selected-repository App installation with creation-only authority plus
+path is the explicitly approved All repositories installation with creation-only authority plus
 single-repository project credentials. If real account/API support fails, retain
 resources and present a reviewed scope alternative; do not silently request
-Administration, all repositories, OAuth/user refresh material or PATs.
+Administration, a new unapproved scope, OAuth/user refresh material or PATs.
 
-The real All repositories profile is active with provider
-1.5.0 for setup, prove the canary, then activate once. Normal future projects
-should need no manual token creation; App grant/key revocation or maintenance
+The real All repositories profile is active with provider 1.5.2 and completed
+canary recovery/activation. Normal future projects need no per-project manual
+token creation; App grant/key revocation or maintenance
 can still require an owner action. Ordinary Git helper tokens expire at reported
 times because they must remain valid after helper exit; API leases are best-effort
 revoked immediately. Deactivation/disable does not claim server-side revocation.
 
-Merge, final-head CI and actual signing-key rotation remain pending; current All
-mode and desktop acceptance have passed as recorded below.
+Implementation merge and evidence follow-up CI remain pending; current All mode,
+desktop acceptance and key rotation have passed as recorded below.
 The previous SPEC-022 slice remains Delivered, with its retained source/app/PR
 and explicit reported token revocation unchanged.
 
@@ -278,10 +278,54 @@ They remain ready on loopback ports 18086/18087. `hello-second` remained ready o
 The stable installed runner reports 1.5.2/schema 2. No unrelated runtime, public
 exposure, host package, infrastructure or production mutation occurred.
 
-Current disposition: AC-001/002/003/004/006/007 pass for the explicitly approved
+At this checkpoint, AC-001/002/003/004/006/007 passed for the explicitly approved
 All repositories slice and observed recovery path. AC-005 still needs actual
 owner signing-key rotation/retirement; renewal/token revocation/disable/enable/
 recovery passed and real different-key rotation passed offline. AC-008's live
 app/independent-service/owner checks pass; final-head CI remains pending. Merge
 and Delivered remain pending. App/key, both repositories/projects/private apps
 and four open fixture PRs are retained as authorized. Revoked PATs were not reused.
+
+## All repositories implementation CI and key rotation
+
+Exact code revision `445d15b6afb900fabb4400bc1b101422a5e3f87c` passed all three
+configured workflows:
+
+- [Private application workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38152910963): success.
+- [Development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38152910933): success.
+- [Tailscale federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38152910931): success.
+
+The owner supplied an additional GitHub-generated key at the proposed private
+rotation path. Initial validation rejected mode 0664 before rotation. Metadata
+proved a forge-owned regular file, single link, correct size/private parent;
+permissions were restricted to 0600 through its non-symlink file descriptor.
+No key value was displayed. Public-key hashes proved it differs from the old key.
+
+Executed `credentials rotate --key-file
+/home/forge/.config/gptclaw-credentials/app-rotation.pem`. Candidate App identity,
+All installation/four grants and doctor passed before atomic profile selection.
+Result was rotated/active/ready with previous key retained. Both normal project
+fetches passed afterwards with fresh credentials and no source/global-config
+change. Current key path is the rotation path; previous-profile metadata and the
+private old key file are retained for operator-controlled rollback.
+
+Old public-key SHA-256 fingerprint:
+`l7Y6qTspV5PY7TsjGiZNLgZgbzi6RxS/7X6HF2RgjcE=`.
+New/current public-key fingerprint:
+`XzI538o9pGy6S/X4cyWoODcVn9++UhTy2sJtJHzgCSk=`.
+Only these non-secret identifiers were shared to identify the old key for owner
+retirement in GitHub. The owner then answered “Deleted the old key; kept the new
+one.” This is owner-confirmed GitHub retirement. The old local `app.pem` was also
+observed absent; it had still authenticated before that confirmation. A requested
+post-retirement old-key probe could not sign because the file no longer exists,
+so no HTTP 401 or independent server revocation check is claimed. Current-key
+doctor remains ready, and native fetch for both projects passed again after the
+owner confirmation. The agent did not delete the old key/file. Previous-profile
+metadata remains, but the absent/reported-retired key is no longer a usable
+rollback credential; a future rollback needs another valid owner key.
+Previously issued installation tokens are not claimed revoked by key deletion.
+
+All AC-001–008 now pass for this approved slice, with the explicit public-read,
+first-recovery, token-lifetime and owner-reported retirement limits above.
+Implementation merge is the remaining delivery gate. The code revision's three
+CI workflows passed; any evidence-only final-head follow-up is tracked by PR #54.

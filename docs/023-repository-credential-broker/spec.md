@@ -1,6 +1,6 @@
 # SPEC-023: Repository credential broker
 
-- **Status:** In review — All repositories policy approved; live acceptance in progress
+- **Status:** In review — All repositories live acceptance passed; merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** PRJ-005, initial GitHub App broker; bounded PRJ-002/004 integration

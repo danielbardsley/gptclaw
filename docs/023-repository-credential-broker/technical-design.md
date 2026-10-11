@@ -1,6 +1,6 @@
 # TDD-023: Repository credential broker
 
-- **Status:** Candidate implementation; All repositories amendment approved, live verification pending
+- **Status:** Implementation in review; All repositories live acceptance passed, merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Tasks:** [TASKS-023](tasks.md)

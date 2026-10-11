@@ -1,6 +1,6 @@
 # TASKS-023: Repository credential broker
 
-- **Status:** Implementation in review; All repositories approved, live acceptance in progress
+- **Status:** Implementation in review; live acceptance passed, merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Design:** [TDD-023](technical-design.md)
@@ -97,9 +97,13 @@ retained first recovery, activation and normal second new completed. 47 focused
 tests and full repository checks pass. Both private apps pass build/test/typecheck,
 page/health and owner desktop checks. Scoped native worktree fetch/push/later PRs,
 credential reacquisition, private cross-repo denial and disable/enable pass.
-T-009 still needs live signing-key rotation/retirement, final-head CI/merge and
-delivery evidence. No real App/root credential or remote project was used during
+Live signing-key rotation/new-key Git access passed; owner confirmed retirement,
+and the old local key is absent, so independent post-retirement HTTP verification
+is not claimed. All code CI workflows passed. T-009 still needs final evidence
+follow-up CI/implementation merge and Delivered tracking. No real App/root
+credential or remote project was used during
 the earlier offline tests. Existing
 revoked PATs were not read or reused. No deployment/public callback/new host
 package/service mutation occurred. PR #54 contains reviewable implementation;
-merge/full live acceptance are not implied by the coding request.
+merge is not implied by the coding request. The later separately authorized live
+checks are recorded as passed with their actual limits in acceptance.md.
