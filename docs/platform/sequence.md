@@ -198,12 +198,13 @@ Deferral leaves restore/replacement evidence outstanding until this stage runs.
 
 ## 12. Expand supported templates and mobile development
 
-**Current selected implementation work (October 11):** the project owner prefers Python
+**Delivered initial API slice (October 11):** the project owner prefers Python
 with FastAPI for backends and requested [SPEC-024](../024-python-fastapi-template/spec.md)
 for TPL-003 before RUN-006. The approved scope moves this initial standalone API slice
 forward with its required Python/uv toolchain/policy, versioned contracts and
-quality/routing tests. Implementation was authorized October 11 and is in progress in PR #56;
-this does not complete stage 12. TPL-002 is not a prerequisite; multi-service orchestration,
+quality/routing tests. PR #56 merged October 11 after local, final-head CI, live and
+independent client checks; the project owner accepted the result. This initial slice
+does not complete stage 12. TPL-002 is not a prerequisite; multi-service orchestration,
 persistent data, AI integrations and existing deferred RES work retain their own gates.
 
 | Features | Delivery and exit evidence |

@@ -1,6 +1,6 @@
 # TDD-024: FastAPI on the existing managed runtime
 
-- **Status:** Implemented — local/CI/live/client verification recorded; review/merge pending
+- **Status:** Delivered — initial standalone API slice merged and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-024](spec.md) · **Tasks:** [TASKS-024](tasks.md)

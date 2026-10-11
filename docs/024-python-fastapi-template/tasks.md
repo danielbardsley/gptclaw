@@ -1,6 +1,6 @@
 # TASKS-024: Python FastAPI template
 
-- **Status:** Implementation and verification complete; review/merge and delivery pending
+- **Status:** Complete — initial standalone API slice merged and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-024](spec.md) · **Design:** [TDD-024](technical-design.md)
@@ -98,7 +98,7 @@
   authorized client's private HTTPS docs/API/update observation; local loopback
   or CI alone cannot close AC-006. Trial scoped rollback/refusal and document owned
   fixture disposition without broad cleanup. PYAPI-005, PYAPI-006, PYAPI-008, PYAPI-009; AC-005, AC-006, AC-008, AC-009.
-- [ ] T-011: Write sanitized acceptance.md with AC-001–010 results, actual local/
+- [x] T-011: Write sanitized acceptance.md with AC-001–010 results, actual local/
   generated CI/live/client evidence, pins/revisions/PRs, rollback/recovery and
   limitations. Update runbooks/index/catalogue only to actual approved/merged/
   accepted state. Project owner accepts the initial standalone API slice after
@@ -108,54 +108,22 @@
 
 ## Current handover
 
-Provider 1.6.0 implements the approved standalone Python/FastAPI slice, including
-its exact template, Python/uv execution/policy, versioned contracts, quality/hook
-workflow and managed repository selection. Local, generated CI and scoped runtime
-checks pass, and the project owner confirmed the independent docs/updated-echo
-client check. Source review/merge and final catalogue delivery remain in T-011.
+Provider 1.6.0 and the exact FastAPI template are delivered for the initial
+standalone API slice. PR #56 merged October 11 at `f8b83e8` after all three
+workflows passed at head `2da351f`. The project owner confirmed the independent
+docs/updated-echo check, then accepted the implementation with “Nice.. Looks good,
+merge the PR.” All tasks and AC-001–010 are complete; [acceptance.md](acceptance.md)
+retains the local/generated CI/live/client results, recovery trials and limitations.
 
-The code is reviewable in PR #56. Its final-head CI is tracked on the PR; no
-infrastructure apply, public exposure or live application repository creation was
-performed. The two synthetic runtime fixtures remain available for review with
-source retained. Current evidence is sanitized; prior branch commits retain the
-earlier operational metadata as explained in acceptance.md.
+No infrastructure apply, public exposure or live application repository creation
+was performed. The two synthetic runtime fixtures remain available with source
+retained. AI integrations, databases and RUN-006 remain separately planned scope;
+supporting catalogue features are not closed wholesale. Current evidence is
+sanitized; earlier commits retain the operational metadata described in acceptance.md.
 
-Initial planning verification on October 11 passed relative-link review for all
-181 local links across the original six changed documents, coverage of the original
-nine requirement/acceptance IDs, and whitespace checks. The standards amendment
-adds PYAPI-010/AC-010 without renumbering earlier requirements/tasks and adds T-012.
-Amendment verification results are recorded after execution below. Runtime/
-repository test suites and Terraform checks are not required for these documentation
-changes; no implementation, live service or feature acceptance is claimed.
-
-Standards-amendment verification on October 11: all 190 relative local links across
-the eight planning/source documents resolve, and PYAPI-001–010 / AC-001–010 are
-represented in the spec, design and tasks. The archived source matches the supplied
-attachment after trailing-whitespace normalization; both original and archived
-SHA-256 values are recorded. Implementation/acceptance tasks remain unchecked.
-Whitespace checks passed after staging the seven amendment files. No runtime,
-repository-suite, Terraform or live checks were run for this documentation change.
-
-
-Implementation evidence (October 11): T-002–008/T-012 implemented in provider 1.6.0,
-with actual pinned image/wheel acquisition and generated checks. The combined local
-repository gate passed 411 tests; follow-up Python, repository generation and
-credential suites passed 25, 42 and 47 tests respectively after snapshot/provenance/
-routing/selection changes. T-009 implementation review is PR #56; all three CI
-workflows passed at c07a0fd and 4498077, with final selection/evidence-head checks
-tracked in acceptance.md. These checkboxes establish implemented/verified code,
-not a merged catalogue delivery.
-
-T-010 managed EC2 evidence: task-owned API and synthetic Next.js independently ready, private
-HTTPS docs/assets/schema/API working, 2.767-second source reload, syntax-error
-unavailability and recovery, active tests, real restart/stop/source retention,
-actual busy refusal and pre-Python provider rejection without source mutation.
-The installed snapshot uses the persistent validator environment. API and web
-fixtures remain available for review; independent client confirmation is complete
-and review/merge delivery remain pending. T-011 remains unchecked until then.
-
-
-Independent client evidence: October 11 the project owner confirmed “Docs load and
-echo works” for the explicit private docs/updated-echo check. T-010 is complete;
-review/merge and final catalogue delivery remain in T-011. The running synthetic
-fixtures are retained for review and can be stopped through their named lifecycle.
+Historical planning/amendment checks verified 181 and 190 local links respectively,
+requirement/criterion coverage, supplied-source provenance and whitespace. Runtime
+and Terraform checks were not run for those documentation changes. Implementation
+verification subsequently passed the combined 411-test gate, followed by 25 Python,
+42 repository-generation and 47 credential tests after source changes. Final-head
+CI and actual runtime/client evidence are recorded separately in acceptance.md.
