@@ -1,6 +1,6 @@
 # SPEC-025: Multi-service projects with a notes application
 
-- **Status:** Approved — implementation in progress
+- **Status:** Implemented — local/CI/live/client verified; review/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Primary feature:** RUN-006, initial two-service HTTP slice

@@ -1,6 +1,6 @@
 # TASKS-025: Multi-service projects
 
-- **Status:** Approved — implementation in progress
+- **Status:** Implemented — local/CI/live/client verified; review/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-025](spec.md) · **Design:** [TDD-025](technical-design.md)
@@ -43,7 +43,7 @@
   keyboard labels and visible shared/ephemeral data explanation. Apply inherited
   Python standards and locked checks; test synchronized mutation and data reset.
   Depends on T-003. MS-005, MS-006; AC-005, AC-006.
-- [ ] T-008: Add grouped golden-template and pinned generated CI checks, browser/API
+- [x] T-008: Add grouped golden-template and pinned generated CI checks, browser/API
   contract/CRUD/error tests, Python critical statement and branch coverage >=80%,
   meaningful seeded quality/security defects and source reload/syntax recovery for
   both components. Verify group test/verify failures and no implicit lock changes.
@@ -51,7 +51,7 @@
 
 ## Verification and delivery
 
-- [ ] T-009: Run relevant focused suites, prepared repository checks, generated
+- [x] T-009: Run relevant focused suites, prepared repository checks, generated
   container/browser checks, changed shell syntax and diff/link checks. Submit
   implementation PR, record final-head configured CI and versioned provider rollout.
   Trial rollback/refusal and preserve v1/v2/template/repository-credential behavior.
@@ -83,10 +83,26 @@ and responsive checks pass after correcting the isolated dev-origin setup and
 waiting for asynchronous detail loading. API/web dependency add/remove through
 the stopped group lock passed with independent sources preserved. Cold local
 Node acquisition hit the existing build nproc limit; exact verified images were
-reused without changing host limits. Final golden seeded-defect checks, final-head
-CI, managed live/client behavior and review/merge remain in T-008–010.
+reused without changing host limits. The final golden seeded-defect checks and managed live/client observations now
+pass. The project owner confirmed independent CRUD and source-update behavior.
+Final source CI passed all three configured workflows at `ca0080b`; review/merge
+remain in T-010; see [acceptance](acceptance.md).
 
 Published existing release integrity and whitespace checks pass. Terraform was
 not changed and no local Terraform or infrastructure apply was run. Acceptance
 will distinguish local, generated CI, live and client observations. Earlier
 SPEC-024 acceptance wording remains independently tracked.
+
+
+Final verification closeout: 436 repository tests, 36 focused lifecycle/proxy tests,
+16 focused group tests and the full exact-container/golden/browser/seeded-defect
+workflow pass. Critical API coverage is 275/277 statements and 18/18 branches.
+Actual managed group tests, separate containers/loopback/limits, private REST/docs,
+real HTTPS browser, both source failure/recovery paths, busy/active refusals,
+restart/data reset, stop/source retention and old-provider refusal pass. Project
+owner independently confirmed the requested private CRUD and visible source update.
+All 211 reviewed local links resolve; whitespace, Python compilation, changed Bash
+syntax and published release immutability pass. Final source CI at `ca0080b` is green
+in all three workflows; acceptance.md links exact runs. The notes fixture remains
+ready with source retained. T-010 stays unchecked for review/merge and final delivery;
+no infrastructure apply/public exposure or unrelated data cleanup occurred.

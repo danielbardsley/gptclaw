@@ -1,6 +1,6 @@
 # TDD-025: Two-service project orchestration
 
-- **Status:** Approved — implementation in progress
+- **Status:** Implemented — local/CI/live/client verified; review/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-025](spec.md) · **Tasks:** [TASKS-025](tasks.md)
