@@ -1,0 +1,381 @@
+{
+  "schema_version": 3,
+  "releases": [
+    {
+      "id": "notes",
+      "version": "1.0.0",
+      "description": "Private Next.js + FastAPI group with shared ephemeral notes",
+      "kind": "group",
+      "provider": "notes-v1",
+      "manifest_schema": 3,
+      "catalogue_schema": 3,
+      "stack": [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "FastAPI",
+        "Python"
+      ],
+      "toolchains": {
+        "web": {
+          "schema_version": 1,
+          "profile": "node-pnpm",
+          "profile_version": 1,
+          "versions": {
+            "node": "24.21.0",
+            "pnpm": "12.10.1"
+          }
+        },
+        "api": {
+          "schema_version": 2,
+          "profile": "python-uv",
+          "profile_version": 1,
+          "versions": {
+            "python": "3.13.16",
+            "uv": "0.13.0"
+          }
+        }
+      },
+      "data": "ephemeral",
+      "exposure": "private",
+      "substitutions": [
+        "project-id",
+        "project-name",
+        "base-path"
+      ],
+      "files": [
+        {
+          "source": ".github/workflows/quality.yml",
+          "output": ".github/workflows/quality.yml",
+          "sha256": "391d8d6f765304e8f314f564ad6aacbe7f3d0529316eaa5bde2b15ca00568e25"
+        },
+        {
+          "source": ".gitignore",
+          "output": ".gitignore",
+          "sha256": "4bc6fa1f7f5577feb00b725875d5307d1a6872a9a350ce5fb90b52ca545c2ea2"
+        },
+        {
+          "source": "AGENTS.md",
+          "output": "AGENTS.md",
+          "sha256": "e0a7a5898c43e00e07890ee3111740516cbba5484e94fd2c201369ef704819fe"
+        },
+        {
+          "source": "README.md",
+          "output": "README.md",
+          "sha256": "1c1ccb0bf2d9ec60d43a47329a0d557441f09ffefdf4d3824214b4eacfc5cc6b"
+        },
+        {
+          "source": "api/.dockerignore",
+          "output": "api/.dockerignore",
+          "sha256": "6e5ae70cf1f6fb19b043e8d9e5aeb2ae43a5045a4f16c1cdb2fe042bf4254118"
+        },
+        {
+          "source": "api/.gitignore",
+          "output": "api/.gitignore",
+          "sha256": "5b006765a07e3011ce0ed015adf8213c1ba5049139b017921c2cb9a78efb840f"
+        },
+        {
+          "source": "api/.pre-commit-config.yaml",
+          "output": "api/.pre-commit-config.yaml",
+          "sha256": "afdc4e9bb2681e99167937ad888540bf762d3c04bcf393ebf2a87e75606bfc3a"
+        },
+        {
+          "source": "api/.python-version",
+          "output": "api/.python-version",
+          "sha256": "2d82946ffb2ecf549699ebb86ecbbe663bbc19d53c49c681a1a425f003f80ddb"
+        },
+        {
+          "source": "api/AGENTS.md",
+          "output": "api/AGENTS.md",
+          "sha256": "9374616f5003c4afde28f2a292e7afc287e535566a95682ced2b28bf444b4164"
+        },
+        {
+          "source": "api/Containerfile",
+          "output": "api/Containerfile",
+          "sha256": "e5c078bd86dd02144bdda3bef05659c166185c98c91cc3a9d350063122273db2"
+        },
+        {
+          "source": "api/README.md",
+          "output": "api/README.md",
+          "sha256": "dac70ee3da5b5bec2173d5a2700f2a004a3d9b2c3830ff8225f889ba2f526c3f"
+        },
+        {
+          "source": "api/config/environment.example.md",
+          "output": "api/config/environment.example.md",
+          "sha256": "69bb639f1819a836a11b61bdbe1864981ef0e6b0ce8cbda13f70b665dc02d84e"
+        },
+        {
+          "source": "api/docs/architecture.md",
+          "output": "api/docs/architecture.md",
+          "sha256": "ca030ad49dddf35ab8a4dd075f6ad8e4cca581f0e7fd3852b3ba242299bbd0f2"
+        },
+        {
+          "source": "api/docs/python-standards.md",
+          "output": "api/docs/python-standards.md",
+          "sha256": "e2c9e5a43ceccce8a86eefa49ba57b40d76ba64ef30bfebc45eb01f1ed8d7c1a"
+        },
+        {
+          "source": "api/docs/swagger-LICENSE",
+          "output": "api/docs/swagger-LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "source": "api/docs/swagger-NOTICE",
+          "output": "api/docs/swagger-NOTICE",
+          "sha256": "0d20d1adef18aee3f40dd258172155521ce702ac445cb5f7b7d60ed32dad2fb2"
+        },
+        {
+          "source": "api/docs/swagger-provenance.json",
+          "output": "api/docs/swagger-provenance.json",
+          "sha256": "dcc659a7f325257c149f69342cdbec3a254e9aab6a5be73270bd7243e48cc07d"
+        },
+        {
+          "source": "api/pyproject.toml",
+          "output": "api/pyproject.toml",
+          "sha256": "25426fd93ac8f7378cf85aee7e990b3c8c39692619a54b1e7d8cd50687d0c2db"
+        },
+        {
+          "source": "api/scripts/quality.py",
+          "output": "api/scripts/quality.py",
+          "sha256": "17f3f9c4740eebeb31f53c02c3ef3010e0dd0efff43f131b73fefd754d75d4f8"
+        },
+        {
+          "source": "api/src/fastapi_app/__init__.py",
+          "output": "api/src/fastapi_app/__init__.py",
+          "sha256": "4082a23c7bc6bca661ff6adb164ed00dc1451b97c08ab6d4b0ffc3a3b211ec31"
+        },
+        {
+          "source": "api/src/fastapi_app/api/__init__.py",
+          "output": "api/src/fastapi_app/api/__init__.py",
+          "sha256": "cc6a18adb333a8fb4d737de47e9638b0e43f68472b0626c31d858aba92bfa6f1"
+        },
+        {
+          "source": "api/src/fastapi_app/api/middleware.py",
+          "output": "api/src/fastapi_app/api/middleware.py",
+          "sha256": "351deb57db314691122a2acc88745e74417801e0eb0fd167919885c5065726fd"
+        },
+        {
+          "source": "api/src/fastapi_app/api/notes.py",
+          "output": "api/src/fastapi_app/api/notes.py",
+          "sha256": "db132ac1f4ada9c75799e9bd211198cefad4560d95c645efb219aada994ee9d0"
+        },
+        {
+          "source": "api/src/fastapi_app/api/routes.py",
+          "output": "api/src/fastapi_app/api/routes.py",
+          "sha256": "0a2c083f2994671cd9826332fe35aeed0220abdbdb689a3d7b17f54688c7ab18"
+        },
+        {
+          "source": "api/src/fastapi_app/domain/__init__.py",
+          "output": "api/src/fastapi_app/domain/__init__.py",
+          "sha256": "6dddd881cfc5a9c1e35fb959876f55ea4628a7cde9e80c687c0590ce132cd34b"
+        },
+        {
+          "source": "api/src/fastapi_app/domain/models.py",
+          "output": "api/src/fastapi_app/domain/models.py",
+          "sha256": "2a28152e9951ffe9cab73790e1c6c5107748678c7e06245c1ed201e0961e4f8b"
+        },
+        {
+          "source": "api/src/fastapi_app/domain/notes.py",
+          "output": "api/src/fastapi_app/domain/notes.py",
+          "sha256": "1fe33a42057a6b6a3cf43d1b338b0e6e3770a1c3207297137467e9bfbd84aeeb"
+        },
+        {
+          "source": "api/src/fastapi_app/main.py",
+          "output": "api/src/fastapi_app/main.py",
+          "sha256": "8dd41b29f1938627e2b6b93fb0a01cfb69dcbe4ab46bbc060a9cc7c4ac1ac2f1"
+        },
+        {
+          "source": "api/src/fastapi_app/services/__init__.py",
+          "output": "api/src/fastapi_app/services/__init__.py",
+          "sha256": "a5c5483ece554fc1db7f01d5bbbd619468261f9e485df6aac34c177d6c59ca71"
+        },
+        {
+          "source": "api/src/fastapi_app/services/echo.py",
+          "output": "api/src/fastapi_app/services/echo.py",
+          "sha256": "835e2d96fd915d6d03abc11c07326967c83febf5c899f164c457e3303e718f68"
+        },
+        {
+          "source": "api/src/fastapi_app/services/notes.py",
+          "output": "api/src/fastapi_app/services/notes.py",
+          "sha256": "c750c6ae95ec05cce750d4539c51d2af639304ef231f727f5b155dd11e70491d"
+        },
+        {
+          "source": "api/src/fastapi_app/settings.py",
+          "output": "api/src/fastapi_app/settings.py",
+          "sha256": "fa3790a129c423b430e07543276aaa603ba80c3886fe243670e2d976ec6fd090"
+        },
+        {
+          "source": "api/src/fastapi_app/static/favicon.svg",
+          "output": "api/src/fastapi_app/static/favicon.svg",
+          "sha256": "2378ed36cbc944039f8c6f45ce89baad707e0690c1f19dbb9ad3d613eab9006e"
+        },
+        {
+          "source": "api/src/fastapi_app/static/swagger-ui-bundle.js",
+          "output": "api/src/fastapi_app/static/swagger-ui-bundle.js",
+          "sha256": "050bc415ee7048dcd881682678f720264e7da5e373f7461d7c58c755305255f7"
+        },
+        {
+          "source": "api/src/fastapi_app/static/swagger-ui.css",
+          "output": "api/src/fastapi_app/static/swagger-ui.css",
+          "sha256": "1ac324f7dcd27e4b9386b4bd6421271ec147e922a22c05ba24b11515e9aa6321"
+        },
+        {
+          "source": "api/src/fastapi_app/utils/__init__.py",
+          "output": "api/src/fastapi_app/utils/__init__.py",
+          "sha256": "cb9d89373e57a1c06d8b434ef832994c0b75c879d12f6c3551cee2c253037f9e"
+        },
+        {
+          "source": "api/src/fastapi_app/utils/logging.py",
+          "output": "api/src/fastapi_app/utils/logging.py",
+          "sha256": "2a61c75cd359e33e615e739d0700e3943fce8053e6ffa67d0a12407cc681ed02"
+        },
+        {
+          "source": "api/tests/test_api.py",
+          "output": "api/tests/test_api.py",
+          "sha256": "4a0903f3b15bd03c4d3e8e10f43afa5165cfc8fd80428c68e98f181ace5b4b10"
+        },
+        {
+          "source": "api/tests/test_notes.py",
+          "output": "api/tests/test_notes.py",
+          "sha256": "ec02282bcabaaee376b7940666524648a652961c9004189ddc95f033011739d4"
+        },
+        {
+          "source": "api/tests/test_quality.py",
+          "output": "api/tests/test_quality.py",
+          "sha256": "7f2432941aded999c0c82b17f44dacd321d925f71a502b840f151657bbc8ec91"
+        },
+        {
+          "source": "api/uv.lock",
+          "output": "api/uv.lock",
+          "sha256": "537dff208b391a82cb7b730e5ef179b794083f5511eb28b9fb73347b2a67918f"
+        },
+        {
+          "source": "checks/Browser.Containerfile",
+          "output": "checks/Browser.Containerfile",
+          "sha256": "d53a38ef330d741435aa259a0b27a5b688f9f6ec2cc923e864f36fcb6a3ce2da"
+        },
+        {
+          "source": "checks/Node.Containerfile",
+          "output": "checks/Node.Containerfile",
+          "sha256": "f9b155e167c01667c170f7064a7401c52ebcea7beba17c37e88b892cb36eb0ad"
+        },
+        {
+          "source": "checks/acquire-browser.py",
+          "output": "checks/acquire-browser.py",
+          "sha256": "64c1e03573dcb480383283ba22980809320fdb6a5816a13c8bfc8c3546145073"
+        },
+        {
+          "source": "checks/browser.cjs",
+          "output": "checks/browser.cjs",
+          "sha256": "33d180c5773be7ba1b4a6b4ac3b7670989d294012763d854155ef8a16b295608"
+        },
+        {
+          "source": "checks/browser.json",
+          "output": "checks/browser.json",
+          "sha256": "25c1648672ee3ea1fbcebf796f64dde41bbf6774a128adce495160960787468a"
+        },
+        {
+          "source": "checks/install-pnpm.cjs",
+          "output": "checks/install-pnpm.cjs",
+          "sha256": "43e29b1a2b518dbc37fc691f97852ec740db8eb4154b62c6d3bb816acd2b7640"
+        },
+        {
+          "source": "checks/node-profile.json",
+          "output": "checks/node-profile.json",
+          "sha256": "2b74d1c4f61ccac56b97e84f18ae01dcc1953967e24e597723b73f6d81943c30"
+        },
+        {
+          "source": "checks/verify.py",
+          "output": "checks/verify.py",
+          "sha256": "5916f44c5a0ecf6786471bfbba44a10a221c32ca631132e9a82f82fe776e6168"
+        },
+        {
+          "source": "web/.gitignore",
+          "output": "web/.gitignore",
+          "sha256": "c98d87c67c434e296aad3c8f62f5668d0a927f8188d22217b6f44221c9b9ce59"
+        },
+        {
+          "source": "web/AGENTS.md",
+          "output": "web/AGENTS.md",
+          "sha256": "18834a5ff006865d88e6b0269896d028e8fcab99126017d4fddcbb73ad4275ec"
+        },
+        {
+          "source": "web/README.md",
+          "output": "web/README.md",
+          "sha256": "73a065674d415019e9245d7ecf27c26ece81c076927ef2a26c0afbbdc0e0b343"
+        },
+        {
+          "source": "web/app/alive/route.ts",
+          "output": "web/app/alive/route.ts",
+          "sha256": "04c979f6da8babf421ced3147785e1205deac738e4473993ca82e3456f0613ca"
+        },
+        {
+          "source": "web/app/globals.css",
+          "output": "web/app/globals.css",
+          "sha256": "b183701f94e9ba9566a9dd73fc2f04f849e3ecb5aace2c00241c4783a56af3b8"
+        },
+        {
+          "source": "web/app/health/route.ts",
+          "output": "web/app/health/route.ts",
+          "sha256": "7487635d7067f1661ee42ce84240917940c775a81d78409d3d4c3b4243d8a6fc"
+        },
+        {
+          "source": "web/app/layout.tsx",
+          "output": "web/app/layout.tsx",
+          "sha256": "dc182c696b00c6a322c948db6e0fe30406e96110e2db9e2cc57ecd90169d81aa"
+        },
+        {
+          "source": "web/app/notes.tsx",
+          "output": "web/app/notes.tsx",
+          "sha256": "87c06cbd87dddd9c23c59c4de0dc66232967a489437e0e204331c969b88539c3"
+        },
+        {
+          "source": "web/app/page.tsx",
+          "output": "web/app/page.tsx",
+          "sha256": "3fe9f7a14ed8e5643a0e4a40b4a8454f695954609d9846f17803bfe805502e81"
+        },
+        {
+          "source": "web/next-env.d.ts",
+          "output": "web/next-env.d.ts",
+          "sha256": "879741880b6ab48da99dcc06dcc674d381c9826137b0496bf7bb368f302de9fc"
+        },
+        {
+          "source": "web/next.config.ts",
+          "output": "web/next.config.ts",
+          "sha256": "37564ac7ad32d74e9b91efb08e0b7752a0e1f33d44bd623a91b2243fe93c1b83"
+        },
+        {
+          "source": "web/package.json",
+          "output": "web/package.json",
+          "sha256": "812a77b374ac6cc6a9bcb21816c30bf798a837a62e12a91c3da3f66129be6ad6"
+        },
+        {
+          "source": "web/pnpm-lock.yaml",
+          "output": "web/pnpm-lock.yaml",
+          "sha256": "6500bf21d43e09537f73b4f076e5cc0951cc5834551e6b7ffffdb6e4ce033a9d"
+        },
+        {
+          "source": "web/pnpm-workspace.yaml",
+          "output": "web/pnpm-workspace.yaml",
+          "sha256": "185021bac428281a21e476e8f0b2ad440916d0534f065fbd2a8b3d1213811f07"
+        },
+        {
+          "source": "web/tests/contract.mjs",
+          "output": "web/tests/contract.mjs",
+          "sha256": "31a5ba1a863858d39c2de7c0d50cb5155d85f653293cdb472ba375dc012f994d"
+        },
+        {
+          "source": "web/tests/health.test.ts",
+          "output": "web/tests/health.test.ts",
+          "sha256": "cc8e637cc39b88b4501c75b4d7ff19ceda7027d39a963c6cbee826b0f7d90349"
+        },
+        {
+          "source": "web/tsconfig.json",
+          "output": "web/tsconfig.json",
+          "sha256": "40e7a1bf47b78401d6408040addf5e1c07f2e821461fb035e02ecc651961d562"
+        }
+      ],
+      "digest": "dd01512778ed9eea5ba5e7696723dc26ee14120acceb53f18c9e5d1e77fc6d1e"
+    }
+  ]
+}

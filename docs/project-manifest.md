@@ -178,3 +178,24 @@ it never loads a project-provided schema or executes source. Exact generation,
 Python/uv metadata and runtime checks are described in the
 [Python API runbook](../runbooks/manage-python-apis.md). V2 adds neither multiple
 services nor environment/secrets/volumes/host-port declarations.
+
+## Version 3: two-service projects
+
+[SPEC-025](025-multi-service-projects/spec.md) adds an explicit group schema:
+`project.kind: group`, exactly `components.api` and `components.web`, and the same
+private exposure/ephemeral-data contract. Each component declares a disjoint safe
+relative directory root, fixed supported adapter, argument-vector commands, exact
+selected toolchain, internal port, readiness/liveness probes and dependency list.
+Only `web -> api` is supported initially. Unknown components/fields/versions,
+unsafe or overlapping roots, symlinks and invalid dependencies fail before execution.
+The generated notes release is the complete example; API/web v1/v2 interpretation
+is unchanged. Validation observes filesystem metadata for the two declared roots;
+it does not import application code, resolve packages or create runtime state.
+
+Component `.gptclaw` files contain generation-owned adapter/toolchain/group metadata;
+there is no independent component project manifest or lifecycle. The runtime derives
+single-stack execution contracts in memory under the group lock, and verifies
+metadata/profile selection before jobs. Runtime group receipts use explicit schema 2
+with component state references, operation stages and owned network identity; component
+receipts retain schema 1. Ports/ownership/health stay outside source. See the
+[group runbook](../runbooks/manage-multi-service-projects.md) for scoped operations.

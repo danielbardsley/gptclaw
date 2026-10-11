@@ -11,6 +11,7 @@ from urllib.parse import urlsplit
 from private_apps import AppError, INGRESS_PORT, VERSION, state_for, verify_unit
 
 MAX_BODY = 2 * 1024 * 1024
+SLOT_WAIT_SECONDS = 5
 HOP = {'connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailer','transfer-encoding','upgrade'}
 
 
@@ -47,9 +48,15 @@ class Handler(BaseHTTPRequestHandler):
    import re
    if not re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',slug) or len(slug)>48:return self.fail(404)
    s=state_for(slug)
+   if s and s.get('group'):return self.fail(404)
    if not s or s['phase']!='ready' or not s.get('health_ready'):return self.fail(404)
+   if s.get('schema_version')==2:
+    import project_groups as groups
+    s=groups.upstream(s,parsed.path)
+    if s is False:return self.fail(404)
+    if s is None:return self.fail(503)
    verify_unit(s)
-   if s.get('adapter') == 'python':
+   if s.get('adapter') == 'python' and not s.get('group'):
     from pathlib import Path
     from private_apps import target, healthy
     _, contract = target(Path(s['root']))
@@ -104,12 +111,18 @@ class Handler(BaseHTTPRequestHandler):
 
 
 class Server(HTTPServer):
+ request_queue_size = 16
  def __init__(self,address):
   super().__init__(address,Handler)
   self.pool=concurrent.futures.ThreadPoolExecutor(max_workers=16)
   self.slots=threading.BoundedSemaphore(16)
  def process_request(self,request,client_address):
-  if not self.slots.acquire(blocking=False):self.shutdown_request(request);return
+  # Brief bounded backpressure lets a browser's asset burst share 16 workers.
+  # Closing a busy upstream socket made Serve return 502 and blocked hydration.
+  if not self.slots.acquire(timeout=SLOT_WAIT_SECONDS):
+   try:request.sendall(b'HTTP/1.1 503 Service Unavailable\r\nContent-Length: 0\r\nConnection: close\r\n\r\n')
+   finally:self.shutdown_request(request)
+   return
   self.pool.submit(self.worker,request,client_address)
  def worker(self,request,client_address):
   try:

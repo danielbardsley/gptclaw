@@ -14,12 +14,13 @@ import subprocess
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.6.0'
+VERSION = '1.7.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -153,10 +154,13 @@ def target(root):
  root = safe(Path(root).absolute())
  need(root.is_relative_to(PROJECTS) and root != PROJECTS and root != REPO and '.gptclaw-runtime' not in root.parts, 'path')
  need(root.is_dir() and root.stat().st_uid == os.getuid(), 'path')
+ if (root/'.gptclaw/component.json').exists() or (root/'.gptclaw/component.json').is_symlink():
+  import project_groups as groups
+  return groups.component_target(root)
  result, contract, code = validate_project(root)
  need(code == 0, 'invalid')
  marker = read_json(root / '.gptclaw/template.json')
- need(marker == {'provider': 'fastapi-v1' if contract['schema_version'] == 2 else 'nextjs-v1'}, 'invalid')
+ need(marker == {'provider': 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'nextjs-v1'}, 'invalid')
  import project_templates as templates
  templates.validate_provenance(root)
  need(not any((root/name).exists() for name in ['.env','.env.local','.env.development','.env.production','.npmrc','.ssh','.aws']),'invalid')
@@ -164,6 +168,9 @@ def target(root):
 
 
 def valid_state(s):
+ if isinstance(s,dict) and s.get('schema_version')==2:
+  import project_groups as groups
+  return groups.valid_state(s)
  need(isinstance(s, dict) and s.get('schema_version') == 1, 'conflict')
  need(isinstance(s.get('id'), str) and re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*', s['id']) and len(s['id']) <= 48)
  need(s.get('name') == 'gptclaw-app-' + s['id'])
@@ -175,6 +182,16 @@ def valid_state(s):
  need(isinstance(s.get('unit_sha256'), str) and re.fullmatch(r'[0-9a-f]{64}', s['unit_sha256']))
  need(isinstance(s.get('image'), str) and re.fullmatch(r'sha256:[0-9a-f]{64}', s['image']))
  if 'adapter' in s: need(s['adapter'] == 'python')
+ if 'group' in s:
+  import project_groups as groups
+  need(isinstance(s['group'],str) and re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',s['group']) and len(s['group'])<=48)
+  need(s.get('component') in groups.ORDER and s['id']==groups.identity(s['group'],s['component']))
+  need(s.get('network')=='gptclaw-group-'+s['group'] and s.get('network_alias')==s['component'])
+  need(s.get('runtime_project_id')==s['group'] and isinstance(s.get('runtime_api_url'),str))
+  try:api_url=urllib.parse.urlsplit(s['runtime_api_url']);api_port=api_url.port
+  except ValueError:raise AppError('conflict') from None
+  need(api_url.scheme=='http' and api_url.hostname=='api' and api_url.username is None and api_url.password is None and not api_url.query and not api_url.fragment)
+  need(type(api_port) is int and 1024<=api_port<=65535 and re.fullmatch(r'/[A-Za-z0-9._/-]*',api_url.path) and not any(p in {'.','..'} for p in api_url.path.split('/')))
  need(s.get('phase') in {'preparing','starting','ready','stopped','failed'})
  need(type(s.get('health_ready')) is bool)
  if 'toolchain_hash' in s:need(isinstance(s['toolchain_hash'],str) and re.fullmatch(r'[0-9a-f]{64}',s['toolchain_hash']))
@@ -199,7 +216,8 @@ def states():
  result = []
  for path in STORE.glob('*.json'):
   if path.name.endswith('-prototype.json') or path.name=='ingress-owner.json': continue
-  s = valid_state(read_json(path)); need(path.stem == s['id']); result.append(s)
+  s = valid_state(read_json(path)); need(path.stem == s['id'])
+  if s['schema_version']==1:result.append(s)
  return result
 
 
@@ -220,7 +238,7 @@ def object_owned(kind, name, token):
  if r.returncode:
   need(r.returncode == 1, 'command'); return False
  obj = json_command(['podman',kind,'inspect',name])[0]
- labels = obj.get('Config',{}).get('Labels',{}) if kind == 'container' else obj.get('Labels',{})
+ labels = obj.get('Config',{}).get('Labels',{}) if kind == 'container' else obj.get('Labels',obj.get('labels',{}))
  need(labels.get(LABEL) == token)
  return True
 
@@ -240,7 +258,12 @@ def reserve(root, contract):
  with locked('registry'):
   s = state_for(slug)
   if s:
-   need(s['root'] == str(root)); return s
+   need(s['schema_version']==1 and s['root'] == str(root))
+   import project_groups as groups
+   runtime=groups.component_runtime(root)
+   if runtime and any(s.get(k)!=v for k,v in runtime.items()):
+    need(s['phase']=='stopped','busy');s.update(runtime);save(STORE/(slug+'.json'),s)
+   return s
   used = {x['port'] for x in states()}
   port = next((p for p in PORTS if p not in used and available(p)), None)
   need(port is not None, 'ports')
@@ -248,6 +271,8 @@ def reserve(root, contract):
        'token':uuid.uuid4().hex,'port':port,'phase':'preparing','image':'sha256:'+'0'*64,
        'unit_sha256':'0'*64,'operation_id':uuid.uuid4().hex,'operation':'start','health_ready':False}
   if contract['schema_version'] == 2: s['adapter'] = 'python'
+  import project_groups as groups
+  s.update(groups.component_runtime(root))
   save(STORE/(slug+'.json'),s); return s
 
 
@@ -292,10 +317,10 @@ def run_in_app(s, argv, timeout=300, read_only_dependency_files=False):
  exists = command(['podman','container','exists',name],optional=True)
  need(exists.returncode == 1, 'busy' if exists.returncode == 0 else 'command')
  args=['podman','run','--rm','--name',name,'--label',LABEL+'='+s['token'],
-       '--userns=keep-id','--network=slirp4netns','--memory='+MEMORY,'--cpus='+CPU,
+       '--userns=keep-id','--network='+s.get('job_network','slirp4netns'),'--memory='+MEMORY,'--cpus='+CPU,
        '--pids-limit='+str(PIDS),'--cap-drop=all','--security-opt=no-new-privileges',
        '--volume',s['root']+':/workspace:rw','--workdir','/workspace',
-       '--env','GPTCLAW_PROJECT_ID='+s['id'],'--env','NEXT_TELEMETRY_DISABLED=1',
+       '--env','GPTCLAW_PROJECT_ID='+s.get('runtime_project_id',s['id']),'--env','NEXT_TELEMETRY_DISABLED=1',
        '--env','NODE_OPTIONS=--max-old-space-size=1024']
  import project_python as py
  python_profile = s.get('adapter') == 'python' or py.is_python(s['root'])
@@ -304,6 +329,7 @@ def run_in_app(s, argv, timeout=300, read_only_dependency_files=False):
   for name in py.FILES if python_profile else deps.FILES:
    path=safe(Path(s['root'])/name);deps.read_bytes(path)
    args += ['--volume',str(path)+':/workspace/'+name+':ro']
+ for key,value in s.get('job_env',{}).items():args += ['--env',key+'='+value]
  args += [s['image'],*argv]
  return command(args,timeout=timeout)
 
@@ -359,11 +385,12 @@ ContainerName={s['name']}
 Label=com.gptclaw.project={s['id']}
 Label={LABEL}={s['token']}
 UserNS=keep-id
-Network=slirp4netns
+Network={s.get('network','slirp4netns')}
 PublishPort=127.0.0.1:{s['port']}:{contract['service']['internal_port']}
 Volume={s['root']}:/workspace:rw
 WorkingDir=/workspace
-Environment=GPTCLAW_PROJECT_ID={s['id']}
+Environment=GPTCLAW_PROJECT_ID={s.get('runtime_project_id',s['id'])}
+{('Environment=GPTCLAW_API_READY_URL='+s['runtime_api_url']+chr(10)) if s.get('component')=='web' else ''}
 Environment=GPTCLAW_DEV_ORIGIN={dns}
 Environment=NEXT_TELEMETRY_DISABLED=1
 Environment=NODE_OPTIONS=--max-old-space-size=1024
@@ -374,7 +401,7 @@ NoNewPrivileges=true
 DropCapability=all
 ReadOnly=true
 PidsLimit={PIDS}
-PodmanArgs=--cpus={CPU} --memory={MEMORY}
+PodmanArgs=--cpus={CPU} --memory={MEMORY}{(' --network-alias='+s['network_alias']) if s.get('group') else ''}
 
 [Service]
 ExecStartPre=/usr/bin/timeout 120 /bin/sh -c 'until /usr/bin/mountpoint -q /srv/forge; do sleep 1; done'
@@ -434,6 +461,9 @@ def save_text(path,text):
 
 
 def start(root, no_route=False, take_lock=True):
+ if target(root)[1]['schema_version']==3:
+  import project_groups as groups
+  return groups.start(root,no_route,take_lock)
  import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
  if contract['schema_version']==2 and not no_route: route_info(slug)
@@ -476,6 +506,9 @@ def start(root, no_route=False, take_lock=True):
 
 
 def stop(root, take_lock=True):
+ if target(root)[1]['schema_version']==3:
+  import project_groups as groups
+  return groups.stop(root,take_lock)
  root,contract=target(root);slug=contract['project']['id']
  with (locked(slug) if take_lock else contextlib.nullcontext()):
   s=state_for(slug)
@@ -499,6 +532,9 @@ def stop(root, take_lock=True):
 
 
 def restart(root):
+ if target(root)[1]['schema_version']==3:
+  import project_groups as groups
+  return groups.restart(root)
  root,contract=target(root);slug=contract['project']['id']
  with locked(slug):
   before=state_for(slug)
@@ -511,6 +547,9 @@ def restart(root):
 
 
 def status(root):
+ if target(root)[1]['schema_version']==3:
+  import project_groups as groups
+  return groups.status(root)
  root,contract=target(root);slug=contract['project']['id'];s=state_for(slug)
  if not s:return {'project':slug,'state':'stopped','health':'unknown'}
  need(s['root']==str(root));active,ready=inspect_service(s,contract)
@@ -643,7 +682,7 @@ def provider_bundle():
  paths += [Path('schemas/project/v1.schema.json'),Path('templates/apps/node-toolchain/Containerfile')]
  import project_templates as templates
  paths += templates.bundle_paths()
- paths += [Path(p) for p in ['scripts/project_python.py','config/toolchains/v2.json','schemas/toolchains/v2.schema.json','config/project-dependencies/v2.json','schemas/project/v2.schema.json','templates/apps/python-toolchain/Containerfile']]
+ paths += [Path(p) for p in ['scripts/project_python.py','scripts/project_groups.py','schemas/project/v3.schema.json','config/toolchains/v2.json','schemas/toolchains/v2.schema.json','config/project-dependencies/v2.json','schemas/project/v2.schema.json','templates/apps/python-toolchain/Containerfile']]
  interpreter=Path(sys.executable).absolute()
  digest=hashlib.sha256(str(interpreter).encode()+b'\0')
  for rel in sorted(paths):digest.update(str(rel).encode()+b'\0'+(REPO/rel).read_bytes())
@@ -664,6 +703,9 @@ def provider_bundle():
 
 
 def install_hooks(root):
+ if target(root)[1]['schema_version']==3:
+  import project_groups as groups
+  return groups.install_hooks(root)
  root,contract=target(root);need(contract['schema_version']==2,'invalid');slug=contract['project']['id']
  import project_dependencies as deps
  with locked(slug):
