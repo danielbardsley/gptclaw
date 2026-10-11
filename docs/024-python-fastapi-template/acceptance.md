@@ -1,18 +1,20 @@
 # SPEC-024 implementation acceptance
 
-- **Status:** Implementation and local/CI/live/client checks complete; review/merge and final delivery pending
+- **Status:** Delivered — initial standalone API slice merged and accepted; AC-001–010 passed
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-024](spec.md) · **Design:** [TDD-024](technical-design.md) · **Tasks:** [TASKS-024](tasks.md)
 - **Implementation review:** [PR #56](https://github.com/danielbardsley/gptclaw/pull/56)
-- **Code revision:** `cce026c` (exact repository selection); final documentation/evidence revision tracked by the PR head
+- **Final reviewed head:** `2da351f2a60f2fd5d659229435e803d0c28cdec8` (repository-selection code `cce026c`)
+- **Implementation merge:** `f8b83e851f44e1743e6dd29252c2f1c95c53ae97`, October 11, 2026
 
 The project owner approved the scope and authorized implementation October 11
 with “ok, go ahead and implement the spec.” No public exposure, infrastructure/
 host package installation or live application GitHub repository creation occurred.
 The runtime trial uses the existing reviewed private lifecycle and owned ingress.
-The project owner confirmed independent docs/echo behavior on October 11. This
-record does not establish merged delivery or completion of the merge gate.
+The project owner confirmed independent docs/echo behavior on October 11, then
+accepted the implementation with “Nice.. Looks good, merge the PR.” PR #56 merged
+after final-head CI passed, completing the initial standalone API slice.
 
 | Criterion | State | Evidence / remaining action |
 |---|---|---|
@@ -24,7 +26,7 @@ record does not establish merged delivery or completion of the merge gate.
 | AC-006 | passed | Actual HTTPS docs/assets/schema/API/query forwarding passed from EC2. Mounted nonce/self-hosted docs and hostile-header relative redirects passed in container tests. Stopped URL returned 404; syntax outage produced no successful readiness and recovered. The project owner confirmed from the independent tailnet browser: “Docs load and echo works,” including the requested updated response. |
 | AC-007 | passed | Exact-container Black/isort/Ruff/strict mypy/pytest/coverage/Bandit/pip-audit/build/verify pass. Real seeded format/docstring/type/API/import/static-security/coverage defects are rejected. Synthetic advisory findings/unavailability fail; explicit hook preservation/idempotency and real pinned pre-commit config validation pass. The first config-validation attempt used a read-only default cache; a task-owned writable cache corrected that environment setup. |
 | AC-008 | passed | Existing Node/Next.js/provider/dependency/toolchain/repository/credential regressions pass. Synthetic real-Git repository creation carries the exact FastAPI release without credential-policy changes. The independent web fixture stayed healthy during API failure/restart/stop; ports/ownership remain independent. |
-| AC-009 | pending | Sanitized evidence recorded below. Final-head CI review/merge and project-owner acceptance remain; only the initial standalone slice may be marked Delivered after these gates. |
+| AC-009 | passed | Sanitized local/CI/live/client evidence, pins, timings, recovery/refusal trials and fixture disposition are recorded below. All three workflows passed at final head `2da351f`; the project owner accepted the result and authorized PR #56 merge. Implementation merged at `f8b83e8`; only the initial standalone slice is Delivered. |
 | AC-010 | passed | Owner-derived guide/config/AGENTS, injected service/src design, complete types/docstrings, safe logs/versioned pagination/readiness/admission/CORS/headers and standards fault cases are implemented. uv/dotenv/Safety adaptations remain explicit; tool-usage material is absent from the normative guide. |
 
 ## Local and generated verification
@@ -75,7 +77,14 @@ Documentation/path-filter head `778b3db` passed
 [private application #60](https://github.com/danielbardsley/gptclaw/actions/runs/38163933646),
 [development host #170](https://github.com/danielbardsley/gptclaw/actions/runs/38163933638),
 and [federation #74](https://github.com/danielbardsley/gptclaw/actions/runs/38163933654).
-The subsequent evidence-redaction head is tracked separately when observed. No local Terraform checks were required because
+Final reviewed head `2da351f` passed all three workflows, rechecked before merge:
+[private application #63](https://github.com/danielbardsley/gptclaw/actions/runs/38164715128),
+[development host #173](https://github.com/danielbardsley/gptclaw/actions/runs/38164715122),
+and [federation #77](https://github.com/danielbardsley/gptclaw/actions/runs/38164715108).
+GitHub reported the PR mergeable with clean status and no submitted reviews or
+inline review threads. The project owner's explicit chat acceptance and merge
+instruction are recorded separately from GitHub review submissions.
+No local Terraform checks were required because
 no Terraform/bootstrap changed, and no protected apply/promotion workflow was invoked.
 
 ## Actual EC2 behavior
@@ -111,7 +120,7 @@ an older provider. A warm start restored the updated API. The installed immutabl
 validator interpreter, independent of the temporary implementation worktree's
 Python environment; its host path is not exported here.
 
-## Remaining acceptance and fixture disposition
+## Owner acceptance and fixture disposition
 
 The API and web fixture remain running with synthetic data/source. On October 11
 the project owner answered “Docs load and echo works” to the explicit independent
@@ -124,8 +133,10 @@ lifecycle if no longer needed; retain source by default. Golden/authoring direct
 /tmp are task-owned disposable verification data; no unknown project, shared image,
 volume or credential material is removed. Existing snapshots/private access and
 host/reboot/replacement acceptance remain unchanged and separately tracked.
-Review/merge and final owner acceptance remain. Catalogue status stays Planned;
-implementation is not marked Delivered merely because CI and live trials pass.
+Review/merge and owner acceptance are complete. Catalogue status is Delivered
+for the initial standalone API slice; AI integrations, databases and RUN-006
+remain separate scope. The merge did not perform an infrastructure apply or
+create a separate application repository.
 
 
 ## Evidence disclosure correction

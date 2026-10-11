@@ -1,6 +1,6 @@
 # SPEC-024: Python FastAPI template and supported execution
 
-- **Status:** Implemented — local/CI/live/client checks passed; review/merge and final delivery pending
+- **Status:** Delivered — initial standalone API slice merged and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Primary feature:** TPL-003 — Python API/AI template, initial standalone API slice
@@ -228,8 +228,9 @@ The platform's existing Python validator environment remains separate; installed
 snapshots retain the actual persistent validator interpreter used for rollout.
 
 The project owner approved scope and authorized implementation October 11, then
-confirmed independent private docs/updated-echo behavior. The implementation is
-complete and reviewable; review/merge and final catalogue delivery remain separate.
+confirmed independent private docs/updated-echo behavior. The project owner accepted
+the result with “Nice.. Looks good, merge the PR” on October 11. PR #56 merged at
+`f8b83e8`, completing delivery of this initial standalone API slice.
 No database or secret dependency is required. Future work outside these boundaries
 needs its own concrete scope and existing infrastructure/access gates.
 
