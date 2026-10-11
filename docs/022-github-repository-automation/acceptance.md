@@ -1,7 +1,7 @@
 # SPEC-022 acceptance evidence
 
 - **Status:** Delivered — initial slice merged and accepted under recorded owner waiver
-- **Owner:** Daniel
+- **Owner:** Project owner
 - **Evidence date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-022](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 - **PR:** [#52](https://github.com/danielbardsley/gptclaw/pull/52)
@@ -10,7 +10,7 @@
 
 ## Authorization and boundaries
 
-Daniel authorized implementation on October 10 and separately approved retaining
+The project owner authorized implementation on October 10 and separately approved retaining
 `danielbardsley/gptclaw-prj004-verification` for live verification using an explicitly
 supplied private token. He requested private-file creation instructions; those
 are in the [runbook](../../runbooks/manage-project-repositories.md). At the initial offline baseline, no token/path,
@@ -20,17 +20,17 @@ environment, infrastructure or private app. Test data is synthetic; Git remotes 
 
 ## Live creation phase — October 10
 
-Daniel supplied the private provisioning-token file and reported **All repositories**
+The project owner supplied the private provisioning-token file and reported **All repositories**
 selection with **Repository creation** permission. The directory/file are owned
 by `forge` (UID 1002), mode `0700`/`0600`, regular/no symlink. Read-only GitHub
 metadata authenticated `danielbardsley` and reported actual token expiration
 `2026-10-17T21:01:18Z` (October 17, 5:01 p.m. America/New_York).
 
-Daniel explicitly authorized a seven-day implementation limit and committed to
-manual token removal when finished. Temporary credential scope: owner Daniel;
+The project owner explicitly authorized a seven-day implementation limit and committed to
+manual token removal when finished. Temporary credential scope: owner the project owner;
 reason SPEC-022 retained verification; all-repository selection with creation-only
 permission as reported, actual creation endpoint succeeded; expiry above; removal
-step revoke in GitHub and remove the private file under Daniel's control. Revocation
+step revoke in GitHub and remove the private file under the project owner's control. Revocation
 is pending; this is not standing application Git access or authority over other
 repositories. Full token grants cannot be introspected by the adapter.
 
@@ -56,7 +56,7 @@ No starter branches, protections, environments, secrets, PR or local app source
 were published in creation-only mode. Resume awaits a second token selected only
 for this repository, with Administration/Contents/Pull requests write permissions.
 No permission fallback, deletion, production operation or app restart occurred.
-The first token can be revoked by Daniel after creation; do not delete the retained
+The first token can be revoked by the project owner after creation; do not delete the retained
 repository or its journal. Ongoing Git credentials remain a separate handoff.
 
 The final focused suite after expiry/subscription/saved-plan fixes ran 38 tests
@@ -74,7 +74,7 @@ documentation only; its follow-up PR-head checks remain visible on PR #52.
 The supplied repository-specific token file authenticated `danielbardsley`.
 GitHub reported actual expiration `2026-10-11T04:00:00Z` (October 11 at
 12:00 a.m. America/New_York); the token value was never displayed or recorded.
-Daniel owns its manual revocation/removal after use, under the same retained
+The project owner owns its manual revocation/removal after use, under the same retained
 verification scope. `/repos/...` readback reported admin access; grants beyond
 executed endpoints remain operator-declared, not introspected.
 
@@ -91,7 +91,7 @@ but not yet marked complete because the next readback was denied.
 The private retained repository contains bootstrap source only. No starter
 branch, protection write, environments, secrets, initial PR or local application
 publication occurred. Account-plan support is an actual blocking prerequisite,
-not verified readiness. Daniel must enable a plan supporting private protection
+not verified readiness. The project owner must enable a plan supporting private protection
 or approve a separately reviewed scope change. Resume the same operation after
 that change with a still-valid repository-scoped token; do not recreate, make
 public, delete or weaken the setup automatically. Full live/runtime acceptance,
@@ -99,7 +99,7 @@ merge and token revocation remain pending.
 
 ## Authorized waiver and successful setup — October 10
 
-Daniel explicitly instructed “Ignore private branch protection requirement and
+The project owner explicitly instructed “Ignore private branch protection requirement and
 continue.” SPEC-022 now permits this operation-bound waiver while retaining the
 default protection requirement for other operations. The CLI requires
 `repo resume --allow-unprotected-main`; the receipt records owner authorization,
@@ -128,7 +128,7 @@ Executed live quality/lifecycle checks through provider 1.4.0:
 - Bounded loopback page and health requests returned HTTP 200 for both the fixture and independent `hello-second`; subsequent independent status remained ready with its prior operation unchanged.
 
 [Private fixture URL](https://forge-dev-01-4.tail8c3304.ts.net/projects/gptclaw-prj004-verification/)
-is configured. Daniel independently confirmed on October 10 (America/New_York),
+is configured. The project owner independently confirmed on October 10 (America/New_York),
 “it loads correctly yes.” This records owner-observed desktop page access,
 separately from the executed host checks. Fixture remains running/private;
 no unrelated app restart, public exposure, production or infrastructure change.
@@ -153,14 +153,14 @@ No protected deployment job ran. Subsequent evidence changes are documentation o
 |---|---|---|---|
 | AC-001 | passed | Offline read-only plan, exact release, collision/path/input rejection and no-write tests pass. | Read-only preview and final setup readback observed. |
 | AC-002 | passed | Real fixture Git proves README-only main, starter history/provenance/guidance and one PR; protection precedes exclusive starter ref. | Private ID, bootstrap main, exact starter/PR and source observed; protection explicitly owner-waived. |
-| AC-003 | passed | Protection readback/denial/drift tests pass; no implicit policy repair or starter publication after denial. | Amended criterion: Daniel explicitly waived protection for this operation; receipt/source report not verified. Default enforcement cases still pass offline. |
+| AC-003 | passed | Protection readback/denial/drift tests pass; no implicit policy repair or starter publication after denial. | Amended criterion: the project owner explicitly waived protection for this operation; receipt/source report not verified. Default enforcement cases still pass offline. |
 | AC-004 | passed | Empty selections cause no corresponding requests; development environment/readback and secret metadata states pass. No secret writes exist. | Live no-selection path passed; environment/secret-reference variants tested offline, not selected in fixture. |
-| AC-005 | passed | Offline credential rejection/redaction tests passed. Live creation/configuration authenticated Daniel using private owned files; GitHub-reported expiries and executed capabilities are recorded above. Ongoing Git handoff is explicitly pending. | Daniel owns manual token revocation. Revocation was an operational follow-up, not a required observable AC-005 result; it is not claimed complete. |
+| AC-005 | passed | Offline credential rejection/redaction tests passed. Live creation/configuration authenticated the project owner using private owned files; GitHub-reported expiries and executed capabilities are recorded above. Ongoing Git handoff is explicitly pending. | the project owner owns manual token revocation. Revocation was an operational follow-up, not a required observable AC-005 result; it is not claimed complete. |
 | AC-006 | passed | Lost creation response never auto-adopts; explicit ID reconciliation, response loss at object/ref/protection/environment/PR boundaries, locks, drift and atomic-local-publication recovery pass. Partial generation preserves owned staging for operator review. | Same operation reconciled after live denial, preserved ID/main, produced one branch/PR and retained source. |
-| AC-007 | passed | Offline/CI and live starter build/tests/typecheck/private health passed; independent app stayed ready. Daniel confirmed the desktop page loads October 10. | Implementation/initial PR merges and overall owner acceptance remain separate delivery gates. |
+| AC-007 | passed | Offline/CI and live starter build/tests/typecheck/private health passed; independent app stayed ready. The project owner confirmed the desktop page loads October 10. | Implementation/initial PR merges and overall owner acceptance remain separate delivery gates. |
 
 All seven criteria for the approved initial slice pass using the recorded
-offline/CI/live evidence and Daniel's desktop confirmation and final acceptance.
+offline/CI/live evidence and the project owner's desktop confirmation and final acceptance.
 The historical protection denial is resolved only by the explicit owner waiver.
 Operational follow-ups remain recorded separately; none is claimed completed.
 
@@ -191,7 +191,7 @@ passed all three configured PR workflows:
 - [Terraform Tailscale federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38084743139): success; protected remote mutation was not performed.
 
 These establish CI quality for that exact code revision, not live GitHub setup,
-host deployment or Daniel's acceptance. This subsequent evidence/task-status
+host deployment or the project owner's acceptance. This subsequent evidence/task-status
 update changes documentation only; any follow-up PR-head run is visible on PR #52.
 
 ## CI history
@@ -212,7 +212,7 @@ and [failed federation run](https://github.com/danielbardsley/gptclaw/actions/ru
 
 The operator interface supports creation-only authority followed by a token
 selected for the new repository. GitHub may not offer the creation-only grant
-in Daniel's UI; any alternative needs exact scope review rather than assumed
+in the project owner's UI; any alternative needs exact scope review rather than assumed
 account-wide administration. Token grants cannot be introspected by this
 adapter: actual endpoint enforcement and operator-reviewed metadata are required.
 Local expiry is declared metadata; GitHub enforces its real expiry.
@@ -226,7 +226,7 @@ Merge and full acceptance remain pending; catalogue status stays In review.
 
 ## Desktop confirmation closeout
 
-Daniel confirmed the private page loads correctly on October 10. No new runtime
+The project owner confirmed the private page loads correctly on October 10. No new runtime
 mutation or technical test was needed to record that independent observation.
 Provisioning-token revocation, ongoing per-repository Git handoff and reviewed
 merges remain pending. The catalogue stays In review; page confirmation alone
@@ -234,7 +234,7 @@ does not authorize either PR merge or establish the full feature as Delivered.
 
 ## Final owner acceptance and merge — October 10
 
-Daniel instructed “Merge the platform PR and mark as complete”, accepting the
+The project owner instructed “Merge the platform PR and mark as complete”, accepting the
 verified initial slice and authorizing its platform merge. PR #52 was squash
 merged as `869b1b7f275c4555ce8ce82acab2de0565d84069`. Its exact final head
 `57def277288eb913582b4c824087a852019bda63` passed all three workflows:
@@ -246,7 +246,7 @@ The protected deployment jobs did not run.
 AC-005 required credential/expiry evidence and truthful ongoing-access status;
 those were observed. Its earlier pending note unnecessarily treated manual
 revocation as an acceptance prerequisite. This correction retains revocation as
-a visible Daniel-owned obligation: creation token expires October 17 at 5:01 p.m.
+a visible owner-managed obligation: creation token expires October 17 at 5:01 p.m.
 Eastern; configuration token expires October 11 at 12:00 a.m. Eastern. Revoke the
 provisioning tokens and remove their private files when done; no revocation or
 file deletion is claimed. No credential material is committed.

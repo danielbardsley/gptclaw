@@ -1,7 +1,7 @@
 # TDD-022: New GitHub repository automation
 
 - **Status:** Delivered — initial slice merged and accepted; fixture protection explicitly waived
-- **Owner:** Daniel
+- **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-022](spec.md) · **Tasks:** [TASKS-022](tasks.md)
 
@@ -111,7 +111,7 @@ own scoped operator action. This draft changes no host or GitHub configuration.
 
 ## Readiness decisions
 
-Daniel approved scope/defaults and authorized implementation October 10. The
+The project owner approved scope/defaults and authorized implementation October 10. The
 reviewed interface uses a private fine-grained PAT file and anonymous-fd Git
 askpass for the bootstrap push; configuration uses a repository-specific token.
 HTTP/Git redirects, global credential/config inheritance and arbitrary local
@@ -135,4 +135,4 @@ environments. Observe skips unavailable protection endpoints only for that
 recorded waiver; readback reports `verified: false`, `state: owner-waived`. No
 protection removal or public visibility change occurs. Generated guidance and
 bootstrap provenance describe the waived state. Normal operations retain all
-protection gates; Daniel approved this variant for the retained fixture October 10.
+protection gates; the project owner approved this variant for the retained fixture October 10.

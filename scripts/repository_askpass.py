@@ -15,6 +15,6 @@ if 'username' in prompt:
     print('x-access-token')
 elif 'password' in prompt:
     fd = int(os.environ['GPTCLAW_REPOSITORY_AUTH_FD'])
-    sys.stdout.buffer.write(os.pread(fd, 1024, 0) + b'\n')
+    sys.stdout.buffer.write(os.pread(fd, 16384, 0) + b'\n')
 else:
     raise SystemExit(1)
