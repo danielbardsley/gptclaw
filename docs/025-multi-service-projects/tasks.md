@@ -1,6 +1,6 @@
 # TASKS-025: Multi-service projects
 
-- **Status:** Draft — planning complete; implementation not authorized
+- **Status:** Approved — implementation in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-025](spec.md) · **Design:** [TDD-025](technical-design.md)
@@ -11,7 +11,7 @@
   and merged SPEC-024 Python implementation/standards. Draft the two-service notes
   slice, design, measurable acceptance and tasks; update index/catalogue/sequence.
   Evidence: planning files on this branch and documentation checks recorded below.
-- [ ] T-002: Project owner approves SPEC-025 and authorizes implementation/live
+- [x] T-002: Project owner approves SPEC-025 and authorizes implementation/live
   synthetic verification. Finalize proposed schema/provider/catalogue versions,
   component command syntax and compatibility fixtures in review; implement the
   versioned contract and observation-only validator with unsafe path/topology and
@@ -19,26 +19,26 @@
 
 ## Implementation
 
-- [ ] T-003: Add exact-release grouped generation, complete independent locks,
+- [x] T-003: Add exact-release grouped generation, complete independent locks,
   component toolchains/provenance/standards/guidance and local repository-generation
   selection. Keep defaults/published releases unchanged; prove occupied/tampered
   destination refusal. Depends on T-002. MS-002; AC-002.
-- [ ] T-004: Make preparation, jobs, quality/format and typed dependencies explicitly
+- [x] T-004: Make preparation, jobs, quality/format and typed dependencies explicitly
   component-aware under a single group lock; separate fingerprints and owned caches.
   Test frozen restore, active/busy refusal, transaction conflict and interrupted
   recovery without cross-component source edits. Depends on T-002/T-003. MS-002,
   MS-007; AC-002, AC-007.
-- [ ] T-005: Implement owned group network/units/ports, staged receipts, bounded
+- [x] T-005: Implement owned group network/units/ports, staged receipts, bounded
   readiness ordering, status/logs, stop/restart, reverse cleanup and same-operation
   recovery. Test partial startup, absent resources, unknown ownership, collision,
   busy/interruption and failed cleanup. Include capabilities/assets in snapshots.
   Depends on T-004. MS-003, MS-007; AC-003, AC-007.
-- [ ] T-006: Extend private ingress with group route sets, segment-safe API namespace,
+- [x] T-006: Extend private ingress with group route sets, segment-safe API namespace,
   aggregate readiness and dependency outage/recovery. Test mounted UI/assets/API/docs,
   query/redirects, spoofed headers, stopped/unknown targets and atomic publication.
   Verify network/loopback/limits; reuse existing private Serve prefix. Depends on
   T-005. MS-004; AC-004.
-- [ ] T-007: Implement notes service/models/store and Next.js editor/list with full
+- [x] T-007: Implement notes service/models/store and Next.js editor/list with full
   CRUD, bounds/pagination/capacity, safe text/error/draft states, deletion confirmation,
   keyboard labels and visible shared/ephemeral data explanation. Apply inherited
   Python standards and locked checks; test synchronized mutation and data reset.
@@ -69,16 +69,24 @@
 
 ## Current handover
 
-Only planning documents and index/catalogue/sequence references changed. The
-project owner has requested a specification, with Next.js/Python and ephemeral
-notes as explicit constraints. Scope review/implementation authorization is the
-next action; all implementation and live acceptance remain pending. No application,
-new service, repository, infrastructure or data store was created. SPEC-024 is
-merged in PR #56 but retains pending final delivery wording in its own records;
-that status was not rewritten as part of RUN-006 planning.
+The project owner approved scope and authorized implementation October 11.
+Provider 1.7.0 now supports manifest/catalogue v3, explicit group receipt v2,
+component-scoped preparation/dependency/quality/hooks, owned separate containers
+and internal networks, ordered group lifecycle and health-gated private routing.
+The exact notes starter includes API/UI CRUD, bounded previews/full-detail reads,
+inherited Python standards and generated container/contract/browser CI.
 
-Documentation verification: 189 relative local links resolve across the six changed
-documents; MS-001–008 are covered by specification, design and tasks. Git staged
-and unstaged whitespace checks passed.
-Runtime/repository test suites and Terraform checks are not required for these
-planning-only changes and are not claimed as executed.
+Local evidence: the prepared repository gate passed 430 tests; the 14 focused
+group tests pass. Both exact-container quality stacks and isolated OpenAPI/CRUD
+checks pass. Browser CRUD, refresh retention, safe text, failed drafts, keyboard
+and responsive checks pass after correcting the isolated dev-origin setup and
+waiting for asynchronous detail loading. API/web dependency add/remove through
+the stopped group lock passed with independent sources preserved. Cold local
+Node acquisition hit the existing build nproc limit; exact verified images were
+reused without changing host limits. Final golden seeded-defect checks, final-head
+CI, managed live/client behavior and review/merge remain in T-008–010.
+
+Published existing release integrity and whitespace checks pass. Terraform was
+not changed and no local Terraform or infrastructure apply was run. Acceptance
+will distinguish local, generated CI, live and client observations. Earlier
+SPEC-024 acceptance wording remains independently tracked.

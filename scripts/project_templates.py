@@ -51,14 +51,20 @@ def catalogue():
         extension_schema = data(app().REPO/'schemas/templates/v2.schema.json')
         check(not list(deps.StrictValidator(extension_schema).iter_errors(extension)))
         value = {**value, 'schema_version': 2, 'releases': [*value['releases'], *extension['releases']]}
+    group_path = app().REPO/'config/templates/v3.json'
+    if group_path.exists() or group_path.is_symlink():
+        extension = data(group_path)
+        check(not list(deps.StrictValidator(data(app().REPO/'schemas/templates/v3.schema.json')).iter_errors(extension)))
+        value = {**value, 'schema_version': 3, 'releases': [*value['releases'], *extension['releases']]}
     releases = {}
     _, profiles = tools.registry()
     for release in value['releases']:
         key = (release['id'], release['version']); check(key not in releases)
         check(release['digest'] == digest({k: v for k, v in release.items() if k != 'digest'}))
-        declaration = tools.declaration(release['toolchain'])
-        profile_key = (declaration['profile'], declaration['profile_version'])
-        check(profile_key in profiles and profiles[profile_key]['versions'] == declaration['versions'])
+        for declaration in (release['toolchains'].values() if release['provider']=='notes-v1' else [release['toolchain']]):
+            declaration=tools.declaration(declaration)
+            profile_key = (declaration['profile'], declaration['profile_version'])
+            check(profile_key in profiles and profiles[profile_key]['versions'] == declaration['versions'])
         base = app().REPO/'templates/apps/releases'/key[0]/key[1]
         sources, outputs, total, contents = set(), set(), 0, {}
         for item in release['files']:
@@ -71,6 +77,14 @@ def catalogue():
             total += len(content); check(total <= 8*1024*1024)
             check(hashlib.sha256(content).hexdigest() == item['sha256'])
             sources.add(source); outputs.add(output); contents[output] = content
+        if release['provider']=='notes-v1':
+            check({'AGENTS.md','README.md','web/package.json','web/pnpm-lock.yaml','web/pnpm-workspace.yaml','api/pyproject.toml','api/uv.lock','api/.python-version','api/docs/python-standards.md','api/src/fastapi_app/main.py'} <= outputs)
+            package=deps.json_data(contents['web/package.json'])
+            check(package['packageManager']=='pnpm@'+release['toolchains']['web']['versions']['pnpm'])
+            import project_python as py
+            py.dependencies(py.toml(contents['api/pyproject.toml']))
+            check(contents['api/.python-version'].decode().strip()==release['toolchains']['api']['versions']['python'])
+            releases[key]=(release,contents);continue
         if release['provider'] == 'fastapi-v1':
             import project_python as py
             check({'pyproject.toml','uv.lock','.python-version','AGENTS.md','README.md','src/fastapi_app/main.py','scripts/quality.py','docs/python-standards.md','Containerfile','.pre-commit-config.yaml'} <= outputs)
@@ -153,13 +167,20 @@ def generate(path, slug, release, contents):
         if release['provider'] == 'fastapi-v1':
             import project_python as py
             contract = py.contract(slug)
+        if release['provider']=='notes-v1':
+            import project_groups as groups
+            contract=groups.initialize(stage,slug,release)
         app().save(meta/'project.yaml', contract)
         app().save(meta/'template.json', {'provider':release['provider']})
-        app().save(meta/'toolchain.json', release['toolchain'])
+        if release['provider']!='notes-v1':app().save(meta/'toolchain.json', release['toolchain'])
         app().save(meta/'template-release.json', provenance(release))
         check(app().validate_project(stage)[2] == 0)
-        deps.context(stage)
-        tools.selection(stage)
+        if release['provider']=='notes-v1':
+            for child,_ in groups.children(stage,contract).values():
+                deps.context(child);tools.selection(child)
+        else:
+            deps.context(stage)
+            tools.selection(stage)
         validate_provenance(stage)
         app().safe(path)
         current = path.parent.stat()
@@ -177,6 +198,8 @@ def bundle_paths():
     paths = [Path('scripts/project_templates.py'),Path('config/templates/v1.json'),Path('schemas/templates/v1.schema.json')]
     if (app().REPO/'config/templates/v2.json').exists():
         paths += [Path('config/templates/v2.json'), Path('schemas/templates/v2.schema.json')]
+    if (app().REPO/'config/templates/v3.json').exists():
+        paths += [Path('config/templates/v3.json'),Path('schemas/templates/v3.schema.json')]
     for release in value['releases']:
         base = Path('templates/apps/releases')/release['id']/release['version']
         paths += [base/item['source'] for item in release['files']]

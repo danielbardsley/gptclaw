@@ -26,7 +26,7 @@ MESSAGES = {
     'yaml_feature': 'Aliases, anchors, explicit tags and merge keys are unsupported.',
     'document': 'Provide exactly one mapping document.',
     'mapping_key': 'Mapping keys must be unique strings.',
-    'version': 'Use a supported integer schema_version: 1 (web) or 2 (API).',
+    'version': 'Use a supported integer schema_version: 1 (web), 2 (API) or 3 (group).',
     'field_required': 'A required field is missing.',
     'field_unknown': 'This object contains unsupported fields.',
     'field_type': 'The field has the wrong type.',
@@ -158,7 +158,7 @@ StrictValidator = validators.extend(Draft202012Validator, type_checker=
 
 
 def load_schema(version=1):
-    path = SCHEMA_PATH if version == 1 else SCHEMA_PATH.with_name("v2.schema.json")
+    path = SCHEMA_PATH if version == 1 else SCHEMA_PATH.with_name("v"+str(version)+".schema.json")
     schema = json.loads(path.read_text(encoding='utf-8'))
     if schema.get('$id') != 'urn:gptclaw:project:v'+str(version) or schema.get('type') != 'object':
         raise ValueError('unexpected bundled schema')
@@ -205,11 +205,11 @@ def validate_project(project_root):
             return failure('setup', 2)
         document = parse_manifest(read_manifest(project_root))
         version = document.get('schema_version')
-        if type(version) is not int or version not in (1, 2):
+        if type(version) is not int or version not in (1, 2, 3):
             result, contract, code = failure('version')
             result['errors'][0]['path'] = '/schema_version'
             return result, contract, code
-        if version == 2:
+        if version != 1:
             try: schema, validator = load_schema(version)
             except Exception: return failure("setup", 2)
         errors = []
@@ -228,9 +228,24 @@ def validate_project(project_root):
         if not errors:
             if document['exposure']['base_path'] != '/projects/' + document['project']['id'] + '/':
                 errors.append(diagnostic('field_value', '/exposure/base_path'))
-            health = document['service']['health']['path']
-            if any(segment in ('.', '..') for segment in health.split('/')):
-                errors.append(diagnostic('field_value', '/service/health/path'))
+            if version == 3:
+                roots = [document['components'][name]['root'] for name in ('api', 'web')]
+                if roots[0] == roots[1] or any(a.startswith(b+'/') for a,b in (roots, roots[::-1])):
+                    errors.append(diagnostic('field_value', '/components'))
+                for name in ('api', 'web'):
+                    path = Path(project_root).absolute()
+                    for part in Path(document['components'][name]['root']).parts:
+                        path = path/part
+                        if path.is_symlink() or not path.is_dir():
+                            errors.append(diagnostic('input_path', '/components/'+name+'/root'))
+                    for probe in ('health', 'liveness'):
+                        health = document['components'][name]['service'][probe]['path']
+                        if any(segment in ('.', '..') for segment in health.split('/')):
+                            errors.append(diagnostic('field_value', '/components/'+name+'/service/'+probe+'/path'))
+            else:
+                health = document['service']['health']['path']
+                if any(segment in ('.', '..') for segment in health.split('/')):
+                    errors.append(diagnostic('field_value', '/service/health/path'))
         if errors:
             unique = {(e['path'], e['code']): e for e in errors}
             ordered = [unique[key] for key in sorted(unique)]

@@ -48,7 +48,7 @@ class Tests(unittest.TestCase):
     def test_cli_discovery_and_exact_pair(self):
         output=io.StringIO()
         with contextlib.redirect_stdout(output):self.assertEqual(cli.main(['templates','list']),0)
-        self.assertEqual(json.loads(output.getvalue())['schema_version'],2)
+        self.assertEqual(json.loads(output.getvalue())['schema_version'],3)
         with self.assertRaises(app.AppError):app.create('bad',template='nextjs')
         self.assertFalse((self.projects/'bad').exists())
     def test_unknown_range_and_mismatched_selection(self):

@@ -1,6 +1,6 @@
 # TDD-025: Two-service project orchestration
 
-- **Status:** Draft proposal — implementation not authorized
+- **Status:** Approved — implementation in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-025](spec.md) · **Tasks:** [TASKS-025](tasks.md)
@@ -144,7 +144,7 @@ admission and quality/security/coverage rules from SPEC-024.
 
 | Relative API route | Contract |
 |---|---|
-| `GET /api/v1/notes?limit=20&offset=0` | 200 typed items/total; limit 1–100, offset >=0; creation order with ID tie-break |
+| `GET /api/v1/notes?limit=20&offset=0` | 200 typed ID/title/90-character-preview items/total; limit 1–100, offset >=0; creation order with ID tie-break |
 | `POST /api/v1/notes` | 201 note and prefixed Location; server-generated UUID; capacity full returns 409 |
 | `GET /api/v1/notes/<id>` | 200 note, 404 missing |
 | `PUT /api/v1/notes/<id>` | 200 complete replacement of title/body, 404 missing |
@@ -202,8 +202,10 @@ refusal/source preservation using isolated fixtures. API memory is intentionally
 unrecoverable; rollback never promises note restoration. No database migration,
 Terraform apply, Serve reset or credential change is required.
 
-The project owner owns scope review. Implementation review finalizes exact release
-IDs and compatibility versions, schema/CLI syntax and measured capacity within
-these requirements before live rollout. Existing SPEC-024 final acceptance status
-is retained and must be reconciled through its own record. All group behavior here
-is proposed; no RUN-006 execution or acceptance has occurred.
+The approved implementation uses provider 1.7.0, project/catalogue schema v3,
+explicit group receipt v2 and `notes@1.0.0`. Component stack receipts retain v1;
+trusted in-memory component contracts reuse the existing adapters while generated
+component metadata blocks independent CLI operations. Installed Quadlet 4.9 uses
+`PodmanArgs=--network-alias=...` rather than the newer NetworkAlias key. Existing
+SPEC-024 final acceptance wording is retained in its own record. Local/CI/live
+and independent browser outcomes are recorded separately in acceptance.md when observed.

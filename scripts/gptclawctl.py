@@ -15,6 +15,7 @@ def main(argv=None):
  new=sub.add_parser('new');new.add_argument('slug');new.add_argument('--directory');new.add_argument('--template');new.add_argument('--template-version');new.add_argument('--local-only',action='store_true');new.add_argument('--plan',action='store_true',help='Preview local or activated-profile GitHub creation without publishing source')
  for name in ['validate','start','stop','restart','status','logs','test','build','format','lint','typecheck','security','verify','hooks']:
   p=sub.add_parser(name);p.add_argument('--project-root',required=True)
+  if name in {'logs','test','build','format','lint','typecheck','security','verify'}:p.add_argument('--component',choices=['web','api'])
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
  templates=sub.add_parser('templates',help='Discover bundled exact template releases')
@@ -25,7 +26,7 @@ def main(argv=None):
  deps=sub.add_parser('deps',help='Manage project dependencies inside reviewed containers')
  actions=deps.add_subparsers(dest='dependency_action',required=True)
  for name in ['status','install','add','update','remove','recover']:
-  p=actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True)
+  p=actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True);p.add_argument('--component',choices=['web','api'])
   if name in ['add','update','remove']:p.add_argument('--package',required=True)
   if name in ['add','update']:p.add_argument('--version',required=True)
   if name=='status':p.add_argument('--operation-id')
@@ -35,7 +36,7 @@ def main(argv=None):
  tools=sub.add_parser('toolchain',help='Inspect or prepare a reviewed exact container toolchain')
  tool_actions=tools.add_subparsers(dest='toolchain_action',required=True)
  for name in ['inspect','prepare']:
-  p=tool_actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True)
+  p=tool_actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True);p.add_argument('--component',choices=['web','api'])
  repos=sub.add_parser('repo',help='Opt-in private GitHub repository setup')
  repo_actions=repos.add_subparsers(dest='repo_action',required=True)
  for name in ['plan','apply','resume','status']:
@@ -71,7 +72,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2],'toolchain_schemas':[1,2],'template_catalogue_schema':2,'receipt_schema':1,'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':2,'credential_binding_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2,3],'project_kinds':['web','api','group'],'toolchain_schemas':[1,2],'template_catalogue_schema':3,'receipt_schema':1,'group_receipt_schema':2,'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':2,'credential_binding_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -124,6 +125,14 @@ def main(argv=None):
   elif args.action=='new':
    import repository_credentials as broker
    result=(broker.preview if args.plan else broker.new_project)(args.slug,args.directory,args.template,args.template_version,args.local_only)
+  elif args.action in {'logs','test','build','format','lint','typecheck','security','verify','deps','toolchain'} and app.target(args.project_root)[1]['schema_version']==3:
+   import project_groups as groups
+   kwargs={}
+   if args.action=='logs':kwargs={'lines':args.lines}
+   elif args.action=='deps':
+    kwargs={'subaction':args.dependency_action,'name':getattr(args,'package',None),'version':getattr(args,'version',None),'kind':getattr(args,'kind','runtime'),'operation_id':getattr(args,'operation_id',None),'abort':getattr(args,'abort',False)}
+   elif args.action=='toolchain':kwargs={'subaction':args.toolchain_action}
+   result=groups.dispatch(args.project_root,args.action,getattr(args,'component',None),**kwargs)
   elif args.action=='start':result=app.start(args.project_root,args.local_only)
   elif args.action=='stop':result=app.stop(args.project_root)
   elif args.action=='restart':result=app.restart(args.project_root)

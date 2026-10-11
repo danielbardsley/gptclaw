@@ -1,6 +1,6 @@
 # SPEC-025: Multi-service projects with a notes application
 
-- **Status:** Draft — scope review; implementation not authorized
+- **Status:** Approved — implementation in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Primary feature:** RUN-006, initial two-service HTTP slice
@@ -13,8 +13,9 @@
 Run a Next.js frontend and Python/FastAPI API as one declared private project,
 then prove the platform workflow with a simple note-taking application. The
 project owner selected RUN-006 and this example on October 11 and requested the
-specification. This request authorizes planning; implementation, application
-creation and live verification await scope approval and implementation authorization.
+specification. The project owner approved this scope and authorized implementation, local application
+creation and scoped synthetic live verification on October 11 with “Great, implement
+the spec.” Review/merge and independent browser acceptance remain separate gates.
 
 This is a suitable first slice: notes exercise real browser-to-API operations,
 service ordering, readiness, networking and failure recovery without a database.
@@ -156,7 +157,8 @@ owner acceptance. Planning merge alone does not authorize implementation.
 
 ## Decisions and completion
 
-The project owner reviews this draft and authorizes implementation separately.
+The project owner approved SPEC-025 and authorized implementation on October 11.
+Code review/merge and independent browser acceptance remain pending.
 The proposed design uses exactly two services, shared same-origin routing and
 single-process ephemeral notes. No database prerequisite or infrastructure change
 is necessary. Deliver platform contracts/orchestration, a versioned starter,

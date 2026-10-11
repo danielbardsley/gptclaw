@@ -48,6 +48,11 @@ class Handler(BaseHTTPRequestHandler):
    if not re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',slug) or len(slug)>48:return self.fail(404)
    s=state_for(slug)
    if not s or s['phase']!='ready' or not s.get('health_ready'):return self.fail(404)
+   if s.get('schema_version')==2:
+    import project_groups as groups
+    s=groups.upstream(s,parsed.path)
+    if s is False:return self.fail(404)
+    if s is None:return self.fail(503)
    verify_unit(s)
    if s.get('adapter') == 'python':
     from pathlib import Path
