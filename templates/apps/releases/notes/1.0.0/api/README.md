@@ -1,33 +1,23 @@
-# Private FastAPI starter
+# Notes API component
 
-Generate with `gptclawctl new my-api --template fastapi --template-version 1.0.0 --local-only`.
-Use the returned absolute project path for `--project-root` on validate, start,
-status, logs, test, restart and stop. Normal start prepares the verified Python/uv
-image, restores the complete locked runtime/dev/test graph and runs build/preflight.
-Open the returned private URL and `/docs`; call `/api/v1/echo` with a JSON message
-or `/api/v1/examples?limit=2&offset=1`. This is synthetic stateless data.
+This FastAPI component belongs to the parent two-service notes project. Operate it
+through the group root with `--component api`; it is not a standalone project.
+Read [Python standards](docs/python-standards.md) and [component guidance](AGENTS.md).
 
-Use `gptclawctl format --project-root ROOT` explicitly to apply Black/isort.
-`lint`, `typecheck`, `test`, `security`, `build` and `verify` use the same target flag.
-Verify includes all checks; security queries public advisory data with a finite
-request timeout and fails when that service is unavailable. It performs no autofix.
-Coverage requires 80% statements and 80% branches across application source.
+Typed `/api/v1/notes` routes inside the private project prefix support create,
+list, get, replace and delete. List responses contain ID/title/90-character preview;
+get returns the full body. Titles trim to 1–120 characters, bodies allow 10,000
+characters, pages are bounded and the synchronized process store holds 100 notes.
+Missing notes return 404, malformed input 422, full capacity 409 and admission 429.
+Docs and bundled assets live under `api/docs` and `api/docs-assets` beneath the
+parent private URL. Liveness/readiness are `api/health` and `api/ready`.
 
-Application source changes reload automatically; syntax errors make readiness fail
-until fixed. Dependency/toolchain changes require stopped-target preparation;
-use typed deps add/update/remove/install/recover, never a competing lockfile.
-A stop preserves source and the disposable project-local environment/cache.
+Notes are synthetic shared data held only in this process's memory. API source
+reload, restart, group stop/start or host replacement loses every note. No files,
+database, browser storage, credentials or per-user isolation are provided. Logs
+contain safe request metadata, never note titles/bodies or raw error internals.
 
-Read [Python standards](docs/python-standards.md), [configuration](config/environment.example.md)
-and [architecture](docs/architecture.md). No dotenv, database, credentials, workers,
-AI calls or authentication are present. Liveness is `/health`; readiness is `/ready`.
-CORS denies cross-origin calls by default. API logging records safe correlation,
-route template, method/status/duration only; requests/responses carry no retained data.
-
-Pre-commit config uses local/system hooks and the same pinned quality runner.
-For an explicitly stopped Git project, `gptclawctl hooks --project-root ROOT`
-installs a project-local commit hook that invokes verify through an immutable
-provider snapshot. It refuses an existing unknown hook and worktree Git files;
-there is no host tool install or automatic generation hook. The config can also
-be run by the prepared pre-commit tool inside the container. CI runs the gates
-directly; no hook or runtime secret is required.
+Group verify invokes the exact locked Black/isort/Ruff/mypy/pytest/coverage/Bandit/
+audit/build checks. Critical statement and branch coverage must each reach 80%.
+Format/dependency mutations require the whole group stopped. Parent `hooks` installs
+an explicit container-based group-verify hook; no host language installation is needed.

@@ -78,8 +78,10 @@ web readiness probes the rendered UI so syntax/compilation failures cannot appea
 healthy. Its separate `/health/` diagnostic also verifies the declared API dependency
 with a short timeout via the owned network. Group readiness requires both components. Forward paths, query strings and redirects consistently with
 existing mounted FastAPI routing. Do not trust arbitrary forwarded hosts or allow
-open-proxy requests. Keep existing router body/time/worker limits; notes payloads
-fit within them. Browser calls use base-path-aware relative same-origin API URLs,
+open-proxy requests. Keep the existing 2 MiB body/response, 15-second upstream and 16-worker
+limits. A bounded 16-connection accept backlog and up-to-five-second worker-slot
+wait absorb browser asset bursts; saturation returns an explicit HTTP 503 rather
+than an empty socket close that Serve translates to 502. Notes payloads fit these bounds. Browser calls use base-path-aware relative same-origin API URLs,
 so no wildcard CORS or public API origin configuration is needed. Only the platform
 supplies the derived non-secret internal API readiness address to web; it is not
 an arbitrary environment forwarding mechanism.
@@ -89,8 +91,10 @@ aggregate readiness for routed requests/status so runtime API failure withdraws
 useful group access and produces an explicit unavailable response; recover when
 both are ready without declaring a failed process healthy from stale receipts.
 API health diagnostics can remain available to direct owned probes, even while
-public project routes are unavailable. Do not cache successful readiness beyond a
-short documented bound; tests must prove the bound. Existing Serve prefix is reused
+public project routes are unavailable. Coalesce validation and readiness for at most one second per group under a
+per-project lock; operation identity changes invalidate it immediately. Cache
+only bounded component receipts/results, with at most 100 entries. Tests prove
+expiry and mutation invalidation; each selected unit remains verified on forwarding. Existing Serve prefix is reused
 with no new operator command or public exposure.
 
 ## Lifecycle, state and limits

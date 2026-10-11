@@ -11,6 +11,7 @@ from urllib.parse import urlsplit
 from private_apps import AppError, INGRESS_PORT, VERSION, state_for, verify_unit
 
 MAX_BODY = 2 * 1024 * 1024
+SLOT_WAIT_SECONDS = 5
 HOP = {'connection','keep-alive','proxy-authenticate','proxy-authorization','te','trailer','transfer-encoding','upgrade'}
 
 
@@ -110,12 +111,18 @@ class Handler(BaseHTTPRequestHandler):
 
 
 class Server(HTTPServer):
+ request_queue_size = 16
  def __init__(self,address):
   super().__init__(address,Handler)
   self.pool=concurrent.futures.ThreadPoolExecutor(max_workers=16)
   self.slots=threading.BoundedSemaphore(16)
  def process_request(self,request,client_address):
-  if not self.slots.acquire(blocking=False):self.shutdown_request(request);return
+  # Brief bounded backpressure lets a browser's asset burst share 16 workers.
+  # Closing a busy upstream socket made Serve return 502 and blocked hydration.
+  if not self.slots.acquire(timeout=SLOT_WAIT_SECONDS):
+   try:request.sendall(b'HTTP/1.1 503 Service Unavailable\r\nContent-Length: 0\r\nConnection: close\r\n\r\n')
+   finally:self.shutdown_request(request)
+   return
   self.pool.submit(self.worker,request,client_address)
  def worker(self,request,client_address):
   try:

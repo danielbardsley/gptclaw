@@ -97,7 +97,7 @@
         {
           "source": "api/README.md",
           "output": "api/README.md",
-          "sha256": "b4707911bdec52c05985b85cd9efcccfd8efb00ca6566ec2c48c3216c385ce10"
+          "sha256": "dac70ee3da5b5bec2173d5a2700f2a004a3d9b2c3830ff8225f889ba2f526c3f"
         },
         {
           "source": "api/config/environment.example.md",
@@ -302,7 +302,7 @@
         {
           "source": "web/README.md",
           "output": "web/README.md",
-          "sha256": "cb1dc10938cff4886a126c9d92584662c149e665f44e99bf56213c6b29358f50"
+          "sha256": "73a065674d415019e9245d7ecf27c26ece81c076927ef2a26c0afbbdc0e0b343"
         },
         {
           "source": "web/app/alive/route.ts",
@@ -375,7 +375,7 @@
           "sha256": "40e7a1bf47b78401d6408040addf5e1c07f2e821461fb035e02ecc651961d562"
         }
       ],
-      "digest": "1fcc61c0878b519bd622fea81ce854a624141863f5200c640430d7e782bea59e"
+      "digest": "dd01512778ed9eea5ba5e7696723dc26ee14120acceb53f18c9e5d1e77fc6d1e"
     }
   ]
 }

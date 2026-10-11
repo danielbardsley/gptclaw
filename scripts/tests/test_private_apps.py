@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Offline synthetic lifecycle/proxy tests; no live Podman, systemd, Tailscale or AWS."""
 import copy
+import concurrent.futures
+import time
 import hashlib
 from http.server import BaseHTTPRequestHandler,HTTPServer
 import json
@@ -233,6 +235,29 @@ class ProxyTests(unittest.TestCase):
   with self.assertRaises(urllib.error.HTTPError) as error:
    urllib.request.urlopen(f'http://127.0.0.1:{self.proxy.server_port}/projects/alpha/')
   self.assertEqual(error.exception.code,404)
+ def test_browser_burst_waits_for_bounded_worker_slot(self):
+  held=16
+  for _ in range(held):self.assertTrue(self.proxy.slots.acquire(blocking=False))
+  try:
+   with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+    def fetch():
+     with urllib.request.urlopen(f'http://127.0.0.1:{self.proxy.server_port}/projects/alpha/asset.js',timeout=3) as response:
+      return response.status,response.read()
+    future=pool.submit(fetch);time.sleep(.1)
+    self.assertFalse(future.done())
+    self.proxy.slots.release();held-=1
+    self.assertEqual(future.result(timeout=3),(200,b'served /projects/alpha/asset.js'))
+  finally:
+   for _ in range(held):self.proxy.slots.release()
+ def test_saturated_workers_return_http_503_without_empty_close(self):
+  for _ in range(16):self.proxy.slots.acquire()
+  try:
+   with patch.object(ingress,'SLOT_WAIT_SECONDS',.05):
+    with self.assertRaises(urllib.error.HTTPError) as error:
+     urllib.request.urlopen(f'http://127.0.0.1:{self.proxy.server_port}/projects/alpha/asset.js',timeout=3)
+    self.assertEqual(error.exception.code,503)
+  finally:
+   for _ in range(16):self.proxy.slots.release()
  def test_stopped_mapping_is_not_published(self):
   self.record['phase']='stopped'
   with self.assertRaises(urllib.error.HTTPError) as e:urllib.request.urlopen(f'http://127.0.0.1:{self.proxy.server_port}/projects/alpha/')

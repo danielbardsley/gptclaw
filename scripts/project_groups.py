@@ -4,12 +4,17 @@ from contextvars import ContextVar
 import hashlib
 from pathlib import Path
 import re
+import threading
+import time
 import uuid
 
 import private_apps as a
 
 SCOPE = ContextVar('gptclaw_components', default={})
 ORDER = ('api', 'web')
+PROBE_TTL = 1.0
+_PROBE_GUARD = threading.Lock()
+_PROBES = {}
 
 
 def identity(slug, component):
@@ -270,23 +275,53 @@ def status(root):
             'stages':s['stages'],'cleanup_errors':s.get('cleanup_errors',{})}
 
 
-def upstream(s, path):
-    """Return an owned upstream only while both components are currently ready."""
+def probe(s):
+    """Coalesce group verification/readiness for at most one second per project."""
+    with _PROBE_GUARD:
+        entry = _PROBES.get(s['id'])
+        if entry is None:
+            # There are at most 100 reserved service ports; keep cache memory bounded.
+            if len(_PROBES) >= 100:
+                idle = next((key for key,value in _PROBES.items() if not value['lock'].locked()), None)
+                if idle is not None: del _PROBES[idle]
+                else: return uncached_probe(s)
+            entry = {'lock': threading.Lock(), 'expires': 0, 'identity': None, 'states': None}
+            _PROBES[s['id']] = entry
+    with entry['lock']:
+        key = (s['operation_id'],s['root'],s['token'])
+        if entry['identity'] == key and time.monotonic() < entry['expires']:
+            return entry['states']
+        result = uncached_probe(s)
+        entry.update(identity=key,states=result,expires=time.monotonic()+PROBE_TTL)
+        return result
+
+
+def uncached_probe(s):
+    """Validate owned component metadata and both current readiness endpoints."""
     root,value=a.target(Path(s['root']))
     with scope(root,value) as resolved:
+        result={}
         for name in ORDER:
             child=a.state_for(s['components'][name])
             if not child:return None
             a.need(child['root']==str(resolved[name][0]) and child.get('group')==s['id'])
             a.verify_unit(child)
             if not a.healthy(child,resolved[name][1]):return None
-        prefix=value['exposure']['base_path']+'api/'
-        if path == prefix[:-1] or path.startswith(prefix):
-            suffix=path[len(prefix):]
-            if not (suffix.startswith('v1/') or suffix in {'docs','docs/','openapi.json','health','ready'} or suffix.startswith('docs-assets/')): return False
-            name='api'
-        else:name='web'
-        return a.state_for(s['components'][name])
+            result[name]=child
+        return result
+
+
+def upstream(s, path):
+    """Select only declared group paths while bounded readiness is successful."""
+    components=probe(s)
+    if components is None:return None
+    prefix='/projects/'+s['id']+'/api/'
+    if path == prefix[:-1] or path.startswith(prefix):
+        suffix=path[len(prefix):]
+        if not (suffix.startswith('v1/') or suffix in {'docs','docs/','openapi.json','health','ready'} or suffix.startswith('docs-assets/')):return False
+        name='api'
+    else:name='web'
+    return components[name]
 
 
 def dispatch(root, action, component=None, **kwargs):

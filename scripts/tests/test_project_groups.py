@@ -25,6 +25,8 @@ class Groups(unittest.TestCase):
         a.UNITS.mkdir()
         self.root=Path(a.create('notes',template='notes',template_version='1.0.0')['root'])
         self.value=a.target(self.root)[1]
+        g._PROBES.clear()
+        mock=patch.object(g,'PROBE_TTL',0);mock.start();self.addCleanup(mock.stop)
 
     def save_contract(self,value):a.save(self.root/'.gptclaw/project.yaml',value)
 
@@ -164,6 +166,21 @@ class Groups(unittest.TestCase):
         hook=directory/'pre-commit';hook.write_text('keep foreign hook')
         with self.assertRaises(a.AppError):g.install_hooks(self.root)
         self.assertEqual(hook.read_text(),'keep foreign hook')
+
+    def test_readiness_coalescing_expires_and_mutations_invalidate(self):
+        with patch.object(a,'available',return_value=True):s,_=self.runtime()
+        clock=[0.0]
+        with patch.object(g,'PROBE_TTL',1),patch.object(g.time,'monotonic',side_effect=lambda:clock[0]),patch.object(a,'verify_unit'),patch.object(a,'healthy',return_value=True) as health:
+            self.assertEqual(g.upstream(s,'/projects/notes/')['component'],'web')
+            self.assertEqual(g.upstream(s,'/projects/notes/api/v1/notes')['component'],'api')
+            self.assertEqual(health.call_count,2)
+            health.return_value=False;clock[0]=.9
+            self.assertIsNotNone(g.upstream(s,'/projects/notes/'))
+            clock[0]=1.01
+            self.assertIsNone(g.upstream(s,'/projects/notes/'))
+            health.return_value=True
+            changed={**s,'operation_id':'1'*32}
+            self.assertIsNotNone(g.upstream(changed,'/projects/notes/'))
 
     def test_group_template_inventory_and_snapshot(self):
         paths=a.provider_bundle()
