@@ -20,6 +20,14 @@ Install on **Only select repositories**, initially selecting only
 be included automatically; live canary verification must demonstrate it.
 No permission to select the platform repository or unrelated projects is implied.
 
+The October 11 live canary created its private personal repository, but the
+selected installation did not automatically gain access. The profile remains
+inactive; see [actual evidence](../docs/023-repository-credential-broker/acceptance.md).
+These creation/activation commands are not a currently accepted operational path.
+Do not manually select each new repository and claim automatic inclusion passed,
+or replay a retained creation operation. Resolve the supported access mechanism
+through a reviewed design/scope decision before continuing that same operation.
+
 Generate the App's private key in GitHub and place it through the existing private
 SSH connection outside repositories, proposed path
 `/home/forge/.config/gptclaw-credentials/app.pem`. The parent must be owned by forge,

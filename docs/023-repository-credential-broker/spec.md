@@ -1,6 +1,6 @@
 # SPEC-023: Repository credential broker
 
-- **Status:** In review — implementation authorized; App/live acceptance pending
+- **Status:** In review — App configured; live automatic-inclusion canary blocked
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Feature:** PRJ-005, initial GitHub App broker; bounded PRJ-002/004 integration
@@ -29,7 +29,10 @@ scope preference, not an unanswered decision. The subsequent instruction “Ok, 
 spec/design and authorized implementation. App registration/installation/key
 placement and exact live fixtures remain separately scoped owner steps. Candidate
 provider 1.5.0 implements the broker; no real App/key/live project has been created
-by implementation tests. See [acceptance.md](acceptance.md) for actual evidence.
+by offline implementation tests. The owner subsequently completed App setup and
+approved both retained live targets/activation. Actual personal creation passed,
+but automatic selected-installation inclusion failed the first canary; the
+profile remains inactive. See [acceptance.md](acceptance.md) for actual evidence.
 
 ## Baseline and scope
 

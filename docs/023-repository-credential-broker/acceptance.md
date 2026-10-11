@@ -1,8 +1,8 @@
 # SPEC-023 acceptance evidence
 
-- **Status:** Candidate implementation locally verified; App/live acceptance pending
+- **Status:** Candidate implementation locally verified; live canary blocked on automatic App inclusion
 - **Owner:** Project owner
-- **Date:** 2026-10-10 (America/New_York)
+- **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 - **PR:** [#54](https://github.com/danielbardsley/gptclaw/pull/54)
 - **Implementation:** provider 1.5.0 on `codex/prj-005-spec`; tested candidate worktree based on `cb6c8df`, committed revision linked by the PR
@@ -14,12 +14,17 @@ implementation and selected standing private/PR policy. One-time App settings,
 selected bootstrap repository/key handling and retained live target authorization
 were requested separately using the concrete [setup runbook](../../runbooks/manage-repository-credentials.md)
 and [settings checklist](../../config/repository-credentials/github-app-settings.json).
-That setup response and actual App/installation IDs/private-key file path are
-pending. No real App/private key/token/profile or remote repository was used or
-created during implementation tests. Previous revoked PATs were not read/reused.
+The project owner subsequently completed the proposed App registration,
+selected installation and private-key transfer, supplying App ID `5274762`,
+installation ID `170289816` and the proposed external key path. The owner also
+explicitly approved retained private targets `gptclaw-prj005-one` and
+`gptclaw-prj005-two`, their local projects/private runtimes and activation after
+the first successful canary. No real App/private key/token/profile or remote
+repository was used during the earlier offline implementation tests. Previous
+revoked PATs were not read/reused.
 
-App personal creation and automatic access under a selected installation remain
-unverified. The candidate deliberately requires a successful canary before profile
+App personal creation succeeded, but automatic access under the selected
+installation failed the live canary. The candidate requires a successful canary before profile
 activation and does not broaden permissions or introduce a PAT fallback when
 capabilities are missing. It is not marked Delivered or operationally ready.
 
@@ -27,10 +32,10 @@ capabilities are missing. It is not marked Delivered or operationally ready.
 
 | Criterion | State | Actual local evidence | Remaining evidence/owner action |
 |---|---|---|---|
-| AC-001 | pending | Private mode/path/profile checks, signed identity contracts, wrong account/selection/grants and suspension tests pass. Setup proposal names exact minimal grants and bootstrap selection. | Owner authorizes/configures the real App, supplies IDs/path; doctor validates actual installation. |
-| AC-002 | pending | Two successive fixture projects complete the real provisioning/Git-object flow after one synthetic setup; no-inclusion case retains one repository/receipt without fallback. | Prove two real personal-account App creations and automatic inclusion with no additional owner clicks. |
+| AC-001 | passed | Owner completed the proposed setup; configure and initial doctor validated App/installation identity, exactly the minimal grants and sole bootstrap selection. Key metadata passed. | Later doctor correctly rejects the incomplete canary's missing installation access; profile stays inactive. |
+| AC-002 | failed | Real installation-authenticated personal creation returned private repository ID `1414446320`; subsequent installation lookup/inventory and restricted-token probe did not grant access. No-inclusion recovery retained the repository/receipt. | Resolve actual automatic inclusion without manually selecting every new repository or broadening scope. Second creation was not attempted. |
 | AC-003 | pending | Singleton repository_ids and exact permission response checks reject missing/extra grants and cross-repo use; creation leases cannot enter Git. | Real token scope/readback and denied access to another private repo/platform. |
-| AC-004 | pending | Key/fd/argv/token-shape/redaction/config/bundle tests and actual native Git protocol checks pass using synthetic material. Tokens are not persisted in metadata. | Real non-secret grant/expiry/key-handling evidence only; no live key was supplied. |
+| AC-004 | pending | Key/fd/argv/token-shape/redaction/config/bundle tests pass using synthetic material. Live key metadata and minimal grants verified; no bearer values printed or persisted. | Full live project credential/container evidence remains pending. |
 | AC-005 | pending | Fresh token/revocation, near-expiry renewal, locks, real different-key rotation, lost response and partial enrollment recovery pass offline. | Live renewal, signing-key rotation and installation/token revocation outcomes and owner key retirement. |
 | AC-006 | pending | Activated-profile normal new, explicit local-only, unconfigured compatibility and effective no-publication preview tests pass. Manual PAT regressions remain valid; manual operations cannot be implicitly adopted. | Real configured normal new flow and independent runtime compatibility. |
 | AC-007 | pending | Actual Git fetch/branch push over authenticated private TLS fixture through the production helper passed; later PR and dirty-source/remote preservation tests pass. | Real GitHub fetch/push/later PR after fresh token acquisition and worktree/owner observations. |
@@ -82,14 +87,14 @@ single-repository project credentials. If real account/API support fails, retain
 resources and present a reviewed scope alternative; do not silently request
 Administration, all repositories, OAuth/user refresh material or PATs.
 
-Profile remains absent/inactive in the real environment. Use matching provider
+The real profile is configured but inactive. Use matching provider
 1.5.0 for setup, prove the canary, then activate once. Normal future projects
 should need no manual token creation; App grant/key revocation or maintenance
 can still require an owner action. Ordinary Git helper tokens expire at reported
 times because they must remain valid after helper exit; API leases are best-effort
 revoked immediately. Deactivation/disable does not claim server-side revocation.
 
-Merge, actual App feasibility, live criteria and owner acceptance remain pending.
+Merge, automatic-inclusion feasibility, remaining live criteria and owner acceptance remain pending.
 The previous SPEC-022 slice remains Delivered, with its retained source/app/PR
 and explicit reported token revocation unchanged.
 
@@ -107,3 +112,40 @@ for this revision; they do not establish the separately pending live App/account
 feasibility or owner acceptance. This follow-up records documentation only.
 The final worktree was clean after implementation push; no private material was
 staged. Only task-owned fixtures were removed by tests.
+
+## Live owner setup and retained canary — October 11
+
+Tested source revision `ee2ee2dc765984d8a1582f3eed95bfff6522a6e1`, provider
+1.5.0. `stat` observed forge-owned directory mode 0700 and regular key mode
+0600, link count 1, at the external runbook path. Key contents were not displayed.
+
+Executed `credentials configure` with the supplied IDs/path and bootstrap
+repository ID `1413668232`, then `credentials doctor`. Both returned
+`canary-required`, `active:false`, selected installation containing only that
+bootstrap repository, and exactly Repository creation/Contents/Pull requests
+write plus Metadata read. This is actual signed App/API readback.
+
+After explicit target/activation approval, executed `credentials canary
+--repository gptclaw-prj005-one --directory
+/srv/forge/projects/gptclaw-prj005-one`. GitHub created the private repository
+[gptclaw-prj005-one](https://github.com/danielbardsley/gptclaw-prj005-one),
+immutable ID `1414446320`, operation `148056feb07746a5be813c8e0f2dfac5`.
+The command exited 1, retaining a `recovery-required` receipt with
+`last_error:credential-recovery`. No local bootstrap/publication or initial PR
+completed, and the destination was not published.
+
+Read-only App JWT `GET /repos/.../installation` returned missing, and fresh
+audit-token inventory still listed only `1413668232`. A token request explicitly
+restricted to `1414446320` was denied (`repository-api`); no token with broader
+scope was substituted. Later bounded read-only observations again found no
+inclusion. Doctor now returns `credential-scope` because the registered canary
+is absent from the installation. Automatic access is not proved by the successful
+create response or by GitHub's documented behavior alone.
+
+The repository/journal/binding were retained. Activation, second creation,
+Git/PR/runtime/rotation checks and new desktop acceptance were skipped because
+the first canary cannot access its own repository. No manual installation change,
+all-repositories selection, Administration grant, PAT reuse or infrastructure
+mutation was performed. Recover only the same operation after reviewing a
+supported automatic-inclusion path; do not replay its create request or count
+manual selection as AC-002 passing.

@@ -1,6 +1,6 @@
 # TDD-023: Repository credential broker
 
-- **Status:** Candidate implementation; actual App/endpoint feasibility and live acceptance pending
+- **Status:** Candidate implementation; live creation verified, automatic inclusion blocked
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Tasks:** [TASKS-023](tasks.md)
@@ -195,6 +195,9 @@ the profile: use matching 1.5.0 source/bundled runner until the existing authori
 private-app provider rollout updates it. Activation does not restart services.
 
 Offline tests establish contracts and native Git transport, not real GitHub App
-creation/access feasibility. The separately requested setup/target approval and
-actual App ID, installation ID and external private-key path are still pending.
-No real App/root credential was read or created by the offline test suite.
+creation/access feasibility. The owner has now approved setup/live targets and
+provided the App/installation IDs and external private key. Configure verified
+identity/minimal grants; live personal creation succeeded, but automatic
+installation inclusion failed for the first repository. Activation and the
+second project remain gated on that failure. No real App/root credential was
+read or created by the offline test suite. See [acceptance.md](acceptance.md).

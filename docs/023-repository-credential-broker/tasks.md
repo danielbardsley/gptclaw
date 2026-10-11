@@ -1,6 +1,6 @@
 # TASKS-023: Repository credential broker
 
-- **Status:** Implementation in review; one-time App setup/live acceptance pending
+- **Status:** Implementation in review; App configured, automatic-inclusion canary blocked
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Design:** [TDD-023](technical-design.md)
@@ -19,6 +19,10 @@
   private key path. Prove actual personal-account creation/inclusion/main behavior
   through the canary before activation; no broader grant/PAT fallback. CRD-001/002;
   AC-001/002. The concrete proposal is in the runbook/settings checklist.
+  Owner setup, supplied IDs/key path and both retained targets/activation are now
+  approved. Configure/initial doctor passed; personal creation succeeded, but
+  installation inclusion failed. This task remains open for feasibility rather
+  than missing owner authorization. See [live evidence](acceptance.md).
 
 T-002 is split to distinguish completed implementation authorization from the
 pending external setup/feasibility gate; it does not reopen existing approval.
@@ -70,10 +74,11 @@ Git TLS fetch/push; evidence and counts are in [acceptance.md](acceptance.md).
 
 T-008 is complete for code revision `30bf742`: all three configured workflows
 passed, alongside 39 focused tests, existing regressions and full repository
-checks. T-002b/T-009 require the separate
-owner App setup/target approval and actual App ID, installation ID and private
-key path. No real App/root credential or remote project was used during tests,
-and actual personal-account creation/inclusion is not claimed proved. Existing
+checks. The owner completed App setup and approved both live targets/activation.
+App identity/grants and personal creation are verified; automatic inclusion of
+the first retained canary failed. T-002b/T-009 remain open, the profile is inactive,
+and the second project is uncreated. No real App/root credential or remote
+project was used during the earlier offline tests. Existing
 revoked PATs were not read or reused. No deployment/public callback/new host
 package/service mutation occurred. PR #54 contains reviewable implementation;
 merge/full live acceptance are not implied by the coding request.
