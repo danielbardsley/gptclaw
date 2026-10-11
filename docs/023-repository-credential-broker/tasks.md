@@ -1,6 +1,6 @@
 # TASKS-023: Repository credential broker
 
-- **Status:** Implementation in review; live acceptance passed, merge pending
+- **Status:** Complete — implementation merged, live acceptance and main CI passed
 - **Owner:** Project owner
 - **Date:** 2026-10-10 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · **Design:** [TDD-023](technical-design.md)
@@ -63,7 +63,7 @@ pending external setup/feasibility gate; it does not reopen existing approval.
   was verified. The same-operation live enrollment attempt failed; this candidate
   was retired in favor of the explicitly approved T-011 All repositories policy.
 
-- [ ] T-009: With explicitly approved App/installation/key/targets, prove one-time
+- [x] T-009: With explicitly approved App/installation/key/targets, prove one-time
   setup and two successive private projects without per-project credential or
   installation clicks. Verify scoped Git/PR operations, renewal, cross-repository
   denial, rotation/revocation and retained recovery. Run existing starter quality
@@ -99,8 +99,10 @@ page/health and owner desktop checks. Scoped native worktree fetch/push/later PR
 credential reacquisition, private cross-repo denial and disable/enable pass.
 Live signing-key rotation/new-key Git access passed; owner confirmed retirement,
 and the old local key is absent, so independent post-retirement HTTP verification
-is not claimed. All code CI workflows passed. T-009 still needs final evidence
-follow-up CI/implementation merge and Delivered tracking. No real App/root
+is not claimed. All code/final-head CI workflows passed. PR #54 merged as
+`f48519007a0b5df94e95dbd5814a73d3c371eab6`; all three push-to-main workflows
+passed. T-009 is complete and the accepted All repositories slice is Delivered.
+No real App/root
 credential or remote project was used during
 the earlier offline tests. Existing
 revoked PATs were not read or reused. No deployment/public callback/new host

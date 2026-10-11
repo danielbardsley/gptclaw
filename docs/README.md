@@ -166,7 +166,7 @@ dispositions independently of feature implementation status.
   [Tasks](./022-github-repository-automation/tasks.md) ·
   [Acceptance status](./022-github-repository-automation/acceptance.md)
 
-- **023 — Repository credential broker (PRJ-005), in review:**
+- **023 — Repository credential broker (PRJ-005), approved All repositories slice delivered:**
   [Specification](./023-repository-credential-broker/spec.md) ·
   [Technical design](./023-repository-credential-broker/technical-design.md) ·
   [Tasks](./023-repository-credential-broker/tasks.md) ·

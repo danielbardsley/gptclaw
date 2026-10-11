@@ -1,11 +1,11 @@
 # SPEC-023 acceptance evidence
 
-- **Status:** Live acceptance passed; implementation merge pending
+- **Status:** Delivered — implementation merged; live acceptance and main CI passed
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-023](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 - **PR:** [#54](https://github.com/danielbardsley/gptclaw/pull/54)
-- **Implementation:** provider 1.5.0 on `codex/prj-005-spec`; tested candidate worktree based on `cb6c8df`, committed revision linked by the PR
+- **Implementation:** provider 1.5.2 merged to main at `f485190`; exact source/PR/main revisions and earlier candidate evidence are recorded below
 
 ## Authorization and boundary
 
@@ -40,7 +40,7 @@ operationally verified, while merge/full acceptance remain pending.
 | AC-005 | passed | Fresh reacquisition, API token revocation, disable/enable, retained recovery and actual different-key rotation passed live; owner confirmed GitHub old-key retirement. | Old local key is absent, so no post-retirement old-key HTTP authentication result is claimed; issued-token lifetimes remain documented. |
 | AC-006 | passed | Activated normal new completed; explicit local-only preview has no GitHub effects; compatibility/regression tests and independent runtime checks passed. | No automatic initial-PR merge or production promotion. |
 | AC-007 | passed | Native fetch/worktree branch push and later scoped PRs passed in both projects; refresh/disable/enable preserved dirty source hashes. | Four retained fixture PRs await ordinary owner review. |
-| AC-008 | passed | Both projects passed manifest/provenance/build/test/typecheck/private page/health; owner confirmed both desktop URLs; independent app remained ready. All three CI workflows passed code revision `445d15b`. | Evidence-only follow-up CI is tracked separately; implementation merge remains. |
+| AC-008 | passed | Both projects passed manifest/provenance/build/test/typecheck/private page/health; owner confirmed both desktop URLs; independent app remained ready. Code/final-head and all three merged-main workflows passed. | No remaining acceptance gate; protected infrastructure deployment was not performed. |
 
 Offline fixtures prove implementation contracts, RSA signing and native Git wire
 behaviour, not GitHub App endpoint/account feasibility or full acceptance.
@@ -95,8 +95,8 @@ can still require an owner action. Ordinary Git helper tokens expire at reported
 times because they must remain valid after helper exit; API leases are best-effort
 revoked immediately. Deactivation/disable does not claim server-side revocation.
 
-Implementation merge and evidence follow-up CI remain pending; current All mode,
-desktop acceptance and key rotation have passed as recorded below.
+Implementation merge and final-head/main CI passed; current All mode, desktop
+acceptance and key rotation have passed as recorded below.
 The previous SPEC-022 slice remains Delivered, with its retained source/app/PR
 and explicit reported token revocation unchanged.
 
@@ -327,5 +327,29 @@ Previously issued installation tokens are not claimed revoked by key deletion.
 
 All AC-001–008 now pass for this approved slice, with the explicit public-read,
 first-recovery, token-lifetime and owner-reported retirement limits above.
-Implementation merge is the remaining delivery gate. The code revision's three
-CI workflows passed; any evidence-only final-head follow-up is tracked by PR #54.
+The implementation merge and all three main CI workflows subsequently passed;
+the accepted slice is Delivered. Earlier pending checkpoints remain historical
+evidence, with final delivery recorded below.
+
+## Merge and main build verification — October 11
+
+The project owner instructed “Ok, merge into main and check the ci/cd build
+passes.” PR #54 merged with its expected head
+`c8632deb1ddbf08bce2dc49ccea793f755d81d29`, whose three final-head PR workflows
+all passed. The resulting main merge commit is
+`f48519007a0b5df94e95dbd5814a73d3c371eab6`.
+
+Observed all three automatic push-to-main runs for that exact SHA as completed
+with conclusion success:
+
+- [Private application workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38154421105): generated app/toolchain build and existing quality checks passed.
+- [Development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38154421241): passed.
+- [Tailscale federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38154421168): passed.
+
+Terraform plan/apply jobs are protected manual-dispatch operations and did not
+run as a deployment from this push. No infrastructure or production promotion
+was performed. This evidence establishes main's automatic quality/build outcome;
+the previously verified private provider/runtime acceptance remains separate.
+All required acceptance criteria passed with their recorded limitations, so the
+approved All repositories slice is Delivered. The key, retained verification
+projects/apps and open fixture PRs remain in the authorized disposition above.
