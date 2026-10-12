@@ -150,3 +150,11 @@ secrets/private identifiers and removed private-chat/internal review commentary.
   scripts, unknown paths and unrelated unit edits; resume managed acceptance
   through the reviewed installed runner after final-head CI/merge. DB-002/004/009;
   AC-002/004/009. No unknown unit or host control may be overwritten.
+
+- [ ] T-016: Exclude generated frontend/Python check output from evolved-source
+  verification fixtures. A real installed commit hook copied Next.js development
+  output and refused its generated path names before allocating a database.
+  Add an unsafe-name/output-link regression, deliver reviewed provider 1.8.4,
+  replace only the exact task-owned prior hook through its installer, and prove
+  both actual Git commit hooks. Preserve live data, source and unknown hooks.
+  DB-008/009; AC-008/009.

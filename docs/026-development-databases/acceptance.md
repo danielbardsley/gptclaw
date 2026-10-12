@@ -171,3 +171,14 @@ components and preserved the running database. The correction pins future mounts
 to immutable snapshots and reconciles only known paths with matching trusted bytes
 and otherwise exact units. Focused unknown-path/script/unit-edit refusal and final
 CI/managed reconciliation are tracked separately from the ownership regression.
+
+## Installed-hook source-copy finding
+
+Both complete private applications passed source CI and managed/client CRUD, but
+the installed parent commit hook failed before database allocation: generated
+Next.js development output was copied as source and rejected for its path names.
+Provider 1.8.4 excludes `.next` and Python check caches, preserving application
+source, generated provenance and selected browser checks. A disposable regression
+uses the actual generated-name pattern plus an output symlink, proving that those
+outputs are neither inspected nor copied and the original files remain.
+Final-head gates, reviewed rollout and actual commit-hook reruns remain separate.

@@ -39,5 +39,27 @@ class SourceTests(unittest.TestCase):
             self.assertEqual((root/'checks/browser.cjs').read_text(),'selected browser')
             self.assertEqual((source/'checks/browser.cjs').read_text(),'selected browser')
 
+    def test_generated_development_outputs_are_not_source_inputs(self):
+        with tempfile.TemporaryDirectory(prefix='db-source-output-') as directory:
+            base=Path(directory);root=base/'fixture';source=base/'application'
+            for component in ['api','web','checks']:
+                (root/component).mkdir(parents=True)
+                (source/component).mkdir(parents=True)
+                (source/component/'selected.py').write_text('actual source')
+            # Live build output has names outside the application-source contract.
+            cache=source/'web/.next/dev/server/chunks';cache.mkdir(parents=True)
+            (cache/'[root-of-server].js').write_text('generated output')
+            (cache/'external').symlink_to(base/'outside')
+            for name in ['.pytest_cache','.mypy_cache','.ruff_cache']:
+                folder=source/'api'/name;folder.mkdir();(folder/'generated').write_text('cache')
+            contract={'components':{'api':{'root':'api'},'web':{'root':'web'}}}
+            check.replace_fixture_source(root,source,contract)
+            for component in ['api','web','checks']:
+                self.assertEqual((root/component/'selected.py').read_text(),'actual source')
+            self.assertFalse((root/'web/.next').exists())
+            for name in ['.pytest_cache','.mypy_cache','.ruff_cache']:
+                self.assertFalse((root/'api'/name).exists())
+            self.assertTrue((cache/'[root-of-server].js').exists())
+
 
 if __name__=='__main__':unittest.main(verbosity=2)
