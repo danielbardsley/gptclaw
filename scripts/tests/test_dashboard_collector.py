@@ -97,6 +97,28 @@ class CollectorTests(unittest.TestCase):
         partial['snapshot']['complete']=True;c.refresh_inventory()
         self.assertEqual([row['key'] for row in c.snapshot()['rows']],['first'])
 
+    def test_status_join_is_read_only_and_inventory_failure_disables_publication(self):
+        from test_dashboard_status import fake_observation
+        binding={'id':'project','components':['web','api','db']}
+        result={'snapshot':{'schema_version':1,'observed_at':100.,'last_success_at':100.,
+            'freshness':'current','complete':True,'rows':[{'key':'key','components':binding['components']}],
+            'diagnostics':[]},'bindings':{'key':binding}}
+        calls=[]
+        def run(*args):calls.append(args);return result
+        c=collector.Collector({},run=run,clock=lambda:100.,enable_status=True)
+        c.refresh_inventory()
+        value=fake_observation(binding);value['observed_at']=100.
+        c.status.update('key',binding,value)
+        for _ in range(10):
+            snapshot=c.snapshot()
+        self.assertEqual(len(calls),1)
+        self.assertEqual(snapshot['rows'][0]['status']['state'],'ready')
+        c.inventory_error='inventory-unavailable'
+        snapshot=c.snapshot();status=snapshot['rows'][0]['status']
+        self.assertEqual(status['freshness'],'stale')
+        self.assertEqual(status['publication']['state'],'unavailable')
+        self.assertTrue(all(component['freshness']=='stale' for component in status['components'].values()))
+
     def test_actual_http_fixed_reads_mutations_and_socket_ownership(self):
         with tempfile.TemporaryDirectory(prefix='dashboard-socket-') as base:
             path = str(Path(base)/'collector.sock')

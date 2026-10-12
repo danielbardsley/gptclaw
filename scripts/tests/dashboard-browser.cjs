@@ -50,7 +50,59 @@ const { chromium } = require('playwright-core');
   assert.equal(await page.locator('tbody tr').count(), 1);
   mode = 'current';
   await page.getByText('Inventory current', { exact: true }).waitFor({ timeout: 9000 });
+  const now = Date.now()/1000;
+  fixture.server_time = now;
+  fixture.rows[0].components = ['web','api','db'];
+  fixture.rows[0].kind = 'group';
+  const component = { state:'ready',provider_state:'ready',health:'healthy',operation_busy:false,
+    freshness:'current',observed_at:now,last_success_at:now,uptime_seconds:0,restart_count:0,
+    last_observed_change:{kind:'first-observed',at:now,after_gap:false,previous_observation_at:null} };
+  fixture.rows[0].status = { ...component,provider_version:'1.9.0',publication:{state:'published',origin:'https://forge-dev.example.ts.net'},
+    components:{web:{...component},api:{...component},db:{...component,uptime_seconds:null,uptime_reason:'unavailable',restart_count:null,restart_reason:'unsupported'}} };
+  await page.reload();
+  await page.getByRole('columnheader',{name:'Service status'}).waitFor();
+  await page.getByLabel('Service details for '+fixture.rows[0].name).focus();
+  await page.keyboard.press('Enter');
+  await page.getByRole('region',{name:'WEB service'}).waitFor();
+  assert.equal(await page.getByText('0s',{exact:true}).count(),2);
+  assert.equal(await page.getByText('Container-instance restarts',{exact:true}).count(),3);
+  assert.equal(await page.getByText('Unsupported',{exact:true}).count(),1);
+  fixture.rows[0].status.components.api = {...component,freshness:'stale',reason:'observation-timeout'};
+  await page.reload();
+  await page.getByLabel('Service details for '+fixture.rows[0].name).click();
+  await page.getByText('Unknown · previous observation retained',{exact:true}).waitFor();
+  await page.getByText('Observation timeout',{exact:true}).waitFor();
+  fixture.rows[0].status.components.api = {...component};
+  fixture.rows[0].status.last_success_at = now-40;
+  fixture.server_time = now;
+  await page.reload();
+  await page.getByText('Last known: Ready',{exact:true}).waitFor();
+  const row = fixture.rows[0];
+  row.links = [
+    {kind:'app',label:'Open app',scope:'private',url:'https://forge-dev.example.ts.net/projects/'+row.id+'/',available:true,reason:null,observed_at:now,expires_at:null,remaining_seconds:null},
+    {kind:'repository',label:'Repository',scope:'repository',url:'https://github.com/example/project',available:true,reason:null,observed_at:null,expires_at:null,remaining_seconds:null},
+    {kind:'logs',label:'Logs',scope:'private',url:null,available:false,reason:'log-viewer-not-available',observed_at:null,expires_at:null,remaining_seconds:null},
+    {kind:'preview',label:'Public preview',scope:'public',url:'https://preview.example.test/projects/'+row.id+'/',available:true,reason:null,observed_at:now,expires_at:now+60,remaining_seconds:2}
+  ];
+  row.status.last_success_at = now;
+  await page.reload();
+  const repository = page.getByRole('link',{name:'Repository',exact:true});
+  await repository.waitFor();
+  assert.equal(await repository.getAttribute('rel'),'noopener noreferrer');
+  await page.getByRole('link',{name:'Open app',exact:true}).waitFor();
+  await page.getByText('Log viewer not available',{exact:true}).waitFor();
+  await page.getByRole('link',{name:'Public preview',exact:true}).waitFor();
+  await page.getByRole('link',{name:'Public preview',exact:true}).waitFor({state:'detached',timeout:4000});
+  // No reload is required to withdraw an expired preview; repo stays useful.
+  assert.equal(await repository.count(),1);
+  row.links[0].available=false;row.links[0].reason='project-unavailable';
+  row.links[3].available=false;row.links[3].reason='preview-registry-not-available';row.links[3].url=null;
+  await page.reload();
+  await page.getByText('Project is unavailable',{exact:true}).waitFor();
+  await page.getByText('Preview registry not available',{exact:true}).waitFor();
+  assert.equal(await page.getByRole('link',{name:'Open app',exact:true}).count(),0);
+  assert.equal(await page.getByRole('link',{name:'Repository',exact:true}).count(),1);
   assert.deepEqual(errors, []);
-  console.log('PASS: real inventory render, semantic table, keyboard skip navigation, safe text, metadata gaps, empty/partial/stale/outage/recovery UI');
+  console.log('PASS: real inventory render, semantic table, keyboard skip navigation, safe text, metadata gaps, empty/partial/stale/outage/recovery UI; accessible component status, zero/null metrics and stale health; validated navigation and local preview expiry');
   await browser.close();
 })().catch(error => { console.error(error); process.exit(1); });

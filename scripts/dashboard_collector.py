@@ -16,6 +16,31 @@ import threading
 import time
 
 from dashboard_inventory import Scanner, MAX_OUTPUT, InventoryError, open_directory
+# Trusted imports are preloaded by the clean forkserver, not by discovered projects.
+import dashboard_observation
+import project_groups
+import project_database
+import project_templates
+import project_toolchains
+
+multiprocessing.set_forkserver_preload(['dashboard_collector'])
+FORKSERVER_START_LOCK = threading.Lock()
+
+def observation_context():
+    # The forkserver is a fresh interpreter. Give it only the known tooling path
+    # while starting, then restore the parent environment before any project read.
+    from multiprocessing import forkserver
+    with FORKSERVER_START_LOCK:
+        previous = os.environ.get('PYTHONPATH')
+        os.environ['PYTHONPATH'] = str(Path(__file__).resolve().parent)
+        try:
+            forkserver.ensure_running()
+        finally:
+            if previous is None:
+                os.environ.pop('PYTHONPATH', None)
+            else:
+                os.environ['PYTHONPATH'] = previous
+    return multiprocessing.get_context('forkserver')
 
 
 def _worker(connection, function, argument):
@@ -34,7 +59,7 @@ def _worker(connection, function, argument):
 
 def bounded(function, argument, seconds, limit=MAX_OUTPUT, *, context=None):
     """Kill/reap the whole owned worker process group on timeout or invalid output."""
-    ctx = context or multiprocessing.get_context('spawn')
+    ctx = context or observation_context()
     reader, writer = ctx.Pipe(duplex=False)
     process = ctx.Process(target=_worker, args=(writer, function, argument))
     process.start()
@@ -72,14 +97,17 @@ def scan_job(config):
 
 
 class Collector:
-    def __init__(self, config, *, clock=time.time, run=bounded):
+    def __init__(self, config, *, clock=time.time, run=bounded, enable_status=False, enable_links=False):
         self.config, self.clock, self.run = config, clock, run
         self.lock = threading.RLock()
         self.stop_event = threading.Event()
         self.inventory = None
         self.bindings = {}
         self.inventory_error = None
-        self.status = {}
+        from dashboard_status import StatusStore
+        self.status = StatusStore(run, clock=clock) if enable_status or enable_links else None
+        self.status_error = False
+        self.enable_links = enable_links
 
     def refresh_inventory(self):
         result = self.run(scan_job, self.config, 10.5)
@@ -106,6 +134,8 @@ class Collector:
             self.inventory = snapshot
             self.bindings = result.get('bindings', {})
             self.inventory_error = None
+            if self.status:
+                self.status.retain({row['key'] for row in snapshot['rows']}, complete=snapshot['complete'])
 
     def snapshot(self):
         with self.lock:
@@ -117,6 +147,22 @@ class Collector:
                 value['freshness'] = 'stale'
             if self.inventory_error:
                 value['diagnostics'].append({'code': self.inventory_error})
+            if self.status:
+                value['status_capacity'] = copy.deepcopy(self.status.capacity)
+                for row in value['rows']:
+                    binding = self.bindings.get(row['key'])
+                    row['status'] = self.status.snapshot(row['key'], binding or {'components':row['components']})
+                    if binding is None or value['freshness']!='current' or self.status_error:
+                        row['status']['freshness']='stale' if row['status'].get('last_success_at') is not None else 'unavailable'
+                        row['status']['publication']['state']='unavailable'
+                        row['status']['reason']='inventory-stale' if binding is None or value['freshness']!='current' else 'observation-unavailable'
+                        for component in row['status']['components'].values():
+                            component['freshness']='stale' if component.get('last_success_at') is not None else 'unavailable'
+                            component['reason']=row['status']['reason']
+            if self.enable_links:
+                from dashboard_links import links
+                for row in value['rows']:
+                    row['links']=links(row,row.get('status'),self.clock())
             value['server_time'] = self.clock()
             return value
 
@@ -126,10 +172,26 @@ class Collector:
             self.refresh_inventory()
             self.stop_event.wait(max(.1, 30 - (time.monotonic() - started)))
 
+    def status_loop(self):
+        while not self.stop_event.is_set():
+            started=time.monotonic()
+            with self.lock:
+                bindings=copy.deepcopy(self.bindings) if not self.inventory_error else {}
+            try:
+                self.status.round(bindings)
+                self.status_error=False
+            except Exception:
+                self.status_error=True
+            self.stop_event.wait(max(.1,5-(time.monotonic()-started)))
+
     def start(self):
         thread = threading.Thread(target=self.inventory_loop, name='dashboard-inventory', daemon=True)
         thread.start()
-        return [thread]
+        threads=[thread]
+        if self.status:
+            status_thread=threading.Thread(target=self.status_loop,name='dashboard-status',daemon=True)
+            status_thread.start();threads.append(status_thread)
+        return threads
 
 
 class Handler(http.server.BaseHTTPRequestHandler):
@@ -298,11 +360,13 @@ def main():
     parser.add_argument('--projects-root', required=True)
     parser.add_argument('--socket', required=True)
     parser.add_argument('--registry')
+    parser.add_argument('--status',action='store_true')
+    parser.add_argument('--links',action='store_true')
     args = parser.parse_args()
     import private_apps as provider
     collector = Collector({'projects': args.projects_root, 'registry': args.registry,
                            'capabilities': {'provider': 'gptclawctl', 'version': provider.VERSION,
-                                            'project_manifest_schemas': [1, 2, 3, 4]}})
+                                            'project_manifest_schemas': [1, 2, 3, 4]}}, enable_status=args.status or args.links, enable_links=args.links)
     try:
         signal.signal(signal.SIGTERM, stop_signal)
         with SocketLease(args.socket) as lease:

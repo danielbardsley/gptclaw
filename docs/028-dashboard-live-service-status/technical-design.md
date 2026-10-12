@@ -1,6 +1,6 @@
 # TDD-028: Owned runtime observation and status snapshots
 
-- **Status:** Proposed — no implementation or deployment performed
+- **Status:** Implemented on feature branch — final validation and rollout pending
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-028](spec.md) · **Tasks:** [TASKS-028](tasks.md)
@@ -115,3 +115,32 @@ retain existing lifecycle compatibility and project data. Inventory remains usab
 when status is disabled. The project owner reviews semantics and load target; the
 implementation author records exact fields, capability version and measured deadlines
 before live rollout. No infrastructure or production dependency is required by this plan.
+
+## Recorded implementation
+
+Provider 1.9.0 adds `gptclawctl observe --project-root` and advertises observation
+schema 1; existing `status` behavior remains compatible. The observer checks
+root/ID/inode binding, unit/container ownership and readiness, and projects only
+timing, state, health and publication fields. Its scoped read adapter deduplicates
+native queries, requests only fixed container inspection fields, refuses native
+mutations and receipt writes, and compares trusted bootstrap bytes without
+publishing a provider snapshot. Independent group component reads use at most
+three threads inside one project worker; a failed component retains useful siblings.
+
+The collector uses a clean Python forkserver with the known tooling path preloaded
+once, then restores its parent environment. This avoids repeated library startup
+inside the two-second per-project deadline and never forks the multithreaded HTTP
+process directly. Up to four project workers (bounded by available CPUs), a 20-project rotating window, 64 KiB per
+result and five-second collection scheduling remain bounded; hung workers and
+their owned process groups are killed/reaped. `dashboard_status.py` stores no more
+than 256 project entries and records only in-memory transitions. Per-component
+failure does not inherit a sibling's timestamp. Unsupported/future capabilities
+remain unavailable and stale status withdraws publication.
+
+`manage_dashboard.py prepare/start --with-status` records an opt-in status feature
+in the immutable release descriptor and starts the collector with `--status`.
+Inventory remains usable with this feature off. The Next.js status column and
+keyboard-accessible component panel show current/last-known state, busy operations,
+current-run uptime, container-instance restart counts and observed-change semantics.
+Browser elapsed time also ages status when the last fetched observation is old.
+No lifecycle controls, logs, telemetry database or project dataset mutation is added.

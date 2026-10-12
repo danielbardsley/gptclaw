@@ -16,14 +16,14 @@
 
 ## Dependency-ordered implementation
 
-- [ ] T-002: Add reviewed read-only route capability descriptor for owned single/group
+- [x] T-002: Add reviewed read-only route capability descriptor for owned single/group
   targets; document exact supported app/docs paths and unsupported/conflicted behavior.
   Do not forward operator commands or infer publication from Serve URL alone.
   (LNK-001/004; AC-001/004)
-- [ ] T-003: Project typed app/docs/repository links with canonical validation, independent
+- [x] T-003: Project typed app/docs/repository links with canonical validation, independent
   metadata/status freshness and unavailable reasons. Implement accessible navigation
   and safe external tabs with no backend URL fetches. (LNK-001/002/004/005; AC-001/002/004/005)
-- [ ] T-004: Add capability-gated logs destination and display-only preview adapter
+- [x] T-004: Add capability-gated logs destination and display-only preview adapter
   contracts; keep absent live prerequisites unavailable. Cover active/expired/revoked,
   stale, wrong-project/forbidden endpoints and elapsed-time expiry with synthetic
   fixtures. No logs handler, preview provisioning or Funnel action. (LNK-002/003/005; AC-002/003)
@@ -47,12 +47,9 @@
 
 ## Current handover
 
-Planning only. No dashboard/log viewer/public registry is installed by this task.
-Inventory/status are draft dependencies. Scope approval, implementation, CI and live
-browser acceptance remain pending; future log/preview integration is explicitly separate.
-Next action: project owner reviews T-001 with the other two specs. Preserve existing
-project services/data and clean only task-owned synthetic fixtures.
-
-Implementation authorization is recorded in the specification. Exact packaging and
-interface choices are being recorded in the design before rollout; no prior acceptance
-result is implied.
+Implementation is authorized and local source integration is in progress. The
+separate inventory foundation, status observation/store and link projection/UI
+are now implemented in dependency order. Relevant offline and browser checks
+have passed; final repository/CI results, installed-service/private-route evidence,
+review/merge and owner acceptance remain pending. See the technical design for
+exact implementation choices. No deployed completion is claimed.

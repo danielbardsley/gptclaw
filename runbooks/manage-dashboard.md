@@ -146,3 +146,28 @@ for recovery. If an interrupted installation leaves unknown unit/receipt state, 
 it through review rather than overwrite it. To remove the private dashboard route, the
 operator must first verify that its current target matches the owned backend; remove
 only that handler and preserve all others. Never reset Serve or delete project data.
+
+## Enable the reviewed status and links increments
+
+The default release enables inventory only. After its foundation is verified, prepare
+and activate the reviewed status increment with `--with-status`; enable the link
+increment with `--with-links` (which also enables status). Exact feature flags are
+frozen in the release descriptor and included in its identity. The collector exports
+a fixed full snapshot; browser reads never spawn project observations.
+
+Provider 1.9.0 adds `gptclawctl observe --project-root <owned-root>` with observation
+and route schema 1. It remains read-only: ownership/readiness checks precede metadata
+projection, native calls are allowlisted, receipt writes are refused and no snapshot
+publication occurs from observation. Clean preloaded forkserver workers collect at
+most four projects concurrently, bounded by available CPUs, with at most three component-read threads per group
+and a two-second project deadline. Twenty projects form a bounded collection window;
+larger inventories rotate windows and show capacity/freshness limitations. Status
+becomes stale after 30 seconds; first-observed and change-detected labels do not
+promise exact unseen event times. Uptime/counters describe the current instance.
+
+Private app/docs links require fresh ready publication and exact observed route
+capability. The provider verifies only fixed owned docs paths with a bounded private
+GET; the pure link layer never crawls URLs. Repository links use validated metadata
+and the browser's GitHub authentication. Log-viewer/preview-registry adapters remain
+unavailable until their separately accepted prerequisites exist. No logs endpoint,
+Funnel operation or public preview is added by these feature switches.

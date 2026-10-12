@@ -68,18 +68,18 @@ def origin():
     return 'https://' + app.node_identity()
 
 
-def unit_text(release, provider, interpreter, image, public_origin):
+def unit_text(release, provider, interpreter, image, public_origin, with_status=False, with_links=False):
     app.need(re.fullmatch(r'https://[a-z0-9.-]+\.ts\.net', public_origin), 'setup')
     collector = f'''[Unit]
 Description=GptClaw private read-only dashboard collector
 
 [Service]
-ExecStart={interpreter} -B {provider}/scripts/dashboard_collector.py --projects-root {app.PROJECTS} --socket {PLATFORM}/run/collector.sock --registry {PLATFORM}/metadata.json
+ExecStart={interpreter} -B {provider}/scripts/dashboard_collector.py --projects-root {app.PROJECTS} --socket {PLATFORM}/run/collector.sock --registry {PLATFORM}/metadata.json{' --status' if with_status or with_links else ''}{' --links' if with_links else ''}
 Restart=on-failure
 RestartSec=2
 TimeoutStopSec=5
 MemoryMax=512M
-CPUQuota=100%
+CPUQuota=200%
 TasksMax=256
 NoNewPrivileges=true
 
@@ -141,7 +141,7 @@ def tree_digest(root):
     return values
 
 
-def prepare():
+def prepare(with_status=False, with_links=False):
     source = app.REPO/'platform/dashboard/.next/standalone'
     static = app.REPO/'platform/dashboard/.next/static'
     app.need(source.is_dir() and static.is_dir(), 'setup')
@@ -155,7 +155,7 @@ def prepare():
     selected_origin = origin()
     descriptor = {'schema_version': 1, 'source': source_values, 'static': static_values,
                   'provider': str(provider), 'interpreter': sys.executable, 'image': image,
-                  'origin': selected_origin, 'port': PORT}
+                  'origin': selected_origin, 'port': PORT, 'status_enabled':with_status or with_links, 'links_enabled':with_links}
     digest = hashlib.sha256(json.dumps(descriptor, sort_keys=True).encode()).hexdigest()
     owned_directory(PLATFORM)
     releases = owned_directory(PLATFORM/'releases')
@@ -221,7 +221,7 @@ def activate(release_id):
     previous = owner()
     if previous:
         verify_units(previous)
-    texts = unit_text(release, descriptor['provider'], descriptor['interpreter'], descriptor['image'], descriptor['origin'])
+    texts = unit_text(release, descriptor['provider'], descriptor['interpreter'], descriptor['image'], descriptor['origin'], descriptor.get('status_enabled',False), descriptor.get('links_enabled',False))
     for filename in texts:
         path = app.safe(filename)
         app.need(path.parent.is_dir() and path.parent.stat().st_uid == os.getuid(), 'path')
@@ -265,6 +265,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=['prepare','start','stop','status','rollback'])
     parser.add_argument('--release')
+    parser.add_argument('--with-status',action='store_true')
+    parser.add_argument('--with-links',action='store_true')
     args=parser.parse_args()
     try:
         app.need(os.getuid() == 1002 and os.geteuid() != 0, 'setup')
@@ -272,8 +274,8 @@ def main():
             result=status()
         else:
             with operation_lock():
-                if args.action == 'prepare': result={'state':'prepared','release':prepare()}
-                elif args.action == 'start': result=activate(args.release or prepare())
+                if args.action == 'prepare': result={'state':'prepared','release':prepare(args.with_status,args.with_links)}
+                elif args.action == 'start': result=activate(args.release or prepare(args.with_status,args.with_links))
                 elif args.action == 'stop': result=stop()
                 else:
                     receipt=owner();app.need(receipt and receipt.get('previous'), 'conflict')

@@ -17,15 +17,15 @@
 
 ## Dependency-ordered implementation
 
-- [ ] T-002: Add reviewed additive provider observation capability and safe field
+- [x] T-002: Add reviewed additive provider observation capability and safe field
   projection for all supported single/group/DB topologies. Define every state mapping,
   ownership refusal, start-time/counter availability reason and probe deadline; preserve
   existing CLI/lifecycle behavior. (STS-001/002/004; AC-001/002/004)
-- [ ] T-003: After T-002 and inventory identity, implement bounded pooled collection,
+- [x] T-003: After T-002 and inventory identity, implement bounded pooled collection,
   per-component snapshots, coalescing, timeouts and observed-transition memory.
   Cover stale thresholds, collector loss, instance replacement and identity conflicts.
   (STS-001/002/003/004; AC-001/002/003/004)
-- [ ] T-004: Add inventory status badges and accessible component details with textual
+- [x] T-004: Add inventory status badges and accessible component details with textual
   state, busy/failure/freshness and documented uptime/restart/transition labels.
   Keep inventory available without runtime observations. (STS-005; AC-005)
 
@@ -45,11 +45,9 @@
 
 ## Current handover
 
-Planning only. SPEC-027 is a draft prerequisite; existing provider status lacks the
-new timing/counter contract. Scope approval, implementation, CI, rollout and browser
-acceptance are pending. Next action: project owner reviews T-001 alongside inventory;
-status work can then follow the reviewed foundation without requiring link delivery.
-
-Implementation authorization is recorded in the specification. Exact packaging and
-interface choices are being recorded in the design before rollout; no prior acceptance
-result is implied.
+Implementation is authorized and local source integration is in progress. The
+separate inventory foundation, status observation/store and link projection/UI
+are now implemented in dependency order. Relevant offline and browser checks
+have passed; final repository/CI results, installed-service/private-route evidence,
+review/merge and owner acceptance remain pending. See the technical design for
+exact implementation choices. No deployed completion is claimed.

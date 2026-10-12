@@ -51,5 +51,8 @@ jobs:
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_inventory.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_collector.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_install.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_observation.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_status.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_links.py
       - name: Exact frontend and browser acceptance
         run: .venv-manifest/bin/python -B scripts/tests/check_dashboard.py --engine docker --output "$RUNNER_TEMP/gptclaw-dashboard-check"

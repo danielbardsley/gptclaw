@@ -1,6 +1,6 @@
 # TDD-029: Validated destination projection and capability gates
 
-- **Status:** Proposed — no implementation or deployment performed
+- **Status:** Implemented on feature branch — final validation and rollout pending
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-029](spec.md) · **Tasks:** [TASKS-029](tasks.md)
@@ -124,3 +124,28 @@ The project owner approves the staged integration scope. Implementation records 
 route-descriptor schema/capability and validation bounds before rollout. Future log and
 preview maintainers own compatible destination contracts; until accepted, these slots
 remain unavailable without blocking app/docs/repository navigation.
+
+## Recorded implementation
+
+Provider 1.9.0 exports route schema 1 alongside observed publication. Supported
+manifest/template provenance defines candidate paths; a bounded GET to only the
+fixed owned API documentation path must return HTML/200 without proxies or
+redirects before docs capability is advertised. This provider capability probe
+is separate from pure link projection: the link adapter does not fetch URLs,
+read credentials, execute commands or inspect Funnel output. Single/group paths
+use the reviewed prefixes and group component identity helper.
+
+`dashboard_links.py` validates identities, canonical private/repository targets,
+route descriptors, independent freshness and capability-bound logs/preview inputs.
+The collector's `--links` switch also enables status, with `--with-links` recorded
+in immutable release packaging. Real log/preview adapters are absent and return
+the specified unavailable explanations; no stub viewer or public exposure is
+created. Synthetic schema-1 adapters prove exact key binding, approved application
+route/origin, revocation/expiry/freshness and forbidden-target behavior.
+
+The frontend validates destinations again, uses safe external tabs and plain-text
+unavailable reasons, and expires preview links against collector time plus
+`performance.now()` elapsed time. Repository navigation survives runtime failure.
+There is no arbitrary redirect, backend crawler, preview control, public dashboard
+endpoint or new production dependency. Future live viewer/registry integration
+continues to need independently accepted prerequisites and real evidence.

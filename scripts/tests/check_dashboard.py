@@ -70,6 +70,8 @@ def main():
                 probe.bind(('127.0.0.1',0));port=probe.getsockname()[1]
             origin='http://127.0.0.1:'+str(port)
             app=ROOT/'platform/dashboard/.next'
+            (app/'standalone/.next/static').mkdir(exist_ok=True)
+            created=True
             run(['run','--detach','--name',name,'--label','com.gptclaw.dashboard-check='+token,*common,
                 '--publish','127.0.0.1:'+str(port)+':3000',
                 '--volume',str(app/'standalone')+':/app:ro','--volume',str(app/'static')+':/app/.next/static:ro',

@@ -138,7 +138,7 @@ validation is additive to the existing validator API and checks replacement race
 The Unix socket is `/srv/forge/platform/run/collector.sock` (0700 directory, 0600
 socket); the rootless frontend publishes `127.0.0.1:18200:3000`. Exact owned services
 are `gptclaw-dashboard-collector.service` and `gptclaw-dashboard.container`. The
-collector has 512 MiB/100% CPU/256 tasks; the frontend 768 MiB/1 CPU/128 PIDs.
+collector has 512 MiB/200% CPU/256 tasks; the frontend 768 MiB/1 CPU/128 PIDs.
 `scripts/manage_dashboard.py` prepares hashed standalone/static assets, exact image
 ID and provider/interpreter provenance, serializes lifecycle changes and refuses
 unknown units/drop-ins. The dedicated `/dashboard/` Serve route remains an operator
