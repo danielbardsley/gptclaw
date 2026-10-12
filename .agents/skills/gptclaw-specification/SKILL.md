@@ -73,6 +73,18 @@ A passing local check or merged PR cannot establish unobserved behavior. Mark
 Delivered only when the implementation is merged and all required acceptance
 criteria pass. The existence of `acceptance.md` does not imply completion.
 
+For a product adapted from an application starter, include a starter adaptation
+task and acceptance check. Remove or replace demo-only routes, UI, services,
+models, example data, assets, documentation and tests outside the approved product
+spec; update registrations, imports, API schema, dependencies and checks together.
+Review actual exposed routes/OpenAPI and rendered UI against the product spec,
+and verify product behavior with relevant tests. Inherited demo tests alone cannot
+establish product acceptance. Keep reusable health/readiness, API documentation
+and security support; record the spec justification for deliberately retained
+demos. Preserve user data and published starter releases. This product completion
+check does not require removing examples from a starter whose approved purpose
+is to demonstrate them.
+
 ## Review and hand over
 
 Check scope consistency, requirement/design/task/criterion coverage, links,

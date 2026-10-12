@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} repository guidance
 
-Template-Version: 1.0.0
+Template-Version: 1.0.1
 Template-Source: GptClaw templates/agents/AGENTS.md.template
 
 ## Project and ownership
@@ -41,6 +41,15 @@ already given; prepare a concrete proposal before requesting missing authority.
 A catalogue entry alone does not authorize implementation. Update tasks and
 acceptance evidence, and hand over changes, verification, remaining work, and
 Git status. Never discard user changes to obtain a clean tree.
+
+When adapting an application starter into a product, remove or replace starter-only
+demo routes, screens, services, models, example data, assets, documentation and
+tests that the approved product spec does not require. Update their imports,
+router registrations, API schema, dependencies and checks together. Review the
+final exposed API and UI against the spec before declaring completion; passing
+inherited demo tests is not product acceptance. Retain reusable health/readiness,
+API documentation and security support. Record the spec justification for any
+intentionally retained demo. Preserve user data and published starter releases.
 
 ## Data and product constraints
 
