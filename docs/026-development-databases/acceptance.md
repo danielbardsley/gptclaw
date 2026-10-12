@@ -243,3 +243,14 @@ defect with generated Next.js output. Both live applications remain ready and
 owner data is retained. [PR #65](https://github.com/danielbardsley/gptclaw/pull/65)
 tracks the narrow output exclusion and its regression; full hook/evidence closeout
 remains pending. No owner/browser or data-reset authorization is requested again.
+
+## Installed-hook source-copy finding
+
+Both complete private applications passed source CI and managed/client CRUD, but
+the installed parent commit hook failed before database allocation: generated
+Next.js development output was copied as source and rejected for its path names.
+Provider 1.8.4 excludes `.next` and Python check caches, preserving application
+source, generated provenance and selected browser checks. A disposable regression
+uses the actual generated-name pattern plus an output symlink, proving that those
+outputs are neither inspected nor copied and the original files remain.
+Final-head gates, reviewed rollout and actual commit-hook reruns remain separate.

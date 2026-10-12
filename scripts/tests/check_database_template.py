@@ -34,7 +34,7 @@ def replace_fixture_source(root,source,contract):
             if entry.is_dir():shutil.rmtree(entry)
             else:entry.unlink()
         for entry in origin.rglob('*'):
-            if any(part in {'.venv','.gptclaw-cache','.cache','node_modules','.gptclaw','__pycache__'} for part in entry.relative_to(origin).parts):continue
+            if any(part in {'.venv','.gptclaw-cache','.cache','.next','.pytest_cache','.mypy_cache','.ruff_cache','node_modules','.gptclaw','__pycache__'} for part in entry.relative_to(origin).parts):continue
             a.safe(entry)
             if entry.is_file():
                 output=root/component/entry.relative_to(origin);output.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(entry,output)
