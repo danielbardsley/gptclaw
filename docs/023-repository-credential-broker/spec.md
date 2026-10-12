@@ -190,3 +190,30 @@ acceptance.md when actual evidence is available; no acceptance is claimed by thi
 planning task. Mark Delivered only after implementation merge and all required
 criteria pass. Manual token revocation from the previous feature is not a new
 implementation prerequisite; the project owner's supplied report is retained as such.
+
+## Approved October 12 workflow provisioning extension
+
+The project owner approved the [concrete two-project policy](../026-development-databases/repository-workflow-publication.md)
+after live creation isolated a CI-workflow permission denial. The original
+four-grant slice remains Delivered; this extension is approved and acceptance
+pending. The owner-controlled Workflows-write App/installation grant adds root
+workflow authority across the approved All repositories installation. Issued
+workflow-capable tokens are restricted to each immutable App-created private
+repository in an explicit allowlist of at most two project names. This amendment
+does not approve workflow editing through ordinary Git or unrelated projects.
+
+- CRD-009: Require explicit versioned named workflow opt-in and exact App/installation
+  grant readback. Refuse workflow-containing starter creation/preview before any
+  remote side effect when the target is unapproved. Keep legacy profile contracts
+  and the four-grant baseline valid; never infer adoption from a changed grant.
+- CRD-010: Add Workflows-write only to provisioning leases for a verified App-created
+  binding with the selected workflow-containing release. Keep ordinary Git, PR,
+  audit and creation scopes unchanged. Migrate validated owned helper paths with
+  hash-bound interruption recovery, preserve unknown edits, and leave profile
+  inactive until actual workflow publication succeeds. Resume retained creation
+  using its existing immutable identity; prove CI on both named applications.
+
+| Criterion | Observable proof | Requirements |
+|---|---|---|
+| AC-009 | Legacy/unapproved/extra-grant/preflight tests pass; exact approved grant readback and explicit inactive profile migration are recorded. | CRD-009 |
+| AC-010 | Singleton lease/role exclusion/unknown-helper/interruption tests pass; retained creation resumes once, both private CI workflows run, and existing registered helpers retain scoped Git behavior. | CRD-010 |

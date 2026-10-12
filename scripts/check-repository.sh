@@ -158,6 +158,10 @@ if ! python3 -B scripts/tests/test_project_database.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_database_template_source.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/check-template-releases.py; then
   status=1
 fi

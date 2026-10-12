@@ -266,3 +266,32 @@ read back Selected scope plus exact grants/identity. Enrollment is disabled in
 All mode. Doctor inspects only inventory metadata for unrelated repositories,
 allows public/noncanonical names there, and strictly validates managed private
 repositories. It returns managed IDs and installation count, not source content.
+
+## Approved workflow provisioning amendment
+
+See the [concrete policy and rollback](../026-development-databases/repository-workflow-publication.md).
+Provider 1.8.1 adds explicit `credentials workflow-policy --repository NAME`
+(repeated, maximum two) and `--disable`. Profile schema 3 records sorted unique
+workflow project names and actual publication verification; schema 1/2 retain
+old contracts. Workflow opt-in requires the All repositories installation and
+exact base grants plus Workflows-write. The owner updates App settings and
+separately approves the installation grant; changed grants alone cannot migrate
+or activate a profile. The source runner performs the policy operation only after
+reviewed code/checks. Creation and preview inspect immutable release outputs
+before network calls and reject unapproved workflow targets.
+
+A provisioning lease adds Workflows only after matching one enabled binding's
+immutable repository, project name, App/installation and creation receipt to the
+approved policy and selected release. All other token roles retain exact previous
+grants. Real workflow publication/readback verifies the canary before activation;
+retained operations use the original identity/source inventory without recreation.
+
+Legacy helper bundles cannot consume the new grant policy. Migration therefore
+refreshes only validated registered helper commands to the compatible immutable
+bundle. Per-helper private journals contain old/new command and config hashes,
+not tokens or complete config. Interrupted config/binding writes resume only when
+known before/after hashes match; unknown edits stop. Profile and credential locks
+use consistent ordering. Unknown helpers/remotes and disabled bindings are retained.
+The migration stays inactive; application runtimes and ordinary project lease
+permissions are unaffected. Disabling requires owner removal/readback of the
+Workflows grant, then explicit profile rollback; issued tokens retain their expiry.
