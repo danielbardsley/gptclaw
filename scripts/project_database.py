@@ -253,7 +253,8 @@ def verify_unit(s):
             known=known or len(parts)==4 and bool(re.fullmatch(r'[0-9a-f]{64}',parts[0])) and Path(*parts[1:])==relative
         check(known and selected.is_file(),'conflict')
         info=selected.stat()
-        check(info.st_uid==os.getuid() and info.st_nlink==1 and not info.st_mode&0o022,'conflict')
+        check(info.st_uid==os.getuid() and info.st_nlink==1 and not info.st_mode&0o002
+              and (not info.st_mode&0o020 or info.st_gid==os.getgid()),'conflict')
         trusted=a.provider_bundle()/relative
         check(info.st_size==trusted.stat().st_size and selected.read_bytes()==trusted.read_bytes(),'conflict')
         old=lines[0];new='Volume='+str(trusted)+suffix
