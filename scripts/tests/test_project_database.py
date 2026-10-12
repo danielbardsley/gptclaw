@@ -150,6 +150,15 @@ class DatabaseTests(unittest.TestCase):
             with self.assertRaises(a.AppError):db.plan(self.root,self.contract,self.s,'restore','0'*32)
             with self.assertRaises(a.AppError):db.plan(self.root,self.contract,self.s,'prune','0'*32)
 
+    def test_start_waits_for_final_listener_after_temporary_server(self):
+        generation=db.allocate(self.s)
+        query="SELECT 1 WHERE current_setting('listen_addresses')='*';"
+        # A successful temporary-server query returns no row, never readiness.
+        with patch.object(db,'active',return_value=False),patch.object(db,'network'),patch.object(a,'command'),patch.object(db,'sql',side_effect=['','1']) as sql,patch.object(db.time,'sleep') as sleep:
+            db.start(self.s,generation)
+        self.assertEqual(sql.call_args_list,[unittest.mock.call(self.s,query,generation=generation),unittest.mock.call(self.s,query,generation=generation)])
+        sleep.assert_called_once_with(.25)
+
     def test_owned_quadlet_activation_refuses_overrides_and_uses_private_unit(self):
         def command(args,**kwargs):
             return SimpleNamespace(returncode=0,stdout='SourcePath='+str(db.unit(self.s))+'\nDropInPaths=\n')

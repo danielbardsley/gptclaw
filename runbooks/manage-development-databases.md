@@ -143,3 +143,11 @@ runner and installed runner can reconcile earlier known checkout/provider mount
 paths only when the reviewed bootstrap bytes and all other unit bytes match.
 Changed bootstrap content, unknown mount paths, unit edits and overrides remain
 conflicts; do not rewrite them to bypass refusal.
+
+### Final-server readiness
+
+Provider 1.8.5 waits for authenticated readiness on the final private-network
+listener. The temporary initialization server must not admit grants, restore or
+application startup. Existing projects need no database migration or credential
+change. Application-owned portable runners should use the same final-listener
+query; published starter releases retain their immutable bytes.

@@ -300,10 +300,12 @@ def start(s, generation=None):
             a.save_text(target,text);target.chmod(0o600)
         a.command(['systemctl','--user','daemon-reload']);verify_unit(s)
         a.command(['systemctl','--user','start',name(s)+'.service'],timeout=150)
+    # The loopback initializer also accepts SQL briefly before shutting down.
+    # Only the fixed final private-network listener can establish readiness.
     until=time.monotonic()+120
     while time.monotonic()<until:
         try:
-            if sql(s,'SELECT 1;',generation=generation).strip()=='1':return
+            if sql(s,"SELECT 1 WHERE current_setting('listen_addresses')='*';",generation=generation).strip()=='1':return
         except a.AppError:pass
         time.sleep(.25)
     raise a.AppError('database-health')
