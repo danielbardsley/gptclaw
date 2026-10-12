@@ -131,3 +131,13 @@ secrets/private identifiers and removed private-chat/internal review commentary.
   DB-001/002/003/009; AC-001/002/003/009. This reversible unprivileged correction
   is necessary to the directly authorized full platform test; AWS/host privilege
   changes remain excluded. Initial failure allocated no data or role credentials.
+
+## Rotation ownership correction
+
+- [ ] T-014: Transfer owned application objects from retained migration identities
+  during grants/rotation. Actual managed relational writes failed after 1.8.2
+  rotation while readiness/read tests passed; foreign-key checks ran under a prior
+  table owner without schema access. Add native post-rotation foreign-key/identity
+  writes and migration DDL regression; review/merge provider 1.8.3, rotate both
+  authorized synthetic projects and rerun actual private browser CRUD.
+  DB-003/005/009; AC-003/005/008/009. Preserve data and existing grants/scopes.

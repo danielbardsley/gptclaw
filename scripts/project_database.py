@@ -355,6 +355,15 @@ def grants(s, generation=None, epoch=None):
                        f'GRANT CONNECT ON DATABASE app TO {role};',f'GRANT USAGE ON SCHEMA public TO {role};']
         if kind=='migration':statements += [f'GRANT CREATE ON SCHEMA public TO {role};']
     migration=roles['migration']['username']; runtime=roles['runtime']['username']
+    # Foreign-key triggers execute as the table owner. Keeping an old table
+    # owner after changing the schema owner can make writes fail even when the
+    # new runtime login has CRUD grants. Transfer only retained, validated
+    # project migration identities; never administrative/runtime identities.
+    for folder in sorted((home(s['project'])/'credentials').iterdir()):
+        if not HEX.fullmatch(folder.name):continue
+        previous=credential(s,'migration',folder.name)['username']
+        if previous==migration:continue
+        statements += [f"DO $gptclaw$ BEGIN IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname='{previous}') THEN REASSIGN OWNED BY {previous} TO {migration}; END IF; END $gptclaw$;"]
     statements += [f'ALTER SCHEMA public OWNER TO {migration};',f'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {runtime};',
                    f'GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO {runtime};',
                    f'ALTER DEFAULT PRIVILEGES FOR ROLE {migration} IN SCHEMA public GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO {runtime};',

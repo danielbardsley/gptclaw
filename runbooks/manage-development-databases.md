@@ -128,3 +128,12 @@ that neither a legacy store nor an owned database allocation exists. An existing
 legacy `/srv/forge/data/projects` directory requires separate reviewed migration;
 never move/copy it automatically or change host permissions to make initialization
 pass. The store stays outside repositories on the same verified project volume.
+
+### Rotation object ownership
+
+Provider 1.8.3 transfers application object ownership from validated retained
+migration identities to the selected migration login before selecting a new
+epoch. This preserves foreign-key and identity writes as well as later migrations.
+For a project already rotated by 1.8.2, stop the group and perform another reviewed
+rotation with 1.8.3; that operation also repairs earlier migration ownership.
+A readiness query or read-only check alone does not establish writable recovery.

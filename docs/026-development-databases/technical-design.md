@@ -123,9 +123,14 @@ application tables/sequences but cannot DDL/create roles/create databases; migra
 role owns only the application schema, and admin is restricted to managed jobs/DB.
 
 Rotation requires the group stopped and its project lock. Create new versioned login
-roles inheriting stable per-project runtime/migration privilege roles, stage new
+roles retaining per-project runtime/migration grants, stage new
 credentials, verify DB login/grants, atomically select the epoch, then revoke old
-logins. Journal each transition so interruption cannot discard the last usable
+logins. Transfer application objects from every retained, validated migration identity
+to the selected migration role before epoch selection. Foreign-key checks execute
+as table owners, so inheriting an old role alone does not preserve writes after
+schema ownership changes. Never transfer admin/runtime ownership; repeat safely
+when recovering an interrupted rotation or repairing a previously rotated epoch.
+Journal each transition so interruption cannot discard the last usable
 credentials; admin credential rotation similarly stages/verifies a replacement
 administrative login before revocation. Exclude automatic background rotation.
 Snapshots may retain old secret files: revocation, not file deletion alone, removes

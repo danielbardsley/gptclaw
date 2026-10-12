@@ -83,6 +83,19 @@ class DatabaseTests(unittest.TestCase):
         with self.assertRaises(a.AppError):db.create(self.root,self.contract)
         self.assertEqual(marker,(db.home('db-fixture')/'owner.json').read_bytes())
 
+    def test_grants_transfer_only_retained_migration_ownership(self):
+        next_epoch='f'*32;db.credentials(db.home('db-fixture'),next_epoch)
+        old=db.credential(self.s,'migration')['username']
+        selected=db.credential(self.s,'migration',next_epoch)['username']
+        with patch.object(db,'sql') as sql:
+            db.grants(self.s,epoch=next_epoch)
+        statement=sql.call_args.args[1]
+        self.assertIn(f'REASSIGN OWNED BY {old} TO {selected}',statement)
+        self.assertNotIn('REASSIGN OWNED BY admin_',statement)
+        self.assertNotIn('REASSIGN OWNED BY runtime_',statement)
+        self.assertNotIn(f'REASSIGN OWNED BY {selected}',statement)
+        self.assertLess(statement.index('REASSIGN OWNED'),statement.index('ALTER SCHEMA public OWNER'))
+
     def test_missing_data_never_reinitialized(self):
         (db.home('db-fixture')/'postgres'/self.s['active']).rmdir()
         with self.assertRaises(a.AppError):db.state('db-fixture',self.root)
