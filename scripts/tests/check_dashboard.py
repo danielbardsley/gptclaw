@@ -52,7 +52,7 @@ def main():
         if not args.reuse_browser_image:
             acquire=ROOT/'templates/apps/releases/notes/1.0.0/checks/acquire-browser.py'
             subprocess.run([sys.executable,str(acquire),str(work/'browser')],check=True,timeout=60)
-            run(['build','--tag',browser_image,str(work/'browser')])
+            run(['build','--file',str(work/'browser/Containerfile'),'--tag',browser_image,str(work/'browser')])
         run(['run','--rm',*common,browser_image,'node','-e',
              "if(require('playwright-core/package.json').version !== '1.64.0')process.exit(1)"])
         # Trusted synthetic fixture constructor; no project command/runtime starts.
@@ -88,7 +88,9 @@ def main():
             else:raise AssertionError('dashboard did not observe four synthetic projects')
             checks=[('POST','/dashboard/api/snapshot/',{},405),('GET','/dashboard/api/snapshot/?root=/etc',{},400),
                     ('GET','/dashboard/api/snapshot/',{'Origin':'https://untrusted.invalid'},403),
-                    ('GET','/dashboard/api/snapshot/',{'Host':'untrusted.invalid'},403)]
+                    ('GET','/dashboard/api/snapshot/',{'Host':'untrusted.invalid'},403),
+                    ('GET','/dashboard/',{'Sec-Fetch-Site':'cross-site','Sec-Fetch-Mode':'navigate','Sec-Fetch-Dest':'document'},200),
+                    ('GET','/dashboard/api/snapshot/',{'Sec-Fetch-Site':'cross-site','Sec-Fetch-Mode':'navigate','Sec-Fetch-Dest':'document'},403)]
             for method,path,headers,expected in checks:
                 try:
                     response=urllib.request.urlopen(urllib.request.Request(origin+path,method=method,headers=headers),timeout=3)

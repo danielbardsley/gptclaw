@@ -52,7 +52,7 @@ class CollectorTests(unittest.TestCase):
 
     def test_empty_initial_stale_failure_recovery_and_no_read_collection(self):
         now = [100.]
-        results = [{'snapshot': {'schema_version': 1, 'last_success_at': 100., 'freshness': 'current',
+        results = [{'snapshot': {'schema_version': 1, 'observed_at': 100., 'last_success_at': 100., 'freshness': 'current',
             'complete': True, 'rows': [], 'diagnostics': []}, 'bindings': {}}]
         calls = []
         def run(*args):
@@ -72,12 +72,30 @@ class CollectorTests(unittest.TestCase):
         c.refresh_inventory()
         self.assertEqual(c.snapshot()['last_success_at'], 100)
         self.assertEqual(c.snapshot()['freshness'], 'stale')
-        results[0] = {'snapshot': {'schema_version': 1, 'last_success_at': 161., 'freshness': 'current',
+        results[0] = {'snapshot': {'schema_version': 1, 'observed_at': 161., 'last_success_at': 161., 'freshness': 'current',
             'complete': False, 'truncated': True, 'rows': [], 'diagnostics': [{'code': 'input_path'}]}, 'bindings': {}}
         c.refresh_inventory()
         self.assertEqual(c.snapshot()['freshness'], 'current')
         self.assertTrue(c.snapshot()['truncated'])
         self.assertEqual(c.snapshot()['last_success_at'], 161)
+
+    def test_partial_inventory_preserves_stale_rows_without_target_binding(self):
+        first={'snapshot':{'schema_version':1,'observed_at':100.,'last_success_at':100.,
+            'freshness':'current','complete':True,'rows':[{'key':'first'},{'key':'second'}],
+            'diagnostics':[]},'bindings':{'first':{'id':'a'},'second':{'id':'b'}}}
+        c=collector.Collector({},run=lambda *args:first)
+        c.refresh_inventory()
+        partial={'snapshot':{'schema_version':1,'observed_at':110.,'last_success_at':110.,
+            'freshness':'current','complete':False,'rows':[{'key':'first'}],
+            'diagnostics':[{'code':'input_unreadable'}]},'bindings':{'first':{'id':'a'}}}
+        c.run=lambda *args:partial;c.refresh_inventory()
+        rows=c.snapshot()['rows']
+        self.assertEqual(len(rows),2)
+        self.assertEqual(rows[1]['inventory_freshness'],'stale')
+        self.assertEqual(rows[1]['inventory_observed_at'],100.)
+        self.assertNotIn('second',c.bindings)
+        partial['snapshot']['complete']=True;c.refresh_inventory()
+        self.assertEqual([row['key'] for row in c.snapshot()['rows']],['first'])
 
     def test_actual_http_fixed_reads_mutations_and_socket_ownership(self):
         with tempfile.TemporaryDirectory(prefix='dashboard-socket-') as base:

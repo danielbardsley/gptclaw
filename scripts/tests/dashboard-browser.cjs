@@ -27,7 +27,7 @@ const { chromium } = require('playwright-core');
   fixture.rows[0].repository = null;
   await page.route('**/dashboard/api/snapshot/', async route => {
     if (mode === 'failure') return route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ schema_version: 1, freshness: 'unavailable' }) });
-    const value = mode === 'empty' ? { ...fixture, rows: [], complete: true } : mode === 'partial' ? { ...fixture, complete: false, truncated: true, diagnostics: [{ code: 'input_path' }] } : mode === 'stale' ? { ...fixture, freshness: 'stale' } : fixture;
+    const value = mode === 'retained' ? { ...fixture, complete: false, rows: fixture.rows.map(row => ({ ...row, inventory_freshness: 'stale' })) } : mode === 'empty' ? { ...fixture, rows: [], complete: true } : mode === 'partial' ? { ...fixture, complete: false, truncated: true, diagnostics: [{ code: 'input_path' }] } : mode === 'stale' ? { ...fixture, freshness: 'stale' } : fixture;
     return route.fulfill({ contentType: 'application/json', body: JSON.stringify(value) });
   });
   await page.reload();
@@ -39,6 +39,8 @@ const { chromium } = require('playwright-core');
   assert.equal(await page.getByText(fixture.rows[0].name, { exact: true }).count(), 1);
   assert.match(await page.locator('tbody td').filter({ hasText: 'Repository not recorded' }).textContent(), /Not recorded/);
   await page.getByText('Repository not recorded', { exact: true }).waitFor();
+  mode = 'retained'; await page.reload();
+  await page.getByText('Inventory metadata stale', { exact: true }).waitFor();
   mode = 'stale'; await page.reload();
   await page.getByText('Inventory stale · collector unavailable', { exact: true }).waitFor();
   mode = 'current'; await page.reload();

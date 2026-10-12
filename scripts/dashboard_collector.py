@@ -83,11 +83,26 @@ class Collector:
 
     def refresh_inventory(self):
         result = self.run(scan_job, self.config, 10.5)
-        snapshot = result.get('snapshot')
+        snapshot = copy.deepcopy(result.get('snapshot'))
         with self.lock:
             if not isinstance(snapshot, dict) or snapshot.get('freshness') == 'unavailable':
                 self.inventory_error = 'inventory-unavailable'
                 return
+            # A partial scan cannot establish disappearance. Retain earlier rows
+            # as explicitly stale diagnostics, with no active target binding.
+            for row in snapshot['rows']:
+                row['inventory_freshness'] = 'current'
+                row['inventory_observed_at'] = snapshot['observed_at']
+            if self.inventory and not snapshot.get('complete'):
+                present = {row['key'] for row in snapshot['rows']}
+                for previous in self.inventory['rows']:
+                    if previous['key'] not in present:
+                        retained = copy.deepcopy(previous)
+                        retained['inventory_freshness'] = 'stale'
+                        snapshot['rows'].append(retained)
+                while len(snapshot['rows']) > 256 or len(json.dumps(snapshot).encode()) > MAX_OUTPUT:
+                    snapshot['rows'].pop()
+                    snapshot['truncated'] = True
             self.inventory = snapshot
             self.bindings = result.get('bindings', {})
             self.inventory_error = None

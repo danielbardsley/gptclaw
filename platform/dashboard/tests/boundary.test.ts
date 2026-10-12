@@ -14,3 +14,9 @@ test('rejects arbitrary paths, URL parameters and malformed origins', () => {
   assert.equal(allowedRequest(request(), ''), 503);
   assert.equal(allowedRequest(request(), origin+'/wrong'), 503);
 });
+
+test('a user can navigate from an external link without opening cross-origin API reads', () => {
+  const navigation = { 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'navigate', 'sec-fetch-dest': 'document' };
+  assert.equal(allowedRequest(request('GET', origin+'/dashboard/', navigation), origin), null);
+  assert.equal(allowedRequest(request('GET', origin+'/dashboard/api/snapshot/', navigation), origin), 403);
+});
