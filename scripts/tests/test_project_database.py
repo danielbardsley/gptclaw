@@ -83,6 +83,30 @@ class DatabaseTests(unittest.TestCase):
         with self.assertRaises(a.AppError):db.create(self.root,self.contract)
         self.assertEqual(marker,(db.home('db-fixture')/'owner.json').read_bytes())
 
+    def test_grants_transfer_only_retained_migration_ownership(self):
+        next_epoch='f'*32;db.credentials(db.home('db-fixture'),next_epoch)
+        old=db.credential(self.s,'migration')['username']
+        selected=db.credential(self.s,'migration',next_epoch)['username']
+        with patch.object(db,'sql') as sql:
+            db.grants(self.s,epoch=next_epoch)
+        statement=sql.call_args.args[1]
+        self.assertIn(f'REASSIGN OWNED BY {old} TO {selected}',statement)
+        self.assertNotIn('REASSIGN OWNED BY admin_',statement)
+        self.assertNotIn('REASSIGN OWNED BY runtime_',statement)
+        self.assertNotIn(f'REASSIGN OWNED BY {selected}',statement)
+        self.assertLess(statement.index('REASSIGN OWNED'),statement.index('ALTER SCHEMA public OWNER'))
+
+    def test_interrupted_rotation_blocks_readiness_until_recovered(self):
+        self.s.update(revision='0001',blocked=False)
+        self.s['operation']={'id':'f'*32,'action':'rotate','stage':'planned'}
+        with patch.object(db,'active',return_value=True),patch.object(db,'revision',return_value='0001'):
+            self.assertTrue(db.ready(self.s,self.contract))
+            for stage in ('running','failed','unknown'):
+                self.s['operation']['stage']=stage
+                self.assertFalse(db.ready(self.s,self.contract))
+            self.s['operation']['stage']='complete'
+            self.assertTrue(db.ready(self.s,self.contract))
+
     def test_missing_data_never_reinitialized(self):
         (db.home('db-fixture')/'postgres'/self.s['active']).rmdir()
         with self.assertRaises(a.AppError):db.state('db-fixture',self.root)
@@ -134,6 +158,24 @@ class DatabaseTests(unittest.TestCase):
         self.assertEqual(db.unit(self.s).stat().st_mode&0o777,0o600)
         with patch.object(a,'command',return_value=SimpleNamespace(stdout='SourcePath='+str(db.unit(self.s))+'\nDropInPaths=/unknown\n')):
             with self.assertRaises(a.AppError):db.verify_unit(self.s)
+
+    def test_unit_bootstrap_is_immutable_and_known_path_reconciliation_is_exact(self):
+        relative=Path('templates/apps/start-development-postgres.sh')
+        trusted=a.provider_bundle()/relative
+        self.assertIn(str(trusted),db.unit_text(self.s))
+        source=a.PROJECTS/'gptclaw'/relative;source.parent.mkdir(parents=True)
+        source.write_bytes(trusted.read_bytes())
+        expected=db.unit_text(self.s);legacy=expected.replace(str(trusted),str(source))
+        db.unit(self.s).write_text(legacy);db.unit(self.s).chmod(0o600)
+        observed=SimpleNamespace(stdout='SourcePath='+str(db.unit(self.s))+'\nDropInPaths=\n')
+        with patch.object(a,'command',return_value=observed):db.verify_unit(self.s)
+        with patch.object(a,'command') as command:
+            for invalid in [legacy.replace('PidsLimit=128','PidsLimit=129'),legacy.replace(str(source),str(self.base/'unknown.sh'))]:
+                db.unit(self.s).write_text(invalid)
+                with self.assertRaises(a.AppError):db.verify_unit(self.s)
+            db.unit(self.s).write_text(legacy);source.write_bytes(b'unknown changed bootstrap')
+            with self.assertRaises(a.AppError):db.verify_unit(self.s)
+            command.assert_not_called()
 
     def test_old_manifests_and_snapshot_are_preserved(self):
         for slug,template,version in [('web-old','nextjs','1.0.0'),('api-old','fastapi','1.0.0'),('group-old','notes','1.0.0')]:

@@ -141,10 +141,17 @@ def main():
                 restore=db.plan(root,value,s,'restore',item['id'])
                 db.apply(root,value,s,restore['operation_id'],slug)
                 db.start(s);assert db.contents(s)==expected;db.stop(s)
+                db.start(s)
+                api(['.venv/bin/python','-c',"from fastapi_app.services.database import Database; from sqlalchemy import text; e=Database().engine; c=e.begin(); x=c.__enter__(); x.execute(text('CREATE TABLE gptclaw_rotation_parent(id integer PRIMARY KEY)')); x.execute(text('CREATE TABLE gptclaw_rotation_child(id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,parent integer REFERENCES gptclaw_rotation_parent(id))')); x.execute(text('INSERT INTO gptclaw_rotation_parent VALUES(1)')); c.__exit__(None,None,None)"],role='migration')
+                db.stop(s)
                 old_epoch=s['epoch'];rotate=db.plan(root,value,s,'rotate')
                 db.apply(root,value,s,rotate['operation_id'],slug)
                 assert s['epoch']!=old_epoch
                 db.start(s);assert db.ready(s,value)
+                api(['.venv/bin/python','-c',"from fastapi_app.services.database import Database; from sqlalchemy import text; e=Database().engine; c=e.connect(); t=c.begin(); c.execute(text('INSERT INTO gptclaw_rotation_child(parent) VALUES(1)')); t.rollback(); c.close()"])
+                api(['.venv/bin/python','-c',"from fastapi_app.services.database import Database; from sqlalchemy import text; e=Database().engine; c=e.begin(); x=c.__enter__(); x.execute(text('DROP TABLE gptclaw_rotation_child')); x.execute(text('DROP TABLE gptclaw_rotation_parent')); c.__exit__(None,None,None)"],role='migration')
+                assert db.contents(s)==expected
+                print('PASS: post-rotation runtime foreign-key/identity write and migration ownership',flush=True)
                 old_role=db.credential(s,'runtime',old_epoch)
                 old_pass=db.home(slug)/'credentials'/old_epoch/'runtime.passfile'
                 denied=run([args.engine,'run','--rm',*(['--userns=keep-id'] if args.engine=='podman' else []),'--user',str(os.getuid()),'--network='+db.backend(s),'--volume',str(old_pass)+':/run/secrets/passfile:ro','--env','PGPASSFILE=/run/secrets/passfile','--entrypoint=psql',s['image'],'-h',db.name(s),'-U',old_role['username'],'-d','app','-c','SELECT 1;'],optional=True)

@@ -148,3 +148,26 @@ failed-draft/keyboard/mobile journey passed. Task-tracker browser checks are in
 progress; an ambiguous select label was corrected after its first real-browser
 failure. A modal focus issue after a failed save was also corrected and rechecked.
 T-012 remains pending; no Delivered or production-readiness claim is made.
+
+## Rotation ownership correction (managed acceptance finding)
+
+The authorized relational project remained ready and readable after 1.8.2 rotation,
+but a new child-record insert failed: the foreign-key check executed as a previous
+migration table owner whose schema access had been removed. This is a failed
+writable-recovery check; the earlier read/persistence results alone did not close
+rotation acceptance. Provider 1.8.3 reassigns application objects from retained,
+validated project migration roles before selecting the new epoch.
+
+Actual focused ownership tests pass (16 cases). A real rootless PostgreSQL workflow
+passes locked API lint/type/tests/security/build, restart persistence, native
+backup/reset/restore/rotation, old-login denial, corruption refusal and forward
+migration. Its added post-rotation runtime identity/foreign-key insert and migration
+DDL checks pass. These are disposable native tests; final-head CI, reviewed rollout
+and both managed private browser rechecks remain separate pending evidence.
+
+The installed runner also refused a source-started database stop because the
+bootstrap mount referred to the working checkout. The group stopped its web/API
+components and preserved the running database. The correction pins future mounts
+to immutable snapshots and reconciles only known paths with matching trusted bytes
+and otherwise exact units. Focused unknown-path/script/unit-edit refusal and final
+CI/managed reconciliation are tracked separately from the ownership regression.

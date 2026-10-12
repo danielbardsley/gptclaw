@@ -214,7 +214,7 @@ PodmanArgs=--network-alias=db --cpus=1 --memory=1024m --entrypoint=/usr/bin/bash
 Volume={folder/'postgres'/s['active']}:/var/lib/postgresql/data:rw
 Volume={cfg/'admin.password'}:/run/secrets/admin.password:ro
 Volume={cfg/'admin.passfile'}:/run/secrets/admin.passfile:ro
-Volume={a.REPO/'templates/apps/start-development-postgres.sh'}:/opt/gptclaw/start-postgres.sh:ro
+Volume={a.provider_bundle()/'templates/apps/start-development-postgres.sh'}:/opt/gptclaw/start-postgres.sh:ro
 Environment=PGDATA=/var/lib/postgresql/data
 Environment=POSTGRES_USER={role['username']}
 Environment=POSTGRES_DB=app
@@ -237,7 +237,28 @@ WantedBy=default.target
 
 def verify_unit(s):
     path=a.safe(unit(s));private(path)
-    check(path.read_text()==unit_text(s),'conflict')
+    actual=path.read_text();expected=unit_text(s)
+    if actual!=expected:
+        # Reconcile only a byte-identical trusted bootstrap path across source
+        # and immutable provider runners. Every other unit byte must match.
+        suffix=':/opt/gptclaw/start-postgres.sh:ro'
+        lines=[line for line in actual.splitlines() if line.startswith('Volume=') and line.endswith(suffix)]
+        check(len(lines)==1,'conflict')
+        selected=a.safe(Path(lines[0][len('Volume='):-len(suffix)]))
+        relative=Path('templates/apps/start-development-postgres.sh')
+        provider=a.STORE/'providers'
+        known=selected in {a.REPO/relative,a.PROJECTS/'gptclaw'/relative}
+        if selected.is_relative_to(provider):
+            parts=selected.relative_to(provider).parts
+            known=known or len(parts)==4 and bool(re.fullmatch(r'[0-9a-f]{64}',parts[0])) and Path(*parts[1:])==relative
+        check(known and selected.is_file(),'conflict')
+        info=selected.stat()
+        check(info.st_uid==os.getuid() and info.st_nlink==1 and not info.st_mode&0o002
+              and (not info.st_mode&0o020 or info.st_gid==os.getgid()),'conflict')
+        trusted=a.provider_bundle()/relative
+        check(info.st_size==trusted.stat().st_size and selected.read_bytes()==trusted.read_bytes(),'conflict')
+        old=lines[0];new='Volume='+str(trusted)+suffix
+        check(actual.replace(old,new,1)==expected,'conflict')
     observed=a.command(['systemctl','--user','show',name(s)+'.service','-p','SourcePath','-p','DropInPaths'])
     values=dict(line.split('=',1) for line in observed.stdout.splitlines() if '=' in line)
     check(values.get('SourcePath')==str(path) and not values.get('DropInPaths'),'conflict')
@@ -355,6 +376,15 @@ def grants(s, generation=None, epoch=None):
                        f'GRANT CONNECT ON DATABASE app TO {role};',f'GRANT USAGE ON SCHEMA public TO {role};']
         if kind=='migration':statements += [f'GRANT CREATE ON SCHEMA public TO {role};']
     migration=roles['migration']['username']; runtime=roles['runtime']['username']
+    # Foreign-key triggers execute as the table owner. Keeping an old table
+    # owner after changing the schema owner can make writes fail even when the
+    # new runtime login has CRUD grants. Transfer only retained, validated
+    # project migration identities; never administrative/runtime identities.
+    for folder in sorted((home(s['project'])/'credentials').iterdir()):
+        if not HEX.fullmatch(folder.name):continue
+        previous=credential(s,'migration',folder.name)['username']
+        if previous==migration:continue
+        statements += [f"DO $gptclaw$ BEGIN IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname='{previous}') THEN REASSIGN OWNED BY {previous} TO {migration}; END IF; END $gptclaw$;"]
     statements += [f'ALTER SCHEMA public OWNER TO {migration};',f'GRANT SELECT,INSERT,UPDATE,DELETE ON ALL TABLES IN SCHEMA public TO {runtime};',
                    f'GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO {runtime};',
                    f'ALTER DEFAULT PRIVILEGES FOR ROLE {migration} IN SCHEMA public GRANT SELECT,INSERT,UPDATE,DELETE ON TABLES TO {runtime};',
@@ -371,6 +401,7 @@ def revision(s, generation=None):
 
 def ready(s, contract):
     if contract.get('database',{}).get('storage')!=STORAGE:return False
+    if s.get('operation') and s['operation']['stage'] in {'running','failed','unknown'}:return False
     try:return not s['blocked'] and active(s) and revision(s)==contract['database']['head']==s['revision']
     except a.AppError:return False
 
