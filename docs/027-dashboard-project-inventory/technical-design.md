@@ -1,6 +1,6 @@
 # TDD-027: Private dashboard foundation and inventory adapter
 
-- **Status:** Proposed — no implementation or deployment performed
+- **Status:** Implementation in progress — exact inventory packaging recorded
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-027](spec.md) · **Tasks:** [TASKS-027](tasks.md)
@@ -124,3 +124,30 @@ The project owner reviews the proposed application location, stack and dedicated
 Before implementation proceeds beyond packaging design, settle source repository/release
 ownership, exact toolchain and socket/unit contracts; update this design with the reviewed
 choices. Synthetic inventory drafting can proceed independently of deployment decisions.
+
+## Recorded implementation choices
+
+Source is maintained in `platform/dashboard/` in this repository; only immutable
+built assets run under `/srv/forge/platform`. The frontend uses the existing exact
+Next.js/React/TypeScript dependency pins and reviewed Node 24.21.0/pnpm 12.10.1
+profile, recorded in its frozen lockfile and the toolchain registry. The trusted
+collector is `scripts/dashboard_collector.py`, importing the complete validator and
+`dashboard_inventory.py` from an immutable provider snapshot. Pinned-directory
+validation is additive to the existing validator API and checks replacement races.
+
+The Unix socket is `/srv/forge/platform/run/collector.sock` (0700 directory, 0600
+socket); the rootless frontend publishes `127.0.0.1:18200:3000`. Exact owned services
+are `gptclaw-dashboard-collector.service` and `gptclaw-dashboard.container`. The
+collector has 512 MiB/100% CPU/256 tasks; the frontend 768 MiB/1 CPU/128 PIDs.
+`scripts/manage_dashboard.py` prepares hashed standalone/static assets, exact image
+ID and provider/interpreter provenance, serializes lifecycle changes and refuses
+unknown units/drop-ins. The dedicated `/dashboard/` Serve route remains an operator
+step; its exact scope and rollback are in the [runbook](../../runbooks/manage-dashboard.md).
+
+Inventory/metadata/response budgets follow this design, with at most 4096 directory
+entries examined and 50 safe diagnostics. Metadata schema 1 uses `projects` entries
+containing canonical `root`, validated `id` and optional `owner`/`repository`; ignored
+fields never project. The collector reads a version-1 fixed `/v1/snapshot` response
+over its socket, with an independent health read. HTTP and browser reads never
+trigger a scan or installation. Socket inode receipts/locks exist only for owned
+service lifecycle; observation snapshots/history remain bounded memory.

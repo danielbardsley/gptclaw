@@ -1,6 +1,6 @@
 # TASKS-028: Dashboard live service status
 
-- **Status:** Draft — planning complete; implementation pending
+- **Status:** Implementation authorized — work in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-028](spec.md) · **Design:** [TDD-028](technical-design.md)
@@ -10,7 +10,7 @@
 - [x] T-000: Inspect current single/group status, owned resource checks and database
   readiness boundaries; draft DSH-002 with inventory dependency and measurable criteria.
   Planning requested October 12; no runtime action or implementation performed.
-- [ ] T-001: Project owner approves scope/design and authorizes implementation.
+- [x] T-001: Project owner approves scope/design and authorizes implementation.
   Confirm current-instance counter/observed-change semantics and supported load.
   Require SPEC-027's reviewed inventory/private interface before integration;
   record exact provider observation version and side-effect-free read contract.
@@ -49,3 +49,7 @@ Planning only. SPEC-027 is a draft prerequisite; existing provider status lacks 
 new timing/counter contract. Scope approval, implementation, CI, rollout and browser
 acceptance are pending. Next action: project owner reviews T-001 alongside inventory;
 status work can then follow the reviewed foundation without requiring link delivery.
+
+Implementation authorization is recorded in the specification. Exact packaging and
+interface choices are being recorded in the design before rollout; no prior acceptance
+result is implied.

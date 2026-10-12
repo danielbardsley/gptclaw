@@ -1,6 +1,6 @@
 # SPEC-027: Dashboard project inventory
 
-- **Status:** Draft — planning requested; scope/design approval and implementation authorization pending
+- **Status:** Approved for implementation — implementation and acceptance in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Primary feature:** DSH-001
@@ -17,8 +17,8 @@ repository or starting its services.
 
 The project owner requested three separate specifications for DSH-001, DSH-002 and
 DSH-003 on October 12. This authorizes planning and a reviewable planning PR.
-Specification approval, implementation authorization, merge, deployment and acceptance
-remain separate; no dashboard service or infrastructure is installed by this work.
+The later implementation authorization is recorded below. Merge, private rollout and
+acceptance remain separate gates, with actual evidence required.
 
 ## Scope and existing readiness
 
@@ -123,3 +123,11 @@ these defaults with the scope/design before implementation. Implementation must 
 exact pinned profiles, unit/socket paths, metadata schema, budgets and route ownership
 in TDD-027 before rollout. If host configuration or Serve changes need an operator,
 use the existing reviewed operator/IaC path; do not invent sudo or forge permissions.
+
+## Implementation authorization
+
+On October 12 the project owner instructed: “In order implement the specs for
+DSH-001, DSH-002 and DSH-003. Finish once all acceptance criteria have been met.”
+This approves the specified scope and defaults and authorizes implementation and
+necessary reversible private runtime verification. Existing operator, review/merge,
+public-exposure and production gates remain in force. Acceptance is still unproven.

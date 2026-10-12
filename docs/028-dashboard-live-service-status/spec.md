@@ -1,6 +1,6 @@
 # SPEC-028: Dashboard live service status
 
-- **Status:** Draft — planning requested; scope/design approval and implementation authorization pending
+- **Status:** Approved for implementation — implementation and acceptance in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Primary feature:** DSH-002
@@ -15,7 +15,7 @@ uptime, restart count and last observed status change from the private dashboard
 The view must remain honest when the collector or runtime provider is unavailable.
 
 The October 12 request authorizes this separate specification/design/task set and
-planning PR. Implementation, installation, deployment and acceptance remain pending.
+planning PR. Implementation is now authorized; installation, deployment and acceptance remain pending.
 This initiative extends the read-only inventory; it does not authorize runtime actions.
 
 ## Scope and existing readiness
@@ -127,3 +127,11 @@ with this scope. These are useful measured values, not cumulative incident telem
 Implementation records exact provider fields and polling budgets in the companion design.
 Use synthetic fixtures and separately scoped private acceptance targets; preserve all
 existing application data. Status remains useful without SPEC-029 links.
+
+## Implementation authorization
+
+On October 12 the project owner instructed: “In order implement the specs for
+DSH-001, DSH-002 and DSH-003. Finish once all acceptance criteria have been met.”
+This approves the specified scope and defaults and authorizes implementation and
+necessary reversible private runtime verification. Existing operator, review/merge,
+public-exposure and production gates remain in force. Acceptance is still unproven.

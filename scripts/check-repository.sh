@@ -166,4 +166,16 @@ if ! python3 -B scripts/check-template-releases.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_dashboard_inventory.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_dashboard_collector.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_dashboard_install.py; then
+  status=1
+fi
+
 exit "$status"

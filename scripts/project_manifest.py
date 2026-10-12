@@ -52,17 +52,20 @@ def failure(code, exit_code=1):
              'errors': [diagnostic(code)], 'truncated': False}, None, exit_code)
 
 
-def read_manifest(project_root):
+def read_manifest(project_root, directory_fd=None):
     """Walk with pinned directory descriptors; never follow a symlink or block on FIFO."""
     raw = os.fspath(project_root)
     if not raw or '\x00' in raw or '..' in Path(raw).parts:
         raise ManifestError('input_path')
     parts = Path(os.path.abspath(raw)).parts[1:]
     directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC
-    parent = os.open('/', directory_flags)
+    parent = os.open('/', directory_flags) if directory_fd is None else os.dup(directory_fd)
     try:
-        for part in (*parts, '.gptclaw'):
+        for part in ((*parts, '.gptclaw') if directory_fd is None else ('.gptclaw',)):
             child = os.open(part, directory_flags, dir_fd=parent)
+            if directory_fd is not None and os.fstat(child).st_uid != os.getuid():
+                os.close(child)
+                raise ManifestError('input_path')
             os.close(parent)
             parent = child
         # Check type before open, then check again on the opened descriptor.
@@ -77,6 +80,9 @@ def read_manifest(project_root):
             opened = os.fstat(source.fileno())
             if not stat.S_ISREG(opened.st_mode):
                 raise ManifestError('input_kind')
+            if directory_fd is not None and (opened.st_uid != os.getuid() or opened.st_nlink != 1
+                    or (before.st_dev, before.st_ino) != (opened.st_dev, opened.st_ino)):
+                raise ManifestError('input_path')
             if opened.st_size > MAX_BYTES:
                 raise ManifestError('input_size')
             data = source.read(MAX_BYTES + 1)
@@ -193,7 +199,7 @@ def safe_pointer(parts, schema):
     return ''.join('/' + part.replace('~', '~0').replace('/', '~1') for part in safe)
 
 
-def validate_project(project_root):
+def validate_project(project_root, *, directory_fd=None):
     """Return (public summary, validated mapping or None, exit status).
 
     Callers must separately establish authorization and a reviewed runtime.
@@ -203,7 +209,7 @@ def validate_project(project_root):
             schema, validator = load_schema()
         except Exception:
             return failure('setup', 2)
-        document = parse_manifest(read_manifest(project_root))
+        document = parse_manifest(read_manifest(project_root, directory_fd))
         version = document.get('schema_version')
         if type(version) is not int or version not in (1, 2, 3, 4):
             result, contract, code = failure('version')
@@ -233,11 +239,27 @@ def validate_project(project_root):
                 if roots[0] == roots[1] or any(a.startswith(b+'/') for a,b in (roots, roots[::-1])):
                     errors.append(diagnostic('field_value', '/components'))
                 for name in ('api', 'web'):
-                    path = Path(project_root).absolute()
-                    for part in Path(document['components'][name]['root']).parts:
-                        path = path/part
-                        if path.is_symlink() or not path.is_dir():
+                    if directory_fd is None:
+                        path = Path(project_root).absolute()
+                        for part in Path(document['components'][name]['root']).parts:
+                            path = path/part
+                            if path.is_symlink() or not path.is_dir():
+                                errors.append(diagnostic('input_path', '/components/'+name+'/root'))
+                    else:
+                        current = os.dup(directory_fd)
+                        try:
+                            for part in Path(document['components'][name]['root']).parts:
+                                child = os.open(part, os.O_RDONLY | os.O_DIRECTORY |
+                                                os.O_NOFOLLOW | os.O_CLOEXEC, dir_fd=current)
+                                if os.fstat(child).st_uid != os.getuid():
+                                    os.close(child)
+                                    raise ManifestError('input_path')
+                                os.close(current)
+                                current = child
+                        except OSError:
                             errors.append(diagnostic('input_path', '/components/'+name+'/root'))
+                        finally:
+                            os.close(current)
                     for probe in ('health', 'liveness'):
                         health = document['components'][name]['service'][probe]['path']
                         if any(segment in ('.', '..') for segment in health.split('/')):

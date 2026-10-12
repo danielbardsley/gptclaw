@@ -1,6 +1,6 @@
 # TASKS-029: Dashboard project links
 
-- **Status:** Draft — planning complete; implementation pending
+- **Status:** Implementation authorized — work in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-029](spec.md) · **Design:** [TDD-029](technical-design.md)
@@ -10,7 +10,7 @@
 - [x] T-000: Read current private route/status and single/group API prefix contracts;
   draft DSH-003 with explicit missing log-viewer/preview-registry prerequisites.
   Planning requested October 12; no service, exposure or implementation change ran.
-- [ ] T-001: Project owner approves staged scope/design and authorizes implementation.
+- [x] T-001: Project owner approves staged scope/design and authorizes implementation.
   Require reviewed SPEC-027 identity/hosting and SPEC-028 publication/freshness contracts;
   settle route-descriptor version, URL policy and initial integration acceptance limits.
 
@@ -52,3 +52,7 @@ Inventory/status are draft dependencies. Scope approval, implementation, CI and 
 browser acceptance remain pending; future log/preview integration is explicitly separate.
 Next action: project owner reviews T-001 with the other two specs. Preserve existing
 project services/data and clean only task-owned synthetic fixtures.
+
+Implementation authorization is recorded in the specification. Exact packaging and
+interface choices are being recorded in the design before rollout; no prior acceptance
+result is implied.
