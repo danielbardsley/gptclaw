@@ -137,3 +137,9 @@ epoch. This preserves foreign-key and identity writes as well as later migration
 For a project already rotated by 1.8.2, stop the group and perform another reviewed
 rotation with 1.8.3; that operation also repairs earlier migration ownership.
 A readiness query or read-only check alone does not establish writable recovery.
+
+Database units mount the bootstrap from an immutable provider snapshot. A source
+runner and installed runner can reconcile earlier known checkout/provider mount
+paths only when the reviewed bootstrap bytes and all other unit bytes match.
+Changed bootstrap content, unknown mount paths, unit edits and overrides remain
+conflicts; do not rewrite them to bypass refusal.

@@ -148,6 +148,24 @@ class DatabaseTests(unittest.TestCase):
         with patch.object(a,'command',return_value=SimpleNamespace(stdout='SourcePath='+str(db.unit(self.s))+'\nDropInPaths=/unknown\n')):
             with self.assertRaises(a.AppError):db.verify_unit(self.s)
 
+    def test_unit_bootstrap_is_immutable_and_known_path_reconciliation_is_exact(self):
+        relative=Path('templates/apps/start-development-postgres.sh')
+        trusted=a.provider_bundle()/relative
+        self.assertIn(str(trusted),db.unit_text(self.s))
+        source=a.PROJECTS/'gptclaw'/relative;source.parent.mkdir(parents=True)
+        source.write_bytes(trusted.read_bytes())
+        expected=db.unit_text(self.s);legacy=expected.replace(str(trusted),str(source))
+        db.unit(self.s).write_text(legacy);db.unit(self.s).chmod(0o600)
+        observed=SimpleNamespace(stdout='SourcePath='+str(db.unit(self.s))+'\nDropInPaths=\n')
+        with patch.object(a,'command',return_value=observed):db.verify_unit(self.s)
+        with patch.object(a,'command') as command:
+            for invalid in [legacy.replace('PidsLimit=128','PidsLimit=129'),legacy.replace(str(source),str(self.base/'unknown.sh'))]:
+                db.unit(self.s).write_text(invalid)
+                with self.assertRaises(a.AppError):db.verify_unit(self.s)
+            db.unit(self.s).write_text(legacy);source.write_bytes(b'unknown changed bootstrap')
+            with self.assertRaises(a.AppError):db.verify_unit(self.s)
+            command.assert_not_called()
+
     def test_old_manifests_and_snapshot_are_preserved(self):
         for slug,template,version in [('web-old','nextjs','1.0.0'),('api-old','fastapi','1.0.0'),('group-old','notes','1.0.0')]:
             root=Path(a.create(slug,template=template,template_version=version)['root'])

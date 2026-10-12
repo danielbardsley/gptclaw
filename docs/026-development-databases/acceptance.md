@@ -164,3 +164,10 @@ backup/reset/restore/rotation, old-login denial, corruption refusal and forward
 migration. Its added post-rotation runtime identity/foreign-key insert and migration
 DDL checks pass. These are disposable native tests; final-head CI, reviewed rollout
 and both managed private browser rechecks remain separate pending evidence.
+
+The installed runner also refused a source-started database stop because the
+bootstrap mount referred to the working checkout. The group stopped its web/API
+components and preserved the running database. The correction pins future mounts
+to immutable snapshots and reconciles only known paths with matching trusted bytes
+and otherwise exact units. Focused unknown-path/script/unit-edit refusal and final
+CI/managed reconciliation are tracked separately from the ownership regression.

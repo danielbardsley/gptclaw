@@ -141,3 +141,11 @@ secrets/private identifiers and removed private-chat/internal review commentary.
   writes and migration DDL regression; review/merge provider 1.8.3, rotate both
   authorized synthetic projects and rerun actual private browser CRUD.
   DB-003/005/009; AC-003/005/008/009. Preserve data and existing grants/scopes.
+
+- [ ] T-015: Pin database bootstrap mounts to the immutable provider and reconcile
+  source/previous-provider paths only when trusted bootstrap bytes and every
+  other unit byte match. The installed runner refused a source-started database
+  stop with a bootstrap-path conflict; retained data was preserved. Test changed
+  scripts, unknown paths and unrelated unit edits; resume managed acceptance
+  through the reviewed installed runner after final-head CI/merge. DB-002/004/009;
+  AC-002/004/009. No unknown unit or host control may be overwritten.
