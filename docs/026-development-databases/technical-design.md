@@ -331,3 +331,13 @@ database/credentials or legacy data directory, so only their source selector cha
 Verify fresh generation, old-schema refusal, absent-selector preflight, private
 store permissions and legacy-store refusal in isolated fixtures; then repeat
 managed initialization and acceptance through the reviewed provider after merge.
+
+## Final-server readiness correction (1.8.5)
+
+The trusted initializer starts a temporary loopback-only server to create `app`,
+then stops it before executing the final server. A successful `SELECT 1` during
+that window cannot establish runtime readiness. Probe for the fixed private
+profile's final `listen_addresses='*'` as well as authenticated query success.
+An empty result keeps polling within the existing deadline; no grant or restore
+step may proceed yet. The listener remains inside the owned backend network,
+with no host ports or ingress. Keep initializer/released template bytes intact.

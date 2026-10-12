@@ -336,3 +336,18 @@ legacy apps, host policy, AWS resources and production identities are preserved.
 This closes only the initial local-secret PostgreSQL development slice. Same-volume
 logical recovery does not establish host/volume-loss recovery, continuous backups,
 RPO/RTO, production readiness or broad secret/tenant isolation.
+
+## Starter-cleanup verification readiness finding
+
+Application cleanup full checks intermittently failed in staged restore grants
+and browser reads. SQLSTATE-only disposable diagnostics observed 57P01 (server
+shutdown). Adding a five-second pause after `CREATE DATABASE app` in a task-owned
+bootstrap copy deterministically made provider 1.8.4 report the temporary
+`127.0.0.1` server ready. Published bootstrap/release bytes and managed databases
+were untouched. Provider 1.8.5 requires the final private-network listener before
+readiness; the two application-owned portable runners adopt the same guard.
+All 19 focused database cases pass, including the temporary-server polling
+regression. The same controlled pause with corrected code reports only the final
+`*` listener ready. The full repository checker passes all 465 reported unittest cases, whitespace
+checks and release immutability. CI and installed-hook outcomes are tracked
+through the correction and application cleanup PRs.
