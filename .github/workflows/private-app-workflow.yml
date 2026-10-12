@@ -156,3 +156,21 @@ jobs:
       - run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
       - name: Generate and verify both services, contracts and browser journeys
         run: .venv-manifest/bin/python scripts/tests/check_group_template.py "$RUNNER_TEMP/gptclaw-group-template"
+
+  development-database:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
+      - name: Persistent ownership and failure gates
+        run: .venv-manifest/bin/python scripts/tests/test_project_database.py
+      - name: Real PostgreSQL persistence, credentials and native recovery
+        run: .venv-manifest/bin/python scripts/tests/check_database_template.py "$RUNNER_TEMP/gptclaw-database-template" --engine docker
+      - name: Persistent starter frontend and browser workflow
+        run: python3 "$RUNNER_TEMP/gptclaw-database-template/projects"/dbcheck-*/checks/verify.py --engine docker

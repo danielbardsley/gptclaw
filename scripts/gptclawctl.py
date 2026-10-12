@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""GptClaw single-web-app lifecycle CLI; argument vectors execute only in containers."""
+"""GptClaw versioned private project lifecycle CLI; argument vectors execute only in containers."""
 import argparse
 import json
 import os
@@ -15,13 +15,20 @@ def main(argv=None):
  new=sub.add_parser('new');new.add_argument('slug');new.add_argument('--directory');new.add_argument('--template');new.add_argument('--template-version');new.add_argument('--local-only',action='store_true');new.add_argument('--plan',action='store_true',help='Preview local or activated-profile GitHub creation without publishing source')
  for name in ['validate','start','stop','restart','status','logs','test','build','format','lint','typecheck','security','verify','hooks']:
   p=sub.add_parser(name);p.add_argument('--project-root',required=True)
-  if name in {'logs','test','build','format','lint','typecheck','security','verify'}:p.add_argument('--component',choices=['web','api'])
+  if name in {'logs','test','build','format','lint','typecheck','security','verify'}:p.add_argument('--component',choices=['web','api','db'] if name=='logs' else ['web','api'])
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
  templates=sub.add_parser('templates',help='Discover bundled exact template releases')
  template_actions=templates.add_subparsers(dest='template_action',required=True)
  template_actions.add_parser('list',allow_abbrev=False)
  show=template_actions.add_parser('show',allow_abbrev=False);show.add_argument('--template',required=True);show.add_argument('--template-version',required=True)
+ database=sub.add_parser('db',help='Owned development PostgreSQL operations')
+ database_actions=database.add_subparsers(dest='database_action',required=True)
+ for name in ['status','init','backup','seed','migrate','restore','reset','rotate','prune','recover']:
+  p=database_actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True)
+  if name=='init':p.add_argument('--operation-id')
+  if name in {'migrate','restore','reset','rotate','prune','recover'}:
+   p.add_argument('--operation-id');p.add_argument('--confirm');p.add_argument('--backup-id' if name=='restore' else '--ids',dest='selected')
  sub.add_parser('ingress',help=argparse.SUPPRESS)
  deps=sub.add_parser('deps',help='Manage project dependencies inside reviewed containers')
  actions=deps.add_subparsers(dest='dependency_action',required=True)
@@ -72,7 +79,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2,3],'project_kinds':['web','api','group'],'toolchain_schemas':[1,2],'template_catalogue_schema':3,'receipt_schema':1,'group_receipt_schema':2,'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':2,'credential_binding_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['db','new','validate','start','stop','restart','status','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2,3,4],'project_kinds':['web','api','group'],'toolchain_schemas':[1,2],'template_catalogue_schema':4,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':2,'credential_binding_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -87,7 +94,10 @@ def main(argv=None):
     templates.validate_provenance(Path(args.project_root).absolute())
    print(json.dumps(result,sort_keys=True));return code
   app.need(os.getuid()==1002 and os.geteuid()!=0,'setup')
-  if args.action=='credentials':
+  if args.action=='db':
+   import project_database as database
+   result=database.dispatch(args.project_root,args.database_action,getattr(args,'selected',None),getattr(args,'operation_id',None),getattr(args,'confirm',None))
+  elif args.action=='credentials':
    import repository_credentials as broker
    action=args.credential_action
    if action=='configure':result=broker.configure(args.app_id,args.installation_id,args.key_file,args.bootstrap_repository_id,args.repository_selection)
@@ -125,7 +135,10 @@ def main(argv=None):
   elif args.action=='new':
    import repository_credentials as broker
    result=(broker.preview if args.plan else broker.new_project)(args.slug,args.directory,args.template,args.template_version,args.local_only)
-  elif args.action in {'logs','test','build','format','lint','typecheck','security','verify','deps','toolchain'} and app.target(args.project_root)[1]['schema_version']==3:
+  elif args.action=='logs' and getattr(args,'component',None)=='db':
+   import project_database as database
+   result=database.logs(args.project_root,args.lines)
+  elif args.action in {'logs','test','build','format','lint','typecheck','security','verify','deps','toolchain'} and app.target(args.project_root)[1]['schema_version'] in (3,4):
    import project_groups as groups
    kwargs={}
    if args.action=='logs':kwargs={'lines':args.lines}

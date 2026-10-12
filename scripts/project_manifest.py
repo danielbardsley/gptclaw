@@ -26,7 +26,7 @@ MESSAGES = {
     'yaml_feature': 'Aliases, anchors, explicit tags and merge keys are unsupported.',
     'document': 'Provide exactly one mapping document.',
     'mapping_key': 'Mapping keys must be unique strings.',
-    'version': 'Use a supported integer schema_version: 1 (web), 2 (API) or 3 (group).',
+    'version': 'Use a supported integer schema_version: 1 (web), 2 (API) or 3 (ephemeral group) or 4 (persistent group).',
     'field_required': 'A required field is missing.',
     'field_unknown': 'This object contains unsupported fields.',
     'field_type': 'The field has the wrong type.',
@@ -205,7 +205,7 @@ def validate_project(project_root):
             return failure('setup', 2)
         document = parse_manifest(read_manifest(project_root))
         version = document.get('schema_version')
-        if type(version) is not int or version not in (1, 2, 3):
+        if type(version) is not int or version not in (1, 2, 3, 4):
             result, contract, code = failure('version')
             result['errors'][0]['path'] = '/schema_version'
             return result, contract, code
@@ -228,7 +228,7 @@ def validate_project(project_root):
         if not errors:
             if document['exposure']['base_path'] != '/projects/' + document['project']['id'] + '/':
                 errors.append(diagnostic('field_value', '/exposure/base_path'))
-            if version == 3:
+            if version in (3, 4):
                 roots = [document['components'][name]['root'] for name in ('api', 'web')]
                 if roots[0] == roots[1] or any(a.startswith(b+'/') for a,b in (roots, roots[::-1])):
                     errors.append(diagnostic('field_value', '/components'))

@@ -20,7 +20,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.7.0'
+VERSION = '1.8.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -34,6 +34,17 @@ CPU = '1'
 PIDS = 256
 DEADLINE = 120
 MESSAGES = {
+ 'database-state': 'Database ownership or persisted state is invalid; no data was initialized or removed.',
+ 'database-storage': 'Expected persistent database storage is missing or incompatible; use reviewed recovery.',
+ 'database-profile': 'The exact PostgreSQL profile or data major is incompatible.',
+ 'database-health': 'The owned database did not reach authenticated readiness.',
+ 'database-command': 'A scoped database operation failed; credentials and SQL diagnostics were suppressed.',
+ 'database-schema': 'The database schema does not match the declared migration revision.',
+ 'database-capacity': 'Database backup or generation limits require reviewed pruning or more capacity.',
+ 'database-backup': 'The selected database backup is invalid or lacks required verification.',
+ 'database-recovery': 'A database operation needs explicit recovery before publication.',
+ 'database-confirmation': 'Apply requires the matching operation ID and exact project confirmation.',
+ 'database-plan': 'The database plan is stale; prepare a new plan.',
  'invalid': 'Invalid project manifest or unsupported runtime target.',
  'path': 'Use a regular, owned project directory under the projects root; symlinks and unsafe paths are unsupported.',
  'conflict': 'Existing state, resources or route belong to a different target; nothing was overwritten.',
@@ -160,7 +171,7 @@ def target(root):
  result, contract, code = validate_project(root)
  need(code == 0, 'invalid')
  marker = read_json(root / '.gptclaw/template.json')
- need(marker == {'provider': 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'nextjs-v1'}, 'invalid')
+ need(marker == {'provider': 'notes-postgres-v1' if contract['schema_version'] == 4 else 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'nextjs-v1'}, 'invalid')
  import project_templates as templates
  templates.validate_provenance(root)
  need(not any((root/name).exists() for name in ['.env','.env.local','.env.development','.env.production','.npmrc','.ssh','.aws']),'invalid')
@@ -168,7 +179,7 @@ def target(root):
 
 
 def valid_state(s):
- if isinstance(s,dict) and s.get('schema_version')==2:
+ if isinstance(s,dict) and s.get('schema_version') in (2,3):
   import project_groups as groups
   return groups.valid_state(s)
  need(isinstance(s, dict) and s.get('schema_version') == 1, 'conflict')
@@ -371,6 +382,8 @@ def unit_text(s, contract, dns):
  argv = contract['commands']['start']
  import project_python as py
  guard = py.GUARD_ENV if contract['schema_version'] == 2 else deps.GUARD_ENV
+ import project_groups as groups
+ database_config = groups.database_unit(s)
  def quote(value):
   # Quadlet Exec uses systemd argv parsing, not a shell. Escape its substitutions as well.
   return '"'+value.replace('\\','\\\\').replace('"','\\"').replace('%','%%').replace('$','$$')+'"'
@@ -386,7 +399,7 @@ Label=com.gptclaw.project={s['id']}
 Label={LABEL}={s['token']}
 UserNS=keep-id
 Network={s.get('network','slirp4netns')}
-PublishPort=127.0.0.1:{s['port']}:{contract['service']['internal_port']}
+{database_config}PublishPort=127.0.0.1:{s['port']}:{contract['service']['internal_port']}
 Volume={s['root']}:/workspace:rw
 WorkingDir=/workspace
 Environment=GPTCLAW_PROJECT_ID={s.get('runtime_project_id',s['id'])}
@@ -461,7 +474,7 @@ def save_text(path,text):
 
 
 def start(root, no_route=False, take_lock=True):
- if target(root)[1]['schema_version']==3:
+ if target(root)[1]['schema_version'] in (3,4):
   import project_groups as groups
   return groups.start(root,no_route,take_lock)
  import project_dependencies as deps
@@ -506,7 +519,7 @@ def start(root, no_route=False, take_lock=True):
 
 
 def stop(root, take_lock=True):
- if target(root)[1]['schema_version']==3:
+ if target(root)[1]['schema_version'] in (3,4):
   import project_groups as groups
   return groups.stop(root,take_lock)
  root,contract=target(root);slug=contract['project']['id']
@@ -532,7 +545,7 @@ def stop(root, take_lock=True):
 
 
 def restart(root):
- if target(root)[1]['schema_version']==3:
+ if target(root)[1]['schema_version'] in (3,4):
   import project_groups as groups
   return groups.restart(root)
  root,contract=target(root);slug=contract['project']['id']
@@ -547,7 +560,7 @@ def restart(root):
 
 
 def status(root):
- if target(root)[1]['schema_version']==3:
+ if target(root)[1]['schema_version'] in (3,4):
   import project_groups as groups
   return groups.status(root)
  root,contract=target(root);slug=contract['project']['id'];s=state_for(slug)
@@ -682,7 +695,7 @@ def provider_bundle():
  paths += [Path('schemas/project/v1.schema.json'),Path('templates/apps/node-toolchain/Containerfile')]
  import project_templates as templates
  paths += templates.bundle_paths()
- paths += [Path(p) for p in ['scripts/project_python.py','scripts/project_groups.py','schemas/project/v3.schema.json','config/toolchains/v2.json','schemas/toolchains/v2.schema.json','config/project-dependencies/v2.json','schemas/project/v2.schema.json','templates/apps/python-toolchain/Containerfile']]
+ paths += [Path(p) for p in ['scripts/project_python.py','scripts/project_groups.py','scripts/project_database.py','templates/apps/start-development-postgres.sh','scripts/tests/check_database_template.py','config/databases/v1.json','schemas/project/v4.schema.json','schemas/project/v3.schema.json','config/toolchains/v2.json','schemas/toolchains/v2.schema.json','config/project-dependencies/v2.json','schemas/project/v2.schema.json','templates/apps/python-toolchain/Containerfile']]
  interpreter=Path(sys.executable).absolute()
  digest=hashlib.sha256(str(interpreter).encode()+b'\0')
  for rel in sorted(paths):digest.update(str(rel).encode()+b'\0'+(REPO/rel).read_bytes())
@@ -703,7 +716,7 @@ def provider_bundle():
 
 
 def install_hooks(root):
- if target(root)[1]['schema_version']==3:
+ if target(root)[1]['schema_version'] in (3,4):
   import project_groups as groups
   return groups.install_hooks(root)
  root,contract=target(root);need(contract['schema_version']==2,'invalid');slug=contract['project']['id']

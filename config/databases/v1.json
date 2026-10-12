@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "profile": "postgres18-v1",
+  "major": 18,
+  "image": "docker.io/library/postgres@sha256:9551dd5bf356409a21b31248f49b33bba9bb1877365f3a7e933aecd9af3cf52d",
+  "platform": {
+    "os": "linux",
+    "architecture": "amd64"
+  },
+  "limits": {
+    "memory_mib": 1024,
+    "cpus": 1,
+    "pids": 128,
+    "connections": 30,
+    "backup_count": 7,
+    "backup_bytes": 1073741824,
+    "dump_bytes": 134217728,
+    "headroom_bytes": 536870912,
+    "inactive_generations": 2
+  }
+}

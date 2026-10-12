@@ -2,7 +2,7 @@
 
 - **Status:** Recommended delivery order; not implementation authorization
 - **Owner:** Daniel
-- **Last updated:** 2026-10-10 (America/New_York)
+- **Last updated:** 2026-10-11 (America/New_York)
 - **Feature definitions and current status:** [Feature catalogue](./features.md)
 - **Architecture:** [Platform architecture](./architecture.md)
 
@@ -181,7 +181,7 @@ Deferral leaves restore/replacement evidence outstanding until this stage runs.
 | Features | Delivery and exit evidence |
 |---|---|
 | RUN-006 — multi-service projects | [SPEC-025](../025-multi-service-projects/spec.md) drafts the selected two-service Next.js/FastAPI notes slice with ephemeral API memory, versioned component contracts, ordering, networking, health and scoped recovery. Scope approved and implementation authorized October 11; the two-container notes workflow is implemented with local/generated/live/client evidence in [PR #58](https://github.com/danielbardsley/gptclaw/pull/58). Review/merge remain. Database/cache/worker orchestration stays separate. |
-| QLT-007, RUN-011 — migration gates and development databases | Define migration/backup/restore gates, then deliver isolated databases, roles, credentials, and controlled reset. Requires stage 7 recovery evidence and stage 9 secret handling. |
+| QLT-007, RUN-011 — migration gates and development databases | [SPEC-026](../026-development-databases/spec.md) drafts the selected synthetic per-project PostgreSQL slice with persistent data, explicit migration/recovery/reset gates and local development credentials selected October 11; cloud secret management belongs to later production work. It proposes a narrow native-backup/restore prerequisite for this synthetic slice, with DB credential handling included. Implementation was directly authorized; validation/PR and managed/client acceptance remain pending. Broad stage-7 volume/host recovery and stage-9 general secret handling stay open. |
 | RUN-012 — synthetic seed data | Provide reproducible non-sensitive seed/reset operations under the database and destructive-action contracts. |
 | RUN-007 — background jobs and schedulers | Add managed workers/jobs with limits, logs, status, and supported scheduling. |
 | PRJ-008 — project archive and restore | Specify data retention/export/restore, previews, and recovery before archive mutations. Finish the persistent-data portion of SEC-007 and integrate PRJ-002 archive/restore with real recovery tests. |
