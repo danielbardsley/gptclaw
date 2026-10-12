@@ -295,3 +295,11 @@ The implementation selects PostgreSQL 18.6 at the immutable profile digest, prov
 slice. `db recover` reconciles an exited unknown job receipt without replaying SQL;
 interrupted rotation resumes its exact epoch/operation. All test/verify database
 work uses task-owned disposable fixtures, preserving managed live data.
+
+The managed database bypasses the image's generic initializer with the immutable
+provider's trusted `start-development-postgres.sh`. Initialization uses `--pwfile`,
+and SQL clients use passfiles; no file password is exported into process environments.
+The helper supports the pinned image's rootless UID behavior, refuses partial/foreign
+PGDATA and raw password environment inputs, and admits SCRAM-authenticated peers
+only to the app database on the owned private backend. Docker verification uses a
+task-owned empty client configuration rather than forge's host configuration.

@@ -27,6 +27,7 @@ class Tests(unittest.TestCase):
         self.base=Path(temp.name);self.repo=self.base/'repo';self.repo.mkdir()
         for rel in ['config/databases','config/templates','schemas/templates','config/toolchains','schemas/toolchains','config/project-dependencies','schemas/project-dependencies','schemas/project','templates/apps/releases','templates/apps/node-toolchain','templates/apps/python-toolchain']:
             shutil.copytree(app.REPO/rel,self.repo/rel,ignore=shutil.ignore_patterns('.venv','.gptclaw-cache','.cache','node_modules','__pycache__'))
+        helper=Path('templates/apps/start-development-postgres.sh');(self.repo/helper).parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(app.REPO/helper,self.repo/helper)
         shutil.copytree(app.REPO/'scripts',self.repo/'scripts',ignore=shutil.ignore_patterns('__pycache__'))
         self.projects=self.base/'projects';self.projects.mkdir()
         for key,value in [('REPO',self.repo),('PROJECTS',self.projects),('STORE',self.projects/'.gptclaw-runtime/v1')]:

@@ -195,16 +195,17 @@ Label={a.LABEL}={s['token']}
 UserNS=keep-id
 User={os.getuid()}:{os.getgid()}
 Network={backend(s)}
-PodmanArgs=--network-alias=db --cpus=1 --memory=1024m
+PodmanArgs=--network-alias=db --cpus=1 --memory=1024m --entrypoint=/usr/bin/bash
 Volume={folder/'postgres'/s['active']}:/var/lib/postgresql/data:rw
 Volume={cfg/'admin.password'}:/run/secrets/admin.password:ro
 Volume={cfg/'admin.passfile'}:/run/secrets/admin.passfile:ro
+Volume={a.REPO/'templates/apps/start-development-postgres.sh'}:/opt/gptclaw/start-postgres.sh:ro
 Environment=PGDATA=/var/lib/postgresql/data
 Environment=POSTGRES_USER={role['username']}
 Environment=POSTGRES_DB=app
 Environment=POSTGRES_PASSWORD_FILE=/run/secrets/admin.password
 Environment=POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256 --auth-local=scram-sha-256
-Exec=postgres -c max_connections=30 -c log_statement=none -c log_min_error_statement=panic -c log_connections=off -c log_disconnections=off
+Exec=/opt/gptclaw/start-postgres.sh -c max_connections=30 -c log_statement=none -c log_min_error_statement=panic -c log_connections=off -c log_disconnections=off
 Pull=never
 NoNewPrivileges=true
 DropCapability=all
@@ -245,14 +246,15 @@ def start(s, generation=None):
         role=credential(s,'admin'); cfg=home(s['project'])/'credentials'/s['epoch']
         args=['podman','run','--detach','--name',name(s,generation),'--label',a.LABEL+'='+s['token'],
               '--userns=keep-id','--user',str(os.getuid())+':'+str(os.getgid()),'--network='+backend(s),
-              '--cpus=1','--memory=1024m','--pids-limit=128','--cap-drop=all','--security-opt=no-new-privileges',
+              '--cpus=1','--memory=1024m','--pids-limit=128','--cap-drop=all','--security-opt=no-new-privileges','--entrypoint=/usr/bin/bash',
+              '--volume',str(a.REPO/'templates/apps/start-development-postgres.sh')+':/opt/gptclaw/start-postgres.sh:ro',
               '--volume',str(home(s['project'])/'postgres'/generation)+':/var/lib/postgresql/data:rw',
               '--volume',str(cfg/'admin.password')+':/run/secrets/admin.password:ro',
               '--volume',str(cfg/'admin.passfile')+':/run/secrets/admin.passfile:ro',
               '--env','PGDATA=/var/lib/postgresql/data','--env','POSTGRES_USER='+role['username'],
               '--env','POSTGRES_DB=app','--env','POSTGRES_PASSWORD_FILE=/run/secrets/admin.password',
               '--env','POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256 --auth-local=scram-sha-256',
-              s['image'],'postgres','-c','max_connections=30','-c','log_statement=none','-c','log_min_error_statement=panic']
+              s['image'],'/opt/gptclaw/start-postgres.sh','-c','max_connections=30','-c','log_statement=none','-c','log_min_error_statement=panic']
         a.command(args)
     else:
         text=unit_text(s); target=a.safe(unit(s))

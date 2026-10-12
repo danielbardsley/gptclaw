@@ -695,7 +695,7 @@ def provider_bundle():
  paths += [Path('schemas/project/v1.schema.json'),Path('templates/apps/node-toolchain/Containerfile')]
  import project_templates as templates
  paths += templates.bundle_paths()
- paths += [Path(p) for p in ['scripts/project_python.py','scripts/project_groups.py','scripts/project_database.py','scripts/tests/check_database_template.py','config/databases/v1.json','schemas/project/v4.schema.json','schemas/project/v3.schema.json','config/toolchains/v2.json','schemas/toolchains/v2.schema.json','config/project-dependencies/v2.json','schemas/project/v2.schema.json','templates/apps/python-toolchain/Containerfile']]
+ paths += [Path(p) for p in ['scripts/project_python.py','scripts/project_groups.py','scripts/project_database.py','templates/apps/start-development-postgres.sh','scripts/tests/check_database_template.py','config/databases/v1.json','schemas/project/v4.schema.json','schemas/project/v3.schema.json','config/toolchains/v2.json','schemas/toolchains/v2.schema.json','config/project-dependencies/v2.json','schemas/project/v2.schema.json','templates/apps/python-toolchain/Containerfile']]
  interpreter=Path(sys.executable).absolute()
  digest=hashlib.sha256(str(interpreter).encode()+b'\0')
  for rel in sorted(paths):digest.update(str(rel).encode()+b'\0'+(REPO/rel).read_bytes())

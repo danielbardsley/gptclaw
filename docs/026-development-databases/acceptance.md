@@ -89,3 +89,17 @@ dumps, authentication material and temporary environments remain outside Git.
 Generic example paths, public artifact digests and required security/recovery
 contracts are retained. This review covers the new changes, not a full historical
 repository audit.
+
+## PR validation follow-up
+
+Both Terraform validation workflows passed at `43a978c`; the application workflow
+failed in the new Docker database job's initial image build. The portable checker
+now uses a task-owned empty Docker config instead of an unavailable forge home.
+Final-head CI is required after this correction; no merge bypass is authorized.
+
+Inspection of the pinned image initializer confirmed that its file-password helper
+briefly exported a raw password during initial setup. The managed adapter now uses
+a trusted read-only bootstrap script, `initdb --pwfile` and libpq passfiles; it
+refuses raw password environment inputs. The native checker tests the actual server
+process environment using a Boolean probe, without printing values. The change
+also preserves schema/private SCRAM authentication and owned exited-fixture cleanup.

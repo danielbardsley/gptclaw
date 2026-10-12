@@ -26,12 +26,16 @@ def main():
     args=parser.parse_args();base=Path(args.directory).absolute()
     if base.exists():raise SystemExit('Use a new task-owned fixture directory.')
     base.mkdir(mode=0o700);projects=base/'projects';projects.mkdir();units=base/'units';units.mkdir()
+    docker_config=base/'docker-config';docker_config.mkdir(mode=0o700)
+    (docker_config/'config.json').write_text('{"auths":{}}\n');(docker_config/'config.json').chmod(0o600)
     slug='dbcheck-'+uuid.uuid4().hex[:12]
     command=a.command;execute=db.execute;start=db.start
     def argv(values):
         values=list(values)
         if values and values[0]=='podman':values[0]=args.engine
-        if args.engine=='docker':values=[x for x in values if x!='--userns=keep-id']
+        if args.engine=='docker':
+            values=[x for x in values if x!='--userns=keep-id']
+            if values and values[0]=='docker':values=['docker','--config',str(docker_config),*values[1:]]
         return values
     def run(values,**kw):return command(argv(values),**kw)
     def quiet(values,*rest,**kw):return execute(argv(values),*rest,**kw)
@@ -84,6 +88,8 @@ def main():
             return result
         try:
             db.acquire();db.start(s);db.grants(s)
+            probe=run([args.engine,'exec',db.name(s),'sh','-c',"! tr '\\0' '\\n' </proc/1/environ | grep -Eq '^(POSTGRES_PASSWORD|PGPASSWORD)='"],optional=True)
+            assert probe.returncode==0,'Password appeared in the database process environment'
             api(['uv','sync','--locked','--all-groups','--no-install-project','--no-config','--no-python-downloads','--cache-dir=.gptclaw-cache/uv'])
             api(['.venv/bin/python','scripts/quality.py','format'])
             api(['.venv/bin/python','-m','fastapi_app.db_cli','migrate'],role='migration')
@@ -166,7 +172,7 @@ def main():
                      'security':'skipped-explicitly' if args.skip_security else 'passed','fixture':'isolated-rootless' if args.engine=='podman' else 'isolated-docker'}
             (base/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
         finally:
-            if db.active(s):db.stop(s)
+            if owned('container',db.name(s),s['token']):db.stop(s)
             if db.network(s):run([args.engine,'network','rm',db.backend(s)])
     if args.with_browser:
         browser_args=[sys.executable,str(root/'checks/verify.py'),'--engine',args.engine,'--reuse-api-image',image]
