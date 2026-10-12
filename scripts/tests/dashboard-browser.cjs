@@ -85,6 +85,7 @@ const { chromium } = require('playwright-core');
     {kind:'preview',label:'Public preview',scope:'public',url:'https://preview.example.test/projects/'+row.id+'/',available:true,reason:null,observed_at:now,expires_at:now+60,remaining_seconds:2}
   ];
   row.status.last_success_at = now;
+  await page.addInitScript(() => { const clock = Date.now; Date.now = () => clock() + 12 * 3600 * 1000; });
   await page.reload();
   const repository = page.getByRole('link',{name:'Repository',exact:true});
   await repository.waitFor();

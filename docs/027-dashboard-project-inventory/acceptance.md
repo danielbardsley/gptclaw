@@ -67,3 +67,26 @@ cross-origin API data reads; three frontend tests and actual HTTP checks pass. P
 scans retain earlier rows with a visible stale metadata label and remove their active
 target bindings; a fourth collector test covers partial-to-complete recovery. Final
 CI results on this corrected inventory head remain pending.
+
+## Integrated revision evidence
+
+Implementation revision `83f28412c3218684e55a5c004b7de5bd762223e1` passed all four
+GitHub Actions workflows: [dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38317412620),
+[development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38317412699),
+[Tailscale federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38317412793),
+and [private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38317412651).
+No protected deployment/apply was invoked.
+
+A task-owned collector with both status/links enabled and the actual production
+frontend on loopback completed integrated HTTP/browser checks: all 13 inventory
+rows were current, 10 ready and 3 stopped, with 13 enabled private app/docs links.
+The actual group panel displayed live web/API/DB status and timing/counters, and
+its API-doc link matched the owned prefix exactly. No real logs/preview link was
+enabled; no preview was created. The screenshot is ignored task-owned evidence.
+The exact QA socket lock and container ownership label proved cleanup authority;
+only those QA services were stopped/removed. Existing application data/services
+and Serve handlers were preserved.
+
+This strengthens local/integrated evidence and does not satisfy installed main
+service, operator Serve, owner desktop, lifecycle recovery or merge gates. The
+base directory remains operator-required and the goal remains incomplete.
