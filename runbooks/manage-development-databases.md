@@ -110,3 +110,13 @@ source/data/credentials/backups. Older providers must refuse schema 4/receipt 3.
 Restore compatible application/schema through the reviewed native workflow. Major
 PostgreSQL upgrades, DLM restore-volume exercises, host replacement, automatic backup
 schedules, remote exports and production migration/recovery are separate work.
+
+## Evolved application verification
+
+Provider 1.8.1 copies the selected API, web and project-owned browser checks into
+a new disposable fixture, retaining generated component provenance. Removed starter
+migrations/tests are removed from that fixture as well. Group `test`/`verify` checks
+all application table contents across recreation/reset/restore and a synthetic
+forward migration, rather than assuming a `notes` table. Source, managed data and
+other projects are not modified by those isolated checks. Explicit managed and
+independent-client acceptance remains separate.

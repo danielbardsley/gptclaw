@@ -118,3 +118,33 @@ record update is documentation only. Catalogue status is Implemented, not Delive
 T-012's managed EBS/Quadlet/private-route, two-project/legacy, fault/recovery and
 independent owner browser acceptance remain unexecuted. Source merge does not install
 the provider or complete any deferred RES/production feature.
+
+## October 12 full platform acceptance in progress
+
+The project owner directly confirmed two named, separate synthetic applications,
+their private repositories, publication/merge, reviewed provider rollout and
+persistence/reset/restore/rotation/browser tests. Local prepared projects have
+application-specific planning, copied guidance/specification skills and distinct
+web/API/relational database source. This preparation does not establish final
+managed project creation, deployment, remote CI or client acceptance.
+
+The first broker operation created its private repository and bootstrap main but
+retains `recovery-required` at starter tree publication. A same-credential control
+tree omitted only the workflow entry and succeeded, without publishing a commit
+or branch. The accepted broker excludes Workflows permission; the
+[concrete policy proposal](repository-workflow-publication.md) was explicitly approved by the project owner. Its owner-controlled App and
+installation grant update remains pending; no live profile has been migrated.
+
+A verification defect was found: evolved source was overlaid on starter migrations
+and tests, and checks assumed a `notes` table. The 1.8.1 follow-up replaces only
+disposable fixture source, selects application-owned browser checks, compares all
+application records and performs a schema-independent synthetic forward migration.
+A regression test proves removed starter files stay absent and provenance survives.
+On both prepared applications, all locked API gates and real rootless
+PostgreSQL recreation, DDL denial, native backup/verified restore, reset/restore,
+rotation/old-login denial, failure preservation, corruption refusal and forward
+migration passed. The reading-list frontend and real browser CRUD/refresh/progress/rating/filter/
+failed-draft/keyboard/mobile journey passed. Task-tracker browser checks are in
+progress; an ambiguous select label was corrected after its first real-browser
+failure. A modal focus issue after a failed save was also corrected and rechecked.
+T-012 remains pending; no Delivered or production-readiness claim is made.

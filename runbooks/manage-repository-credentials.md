@@ -232,3 +232,45 @@ revocation is an explicit owner action, not an implicit data cleanup. The App ke
 is authority for all repositories selected for/created by this App; forge-owned
 validation and file modes are not a boundary against hostile forge code. Preserve
 private access, existing platform deploy-key isolation and production separation.
+
+## Explicit workflow provisioning policy (provider 1.8.1)
+
+The original four-grant profile stays valid and has no Workflows authority.
+The project owner approved the [two-project extension](../026-development-databases/repository-workflow-publication.md)
+on October 12. It adds account-wide root App workflow authority while issuing
+workflow-capable provisioning tokens for only one approved App-created repository
+at a time. Ordinary Git, PR, creation and audit token grants remain unchanged.
+The CLI must refuse a workflow-containing unapproved starter before remote creation.
+
+After the reviewed implementation is merged, use the source runner. Deactivate
+new credential issuance during the maintenance step; existing application runtimes
+stay private and keep running. The owner sets repository **Workflows: read and
+write** on the existing App, saves settings and separately approves the updated
+installation grant. No reinstall, replacement key, PAT or token in chat is needed.
+
+```sh
+scripts/gptclawctl credentials deactivate
+scripts/gptclawctl credentials workflow-policy \
+  --repository <first-approved-project> --repository <second-approved-project>
+scripts/gptclawctl credentials resume --operation-id <retained-operation-id>
+scripts/gptclawctl credentials activate
+```
+
+Policy migration validates exact App and installation readback, updates validated
+registered helper paths to the compatible immutable provider and saves an inactive
+schema-3 profile. Each helper refresh has a private before/after hash journal;
+rerunning the same migration reconciles interrupted known writes. Unknown config
+changes stop without overwriting. Disabled bindings remain disabled.
+Actual verified workflow publication is required before activation. The retained
+operation is resumed; do not create a replacement repository or alter its inventory.
+
+The opt-in supports at most two sorted unique project names. Other workflow-bearing
+projects remain unapproved. Ordinary Git cannot add/change workflow files; retain
+the starter workflow bytes for application code PRs. Broader workflow editing or
+additional projects requires another concrete review.
+
+Rollback deactivates issuance, has the owner remove Workflows from App settings
+and separately approve/read back the installation change, then runs
+`credentials workflow-policy --disable` and explicit activation of the original
+profile. Compatible helpers are retained; source/repos/data and operation journals
+are preserved. Previously issued tokens remain subject to their reported expiry.

@@ -19,6 +19,27 @@ import project_database as db
 import project_groups as groups
 
 
+def replace_fixture_source(root,source,contract):
+    """Copy evolved source into a newly generated task-owned disposable fixture.
+
+    Generated component provenance is retained; deleted application files and
+    project-owned browser checks must match the selected source, not its starter.
+    """
+    for component in ('api','web','checks'):
+        origin=source/(contract['components'][component]['root'] if component != 'checks' else 'checks')
+        # Replace task-owned fixture source, retaining only generated provenance.
+        # Overlaying leaves removed migrations/tests active in evolved applications.
+        for entry in (root/component).iterdir():
+            if entry.name == '.gptclaw':continue
+            if entry.is_dir():shutil.rmtree(entry)
+            else:entry.unlink()
+        for entry in origin.rglob('*'):
+            if any(part in {'.venv','.gptclaw-cache','.cache','node_modules','.gptclaw','__pycache__'} for part in entry.relative_to(origin).parts):continue
+            a.safe(entry)
+            if entry.is_file():
+                output=root/component/entry.relative_to(origin);output.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(entry,output)
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__,allow_abbrev=False)
     parser.add_argument('directory');parser.add_argument('--engine',choices=['podman','docker'],default='docker')
@@ -59,13 +80,7 @@ def main():
         value=a.target(root)[1]
         if args.source_root:
             source=Path(args.source_root).absolute();_,original,_=a.validate_project(source);a.need(original is not None and original['schema_version']==4,'invalid')
-            for component in ('api','web'):
-                origin=source/original['components'][component]['root']
-                for entry in origin.rglob('*'):
-                    if any(part in {'.venv','.gptclaw-cache','.cache','node_modules','.gptclaw','__pycache__'} for part in entry.relative_to(origin).parts):continue
-                    a.safe(entry)
-                    if entry.is_file():
-                        output=root/component/entry.relative_to(origin);output.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(entry,output)
+            replace_fixture_source(root,source,original)
             value['database']=original['database'];a.save(root/'.gptclaw/project.yaml',value)
         s=db.create(root,value)
         def api(action,role='runtime',generation=None,expect=True):
@@ -97,9 +112,10 @@ def main():
             assert db.ready(s,value)
             for gate in ['lint','typecheck','test',*(['security'] if not args.skip_security else []),'build']:
                 result=api(['.venv/bin/python','scripts/quality.py',gate]);print('PASS: persistent API '+gate,flush=True)
+            empty=db.contents(s)
             api(['.venv/bin/python','-m','fastapi_app.db_cli','seed'])
-            expected=db.sql(s,'SELECT count(*) FROM notes;').strip();assert expected=='1'
-            db.stop(s);db.start(s);assert db.sql(s,'SELECT count(*) FROM notes;').strip()==expected
+            expected=db.contents(s);assert expected!=empty,'Synthetic seed did not change application records'
+            db.stop(s);db.start(s);assert db.contents(s)==expected
             # Actual role denial, with secret-safe captured diagnostics suppressed.
             deny=api(['.venv/bin/python','-c',"from fastapi_app.services.database import Database; from sqlalchemy import text; c=Database().engine.connect(); c.execute(text('CREATE TABLE forbidden(id int)'))"],expect=False)
             assert deny.returncode!=0
@@ -107,7 +123,8 @@ def main():
             item=db.backup(s,root,value);assert item['verified']
             generation=db.allocate(s);db.start(s,generation)
             try:
-                assert db.restore_into(s,item,generation)==expected
+                db.restore_into(s,item,generation)
+                assert db.contents(s,generation)==expected
             finally:db.stop(s,generation);db.remove_generation(s,generation)
             print('PASS: consistent backup, isolated verified restore and retained active data',flush=True)
             metadata=json.dumps(db.backups(s));inspection=run([args.engine,'inspect',db.name(s)]).stdout
@@ -120,10 +137,10 @@ def main():
             with patch.object(db,'job',source_job):
                 reset=db.plan(root,value,s,'reset')
                 db.apply(root,value,s,reset['operation_id'],slug)
-                db.start(s);assert db.sql(s,'SELECT count(*) FROM notes;').strip()=='0';db.stop(s)
+                db.start(s);assert db.contents(s)==empty;db.stop(s)
                 restore=db.plan(root,value,s,'restore',item['id'])
                 db.apply(root,value,s,restore['operation_id'],slug)
-                db.start(s);assert db.sql(s,'SELECT count(*) FROM notes;').strip()==expected;db.stop(s)
+                db.start(s);assert db.contents(s)==expected;db.stop(s)
                 old_epoch=s['epoch'];rotate=db.plan(root,value,s,'rotate')
                 db.apply(root,value,s,rotate['operation_id'],slug)
                 assert s['epoch']!=old_epoch
@@ -143,7 +160,7 @@ def main():
                     except a.AppError:pass
                     else:raise AssertionError('Reset failure was reported as success')
                 assert s['active']==before and s['blocked'] and s['operation']['stage']=='failed'
-                db.start(s);assert db.sql(s,'SELECT count(*) FROM notes;').strip()==expected;db.stop(s)
+                db.start(s);assert db.contents(s)==expected;db.stop(s)
 
             print('PASS: confirmed reset, staged restore and credential rotation',flush=True)
             dump=db.home(slug)/'backups'/(item['id']+'.dump');original_dump=dump.read_bytes()
@@ -157,15 +174,33 @@ def main():
                 if entry.is_dir() and entry.name not in {s['active'],s['rollback']}:
                     prune=db.plan(root,value,s,'prune','generation:'+entry.name)
                     db.apply(root,value,s,prune['operation_id'],slug)
-            migration=root/'api/migrations/versions/0002_marker.py'
-            migration.write_text('# Synthetic forward migration.\nfrom alembic import op\nrevision="0002"\ndown_revision="0001"\nbranch_labels=None\ndepends_on=None\ndef upgrade():\n    op.execute("ALTER TABLE notes ADD COLUMN marker text")\ndef downgrade():\n    raise RuntimeError("Use managed restore")\n')
-            value['database']['head']='0002';a.save(root/'.gptclaw/project.yaml',value)
+            # Compare all domain rows across a forward revision without conflating
+            # the expected alembic_version update with application data changes.
+            def domain_digest():
+                statement="""CREATE OR REPLACE FUNCTION pg_temp.gptclaw_domain() RETURNS text LANGUAGE plpgsql AS $digest$
+                DECLARE entry record; value text; combined jsonb := '{}'::jsonb;
+                BEGIN
+                  FOR entry IN SELECT tablename FROM pg_tables WHERE schemaname='public' AND tablename NOT IN ('alembic_version','gptclaw_acceptance_marker') ORDER BY tablename LOOP
+                    EXECUTE format('SELECT md5(coalesce(string_agg(row_to_json(r)::text, %L ORDER BY row_to_json(r)::text),%L)) FROM public.%I r', ',', '', entry.tablename) INTO value;
+                    combined := combined || jsonb_build_object(entry.tablename,value);
+                  END LOOP;
+                  RETURN md5(combined::text);
+                END $digest$; SELECT pg_temp.gptclaw_domain();"""
+                return db.sql(s,statement).strip().splitlines()[-1]
+            db.start(s);before_migration=domain_digest();db.stop(s)
+            previous_head=value['database']['head']
+            probe_head='probe_'+uuid.uuid4().hex[:16]
+            migration=root/('api/migrations/versions/'+probe_head+'.py')
+            migration.write_text(f'# Synthetic forward migration.\nfrom alembic import op\nrevision={probe_head!r}\ndown_revision={previous_head!r}\nbranch_labels=None\ndepends_on=None\ndef upgrade():\n    op.execute("CREATE TABLE gptclaw_acceptance_marker(id integer PRIMARY KEY)")\ndef downgrade():\n    raise RuntimeError("Use managed restore")\n')
+            value['database']['head']=probe_head;a.save(root/'.gptclaw/project.yaml',value)
             with patch.object(db,'job',source_job):
                 upgrade=db.plan(root,value,s,'migrate');db.apply(root,value,s,upgrade['operation_id'],slug)
-            assert s['revision']=='0002'
-            db.start(s);assert db.sql(s,'SELECT count(*) FROM notes;').strip()==expected;db.stop(s)
+            assert s['revision']==probe_head
+            db.start(s)
+            assert domain_digest()==before_migration
+            db.stop(s)
             print('PASS: corrupt-backup refusal and explicit data-preserving forward migration',flush=True)
-            value['database']['head']='0001';a.save(root/'.gptclaw/project.yaml',value);migration.unlink()
+            value['database']['head']=previous_head;a.save(root/'.gptclaw/project.yaml',value);migration.unlink()
 
             receipt={'schema_version':1,'project':slug,'postgres':db.acquire(),'manifest':4,'database':s['revision'],
                      'passed':['generation','migration','quality','persistence','role-denial','backup','restore','secret-metadata','reset','restore-promotion','rotation','old-login-denial','generation-prune','failed-reset-preservation','corrupt-backup-refusal','forward-migration'],
