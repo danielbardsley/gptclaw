@@ -30,7 +30,7 @@ reinitializes missing data. Database/API/web startup is ordered and publication
 requires schema/readiness. Database ports are not published. Stop retains storage,
 backups and credentials and withdraws owned service activation.
 
-Persistent material is outside source at `/srv/forge/data/projects/<id>/` on the
+Persistent material is outside source at `/srv/forge/projects/.gptclaw-runtime/v1/data/projects/<id>/` on the
 existing encrypted project volume. The selected runtime/migration/admin files have
 restricted ownership/modes. Do not inspect or print their contents, mount the whole
 store, use credential-bearing environment values/URLs or commit them. Processes
@@ -120,3 +120,11 @@ all application table contents across recreation/reset/restore and a synthetic
 forward migration, rather than assuming a `notes` table. Source, managed data and
 other projects are not modified by those isolated checks. Explicit managed and
 independent-client acceptance remains separate.
+
+Provider 1.8.2 requires `database.storage: runtime-volume-v1` for managed database
+operations. Fresh generation sets it; older strict providers refuse that field.
+Existing uninitialized v4 source needs a reviewed selector update after checking
+that neither a legacy store nor an owned database allocation exists. An existing
+legacy `/srv/forge/data/projects` directory requires separate reviewed migration;
+never move/copy it automatically or change host permissions to make initialization
+pass. The store stays outside repositories on the same verified project volume.

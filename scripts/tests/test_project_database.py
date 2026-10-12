@@ -7,6 +7,8 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from jsonschema import Draft202012Validator
+from types import SimpleNamespace
 from unittest.mock import patch
 
 sys.dont_write_bytecode=True
@@ -27,12 +29,44 @@ class DatabaseTests(unittest.TestCase):
         self.contract=a.target(self.root)[1]
         self.s=db.create(self.root,self.contract)
 
+    def test_owned_runtime_store_can_allocate_without_volume_root_writes(self):
+        base=a.STORE/'data/projects'
+        with patch.object(db,'BASE',base):
+            selected=db.create(self.projects/'owned-store',self.contract | {'project':self.contract['project'] | {'id':'owned-store'}})
+            for directory in [a.STORE,base.parent,base,base/'owned-store']:
+                self.assertEqual(directory.stat().st_uid,os.getuid())
+                self.assertEqual(directory.stat().st_mode&0o777,0o700)
+            self.assertEqual(db.state('owned-store')['active'],selected['active'])
+    def test_legacy_store_refusal_precedes_allocation_and_execution(self):
+        legacy=self.base/'legacy';legacy.mkdir();(legacy/'retained').write_text('untouched synthetic marker')
+        base=a.STORE/'data/projects'
+        # Exercise the production mount function rather than this suite's fixture bypass.
+        import importlib.util
+        spec=importlib.util.spec_from_file_location('storage_probe',Path(db.__file__))
+        probe=importlib.util.module_from_spec(spec);spec.loader.exec_module(probe)
+        with patch.object(probe,'BASE',base),patch.object(probe,'LEGACY_BASE',legacy),patch.object(a,'command') as command:
+            with self.assertRaises(a.AppError) as error:probe.create(self.projects/'legacy-target',self.contract)
+            self.assertEqual(error.exception.code,'database-storage');command.assert_not_called()
+        self.assertFalse(base.exists());self.assertEqual((legacy/'retained').read_text(),'untouched synthetic marker')
+    def test_storage_selector_required_before_database_state_or_secret_access(self):
+        legacy=copy.deepcopy(self.contract);legacy['database'].pop('storage');a.save(self.root/'.gptclaw/project.yaml',legacy)
+        with patch.object(db,'state') as state,patch.object(db,'acquire') as acquire:
+            observed=db.dispatch(self.root,'status');self.assertEqual(observed['state'],'storage-upgrade-required')
+            with self.assertRaises(a.AppError) as error:db.dispatch(self.root,'init')
+            self.assertEqual(error.exception.code,'database-storage');state.assert_not_called();acquire.assert_not_called()
+    def test_old_strict_schema_refuses_new_storage_selector(self):
+        schema=json.loads((a.REPO/'schemas/project/v4.schema.json').read_text())
+        old=copy.deepcopy(schema);old['properties']['database']['properties'].pop('storage')
+        self.assertTrue(Draft202012Validator(schema).is_valid(self.contract))
+        self.assertFalse(Draft202012Validator(old).is_valid(self.contract))
+        legacy=copy.deepcopy(self.contract);legacy['database'].pop('storage')
+        self.assertTrue(Draft202012Validator(old).is_valid(legacy))
     def test_generation_validation_never_reads_credentials_or_executes(self):
         with patch.object(a,'command') as command,patch.object(db,'credential') as credential:
             self.assertEqual(a.validate_project(self.root)[2],0)
             templates.validate_provenance(self.root)
             command.assert_not_called();credential.assert_not_called()
-        for edit in [lambda c:c['components']['db'].update(image='untrusted'),lambda c:c['components']['api'].update(depends_on=[]),lambda c:c['data'].update(mode='ephemeral'),lambda c:c['database'].update(migrate=['sh','-c','unsafe']),lambda c:c['components'].update(worker={})]:
+        for edit in [lambda c:c['components']['db'].update(image='untrusted'),lambda c:c['components']['api'].update(depends_on=[]),lambda c:c['data'].update(mode='ephemeral'),lambda c:c['database'].update(migrate=['sh','-c','unsafe']),lambda c:c['database'].update(storage='/unapproved/path'),lambda c:c['components'].update(worker={})]:
             value=copy.deepcopy(self.contract);edit(value);a.save(self.root/'.gptclaw/project.yaml',value)
             self.assertNotEqual(a.validate_project(self.root)[2],0)
 
@@ -93,7 +127,6 @@ class DatabaseTests(unittest.TestCase):
             with self.assertRaises(a.AppError):db.plan(self.root,self.contract,self.s,'prune','0'*32)
 
     def test_owned_quadlet_activation_refuses_overrides_and_uses_private_unit(self):
-        from types import SimpleNamespace
         def command(args,**kwargs):
             return SimpleNamespace(returncode=0,stdout='SourcePath='+str(db.unit(self.s))+'\nDropInPaths=\n')
         with patch.object(db,'active',return_value=False),patch.object(db,'network'),patch.object(db,'sql',return_value='1'),patch.object(a,'command',side_effect=command):

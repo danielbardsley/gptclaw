@@ -120,3 +120,14 @@ and Terraform validation/mock tests. The trusted file-only bootstrap and task-ow
 Docker configuration correction also passed actual local PostgreSQL checks and
 21 provider-generation regressions. The confidentiality review found no committed
 secrets/private identifiers and removed private-chat/internal review commentary.
+
+## Managed storage correction
+
+- [ ] T-013: Correct the unwritable pre-allocation data-root assumption using the
+  existing private owned volume runtime directory. Add a closed storage selector
+  with older-provider and absent-selector refusal; preserve published releases and
+  reject implicit legacy-data migration. Run relevant isolated/real/CI gates, merge
+  the reviewed 1.8.2 provider and resume both uninitialized authorized targets.
+  DB-001/002/003/009; AC-001/002/003/009. This reversible unprivileged correction
+  is necessary to the directly authorized full platform test; AWS/host privilege
+  changes remain excluded. Initial failure allocated no data or role credentials.

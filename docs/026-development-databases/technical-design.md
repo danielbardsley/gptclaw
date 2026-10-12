@@ -78,7 +78,7 @@ Proposed owned layout on the existing encrypted project volume:
 
 ```text
 /srv/forge/projects/<id>/                    # application repository
-/srv/forge/data/projects/<id>/               # separate persistent ownership root
+/srv/forge/projects/.gptclaw-runtime/v1/data/projects/<id>/               # separate persistent ownership root
   owner.json                                # project binding / format / major
   credentials/<epoch>/<role>.json            # admin, migration, runtime; secret
   postgres/<generation>/                    # image-compatible PGDATA layout
@@ -303,3 +303,24 @@ The helper supports the pinned image's rootless UID behavior, refuses partial/fo
 PGDATA and raw password environment inputs, and admits SCRAM-authenticated peers
 only to the app database on the owned private backend. Docker verification uses a
 task-owned empty client configuration rather than forge's host configuration.
+
+## Managed acceptance storage-layout correction (1.8.2)
+
+The first authorized managed initialization failed before allocation because the
+volume mount is root-owned and `/srv/forge/data` is absent. The forge identity can
+write the existing private runtime directory on that same volume. Use its
+`v1/data/projects/<id>` subtree, outside every repository, with private owned
+directories and unchanged per-project generations/credentials/backups. This is an
+unprivileged source/provider correction, with no host ownership or AWS change.
+
+Add the closed `database.storage: runtime-volume-v1` selector to newly generated
+v4 manifests. Older providers' strict schemas reject it before execution. New
+database operations require the selector; an older v4 manifest reports that a
+reviewed storage upgrade is needed rather than treating data as newly uninitialized.
+A legacy data-store directory must be explicitly migrated in separate reviewed work,
+never silently shadowed or auto-copied. Both authorized targets have no allocated
+database/credentials or legacy data directory, so only their source selector changes.
+
+Verify fresh generation, old-schema refusal, absent-selector preflight, private
+store permissions and legacy-store refusal in isolated fixtures; then repeat
+managed initialization and acceptance through the reviewed provider after merge.
