@@ -135,7 +135,8 @@ secrets/private identifiers and removed private-chat/internal review commentary.
 ## Rotation ownership correction
 
 - [ ] T-014: Transfer owned application objects from retained migration identities
-  during grants/rotation. Actual managed relational writes failed after 1.8.2
+  during grants/rotation; block readiness for unfinished operation journals.
+  Actual managed relational writes failed after 1.8.2
   rotation while readiness/read tests passed; foreign-key checks ran under a prior
   table owner without schema access. Add native post-rotation foreign-key/identity
   writes and migration DDL regression; review/merge provider 1.8.3, rotate both

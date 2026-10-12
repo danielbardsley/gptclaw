@@ -401,6 +401,7 @@ def revision(s, generation=None):
 
 def ready(s, contract):
     if contract.get('database',{}).get('storage')!=STORAGE:return False
+    if s.get('operation') and s['operation']['stage'] in {'running','failed','unknown'}:return False
     try:return not s['blocked'] and active(s) and revision(s)==contract['database']['head']==s['revision']
     except a.AppError:return False
 

@@ -96,6 +96,17 @@ class DatabaseTests(unittest.TestCase):
         self.assertNotIn(f'REASSIGN OWNED BY {selected}',statement)
         self.assertLess(statement.index('REASSIGN OWNED'),statement.index('ALTER SCHEMA public OWNER'))
 
+    def test_interrupted_rotation_blocks_readiness_until_recovered(self):
+        self.s.update(revision='0001',blocked=False)
+        self.s['operation']={'id':'f'*32,'action':'rotate','stage':'planned'}
+        with patch.object(db,'active',return_value=True),patch.object(db,'revision',return_value='0001'):
+            self.assertTrue(db.ready(self.s,self.contract))
+            for stage in ('running','failed','unknown'):
+                self.s['operation']['stage']=stage
+                self.assertFalse(db.ready(self.s,self.contract))
+            self.s['operation']['stage']='complete'
+            self.assertTrue(db.ready(self.s,self.contract))
+
     def test_missing_data_never_reinitialized(self):
         (db.home('db-fixture')/'postgres'/self.s['active']).rmdir()
         with self.assertRaises(a.AppError):db.state('db-fixture',self.root)

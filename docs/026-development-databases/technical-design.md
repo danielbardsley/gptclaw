@@ -132,7 +132,9 @@ schema ownership changes. Never transfer admin/runtime ownership; repeat safely
 when recovering an interrupted rotation or repairing a previously rotated epoch.
 Journal each transition so interruption cannot discard the last usable
 credentials; admin credential rotation similarly stages/verifies a replacement
-administrative login before revocation. Exclude automatic background rotation.
+administrative login before revocation. Exclude automatic background rotation. A running, failed or unknown database
+operation journal blocks readiness even when its current login and schema query
+work; recover and resume the recorded operation before publishing the route.
 Snapshots may retain old secret files: revocation, not file deletion alone, removes
 their database authority. Never promise that file modes protect against forge.
 
