@@ -1,9 +1,10 @@
 # SPEC-026 implementation acceptance
 
-- **Status:** Implemented locally; PR/CI/managed/client acceptance pending
+- **Status:** Implementation PR open; CI/managed/client acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-026](spec.md) · **Design:** [TDD-026](technical-design.md) · **Tasks:** [TASKS-026](tasks.md)
+- **Implementation review:** [PR #60](https://github.com/danielbardsley/gptclaw/pull/60)
 - **Candidate:** provider 1.8.0; project/catalogue schema 4; group receipt 3; `notes-postgres@1.0.0`
 
 The project owner approved implementation and selected local development credentials.
@@ -72,9 +73,10 @@ volume/host-loss recovery, RPO/RTO or production readiness; RES gates remain ope
 
 ## Publication status
 
-Local implementation and validation are complete. Public-repository publication
-and PR creation await project owner approval; no remote push or CI run is claimed.
-Managed rollout, independent client acceptance and merge remain separately gated.
+The project owner approved public-repository publication and merge into main.
+The redacted branch is published and [PR #60](https://github.com/danielbardsley/gptclaw/pull/60)
+is open. All three configured workflows started; merge waits for successful final-head
+checks. Managed rollout and independent client acceptance remain separate gates.
 
 ## Confidentiality review
 

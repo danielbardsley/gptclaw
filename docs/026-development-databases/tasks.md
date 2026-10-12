@@ -114,7 +114,9 @@ not created projects. After review, the owner must approve their scoped provider
 rollout and synthetic reset/restore/rotation trials before live operations. Retain
 source and data after acceptance unless exact cleanup is separately authorized.
 
-Public-repository publication and the implementation PR await project owner approval.
-Local code, checks and the reviewable commit are complete; CI remains unrun. The
+The project owner approved public-repository publication and merge into main.
+[PR #60](https://github.com/danielbardsley/gptclaw/pull/60) is open and its three
+configured workflows are running. Local code/checks are complete; final-head CI
+and the authorized merge remain in T-011. Managed acceptance remains in T-012. The
 confidentiality review found no actual secrets/private identifiers in the candidate
 or its unpublished commits and removed private-chat/internal review commentary.
