@@ -1,15 +1,16 @@
 # SPEC-026 implementation acceptance
 
-- **Status:** Implementation PR open; CI/managed/client acceptance pending
+- **Status:** Implementation merged; managed/client acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-026](spec.md) · **Design:** [TDD-026](technical-design.md) · **Tasks:** [TASKS-026](tasks.md)
-- **Implementation review:** [PR #60](https://github.com/danielbardsley/gptclaw/pull/60)
+- **Merged implementation:** [PR #60](https://github.com/danielbardsley/gptclaw/pull/60)
 - **Candidate:** provider 1.8.0; project/catalogue schema 4; group receipt 3; `notes-postgres@1.0.0`
 
 The project owner approved implementation and selected local development credentials.
-No PR merge, managed provider rollout, existing project/data reset, infrastructure
-apply, public exposure or production secret change has been performed.
+PR #60 merged at `f4ad780` after final-code CI passed. No managed provider rollout,
+existing project/data reset, infrastructure apply, public exposure or production
+secret change has been performed.
 
 ## Evidence recorded so far
 
@@ -54,15 +55,15 @@ apply, public exposure or production secret change has been performed.
 
 | Criterion | State | Evidence and remaining work |
 |---|---|---|
-| AC-001 | pending closeout | V4 generation/refusal and V1–V3 compatibility pass focused suites; final local broad gate passed; final-head CI pending. |
+| AC-001 | pending closeout | V4 generation/refusal and V1–V3 compatibility pass focused suites; final local broad gate passed; final-code CI passed at `9227990`; managed/client gates remain. |
 | AC-002 | partial | Real isolated container recreation retains notes; missing/major/ownership refusals pass offline tests. Managed EBS mount/lifecycle and two-project observation pending. |
 | AC-003 | partial | Role files/metadata exclusion, actual DDL denial and rotation passed isolated checks. Old-login denial passed; interrupted rotation and managed scoped-mount observations pending. |
 | AC-004 | pending | Owned ordering/private-network/zero-published-port design implemented; legacy orchestration tests pass. Actual managed Quadlet/route/outage/limits acceptance pending rollout approval. |
 | AC-005 | partial | Real initial Alembic setup/declared head and stale-plan tests pass. Actual forward existing-data migration preserves rows; managed failure/recovery closeout pending. |
-| AC-006 | partial | Actual native dump/isolated restore and staged promotion pass. Corruption refusal passed; managed/final-head closeout pending. |
+| AC-006 | partial | Actual native dump/isolated restore and staged promotion pass. Corruption refusal passed; final-code CI passed; managed closeout pending. |
 | AC-007 | partial | Actual confirmed reset retains prior generation; plan/backup/confirmation refusals pass. Generation pruning and failed-reset retention pass isolated checks; managed target evidence pending. |
-| AC-008 | partial | Locked API quality/security/coverage passes actual PostgreSQL. Frontend/browser checks pass; generated CI and independent owner persistence observation pending. |
-| AC-009 | pending | Final-head CI, implementation PR/merge, authorized managed rollout, two-project/legacy checks and independent owner acceptance remain separate. |
+| AC-008 | partial | Locked API quality/security/coverage passes actual PostgreSQL. Frontend/browser checks pass; generated Docker/browser CI passed; independent owner persistence observation pending. |
+| AC-009 | pending | Final-code CI and implementation merge are complete. Authorized managed rollout, two-project/legacy checks and independent owner acceptance remain pending. |
 
 Task-owned isolated synthetic fixture source/data are retained under task-specific
 `/tmp/run011-database-*` directories for review; their owned containers/networks are
@@ -75,8 +76,8 @@ volume/host-loss recovery, RPO/RTO or production readiness; RES gates remain ope
 
 The project owner approved public-repository publication and merge into main.
 The redacted branch is published and [PR #60](https://github.com/danielbardsley/gptclaw/pull/60)
-is open. All three configured workflows started; merge waits for successful final-head
-checks. Managed rollout and independent client acceptance remain separate gates.
+merged after all three final-code workflows passed. Managed rollout and independent
+client acceptance remain separate gates.
 
 ## Confidentiality review
 
@@ -103,3 +104,17 @@ a trusted read-only bootstrap script, `initdb --pwfile` and libpq passfiles; it
 refuses raw password environment inputs. The native checker tests the actual server
 process environment using a Boolean probe, without printing values. The change
 also preserves schema/private SCRAM authentication and owned exited-fixture cleanup.
+
+## Final CI and merge
+
+Final code `9227990` passed all configured PR workflows:
+
+- [Private application workflow #78](https://github.com/danielbardsley/gptclaw/actions/runs/38195739847): existing web/API/multi-service regressions plus real Docker PostgreSQL/native recovery and persistent frontend/browser checks.
+- [Development host #185](https://github.com/danielbardsley/gptclaw/actions/runs/38195739858): repository quality, Terraform format/validation/mock tests.
+- [Tailscale federation #89](https://github.com/danielbardsley/gptclaw/actions/runs/38195739849): configured repository/Terraform checks.
+
+PR #60 merged as `f4ad780cbe75ad361bfc3e145bba75be043951af`. The post-merge
+record update is documentation only. Catalogue status is Implemented, not Delivered:
+T-012's managed EBS/Quadlet/private-route, two-project/legacy, fault/recovery and
+independent owner browser acceptance remain unexecuted. Source merge does not install
+the provider or complete any deferred RES/production feature.

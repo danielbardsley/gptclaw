@@ -1,6 +1,6 @@
 # TDD-026: Per-project PostgreSQL development runtime
 
-- **Status:** Approved — implementation in progress
+- **Status:** Implemented — merged; managed/client acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-026](spec.md) · **Tasks:** [TASKS-026](tasks.md)

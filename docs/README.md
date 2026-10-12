@@ -185,7 +185,7 @@ dispositions independently of feature implementation status.
   [Tasks](./025-multi-service-projects/tasks.md) ·
   [Acceptance](./025-multi-service-projects/acceptance.md)
 
-- **026 — Development database lifecycle (RUN-011), implementation in progress:**
+- **026 — Development database lifecycle (RUN-011), implementation merged; managed acceptance pending:**
   [Specification](026-development-databases/spec.md) ·
   [Technical design](026-development-databases/technical-design.md) ·
   [Tasks](026-development-databases/tasks.md)
