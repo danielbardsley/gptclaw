@@ -1,6 +1,6 @@
 # SPEC-026: Development database lifecycle
 
-- **Status:** Draft — scope review; implementation not authorized
+- **Status:** Approved — implementation in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Primary feature:** RUN-011, initial per-project PostgreSQL slice
@@ -22,7 +22,9 @@ installation, database creation, data reset or deployment. The owner explicitly
 selected a **local development credential store**, with AWS Secrets Manager reserved
 for the production deployment workflow. That development decision is recorded here;
 it is not an unanswered dependency or authorization to provision production secrets.
-All other choices below are proposals for scope review.
+The project owner approved this scope, design and implementation, including the
+narrowed synthetic recovery prerequisite. Local development credentials remain selected. Review/merge, live
+provider rollout and destructive operations retain their existing gates.
 
 ## Scope and existing readiness
 
@@ -218,5 +220,6 @@ restore/rotation; new persistent notes release; narrow RUN-012 and SEC/QLT suppo
 Exact PostgreSQL patch/image digest, Python locks, provider/catalogue versions,
 measured budgets and final CLI syntax are implementation-review decisions recorded
 before activation. Do not invent pins or advertise proposed commands as installed.
-The narrowed stage-7 dependency is a proposal pending scope approval. No acceptance
-record exists yet because implementation and behavioral evidence are pending.
+Implementation approval includes the narrowed synthetic stage-7
+prerequisite. See [acceptance](acceptance.md) for actual local evidence and pending
+CI/managed/client gates; no broader RES or production acceptance is inferred.

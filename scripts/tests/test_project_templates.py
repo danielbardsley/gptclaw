@@ -25,8 +25,8 @@ class Tests(unittest.TestCase):
     def setUp(self):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         self.base=Path(temp.name);self.repo=self.base/'repo';self.repo.mkdir()
-        for rel in ['config/templates','schemas/templates','config/toolchains','schemas/toolchains','config/project-dependencies','schemas/project-dependencies','schemas/project','templates/apps/releases','templates/apps/node-toolchain','templates/apps/python-toolchain']:
-            shutil.copytree(app.REPO/rel,self.repo/rel)
+        for rel in ['config/databases','config/templates','schemas/templates','config/toolchains','schemas/toolchains','config/project-dependencies','schemas/project-dependencies','schemas/project','templates/apps/releases','templates/apps/node-toolchain','templates/apps/python-toolchain']:
+            shutil.copytree(app.REPO/rel,self.repo/rel,ignore=shutil.ignore_patterns('.venv','.gptclaw-cache','.cache','node_modules','__pycache__'))
         shutil.copytree(app.REPO/'scripts',self.repo/'scripts',ignore=shutil.ignore_patterns('__pycache__'))
         self.projects=self.base/'projects';self.projects.mkdir()
         for key,value in [('REPO',self.repo),('PROJECTS',self.projects),('STORE',self.projects/'.gptclaw-runtime/v1')]:
@@ -48,7 +48,7 @@ class Tests(unittest.TestCase):
     def test_cli_discovery_and_exact_pair(self):
         output=io.StringIO()
         with contextlib.redirect_stdout(output):self.assertEqual(cli.main(['templates','list']),0)
-        self.assertEqual(json.loads(output.getvalue())['schema_version'],3)
+        self.assertEqual(json.loads(output.getvalue())['schema_version'],4)
         with self.assertRaises(app.AppError):app.create('bad',template='nextjs')
         self.assertFalse((self.projects/'bad').exists())
     def test_unknown_range_and_mismatched_selection(self):

@@ -1,6 +1,6 @@
 # TDD-026: Per-project PostgreSQL development runtime
 
-- **Status:** Draft — proposed design; implementation not authorized
+- **Status:** Approved — implementation in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-026](spec.md) · **Tasks:** [TASKS-026](tasks.md)
@@ -284,9 +284,14 @@ local restore tests close outstanding RES acceptance or production readiness.
 | DB-008 | New persistent release, database/browser/golden checks | T-010 | AC-008 |
 | DB-009 | Runbooks, regression/CI/live/client evidence and acceptance | T-011, T-012 | AC-009 |
 
-The local-secret decision is settled by the project owner. Scope approval must
-accept the proposed synthetic-only logical-recovery prerequisite in place of waiting
-for broad stage-7 exercises, and the other proposed scope/defaults. The project owner
-reviews that decision in the planning PR. Implementer finalizes exact image/locks,
+The local-secret decision is settled by the project owner. Implementation approval includes the synthetic-only logical-recovery
+prerequisite; broad stage-7 exercises remain separately deferred. Implementation review and acceptance remain separate gates. Implementer finalizes exact image/locks,
 version IDs, UID mapping, job budgets and syntax before runtime activation; unsupported
 capability blocks the dependent step rather than causing a privileged workaround.
+
+The implementation selects PostgreSQL 18.6 at the immutable profile digest, provider
+1.8.0, project/catalogue v4 and group receipt v3. The closed persistent release is
+`notes-postgres@1.0.0`. Native dumps are stopped-writer operations in this first
+slice. `db recover` reconciles an exited unknown job receipt without replaying SQL;
+interrupted rotation resumes its exact epoch/operation. All test/verify database
+work uses task-owned disposable fixtures, preserving managed live data.

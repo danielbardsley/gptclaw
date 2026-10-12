@@ -1,6 +1,6 @@
 # TASKS-026: Development database lifecycle
 
-- **Status:** Draft — planning complete; implementation not authorized
+- **Status:** Approved — implementation in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-026](spec.md) · **Design:** [TDD-026](technical-design.md)
@@ -12,50 +12,52 @@
   Draft requirements/design/acceptance/tasks and update index/catalogue/sequence.
   Evidence: these documents; local development credentials were explicitly selected
   in the current chat, with production Secrets Manager deferred to production work.
-- [ ] T-002: Project owner reviews the concrete scope and approves implementation
-  separately from planning. Confirm the proposed synthetic-only native restore gate
-  without closing broad RES-002/004; agree named live fixtures/reset scope before
-  live data operations. Record authorization without asking again for settled local
-  credential preference. Gate for T-003 onward; DB-009, AC-009.
+- [x] T-002: Project owner reviews the concrete scope and approves implementation
+  separately from planning. Approve the synthetic-only native restore gate
+  without closing broad RES-002/004; keep named live fixtures/reset scope as the
+  separate T-012 approval gate. Record authorization without asking again for settled local
+  credential preference. Gate for T-003 onward; DB-009, AC-009. Evidence: project owner scope and
+  implementation approval; named live fixtures and destructive-operation confirmations
+  remain separate gates.
 
 ## Implementation
 
-- [ ] T-003: Finalize compatible exact PostgreSQL image/client tools, new manifest/
+- [x] T-003: Finalize compatible exact PostgreSQL image/client tools, new manifest/
   catalogue/provider/receipt versions and closed web/API/DB contract. Implement
   observation-only validation, generation/provenance and old-provider refusal.
   Test unsafe declarations and v1–v3/release compatibility. Depends on T-002.
   DB-001; AC-001.
-- [ ] T-004: Add versioned persistent ownership and data generations on the verified
+- [x] T-004: Add versioned persistent ownership and data generations on the verified
   project-volume mount, no-follow/UID/permission checks and recoverable allocation.
   Distinguish uninitialized/missing/corrupt storage; prove no implicit reinitialization
   or deletion on lifecycle/rollback. Verify pinned image UID/PGDATA behavior and two
   project isolation. Depends on T-003. DB-002; AC-002.
-- [ ] T-005: Implement local random role credentials, restricted store, selected
+- [x] T-005: Implement local random role credentials, restricted store, selected
   read-only runtime snapshots, app/migration/admin grants and versioned stopped
   rotation with interruption recovery. Canary-test every output/argv/env/inspection
   boundary and privilege denial; never capture actual secrets as evidence.
   Depends on T-004. DB-003; AC-003.
-- [ ] T-006: Extend owned group network/lifecycle/status/logs for DB-first readiness,
+- [x] T-006: Extend owned group network/lifecycle/status/logs for DB-first readiness,
   schema checks, private backend access, bounded shutdown/resources and operation
   locks/journals. Prove outage/recovery, partial start, busy/interrupted reconciliation
   and retained data while legacy projects remain healthy. Depends on T-004/T-005.
   DB-004; AC-002, AC-004.
-- [ ] T-007: Implement explicit Alembic plan/apply and schema-readiness contracts;
+- [x] T-007: Implement explicit Alembic plan/apply and schema-readiness contracts;
   tie approval to revisions/source/generation/credential epoch/verified backup.
   Test fresh setup, forward upgrade, changed plans, unsupported histories and failed
   migrations with restore recovery. Depends on T-006 and T-008 backup/restore gates;
   design migration revisions in parallel, but no existing-data apply before recovery
   is functional. DB-005; AC-005.
-- [ ] T-008: Implement consistent bounded custom dumps, safe receipts, checksums,
+- [x] T-008: Implement consistent bounded custom dumps, safe receipts, checksums,
   real restore verification, owned fresh-generation restore and explicit promotion/
   rollback. Recreate roles/grants without exporting passwords. Test corrupted,
   incompatible/unknown/wrong-project artifacts and interrupted promotion preserving
   active data. Depends on T-006. DB-006; AC-006.
-- [ ] T-009: Add stopped reset, fixed synthetic seed and count/byte/free-space limits;
+- [x] T-009: Add stopped reset, fixed synthetic seed and count/byte/free-space limits;
   preview/confirm exact prune IDs and preserve active/sole-verified/referenced data.
   Test stale approvals, missing backup, running/busy refusal, reset failures and
   unrelated-data preservation. Depends on T-007/T-008. DB-007; AC-007.
-- [ ] T-010: Publish a separate exact persistent notes starter with complete locked
+- [x] T-010: Publish a separate exact persistent notes starter with complete locked
   SQLAlchemy/Psycopg/Alembic dependencies, source migrations, concurrent-safe CRUD/
   capacity constraints, updated UI/README and synthetic seed. Preserve existing
   defaults/releases. Add real PostgreSQL/browser/generated CI and meaningful quality/
@@ -81,21 +83,38 @@
 
 ## Current handover
 
-Planning only. The clean main baseline observed is `c1afac9`, merge of PR #58;
-SPEC-025's historical acceptance closeout is still independently pending. The project
-owner selected local development credential storage; no cloud secret resources or
-production work is proposed. The draft uses per-project rootless PostgreSQL and a
-new persistent notes release with explicit migrations and logical recovery.
+Implementation is complete on `codex/run-011-spec`; review/CI and managed/client
+acceptance remain. The project owner approved the scope and local development credential decision. Provider 1.8.0 adds project/
+catalogue v4 and group receipt v3, exact PostgreSQL 18.6, retained per-project data,
+closed local role-file materialization, DB-first private lifecycle, migration/backup/
+restore/reset/seed/rotation/prune/recovery commands and `notes-postgres@1.0.0`.
+Existing releases/defaults and infrastructure are preserved.
 
-Scope approval must accept the narrowed synthetic-only recovery prerequisite;
-broad volume/host restore evidence is not invented or marked complete. Exact image/
-locks/versions and measured budgets are finalized before activation. No database,
-credentials, provider installation or data operation has been performed by this task.
-Documentation verification passed: `git diff --check` and `git diff --cached
---check`; a task-local Python review resolved all 198 relative local links across
-these three new documents and the index/catalogue/sequence, verified nine requirement
-and nine acceptance IDs across the companion documents, and confirmed that only
-T-001 is checked. No new tests were added for this documentation-only change;
-repository runtime tests and Terraform checks were not run because no executable
-or infrastructure files changed. CI and live database behavior are not claimed.
-Implementation tasks remain unchecked; remote planning PR publication is pending.
+Actual local results: `./scripts/check-repository.sh` passes 447 unittest cases and
+its shell/invariant/release gates. Focused DB ownership suite passes 11 tests,
+including unit permissions/unknown systemd overrides. Real rootless PostgreSQL
+checks pass initialization, role denial, container recreation persistence, native
+backup/verified restore, confirmed reset/restore/rotation, old-login denial, generation
+prune, failed-reset preservation, corruption refusal and a data-preserving forward
+migration. All locked API gates and the complete frontend/browser/OpenAPI workflow
+pass. Critical API coverage is 328/331 statements and 31/32 branches. A final native
+rerun covers the subsequent generic schema-content digest/schema-role restore change.
+
+Whitespace, changed Bash syntax, Python compilation, local-link review and old
+release immutability pass. Terraform checks/apply were not run locally because no
+Terraform source changed. Earlier unsuccessful checks and their fixes are recorded
+in [acceptance](acceptance.md); they are not represented as passes. CI is not inferred
+from local checks. T-011 remains open for the implementation PR/final-head CI;
+T-012 remains open for managed rollout, two-project/legacy/client observations and
+review/merge/acceptance. No managed provider or existing data has been changed.
+
+The available proposed managed acceptance targets are `run011-notes-a` and
+`run011-notes-b`, checked absent in source/data/runtime metadata. They remain proposals,
+not created projects. After review, the owner must approve their scoped provider
+rollout and synthetic reset/restore/rotation trials before live operations. Retain
+source and data after acceptance unless exact cleanup is separately authorized.
+
+Public-repository publication and the implementation PR await project owner approval.
+Local code, checks and the reviewable commit are complete; CI remains unrun. The
+confidentiality review found no actual secrets/private identifiers in the candidate
+or its unpublished commits and removed private-chat/internal review commentary.
