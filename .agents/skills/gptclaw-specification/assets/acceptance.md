@@ -20,6 +20,14 @@ skipped checks and reasons. Preserve failures and explain any corrective rerun.
 Do not include credentials, authentication files, environment dumps, or real
 sensitive datasets.
 
+For a product adapted from an application starter, record the starter adaptation
+review: removed/replaced demo code and content, actual exposed API/OpenAPI and UI
+review against the spec, updated references/docs/dependencies/tests, and product
+behavior checks. Record the spec justification for each deliberately retained
+demo. Reusable health/readiness, API documentation, security support and intentional
+test fixtures are not unwanted demo leftovers. Do not delete user data or rewrite
+published starter releases to satisfy this check.
+
 ## Remaining work and delivery
 
 Record unresolved failures, pending verification, operator actions, and relevant
