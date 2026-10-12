@@ -171,3 +171,75 @@ components and preserved the running database. The correction pins future mounts
 to immutable snapshots and reconciles only known paths with matching trusted bytes
 and otherwise exact units. Focused unknown-path/script/unit-edit refusal and final
 CI/managed reconciliation are tracked separately from the ownership regression.
+
+## Reviewed final provider and actual reconciliation
+
+[PR #64](https://github.com/danielbardsley/gptclaw/pull/64) merged as `374a854`;
+final code `5ae3348` passed every configured quality job:
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38283050283),
+[federation](https://github.com/danielbardsley/gptclaw/actions/runs/38283050103), and
+[private application](https://github.com/danielbardsley/gptclaw/actions/runs/38283050372).
+Infrastructure plan/apply jobs were skipped by their existing triggers; no
+infrastructure mutation was performed. Local final verification passed 463 unittest
+cases, 18 focused database cases and real rootless PostgreSQL/native recovery.
+Earlier candidates and the fixture owner/group permission correction are not
+represented as final-head passes.
+
+The installed immutable provider reports 1.8.3. It reconciled the exact known
+source-bootstrap unit, stopped the retained database through the lifecycle interface
+and restarted the private group with an immutable bootstrap mount. No unknown unit,
+override, host ownership, permission or AWS resource was changed. The two distinct
+applications previously passed locked private repository CI and native scoped Git
+publication; negative cross-repository helper access and disable/enable recovery
+also passed with the peer unaffected. Final managed fault/browser/hooks and
+application merges are tracked below when observed.
+
+## Managed migration and refusal evidence
+
+The reviewed installed provider applied an existing-data forward migration while
+retaining the complete API record/summary snapshot. An edit after preview refused
+the stale source plan. A deliberate synthetic migration failure marked recovery
+required and blocked group readiness; a reviewed source-compatible native restore
+into a fresh generation recovered the exact prior records/schema. The peer
+application stayed ready throughout. Only the owned temporary probe revisions were
+retired; their source is retained privately for rollback review.
+
+Managed running-operation and lock-conflict refusal, wrong-target reset refusal,
+corrupt-backup refusal, active-generation prune refusal and all-verified-backup prune
+refusal passed without changing selected data. The temporarily altered owned
+synthetic dump was immediately restored and its original checksum reverified.
+Explicit pruning removed only unprotected, superseded owned generations.
+
+Five disposable pre-execution checks separately exercised backup count, backup
+bytes, backup free-space, inactive-generation count and generation free-space
+refusal. They invoked no database commands and wrote no data. The live volume was
+not filled to simulate these limits. Actual host metadata measured 7,816 MiB total
+memory, 3,690 MiB available and 66,340 MiB free on the project volume at that sample.
+Each database had 1,024 MiB/1 CPU/128 PID ceilings and no published port; each web/API
+container had 1,536 MiB/1 CPU/256 PID ceilings. Limits are ceilings, not reservations.
+Native backup took about 9–12 seconds, reset about 19, restore about 10–17, rotation
+about 8 and warm group starts about 18–27 on these small synthetic datasets.
+No production performance or RPO/RTO claim follows from these measurements.
+
+## Independent client and interruption acceptance
+
+The project owner explicitly confirmed that synthetic create/edit changes in both
+private applications survive a reload from their own browser. Both complete
+application source PRs are merged after their actual private CI passed.
+Both managed API source-reload checks passed with exact source restored. Actual
+private Chromium CRUD/refresh/filter/draft/safe-text/keyboard/mobile workflows
+passed after the ownership correction. Final role/network/mount inspection and
+runtime DDL/cross-project login denial passed on the current epochs.
+
+Both projects passed a controlled rotation interruption: only the task-owned CLI
+was terminated after new-login verification. Readiness remained blocked; recovery
+marked the recorded operation recovery-required and explicit resumption completed
+that same operation, preserving the fresh complete API snapshot. The harness was
+corrected to expect recovery-required as a nonzero status; earlier harness exits
+are not represented as completed checks. Retired login denial passed separately.
+
+The real installed commit hook subsequently found a source-copy integration
+defect with generated Next.js output. Both live applications remain ready and
+owner data is retained. [PR #65](https://github.com/danielbardsley/gptclaw/pull/65)
+tracks the narrow output exclusion and its regression; full hook/evidence closeout
+remains pending. No owner/browser or data-reset authorization is requested again.

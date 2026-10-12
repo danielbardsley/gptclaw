@@ -21,11 +21,11 @@ starter includes generated CI. Those contracts currently cannot complete combine
 broker provisioning together. Repository creation/publication authorization does
 not silently approve a change to the accepted credential policy.
 
-## Concrete proposed extension
+## Approved extension
 
 The project owner explicitly approved this workflow-capable provisioning policy.
-The remaining owner-controlled setup is to set **Workflows: read and write** in the existing private GitHub App settings
-and separately approve its installation permission update. Preserve all current
+The owner completed **Workflows: read and write** in the existing private GitHub
+App settings and approved its installation permission update. Preserve all current
 permissions and identifiers; no key/token is requested in chat and no reinstall is
 needed. Because the existing installation is All repositories, this adds root App
 workflow authority across the account. That account-wide root authority must be
@@ -35,7 +35,7 @@ The implementation adds an explicit versioned opt-in profile migration, verifyin
 App and installation identity and exact approved grant readback before activation.
 Existing profiles remain compatible and fail clearly for a workflow-containing
 starter before repository creation. No automatic inference from changed GitHub
-settings is allowed. Initial provisioning leases would add Workflows-write only
+settings is allowed. Initial provisioning leases add Workflows-write only
 for the one immutable App-created private repository, with bounded expiry and
 revocation. Creation-only, ordinary Git, audit and PR leases keep existing scopes.
 
@@ -66,11 +66,17 @@ source/repos/data and pending operation journals. The project owner removes the
 App/installation Workflows grant; previously issued tokens retain their reported
 lifetime. No data reset or permission replacement is part of rollback.
 
-## Decision required
+## Approved decision and actual outcome
 
-The project owner directly approved the scoped policy extension in the current
-chat. App metadata still shows the four existing grants; the owner-controlled
-Workflows grant/installation approval has been requested. Code is being verified
-before reviewed delivery; no live profile or permission change is claimed.
-The final combined repository/project creation remains incomplete until actual
-grant readback, retained-operation recovery and both project checks pass.
+The project owner directly approved the scoped policy extension and completed the
+App/installation Workflows update. Exact five-grant readback, explicit inactive
+schema-3 migration, first retained-operation recovery, real workflow publication,
+activation and normal second creation passed. Reviewed provider 1.8.1 merged through
+[PR #62](https://github.com/danielbardsley/gptclaw/pull/62), with all final-code
+workflows passing. Both complete private applications passed their actual
+repository CI. Ordinary Contents/Metadata helpers published application source;
+cross-repository denial and target-only disable/enable recovery passed.
+
+The bounded two-project policy remains selected for the retained applications.
+The broad root App grant and its owner-controlled removal step remain explicit;
+this acceptance does not authorize general workflow editing or other projects.

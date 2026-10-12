@@ -123,7 +123,7 @@ secrets/private identifiers and removed private-chat/internal review commentary.
 
 ## Managed storage correction
 
-- [ ] T-013: Correct the unwritable pre-allocation data-root assumption using the
+- [x] T-013: Correct the unwritable pre-allocation data-root assumption using the
   existing private owned volume runtime directory. Add a closed storage selector
   with older-provider and absent-selector refusal; preserve published releases and
   reject implicit legacy-data migration. Run relevant isolated/real/CI gates, merge
@@ -134,7 +134,7 @@ secrets/private identifiers and removed private-chat/internal review commentary.
 
 ## Rotation ownership correction
 
-- [ ] T-014: Transfer owned application objects from retained migration identities
+- [x] T-014: Transfer owned application objects from retained migration identities
   during grants/rotation; block readiness for unfinished operation journals.
   Actual managed relational writes failed after 1.8.2
   rotation while readiness/read tests passed; foreign-key checks ran under a prior
@@ -143,7 +143,7 @@ secrets/private identifiers and removed private-chat/internal review commentary.
   authorized synthetic projects and rerun actual private browser CRUD.
   DB-003/005/009; AC-003/005/008/009. Preserve data and existing grants/scopes.
 
-- [ ] T-015: Pin database bootstrap mounts to the immutable provider and reconcile
+- [x] T-015: Pin database bootstrap mounts to the immutable provider and reconcile
   source/previous-provider paths only when trusted bootstrap bytes and every
   other unit byte match. The installed runner refused a source-started database
   stop with a bootstrap-path conflict; retained data was preserved. Test changed

@@ -353,3 +353,23 @@ the previously verified private provider/runtime acceptance remains separate.
 All required acceptance criteria passed with their recorded limitations, so the
 approved All repositories slice is Delivered. The key, retained verification
 projects/apps and open fixture PRs remain in the authorized disposition above.
+
+## Approved workflow publication extension accepted
+
+The project owner explicitly approved the bounded two-project workflow policy and
+completed the App/installation update. Exact five-grant readback, inactive schema-3
+migration, first retained creation recovery, actual workflow publication, activation
+and normal second creation passed. Reviewed provider 1.8.1 merged through
+[PR #62](https://github.com/danielbardsley/gptclaw/pull/62); final code `2af04d7`
+passed all three configured workflows. Both complete private applications subsequently
+passed actual repository CI; their existing ordinary Contents/Metadata helpers
+fetched and published source. A project helper refused cross-repository access;
+disabling it denied its fetch while the peer fetched successfully, and enabling it
+restored access. Real credentials were neither printed nor committed.
+
+The App installation retains its explicitly approved All repositories authority
+and five root grants. Project leases stay restricted to one repository, and only
+matching allowlisted provisioning leases carry Workflows. No generic workflow-write
+interface or Actions permission was added. Removing the allowlist disables the
+provisioning exception; owner removal of the root Workflows grant remains a separate
+operator step. The retained synthetic projects continue to use the approved policy.
