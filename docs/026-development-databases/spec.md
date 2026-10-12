@@ -1,6 +1,6 @@
 # SPEC-026: Development database lifecycle
 
-- **Status:** Approved — implementation in progress
+- **Status:** Implemented — merged; managed/client acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Primary feature:** RUN-011, initial per-project PostgreSQL slice

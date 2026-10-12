@@ -1,6 +1,6 @@
 # TASKS-026: Development database lifecycle
 
-- **Status:** Approved — implementation in progress
+- **Status:** Implemented — merged; managed/client acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-026](spec.md) · **Design:** [TDD-026](technical-design.md)
@@ -65,7 +65,7 @@
 
 ## Verification and delivery
 
-- [ ] T-011: Run focused isolated suites, prepared repository gates, changed shell
+- [x] T-011: Run focused isolated suites, prepared repository gates, changed shell
   syntax, generated exact-container checks and real database/browser/golden CI.
   Review links/whitespace, capability/compatibility and secret/data exclusion.
   Write database runbook with actual command syntax, protected recovery/reset/prune,
@@ -83,8 +83,9 @@
 
 ## Current handover
 
-Implementation is complete on `codex/run-011-spec`; review/CI and managed/client
-acceptance remain. The project owner approved the scope and local development credential decision. Provider 1.8.0 adds project/
+Implementation merged through [PR #60](https://github.com/danielbardsley/gptclaw/pull/60)
+at `f4ad780`; all three CI workflows passed on final code `9227990`. Managed/client
+acceptance remains. The project owner approved the scope and local development credential decision. Provider 1.8.0 adds project/
 catalogue v4 and group receipt v3, exact PostgreSQL 18.6, retained per-project data,
 closed local role-file materialization, DB-first private lifecycle, migration/backup/
 restore/reset/seed/rotation/prune/recovery commands and `notes-postgres@1.0.0`.
@@ -103,10 +104,9 @@ rerun covers the subsequent generic schema-content digest/schema-role restore ch
 Whitespace, changed Bash syntax, Python compilation, local-link review and old
 release immutability pass. Terraform checks/apply were not run locally because no
 Terraform source changed. Earlier unsuccessful checks and their fixes are recorded
-in [acceptance](acceptance.md); they are not represented as passes. CI is not inferred
-from local checks. T-011 remains open for the implementation PR/final-head CI;
-T-012 remains open for managed rollout, two-project/legacy/client observations and
-review/merge/acceptance. No managed provider or existing data has been changed.
+in [acceptance](acceptance.md); they are not represented as passes. Final-code CI is recorded separately in [acceptance](acceptance.md). T-011 is
+complete. T-012 remains open for managed rollout, two-project/legacy/client
+observations and final acceptance; the code review/merge component is complete. No managed provider or existing data has been changed.
 
 The available proposed managed acceptance targets are `run011-notes-a` and
 `run011-notes-b`, checked absent in source/data/runtime metadata. They remain proposals,
@@ -114,9 +114,9 @@ not created projects. After review, the owner must approve their scoped provider
 rollout and synthetic reset/restore/rotation trials before live operations. Retain
 source and data after acceptance unless exact cleanup is separately authorized.
 
-The project owner approved public-repository publication and merge into main.
-[PR #60](https://github.com/danielbardsley/gptclaw/pull/60) is open and its three
-configured workflows are running. Local code/checks are complete; final-head CI
-and the authorized merge remain in T-011. Managed acceptance remains in T-012. The
-confidentiality review found no actual secrets/private identifiers in the candidate
-or its unpublished commits and removed private-chat/internal review commentary.
+The project owner approved public publication and merge. PR #60 is merged and
+its final code passed all configured workflows, including Docker database/browser
+and Terraform validation/mock tests. The trusted file-only bootstrap and task-owned
+Docker configuration correction also passed actual local PostgreSQL checks and
+21 provider-generation regressions. The confidentiality review found no committed
+secrets/private identifiers and removed private-chat/internal review commentary.
