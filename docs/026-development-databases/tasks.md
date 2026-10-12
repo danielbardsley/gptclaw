@@ -1,6 +1,6 @@
 # TASKS-026: Development database lifecycle
 
-- **Status:** Implemented — merged; managed/client acceptance pending
+- **Status:** Delivered — initial development slice; merged implementation and actual managed/client acceptance
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-026](spec.md) · **Design:** [TDD-026](technical-design.md)
@@ -71,7 +71,7 @@
   Write database runbook with actual command syntax, protected recovery/reset/prune,
   rollout/rollback and snapshot/host-loss limitations. Submit implementation PR and
   record final-head CI. Depends on T-010. DB-001–009; AC-001–009.
-- [ ] T-012: After authorized provider rollout and named synthetic fixture selection,
+- [x] T-012: After authorized provider rollout and named synthetic fixture selection,
   prove managed EC2 persistence, roles/networks, rotation, migrations, dump/restore,
   reset/retention, failed/interrupted recovery and two-project/legacy isolation.
   Measure budgets/timings and trial safe provider/generation rollback. Obtain
@@ -83,43 +83,22 @@
 
 ## Current handover
 
-Implementation merged through [PR #60](https://github.com/danielbardsley/gptclaw/pull/60)
-at `f4ad780`; all three CI workflows passed on final code `9227990`. Managed/client
-acceptance remains. The project owner approved the scope and local development credential decision. Provider 1.8.0 adds project/
-catalogue v4 and group receipt v3, exact PostgreSQL 18.6, retained per-project data,
-closed local role-file materialization, DB-first private lifecycle, migration/backup/
-restore/reset/seed/rotation/prune/recovery commands and `notes-postgres@1.0.0`.
-Existing releases/defaults and infrastructure are preserved.
+The approved initial RUN-011 slice is delivered through reviewed implementation
+PRs #60/#62/#63/#64/#65 and installed provider 1.8.4. Two distinct private full
+web/API/PostgreSQL applications have their own roots, specs/guidance/copied skills,
+repositories, source CI and managed data. Actual private browser CRUD and owner
+synthetic write/reload acceptance pass. Managed persistence, native backup/reset/
+restore, forward/failed migration, interrupted rotation recovery, roles/networks,
+protected-operation refusals and legacy isolation pass. Both actual installed Git
+commit hooks pass full isolated database/quality/browser verification.
 
-Actual local results: `./scripts/check-repository.sh` passes 447 unittest cases and
-its shell/invariant/release gates. Focused DB ownership suite passes 11 tests,
-including unit permissions/unknown systemd overrides. Real rootless PostgreSQL
-checks pass initialization, role denial, container recreation persistence, native
-backup/verified restore, confirmed reset/restore/rotation, old-login denial, generation
-prune, failed-reset preservation, corruption refusal and a data-preserving forward
-migration. All locked API gates and the complete frontend/browser/OpenAPI workflow
-pass. Critical API coverage is 328/331 statements and 31/32 branches. A final native
-rerun covers the subsequent generic schema-content digest/schema-role restore change.
-
-Whitespace, changed Bash syntax, Python compilation, local-link review and old
-release immutability pass. Terraform checks/apply were not run locally because no
-Terraform source changed. Earlier unsuccessful checks and their fixes are recorded
-in [acceptance](acceptance.md); they are not represented as passes. Final-code CI is recorded separately in [acceptance](acceptance.md). T-011 is
-complete. T-012 remains open for managed rollout, two-project/legacy/client
-observations and final acceptance; the code review/merge component is complete. No managed provider or existing data has been changed.
-
-The available proposed managed acceptance targets are `run011-notes-a` and
-`run011-notes-b`, checked absent in source/data/runtime metadata. They remain proposals,
-not created projects. After review, the owner must approve their scoped provider
-rollout and synthetic reset/restore/rotation trials before live operations. Retain
-source and data after acceptance unless exact cleanup is separately authorized.
-
-The project owner approved public publication and merge. PR #60 is merged and
-its final code passed all configured workflows, including Docker database/browser
-and Terraform validation/mock tests. The trusted file-only bootstrap and task-owned
-Docker configuration correction also passed actual local PostgreSQL checks and
-21 provider-generation regressions. The confidentiality review found no committed
-secrets/private identifiers and removed private-chat/internal review commentary.
+Local final repository checks pass 464 unittest cases; all final provider CI
+workflows pass. Source and owner changes, selected credentials, local verified
+backups and active/rollback generations are retained. Evidence distinguishes
+isolated, CI, managed and owner observations, including earlier failed attempts
+and a non-reproduced isolated reset failure. Production/cloud-secret management,
+volume/host-loss recovery, RPO/RTO and broader SEC/RUN-012 work remain separate.
+See [acceptance](acceptance.md) for exact revisions, limits and fixture disposition.
 
 ## Managed storage correction
 
@@ -151,7 +130,7 @@ secrets/private identifiers and removed private-chat/internal review commentary.
   through the reviewed installed runner after final-head CI/merge. DB-002/004/009;
   AC-002/004/009. No unknown unit or host control may be overwritten.
 
-- [ ] T-016: Exclude generated frontend/Python check output from evolved-source
+- [x] T-016: Exclude generated frontend/Python check output from evolved-source
   verification fixtures. A real installed commit hook copied Next.js development
   output and refused its generated path names before allocating a database.
   Add an unsafe-name/output-link regression, deliver reviewed provider 1.8.4,

@@ -271,8 +271,8 @@ for each through the reviewed resource-limited provider job.
 
 Both private HTTPS pages and health endpoints returned 200 and matching project
 identity. The owner answered “Both load correctly” for
-[one](https://forge-dev-01-4.tail8c3304.ts.net/projects/gptclaw-prj005-one/) and
-[two](https://forge-dev-01-4.tail8c3304.ts.net/projects/gptclaw-prj005-two/).
+the first private project (address retained outside public evidence) and
+the second private project (address retained outside public evidence).
 They remain ready on loopback ports 18086/18087. `hello-second` remained ready on
 18081 before, between and after operations and passed private page/health checks.
 The stable installed runner reports 1.5.2/schema 2. No unrelated runtime, public

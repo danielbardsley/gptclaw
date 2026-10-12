@@ -1,16 +1,17 @@
 # SPEC-026 implementation acceptance
 
-- **Status:** Implementation merged; managed/client acceptance pending
+- **Status:** Delivered — initial development slice; merged implementation and actual managed/client acceptance
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-026](spec.md) · **Design:** [TDD-026](technical-design.md) · **Tasks:** [TASKS-026](tasks.md)
 - **Merged implementation:** [PR #60](https://github.com/danielbardsley/gptclaw/pull/60)
-- **Candidate:** provider 1.8.0; project/catalogue schema 4; group receipt 3; `notes-postgres@1.0.0`
+- **Accepted provider:** 1.8.4; project/catalogue schema 4; group receipt 3; `notes-postgres@1.0.0`
 
-The project owner approved implementation and selected local development credentials.
-PR #60 merged at `f4ad780` after final-code CI passed. No managed provider rollout,
-existing project/data reset, infrastructure apply, public exposure or production
-secret change has been performed.
+Historical implementation baseline (October 11): the project owner approved
+implementation and selected local development credentials.
+PR #60 merged at `f4ad780` after final-code CI passed. At that baseline, no managed rollout or project/data operation had been performed.
+Actual subsequently authorized rollout and acceptance are recorded below.
+No infrastructure apply, public exposure or production secret change occurred.
 
 ## Evidence recorded so far
 
@@ -55,15 +56,15 @@ secret change has been performed.
 
 | Criterion | State | Evidence and remaining work |
 |---|---|---|
-| AC-001 | pending closeout | V4 generation/refusal and V1–V3 compatibility pass focused suites; final local broad gate passed; final-code CI passed at `9227990`; managed/client gates remain. |
-| AC-002 | partial | Real isolated container recreation retains notes; missing/major/ownership refusals pass offline tests. Managed EBS mount/lifecycle and two-project observation pending. |
-| AC-003 | partial | Role files/metadata exclusion, actual DDL denial and rotation passed isolated checks. Old-login denial passed; interrupted rotation and managed scoped-mount observations pending. |
-| AC-004 | pending | Owned ordering/private-network/zero-published-port design implemented; legacy orchestration tests pass. Actual managed Quadlet/route/outage/limits acceptance pending rollout approval. |
-| AC-005 | partial | Real initial Alembic setup/declared head and stale-plan tests pass. Actual forward existing-data migration preserves rows; managed failure/recovery closeout pending. |
-| AC-006 | partial | Actual native dump/isolated restore and staged promotion pass. Corruption refusal passed; final-code CI passed; managed closeout pending. |
-| AC-007 | partial | Actual confirmed reset retains prior generation; plan/backup/confirmation refusals pass. Generation pruning and failed-reset retention pass isolated checks; managed target evidence pending. |
-| AC-008 | partial | Locked API quality/security/coverage passes actual PostgreSQL. Frontend/browser checks pass; generated Docker/browser CI passed; independent owner persistence observation pending. |
-| AC-009 | pending | Final-code CI and implementation merge are complete. Authorized managed rollout, two-project/legacy checks and independent owner acceptance remain pending. |
+| AC-001 | passed | Final isolated/CI/managed/client evidence and limits are recorded in the accepted closeout below. |
+| AC-002 | passed | Final isolated/CI/managed/client evidence and limits are recorded in the accepted closeout below. |
+| AC-003 | passed | Final isolated/CI/managed/client evidence and limits are recorded in the accepted closeout below. |
+| AC-004 | passed | Final isolated/CI/managed/client evidence and limits are recorded in the accepted closeout below. |
+| AC-005 | passed | Final isolated/CI/managed/client evidence and limits are recorded in the accepted closeout below. |
+| AC-006 | passed | Final isolated/CI/managed/client evidence and limits are recorded in the accepted closeout below. |
+| AC-007 | passed | Final isolated/CI/managed/client evidence and limits are recorded in the accepted closeout below. |
+| AC-008 | passed | Final isolated/CI/managed/client evidence and limits are recorded in the accepted closeout below. |
+| AC-009 | passed | Final isolated/CI/managed/client evidence and limits are recorded in the accepted closeout below. |
 
 Task-owned isolated synthetic fixture source/data are retained under task-specific
 `/tmp/run011-database-*` directories for review; their owned containers/networks are
@@ -254,3 +255,84 @@ source, generated provenance and selected browser checks. A disposable regressio
 uses the actual generated-name pattern plus an output symlink, proving that those
 outputs are neither inspected nor copied and the original files remain.
 Final-head gates, reviewed rollout and actual commit-hook reruns remain separate.
+
+## Reviewed source-copy correction and installed verification
+
+[PR #65](https://github.com/danielbardsley/gptclaw/pull/65) merged as `1a3a0fe`;
+final code `253d84c` passed all three configured workflows:
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38288336909),
+[federation](https://github.com/danielbardsley/gptclaw/actions/runs/38288336645), and
+[application](https://github.com/danielbardsley/gptclaw/actions/runs/38288336711).
+Local repository checks passed 464 unittest cases, both source-copy regressions
+and actual live-source copying. Installed provider 1.8.4 retains the same data,
+role and manifest contracts. The exact task-created prior hook was backed up,
+checksum-checked and replaced through the reviewed installer; unknown hooks were
+not overwritten, and no Git operation ran without its replacement gate.
+
+The first application acceptance commit passed its real installed parent hook
+(about 370 seconds), including real native database recovery and complete
+frontend/browser checks, while both live applications stayed ready. Its final
+acceptance PR CI also passed. The second hook initially stopped during isolated
+reset before promotion, preserving original fixture data and two verified backups.
+A fresh complete native/quality/browser diagnostic passed on unchanged code.
+That failure was not reproduced and its cause is not established; final actual
+hook resumption/acceptance is recorded when observed. No live dataset was reset.
+
+The first acceptance PR was created with a single-repository scoped PR lease and
+merged after final-head CI using separate existing scoped PR-read and Contents-write
+leases, with an exact head check and both leases revoked afterward. An initial
+Contents-only PR-read request was denied; no permissions were broadened. The
+existing PR lease validated the request before the existing Git lease merged it.
+
+## Accepted initial development slice
+
+Both actual Git acceptance commits passed the installed 1.8.4 parent hook:
+approximately 370 seconds for the first and 352 for the second. Each runs real
+isolated PostgreSQL, locked API quality/security/build, native reset/restore/
+rotation/failure/forward-migration and complete frontend/OpenAPI/Chromium gates.
+The second passed on retry after the earlier safely retained isolated failure;
+no code change was needed and no unsupported cause is claimed. Both live private
+applications stayed ready while verification ran. Their source implementations
+are already merged, source CI passed, and final acceptance records use reviewed
+private PRs and existing single-repository broker leases.
+
+AC-001: closed v4 generation/validation, unsafe declarations, old v1–v3/release
+immutability and observation-only refusal pass. Actual 1.8.1 validation refuses
+both new-storage manifests without runtime execution.
+
+AC-002–004: managed restart/source reload and fresh container/data generations
+retain complete synthetic API snapshots. Both role/network/read-only mount and
+zero-port checks pass. Current runtime DDL and cross-project login fail; retired
+logins fail after rotation. Interrupted CLI rotation blocks readiness, retains its
+journal/credentials and resumes the exact recorded operation. Legacy private
+projects remain HTTP 200. Missing/corrupt/foreign-storage and override cases pass
+in isolated fixtures; those defects were not introduced into live retained data.
+
+AC-005–007: actual forward migration, stale-source refusal, controlled migration
+failure/readiness blocking and source-compatible verified fresh-generation restore
+pass. Both projects' stopped reset/restore/rotation preserve records and peer
+availability. Wrong confirmation, running/locked, corrupt/unknown and protected
+prune cases refuse. Budget/count/byte/free-space failures pass in disposable
+pre-execution fixtures; measured live headroom and configured ceilings are recorded
+separately. Restoring a verified compatible schema/data generation proves data
+rollback. An incapable older provider is refused rather than activated against
+new data; no unsafe global provider downgrade was attempted.
+
+AC-008–009: immutable starter and both distinct complete applications pass locked
+quality and actual CI; API critical coverage exceeds 80% statements and branches.
+Actual private Chromium CRUD/reload/mobile/keyboard/draft/text checks pass. The
+project owner independently confirms synthetic writes survive browser reload in
+both applications. Scope approval, owner-controlled workflow grant readback,
+reviewed source/rollout, main merges and sanitized acceptance are distinguished.
+
+Fixture disposition: retain both complete private application sources/repositories,
+synthetic seed/persistence fixtures and owner-created/edited records. Retain selected
+role files, verified same-volume logical backups and active/rollback generations.
+Only exact unprotected task-owned generations and browser records were pruned;
+no owner data was reset after independent client creation. Private verification
+receipts/screenshots/source probes remain outside Git. Unknown worktrees/hooks,
+legacy apps, host policy, AWS resources and production identities are preserved.
+
+This closes only the initial local-secret PostgreSQL development slice. Same-volume
+logical recovery does not establish host/volume-loss recovery, continuous backups,
+RPO/RTO, production readiness or broad secret/tenant isolation.
