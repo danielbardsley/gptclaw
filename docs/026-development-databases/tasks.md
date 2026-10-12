@@ -137,3 +137,10 @@ See [acceptance](acceptance.md) for exact revisions, limits and fixture disposit
   replace only the exact task-owned prior hook through its installer, and prove
   both actual Git commit hooks. Preserve live data, source and unknown hooks.
   DB-008/009; AC-008/009.
+
+- [x] T-017: Require the final PostgreSQL listener before readiness during fresh
+  initialization, including staged restore/reset generations. The controlled five-
+  second bootstrap pause and focused polling regression pass with corrected code;
+  full repository checks pass 465 cases. Deliver through reviewed provider 1.8.5.
+  The two named hook updates and full isolated cleanup gates are tracked in their
+  application cleanup PRs; preserve data and published releases.
