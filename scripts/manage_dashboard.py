@@ -23,9 +23,15 @@ FRONTEND_UNIT = 'gptclaw-dashboard.service'
 IMAGE = 'localhost/gptclaw-node:24.21.0-pnpm12.10.1'
 
 
+class OperatorDirectoryRequired(Exception):
+    pass
+
+
 def owned_directory(path):
     path = app.safe(path)
     if not path.exists():
+        if path == PLATFORM and not os.access(path.parent, os.W_OK):
+            raise OperatorDirectoryRequired()
         path.mkdir(mode=0o700)
     info = path.lstat()
     app.need(stat.S_ISDIR(info.st_mode) and info.st_uid == os.getuid()
@@ -144,6 +150,7 @@ def prepare():
                      for p in sorted(static.rglob('*')) if p.is_file()}
     provider = app.provider_bundle()
     image = app.command(['podman','image','inspect',IMAGE,'--format','{{.Id}}']).stdout.strip()
+    image = image if image.startswith('sha256:') else 'sha256:' + image
     app.need(re.fullmatch(r'sha256:[0-9a-f]{64}', image), 'setup')
     selected_origin = origin()
     descriptor = {'schema_version': 1, 'source': source_values, 'static': static_values,
@@ -272,6 +279,9 @@ def main():
                     receipt=owner();app.need(receipt and receipt.get('previous'), 'conflict')
                     result=activate(receipt['previous'])
         print(json.dumps(result, sort_keys=True))
+    except OperatorDirectoryRequired:
+        print(json.dumps({'state':'operator-required','reason':'platform-directory','path':str(PLATFORM)}))
+        return 2
     except (app.AppError, OSError, ValueError):
         print(json.dumps({'state':'unavailable','error':'dashboard-operation-refused'}))
         return 1

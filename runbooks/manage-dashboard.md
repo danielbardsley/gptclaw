@@ -9,6 +9,23 @@ the prepared isolated manifest interpreter. This does not manage project data.
 
 ## Build and prepare
 
+The approved base directory must already exist with forge ownership and mode 0700.
+The existing project-volume mount root is owned by root; forge does not create or
+change permissions on it. If `/srv/forge/platform` is absent, the existing operator
+must provision only this new application directory after reviewing this runbook:
+
+```sh
+test ! -e /srv/forge/platform && test ! -L /srv/forge/platform && sudo install -d -m 0700 -o forge -g forge /srv/forge/platform
+```
+
+First verify the expected project volume is mounted at `/srv/forge`. If the path exists
+with unexpected ownership, links or contents, inspect it rather than overwrite it.
+This is scoped operational allocation on the existing protected project volume: it
+changes no AWS resource, mount, identity, deletion protection or host access control.
+No forge privilege or parent-directory permission change is granted. Preserve the
+existing reviewed operator path and infrastructure gates; do not run unrestricted
+sudo or use an AWS configuration workaround.
+
 Use the reviewed Node/pnpm profile in [the toolchain registry](../config/toolchains/v1.json),
 with the immutable `templates/apps/node-toolchain` recipe if the matching image is
 not already installed. Do not install host Node, pnpm or Python packages.

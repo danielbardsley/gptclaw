@@ -13,7 +13,7 @@
 | AC-001 | Passed locally | Four synthetic schema topologies appear once in deterministic order; group children/non-projects excluded; duplicate IDs lose target bindings. Live read-only scan found 13 valid distinct project rows. |
 | AC-002 | Passed locally | Synthetic valid/missing/invalid/stale metadata and file-presence fixtures retain manifest identity and honest fields; provider unavailable/unsupported remains separate from health; input declarations are not rewritten. |
 | AC-003 | Passed locally | Unsafe paths, symlinks, hardlinks, FIFO, malformed/oversized/unreadable manifests, directory replacement, scan/time/output/diagnostic bounds and synthetic-secret projection tests pass. Discovery execution/network spies pass; pinned validation includes group paths. |
-| AC-004 | Pending | Actual loopback production frontend runs rootlessly as forge with only standalone/static assets and the collector socket mounted. HTTP checks return 405 for mutations, 400 for arbitrary parameters and 403 for foreign Host/Origin. Owned user-service rollout, exact private Serve route/Funnel-off evidence and owner tailnet desktop access remain. |
+| AC-004 | Pending | Actual loopback production frontend runs rootlessly as forge with only standalone/static assets and the collector socket mounted. HTTP checks return 405 for mutations, 400 for arbitrary parameters and 403 for foreign Host/Origin. Operator creation of the absent approved `/srv/forge/platform` base, owned user-service rollout, exact private Serve route/Funnel-off evidence and owner tailnet desktop access remain. |
 | AC-005 | Pending final environment | Browser checks pass for semantic inventory table, keyboard skip navigation, escaped names, metadata gaps, empty/partial/stale/outage/recovery states. Full offline repository gate passes. CI and owner/live acceptance are still pending and are not inferred from local results. |
 
 ## Executed verification
@@ -23,7 +23,7 @@ From the isolated worktree on the project volume:
 - `/srv/forge/projects/gptclaw/.venv-manifest/bin/python -B scripts/tests/test_project_manifest.py`: 27 existing tests passed after the additive pinned-directory validator change.
 - Same interpreter, `scripts/tests/test_dashboard_inventory.py`: 12 tests passed.
 - Same interpreter, `scripts/tests/test_dashboard_collector.py`: 3 tests passed.
-- Same interpreter, `scripts/tests/test_dashboard_install.py`: 6 release/socket ownership and recovery tests passed; all fixtures are isolated, with host commands mocked.
+- Same interpreter, `scripts/tests/test_dashboard_install.py`: 7 release/socket ownership and recovery tests passed; all fixtures are isolated, with host commands mocked.
 - Pinned rootless Node 24.21.0 / pnpm 12.10.1 container: frozen install, two HTTP-boundary tests, `pnpm typecheck` and `pnpm build` passed.
 - `PATH=/srv/forge/projects/gptclaw/.venv-manifest/bin:$PATH ./scripts/check-repository.sh`: full offline repository gate passed, including all existing suites and registered dashboard tests.
 - `bash -n scripts/check-repository.sh`, dashboard Python parsing and `git diff --check`: passed. Relative links in all three planning sets and the platform/runbook documentation passed.
@@ -47,3 +47,9 @@ must open the actual dashboard in a tailnet desktop browser. Merge and final per
 acceptance remain pending; DSH-001 is not Delivered. Preserve all project data, existing
 services/routes and unknown configuration. DSH-002 and DSH-003 are separately authorized
 and follow this inventory foundation; this record claims no status/link acceptance.
+
+Live release preparation initially refused Podman's unprefixed image ID; normalization
+and a regression test now pass. The subsequent attempt identified an operational
+prerequisite: the approved platform directory is absent and forge lacks write access
+to its parent. The CLI now reports `operator-required` for that exact directory. No
+privilege/parent-permission workaround, AWS mutation or partial service install ran.

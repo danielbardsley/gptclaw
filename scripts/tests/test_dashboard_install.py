@@ -61,6 +61,18 @@ class ReleaseTests(unittest.TestCase):
         self.assertNotIn(':/srv/forge/projects',frontend)
         self.assertNotIn('podman.sock',frontend)
 
+    def test_podman_unprefixed_image_id_is_frozen_as_sha256(self):
+        command=app.command
+        def unprefixed(args, **kwargs):
+            result=command(args, **kwargs)
+            if args[:3] == ['podman','image','inspect']:
+                result.stdout='1'*64
+            return result
+        with patch.object(app,'command',side_effect=unprefixed):
+            release=manager.prepare()
+        descriptor=manager.read_owned(manager.PLATFORM/'releases'/release/'release.json')
+        self.assertEqual(descriptor['image'],'sha256:'+'1'*64)
+
     def test_unknown_units_and_modified_release_are_preserved(self):
         release=manager.prepare()
         unit=manager.USER_UNITS/manager.COLLECTOR_UNIT
