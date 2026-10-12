@@ -714,6 +714,9 @@
             "fastapi_app.db_cli",
             "seed"
           ]
+        },
+        "storage": {
+          "const": "runtime-volume-v1"
         }
       }
     }

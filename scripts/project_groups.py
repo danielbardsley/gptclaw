@@ -54,7 +54,7 @@ def initialize(stage, slug, release):
         value['schema_version']=4;value['data']={'mode':'persistent'}
         value['components']['api']['depends_on']=['db']
         value['components']['db']={'adapter':'postgres-v1','profile':'postgres18-v1','depends_on':[]}
-        value['database']={'head':'0001','migrate':['.venv/bin/python','-m','fastapi_app.db_cli','migrate'],'seed':['.venv/bin/python','-m','fastapi_app.db_cli','seed']}
+        value['database']={'storage':'runtime-volume-v1','head':'0001','migrate':['.venv/bin/python','-m','fastapi_app.db_cli','migrate'],'seed':['.venv/bin/python','-m','fastapi_app.db_cli','seed']}
     return value
 
 
@@ -212,6 +212,9 @@ def cleanup(s, resolved, names):
 
 def start(root, no_route=False, take_lock=True):
     root,value = a.target(root); slug=value['project']['id']
+    if value['schema_version']==4:
+        import project_database as db
+        db.require_storage(value)
     with (a.locked(slug) if take_lock else contextlib.nullcontext()), scope(root,value) as resolved:
         s=reserve(root,value)
         current=observe(s,resolved)

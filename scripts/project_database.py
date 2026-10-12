@@ -17,7 +17,9 @@ import uuid
 
 import private_apps as a
 
-BASE = Path('/srv/forge/data/projects')
+BASE = a.STORE/'data/projects'
+LEGACY_BASE = Path('/srv/forge/data/projects')
+STORAGE = 'runtime-volume-v1'
 MOUNT = Path('/srv/forge')
 ROLES = ('admin', 'migration', 'runtime')
 HEX = re.compile(r'^[0-9a-f]{32}$')
@@ -58,7 +60,13 @@ def write(path, value):
     a.save(path, value)
 
 
+def require_storage(contract):
+    check(contract.get('database',{}).get('storage')==STORAGE,'database-storage')
+
+
 def mount():
+    if BASE == a.STORE/'data/projects':
+        check(not LEGACY_BASE.exists() and not LEGACY_BASE.is_symlink(),'database-storage')
     check(a.command(['mountpoint', '-q', str(MOUNT)], optional=True).returncode == 0, 'database-storage')
     check(MOUNT.stat().st_dev == BASE.parent.stat().st_dev if BASE.parent.exists() else True, 'database-storage')
 
@@ -140,7 +148,14 @@ def create(root, contract):
     """Allocate only a previously absent owned database root; no implicit recovery."""
     mount(); slug=contract['project']['id']; path=home(slug)
     check(not path.exists() and not path.is_symlink(), 'conflict')
-    a.safe(BASE); BASE.mkdir(mode=0o700,parents=True,exist_ok=True); private(BASE,True)
+    a.safe(BASE)
+    if BASE == a.STORE/'data/projects':
+        a.ensure_store();private(a.STORE,True)
+        for directory in (BASE.parent,BASE):
+            if not directory.exists():directory.mkdir(mode=0o700)
+            private(directory,True)
+    else:
+        BASE.mkdir(mode=0o700,parents=True,exist_ok=True);private(BASE,True)
     path.mkdir(mode=0o700)
     for child in ('postgres','credentials','backups'): (path/child).mkdir(mode=0o700)
     generation=uuid.uuid4().hex; epoch=uuid.uuid4().hex
@@ -355,6 +370,7 @@ def revision(s, generation=None):
 
 
 def ready(s, contract):
+    if contract.get('database',{}).get('storage')!=STORAGE:return False
     try:return not s['blocked'] and active(s) and revision(s)==contract['database']['head']==s['revision']
     except a.AppError:return False
 
@@ -621,6 +637,9 @@ def rotate(s):
 
 def dispatch(root, action, selected=None, operation_id=None, confirm=None):
     root,contract=a.target(root);check(contract['schema_version']==4,'invalid');slug=contract['project']['id']
+    if action=='status' and contract['database'].get('storage')!=STORAGE:
+        return {'project':slug,'state':'storage-upgrade-required','minimum_provider':'1.8.2','data_retained':True}
+    require_storage(contract)
     with a.locked(slug):
         s=state(slug,root)
         if action=='status':
