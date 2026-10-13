@@ -274,3 +274,16 @@ and separately approve/read back the installation change, then runs
 `credentials workflow-policy --disable` and explicit activation of the original
 profile. Compatible helpers are retained; source/repos/data and operation journals
 are preserved. Previously issued tokens remain subject to their reported expiry.
+
+## Four-name mobile acceptance extension (provider 1.10.1)
+
+SPEC-031's exact four-name extension was approved by the project owner October 13.
+Credential profile schema 4 supports up to four sorted unique explicit names;
+schema 3 retains its two-name bound. The effective approved names are Shelfmark,
+Trailboard and mob001-accept-one/two. App grants and single-repository token roles
+are unchanged. Use the reviewed deactivate/workflow-policy/canary/activate path,
+preserving the two existing names. The canary can select the exact Expo template.
+Missing/archived source bindings and original helper paths are retained without
+adoption; unknown or incomplete helper-upgrade journals remain blocking. Restored
+source needs a compatible helper refresh before credential use. Retain the capable
+provider for reconciliation because earlier providers cannot interpret schema 4.

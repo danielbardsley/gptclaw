@@ -147,7 +147,7 @@ class Tests(unittest.TestCase):
         with self.assertRaises(app.AppError):broker.set_workflow_policy(['persistent'])
         self.assertEqual(broker.profile(),old)
         self.factory.grants['workflows']='write'
-        for names in [['persistent','persistent'],['one','two','three'],['*'],['../foreign']]:
+        for names in [['persistent','persistent'],['one','two','three','four','five'],['*'],['../foreign']]:
             with self.assertRaises(app.AppError):broker.set_workflow_policy(names)
             self.assertEqual(broker.profile(),old)
         result=broker.set_workflow_policy(['persistent'])
@@ -212,6 +212,26 @@ class Tests(unittest.TestCase):
         broker.set_active(True)
         token=broker.Broker().project_token(self.projects/'baseline','git')
         self.assertEqual(token.metadata['permissions'],broker.ROLES['git']);token.close()
+    def test_four_name_workflow_policy_preserves_legacy_bounds_and_singleton_tokens(self):
+        self.workflow_profile(['one','two','three','four'])
+        self.assertEqual(broker.profile()['schema_version'],4)
+        legacy=copy.deepcopy(broker.profile());legacy['schema_version']=3
+        with self.assertRaises(app.AppError):broker.profile(legacy)
+        with self.assertRaises(app.AppError):broker.set_active(True)
+        first=broker.create('one',str(self.projects/'one'),canary=True,template='expo-react-native',version='1.0.0')
+        self.assertEqual(first['state'],'repository-ready');broker.set_active(True)
+        ordinary=broker.Broker().project_token(self.projects/'one','git');self.assertNotIn('workflows',ordinary.metadata['permissions']);ordinary.close()
+        workflow=[v for v in self.factory.tokens.values() if 'workflows' in v['data']['permissions']]
+        self.assertTrue(workflow);self.assertTrue(all(v['ids']==[first['repository_id']] and v['revoked'] for v in workflow))
+
+    def test_archived_source_binding_is_preserved_and_pending_upgrade_blocks(self):
+        self.first();broker.set_active(False);root=self.projects/'first';binding=broker.bound(root)
+        archive=self.projects/'.archived';root.rename(archive);before=broker.bindings()
+        broker.upgrade_registered_helpers();self.assertEqual(before,broker.bindings())
+        app.save(broker.location()/('helper-upgrade-'+str(binding['repository_id'])+'.json'),{'stage':'planned'})
+        with self.assertRaises(app.AppError):broker.upgrade_registered_helpers()
+        self.assertEqual(before,broker.bindings());self.assertTrue((archive/'.git/config').is_file())
+
     def test_helper_upgrade_recovers_known_config_write_and_preserves_unknown(self):
         self.first();broker.set_active(False)
         root=self.projects/'first';old=broker.bound(root)['helper_command'];original=(root/'.git/config').read_bytes()

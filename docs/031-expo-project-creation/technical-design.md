@@ -263,3 +263,10 @@ Platform verify and golden verification execute serial individually bounded step
 under one operation lock, retaining the existing 300-second job limit. A combined
 verification trial timed out under concurrent host checks; the per-step interface
 keeps failures attributable without increasing a job's resource/time ceiling.
+
+The owner subsequently approved the exact four-name profile/fixture extension and
+archived-binding preservation with “Yes, all approved.” Provider 1.10.1 introduces
+credential profile 4 (maximum four names), while profile 3 retains its two-name
+bound. Tokens/App grants are unchanged. No wildcard or 64-name scope is included.
+Schema/activation/helper compatibility and isolated singleton-token tests precede
+actual policy activation and private repository creation.

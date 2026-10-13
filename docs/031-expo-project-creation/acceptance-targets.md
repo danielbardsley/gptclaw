@@ -1,6 +1,6 @@
 # SPEC-031 proposed private acceptance targets
 
-- **Status:** Prepared proposal; exact-name authorization pending
+- **Status:** Approved — four-name policy and private target creation authorized
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 
@@ -39,8 +39,9 @@ isolated local golden-fixture logs separately from managed acceptance evidence.
 
 TASKS-031 T-011 requires the owner to “record ... two synthetic project/repository
 names and retention plan”; the design calls for selection/authorization of exact
-fixture names. This proposal supplies that concrete scope. No live target has been
-created and no workflow policy has been changed yet.
+fixture names. This proposal supplies that concrete scope. The project owner approved this complete scope with “Yes, all approved” on
+October 13, following the clarification of repositories, policy and archived
+bindings. Activation and actual results are recorded separately.
 
 ## Additional supporting-scope approval needed
 
@@ -60,7 +61,5 @@ helper update before credential use. No binding, repository or source is deleted
 
 Automatic approval review rejected the earlier proposed 64-name schema and archived
 helper change because that persistent security-scope expansion lacked exact owner
-authorization. Nothing from that rejected command ran. This smaller four-name
-proposal is for explicit owner approval before coding or activation; it is not a
-workaround or a claim that approval already exists. Source-only acceptance and
-other authorized checks continue independently.
+authorization. Nothing from that rejected command ran. The smaller four-name proposal was subsequently explicitly approved by the
+project owner; the rejected 64-name scope remains excluded.
