@@ -1,6 +1,6 @@
 # SPEC-031: Branch and worktree policy
 
-- **Status:** Approved — implementation in progress
+- **Status:** Implemented — verification and review pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** PRJ-006, initial single-host Git coordination slice
@@ -129,9 +129,9 @@ between authorized agents, not isolation from hostile code or users.
 | AC-006 | Cleanup retains dirty, ignored/untracked, unpublished, active, moved, unknown and ambiguously merged worktrees. After explicit release and verified retention, one clean owned checkout is removed without force; branch/receipt and other worktrees remain. Lost responses and interruptions reconcile safely. | WT-006 |
 | AC-007 | Run focused tests and repository checks in the prepared environment, record CI for the final implementation revision, then complete an authorized two-task private Git exercise and owner handoff acceptance. Record retained branches/checkouts and cleanup disposition; fresh-task guidance is verified without changing installed host policy. | WT-001–007 |
 
-## Proposed defaults and completion
+## Approved defaults and completion
 
-The project owner reviews: source-only initial scope, enrolled repositories only,
+The project owner approved: source-only initial scope, enrolled repositories only,
 `origin/main` as the recorded default base, no implicit fetch, one owner per task,
 short locks, retained branches and explicit cleanup. These defaults were approved with implementation authorization on October 13. Existing repository
 and area guidance still govern every task, including task-specific delegation

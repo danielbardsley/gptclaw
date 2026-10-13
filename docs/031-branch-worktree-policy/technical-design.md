@@ -1,6 +1,6 @@
 # TDD-031: Branch and worktree policy
 
-- **Status:** Approved design — implementation in progress
+- **Status:** Implemented design — acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-031](spec.md) · **Tasks:** [TASKS-031](tasks.md)
@@ -30,9 +30,10 @@ not agent mutual exclusion; use platform file locks for managed operations. See
 
 ## Identity, layout and records
 
-Propose source checkouts under `/srv/forge/projects/.gptclaw-worktrees/<project-id>/
+Source checkouts use `/srv/forge/projects/.gptclaw-worktrees/<project-id>/
 <allocation-id>/`; exclude the entire managed parent from runtime and inventory
-scans before exposing creation. State belongs under the existing runtime-owned
+scans before exposing creation. Known provider dependency caches are excluded from
+nested-source-repository detection; no cache contents enter task checkouts. State belongs under the existing runtime-owned
 store in a separate `worktrees/v1/` namespace, never committed source manifests.
 A project-level record binds canonical root, canonical Git common-directory
 identity and PRJ-005 immutable repository ID; project ID alone is insufficient.
@@ -159,8 +160,8 @@ and relevant shell syntax checks. CI is separate from local results.
 A later authorized live exercise uses two task allocations in an exact enrolled
 private fixture and an independent running app. Record scoped fetch/branch push,
 optional requested PR, producer/consumer handoff, denied task runtime operations,
-continued app health and cleanup/retention disposition. No real remote writes or
-checkout removal are authorized by this draft. Owner acceptance and implementation
+continued app health and cleanup/retention disposition. Real remote writes and checkout removal require the named fixture scope
+described in SPEC-031; it remains pending. Owner acceptance and implementation
 merge are separate gates; no existing app/database is a disposable test fixture.
 
 ## Traceability and decisions

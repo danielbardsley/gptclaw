@@ -303,11 +303,30 @@ class Tests(unittest.TestCase):
         with patch.object(w,'pr_evidence',return_value={**merged,'state':'closed','merge':None}),patch.object(w,'remote_head',return_value=False):
             self.error('worktree-retained',w.cleanup,self.root,'one','producer',out['generation'],head)
 
+    def test_nonforge_lexical_refusal_does_not_execute_or_read(self):
+        import io
+        output=io.StringIO()
+        with patch.object(cli.os,'getuid',return_value=1234),patch.object(w,'guard',side_effect=AssertionError('no filesystem read')),patch('sys.stdout',output):
+            result=cli.main(['verify','--project-root','/tmp/.gptclaw-worktrees/synthetic/task'])
+        self.assertEqual(result,1);self.assertEqual(json.loads(output.getvalue())['error'],'worktree-source-only')
+
+    def test_closed_stdout_timeout_returns_fixed_error(self):
+        real=subprocess.Popen
+        def spawn(*args,**kwargs):return real([sys.executable,'-c','import os,time; os.close(1); time.sleep(30)'],**kwargs)
+        with patch.object(w.subprocess,'Popen',side_effect=spawn):
+            self.error('timeout',w.git,self.root,'status',timeout=.2)
+
     def test_timeout_terminates_descendant_group(self):
         # Controlled subprocess spy spawns a child that holds the Git stdout pipe.
         real=subprocess.Popen;pidfile=self.fixture.base/'child.pid'
         script='import os,subprocess,time; p=subprocess.Popen(["sleep","30"]); open("'+str(pidfile)+'","w").write(str(p.pid)); time.sleep(30)'
-        def spawn(*args,**kwargs):return real([sys.executable,'-c',script],**kwargs)
+        def spawn(*args,**kwargs):
+            process=real([sys.executable,'-c',script],**kwargs)
+            deadline=time.monotonic()+10
+            while not pidfile.exists() and time.monotonic()<deadline:time.sleep(.01)
+            if not pidfile.exists():
+                os.killpg(process.pid,signal.SIGKILL);process.wait();raise AssertionError('fixture startup failed')
+            return process
         with patch.object(w.subprocess,'Popen',side_effect=spawn):self.error('timeout',w.git,self.root,'status',timeout=.2)
         pid=int(pidfile.read_text());status=Path('/proc')/str(pid)/'stat'
         if status.exists():self.assertEqual(status.read_text().split()[2],'Z')

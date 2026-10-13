@@ -1,6 +1,6 @@
 # TASKS-031: Branch and worktree policy
 
-- **Status:** Approved — implementation in progress
+- **Status:** Implemented — verification and review pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md)
@@ -39,7 +39,7 @@
 
 ## Verification and delivery
 
-- [ ] T-007: Add meaningful synthetic Git tests for all criteria, actual multi-process
+- [x] T-007: Add meaningful synthetic Git tests for all criteria, actual multi-process
   concurrency and process termination at each write boundary. Verify independent
   files/indexes, config/token denials, stale owners, hook targeting, runtime and
   dashboard exclusion, canonical regression, all retention blockers and recovery.
@@ -66,8 +66,8 @@
 Lifecycle, ownership/generations, receipt recovery, short project locks, scoped
 helper refresh/membership checks, owned hook adaptation, runtime/discovery guards,
 handoff and conservative cleanup are implemented. The runbook and inert agent
-adoption reference are written. Focused Git tests and canonical regressions are
-being verified; final repository/CI evidence is pending. See [acceptance](acceptance.md)
+adoption reference are written. The local repository gate and canonical regressions passed. Final targeted
+lifecycle/timeout/CI portability checks and final CI are being completed. See [acceptance](acceptance.md)
 for actual observations and unresolved private/owner gates. The branch remains
 `codex/prj-006-spec`; PR #74 is being updated to cover the implementation.
 No installed host-policy, AWS/HCP or production changes are made.

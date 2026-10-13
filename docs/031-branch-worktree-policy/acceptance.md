@@ -1,11 +1,11 @@
 # SPEC-031 acceptance evidence
 
-- **Status:** Implementation verification in progress; private/owner acceptance pending
+- **Status:** Implemented; final CI and private/owner acceptance pending
 - **Owner:** Project owner
 - **Evidence date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md) · **Tasks:** [TASKS-031](tasks.md)
 - **Delivery:** [PR #74](https://github.com/danielbardsley/gptclaw/pull/74), unmerged implementation update
-- **Revision context:** Working tree on `codex/prj-006-spec`, based on planning commit `933779b9d204572827897aac44642375b2706929`; final committed revision/CI are recorded only after observation.
+- **Revision context:** Working tree on `codex/prj-006-spec`, based on planning commit `933779b9d204572827897aac44642375b2706929`; implementation commit `f1dc27cd2d21a5754bd6112fa3568572114ea66e` was published, with the documented timeout/CI corrections being prepared as a follow-up.
 
 ## Criterion mapping
 
@@ -14,7 +14,7 @@
 | AC-001 | passed | Real isolated Git: read-only plan, two distinct task branches/checkouts from the recorded base, preserved dirty canonical bytes/index, invalid IDs/paths/base/collisions/occupied refs and unsupported states rejected, duplicate create reconciled. | Retain regression checks in CI. |
 | AC-002 | passed | Real child processes edit independent files/indexes. Same-project lock contention returns busy; another project progresses. A killed mutator retains creation intent and retry reconciles one allocation. Explicit ownership transfer succeeds; stale owner/generation fails. | Retain regression checks in CI. |
 | AC-003 | pending | Synthetic broker plus real local Git verifies exact singleton repository scope, remote-head readback/revocation, disabled binding and forged/config/moved-membership denial before issuance. Recognized hooks migrate; an actual task hook process returns source-only before runtime execution. | Authorize named private fixture and prove native scoped fetch/push; project owner. |
-| AC-004 | pending | Local task/component guards deny runtime/dependency/database execution. Managed and moved task roots are absent from inventory. Existing web, Python and group regressions passed; complete repository/database regressions are being verified. | Final repository/CI checks and independent live private-app observation; project owner/implementation agent. |
+| AC-004 | pending | Local task/component guards deny runtime/dependency/database execution. Managed and moved task roots are absent from inventory. Existing web, Python and group regressions passed; the complete local repository/database regression gate passed. A read-only independent Shelfmark observation reports ready/healthy; observation throughout a live Git exercise remains pending. | Final repository/CI checks and independent live private-app observation; project owner/implementation agent. |
 | AC-005 | passed | Producer handoff records actual head, dirty presence and attributed check/remaining labels; consumer resumes the same head and preserved dirty source. Stale owners/ref changes fail. Local and remote-observed publication differ; no automatic canonical integration or merge. | Owner acceptance of live handoff belongs to AC-007. |
 | AC-006 | passed | Active, dirty, ignored/untracked, unpublished, moved/tampered and busy-Git checkouts are retained. Exact clean released checkout removal leaves branch, tombstone and other checkout intact. Lost create/removal responses reconcile. Squash retention revalidates PR head/merge against canonical ancestry. | Live cleanup only within explicit named-fixture scope. |
 | AC-007 | pending | Focused isolated tests passed and documentation/runbook/adoption guidance exist. No infrastructure, production, runtime activation or installed-host-policy changes were made. | Final repository checks, final-revision CI, named private exercise, fresh-task guidance verification, owner acceptance and merge remain separate gates. |
@@ -36,22 +36,46 @@ No real App key/token values are used in tests or evidence.
 - `.venv-manifest/bin/python -B scripts/tests/test_private_apps.py`: passed.
 - `.venv-manifest/bin/python -B scripts/tests/test_project_python.py`: 25 passed.
 - `.venv-manifest/bin/python -B scripts/tests/test_project_groups.py`: 16 passed.
-- `PATH="$PWD/.venv-manifest/bin:$PATH" ./scripts/check-repository.sh`: running;
-  no whole-gate result is claimed yet.
+- `PATH="$PWD/.venv-manifest/bin:$PATH" ./scripts/check-repository.sh`: passed
+  (exit 0), including 25 lifecycle tests before the later lock/timeout/UID
+  refinements. The revised lifecycle and targeted follow-up checks are recorded
+  separately; CI will exercise the final source revision.
+- `.venv-manifest/bin/python -B scripts/tests/test_project_worktrees.py`: the
+  final expanded 27-test run passed in 201.977 seconds after timeout-fixture
+  synchronization. The subsequent lexical-refusal regression adds one test.
+- `.venv-manifest/bin/python -B scripts/tests/test_project_worktrees.py Tests.test_nonforge_lexical_refusal_does_not_execute_or_read Tests.test_actual_hook_process_refuses_task_before_runtime Tests.test_timeout_terminates_descendant_group`:
+  all three passed after the CI portability correction.
+- `.venv-manifest/bin/python -B scripts/tests/test_project_worktrees.py Tests.test_closed_stdout_timeout_returns_fixed_error`:
+  passed; subprocess wait timeout returns a fixed diagnostic and terminates its group.
+- `scripts/gptclawctl --version`: reports provider 1.10.0 and worktree receipt schema 1.
 - `bash -n scripts/check-repository.sh`: passed.
 - `git diff --check` and `git diff --cached --check`: passed at the recorded
-  local checkpoints; final staged/link checks are pending.
+  local checkpoints; the staged whitespace and eight-file relative-link checks also passed.
 
 The first focused run failed two hook tests because synthetic `.git/hooks` had
 not been created; fixture setup was corrected and both passed. An added killed
 mutator test initially expected `creating` where status reported a conflict;
 known durable intent is now reported as interrupted and the corrected test passed.
+A later 26-test run exposed a timeout-fixture startup race under concurrent
+load: the provider returned timeout before the fixture recorded its child PID.
+The fixture now waits for controlled child readiness before starting the deadline.
 The first invocation also accidentally discovered the imported broker test class;
 test discovery was corrected to import its module instead. These fixture/status
 failures do not establish live failures or acceptance.
 
 Terraform validation/tests were not run: this change does not edit infrastructure.
 No deployment, merge, public exposure or owner acceptance is claimed.
+
+At implementation commit `f1dc27cd2d21a5754bd6112fa3568572114ea66e`,
+[dashboard CI](https://github.com/danielbardsley/gptclaw/actions/runs/38460135075)
+and [private-app CI](https://github.com/danielbardsley/gptclaw/actions/runs/38460135109)
+passed. Both Terraform quality workflows failed only the actual-hook test:
+[development-host run](https://github.com/danielbardsley/gptclaw/actions/runs/38460135118),
+[federation run](https://github.com/danielbardsley/gptclaw/actions/runs/38460135119).
+Their runner is not forge, so the test received setup exit 2 before source-only
+exit 1. Lexical managed-task refusal is now performed before the execution-user
+gate without any filesystem reads; permitted operations still require forge.
+The corrected hook/UID behavior and final CI are tracked separately.
 
 ## Private readiness and remaining work
 

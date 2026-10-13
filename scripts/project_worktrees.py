@@ -88,7 +88,8 @@ def git(root,*args,optional=False,timeout=20):
          'GIT_OPTIONAL_LOCKS':'0'}
     command=['git','-c','core.fsmonitor=false','-c','core.hooksPath=/dev/null',
              '-c','protocol.ext.allow=never','-C',str(root),*args]
-    process=subprocess.Popen(command,env=env,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,start_new_session=True)
+    try:process=subprocess.Popen(command,env=env,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,start_new_session=True)
+    except OSError:raise app.AppError('setup') from None
     selector=selectors.DefaultSelector();selector.register(process.stdout,selectors.EVENT_READ)
     output=bytearray();deadline=time.monotonic()+timeout
     try:
@@ -101,6 +102,8 @@ def git(root,*args,optional=False,timeout=20):
         process.wait(timeout=max(.001,deadline-time.monotonic()))
         if not optional:check(process.returncode==0,'worktree-command')
         return bytes(output),process.returncode
+    except subprocess.TimeoutExpired:raise app.AppError('timeout') from None
+    except OSError:raise app.AppError('worktree-command') from None
     finally:
         selector.close();process.stdout.close()
         # Kill the process group even after leader exit: descendants may still exist.

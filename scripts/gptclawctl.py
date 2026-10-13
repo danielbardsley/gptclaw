@@ -106,6 +106,11 @@ def main(argv=None):
     import project_templates as templates
     templates.validate_provenance(Path(args.project_root).absolute())
    print(json.dumps(result,sort_keys=True));return code
+  # A lexical refusal performs no project reads or execution and is user-independent.
+  if hasattr(args,'project_root') and args.action not in {'worktrees','credentials','repo','validate'}:
+   from pathlib import Path
+   import project_worktrees
+   app.need('.gptclaw-worktrees' not in Path(args.project_root).parts,'worktree-source-only')
   app.need(os.getuid()==1002 and os.geteuid()!=0,'setup')
   if hasattr(args,'project_root') and args.action not in {'worktrees','credentials','repo','validate'}:
    from project_worktrees import guard
