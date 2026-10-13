@@ -1,6 +1,6 @@
 # SPEC-031 private acceptance targets
 
-- **Status:** Approved — policy active; both private targets created
+- **Status:** Accepted — both private targets retained after owner confirmation
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 
@@ -82,3 +82,8 @@ Ordinary reviewed source edits fix both targets while retaining their original e
 creation provenance. Corrected starter 1.0.1 is for future explicit creation; neither
 published 1.0.0 nor existing target provenance is silently retargeted. Final source/
 CI/installed and owner results are maintained in [acceptance.md](acceptance.md).
+
+Project owner confirmed MOB-001 dashboard/workflow acceptance October 13 after
+implementation PR #73 merged. Both starter PRs and source remain retained for
+inspection under the approved plan; this closeout does not merge those starter PRs
+or delete fixtures. See [acceptance.md](acceptance.md) for final disposition.
