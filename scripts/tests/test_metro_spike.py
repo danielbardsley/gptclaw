@@ -43,7 +43,8 @@ class SpikeTests(unittest.TestCase):
     def test_readonly_plan_and_explicit_fixture_bound(self):
         self.prepare_plan()
         before=sorted(str(p) for p in self.root.rglob('*'))
-        with patch.object(app,'command',side_effect=AssertionError('no command')),patch.object(app,'save',side_effect=AssertionError('no writes')):
+        policy=copy.deepcopy(security.read_policy(app.REPO,approved=False));policy['approved_at']=None
+        with patch.object(security,'read_policy',return_value=policy),patch.object(app,'command',side_effect=AssertionError('no command')),patch.object(app,'save',side_effect=AssertionError('no writes')):
             result=spike.plan(self.root,self.origin,60)
         self.assertEqual(result['runtime_security'],'approval-pending');self.assertEqual(result['source_retained'],True)
         self.assertEqual(before,sorted(str(p) for p in self.root.rglob('*')))
