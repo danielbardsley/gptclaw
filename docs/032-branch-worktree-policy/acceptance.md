@@ -1,10 +1,10 @@
 # SPEC-032 acceptance evidence
 
-- **Status:** Live acceptance passed; integrated CI and authorized merge pending
+- **Status:** Passed — implementation merged and initial slice Delivered
 - **Owner:** Project owner
 - **Evidence date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-032](spec.md) · **Design:** [TDD-032](technical-design.md) · **Tasks:** [TASKS-032](tasks.md)
-- **Delivery:** [PR #74](https://github.com/danielbardsley/gptclaw/pull/74), unmerged implementation update
+- **Delivery:** [PR #74](https://github.com/danielbardsley/gptclaw/pull/74), merged as `9bbdf75b79599e7674f4b6d3e7c4d9bfaeb9a3e3`
 - **Revision context:** Working tree on `codex/prj-006-spec`, based on planning commit `933779b9d204572827897aac44642375b2706929`; initial implementation commit `f1dc27cd2d21a5754bd6112fa3568572114ea66e` and corrected implementation commit `4db542d766372ab935468ea6085ab320efd73e58`. This final update changes evidence documents only.
 
 ## Criterion mapping
@@ -14,10 +14,10 @@
 | AC-001 | passed | Real isolated Git: read-only plan, two distinct task branches/checkouts from the recorded base, preserved dirty canonical bytes/index, invalid IDs/paths/base/collisions/occupied refs and unsupported states rejected, duplicate create reconciled. | Retain regression checks in CI. |
 | AC-002 | passed | Real child processes edit independent files/indexes. Same-project lock contention returns busy; another project progresses. A killed mutator retains creation intent and retry reconciles one allocation. Explicit ownership transfer succeeds; stale owner/generation fails. | Retain regression checks in CI. |
 | AC-003 | passed | Synthetic broker plus real local Git verifies exact singleton repository scope, remote-head readback/revocation, disabled binding and forged/config/moved-membership denial before issuance. Recognized hooks migrate; an actual task hook process returns source-only before runtime execution. | Both Trailboard task branches passed native fetch/push with the exact enrolled helper and verified remote head; scoped receipt permissions remain contents write/metadata read. |
-| AC-004 | passed | Local task/component guards deny runtime/dependency/database execution. Managed and moved task roots are absent from inventory. Existing web, Python and group regressions passed; the complete local repository/database regression gate passed. A read-only independent Shelfmark observation reports ready/healthy; observation throughout a live Git exercise remains pending. | Shelfmark reported ready/healthy before, during and after the live exercise; no runtime/data operations were executed. |
+| AC-004 | passed | Local task/component guards deny runtime/dependency/database execution. Managed and moved task roots are absent from inventory. Existing web, Python and group regressions passed; the complete local repository/database regression gate passed. A read-only independent Shelfmark observation reports ready/healthy; observations before, during and after the live exercise remained ready/healthy. | Shelfmark reported ready/healthy before, during and after the live exercise; no runtime/data operations were executed. |
 | AC-005 | passed | Producer handoff records actual head, dirty presence and attributed check/remaining labels; consumer resumes the same head and preserved dirty source. Stale owners/ref changes fail. Local and remote-observed publication differ; no automatic canonical integration or merge. | Owner acceptance of live handoff belongs to AC-007. |
 | AC-006 | passed | Active, dirty, ignored/untracked, unpublished, moved/tampered and busy-Git checkouts are retained. Exact clean released checkout removal leaves branch, tombstone and other checkout intact. Lost create/removal responses reconcile. Squash retention revalidates PR head/merge against canonical ancestry. | Live cleanup only within explicit named-fixture scope. |
-| AC-007 | pending | Focused isolated tests passed and documentation/runbook/adoption guidance exist. No infrastructure, production, runtime activation or installed-host-policy changes were made. | Named live exercise and fresh consumer CLI guidance checks passed; the owner authorized the fixture and merge. Integrated final-head CI and merge remain pending. |
+| AC-007 | passed | Focused isolated tests passed and documentation/runbook/adoption guidance exist. No infrastructure, production, runtime activation or installed-host-policy changes were made. | Named live exercise and fresh consumer CLI guidance checks passed; the owner authorized the fixture and merge. Integrated local checks and all four final-head workflows passed; PR #74 merged under the existing owner authorization. |
 
 ## Executed verification
 
@@ -149,6 +149,26 @@ reported `state: ready`, `health: healthy`. No private route, database or runtim
 source was activated from either worktree. All fixture checkouts are removed;
 retained branches/receipts are the approved final disposition.
 
-Integrated repository checks, final-head CI and platform merge remain the delivery
-gates. The current merge includes both reviewed mobile and worktree behavior;
-record those checks below before marking Delivered.
+## Final integration checks and merge
+
+`PATH="$PWD/.venv-manifest/bin:$PATH" ./scripts/check-repository.sh` passed
+(exit 0) after reviewed mobile integration, including all 28 worktree tests and
+existing mobile, credential, runtime, database, template and dashboard regressions.
+Documentation whitespace and eight-file relative-link checks passed. A subsequent
+mobile closeout required a documentation-only catalogue merge; no implementation
+code changed, and all four final-head workflows passed again at
+`ed47547df890822c8d32283cc0119aafda21dfa3`:
+
+- [Development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38472041385).
+- [Federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38472041308).
+- [Private application workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38472041504).
+- [Dashboard workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38472041334).
+
+The owner-authorized [PR #74](https://github.com/danielbardsley/gptclaw/pull/74)
+merged as `9bbdf75b79599e7674f4b6d3e7c4d9bfaeb9a3e3`. All criteria passed for
+this initial single-host source-only CLI contract. Fresh CLI consumer guidance
+reads were verified; automatic AI-client guidance adoption was not claimed.
+No additional owner approval, fixture cleanup or infrastructure operation remains
+for this slice. Both named fixture branches/receipts are intentionally retained.
+Broader worktree runtime/build/database adapters remain separately scoped.
+
