@@ -115,8 +115,9 @@ class MobileTests(unittest.TestCase):
         root=self.new();before=sorted(str(p) for p in app.STORE.rglob('*'))
         with patch.object(app,'command') as command:
             for action in ['start','stop','restart','status','observe','logs','hooks']:
-                with self.subTest(action=action),patch('sys.stdout',new_callable=io.StringIO):
-                    self.assertEqual(cli.main([action,'--project-root',str(root)]),1)
+                with self.subTest(action=action),self.assertRaises(app.AppError) as failure:
+                    mobile.dispatch(SimpleNamespace(action=action,project_root=str(root)))
+                self.assertEqual(failure.exception.code,'mobile-unsupported')
             command.assert_not_called()
         self.assertEqual(before,sorted(str(p) for p in app.STORE.rglob('*')));self.assertFalse(list(self.units.iterdir()))
     def test_job_descriptor_never_reserves_http(self):
@@ -130,6 +131,39 @@ class MobileTests(unittest.TestCase):
         root=self.new()
         with patch.object(app,'object_owned',return_value=False):mobile.job_state(root,app.target(root)[1])
         with self.assertRaises(app.AppError):mobile.load_state(root/'other','mobile-one')
+    def fake_dependency_job(self,state,argv,**kwargs):
+        import base64
+        root=Path(state['root'])
+        if '--lockfile-only' in argv:
+            package=json.loads((root/'package.json').read_text());importer={};packages={}
+            for group in deps.GROUPS:
+                if group not in package:continue
+                importer[group]={}
+                for name,version in package[group].items():
+                    importer[group][name]={'specifier':version,'version':version}
+                    packages[name+'@'+version]={'resolution':{'integrity':'sha512-'+base64.b64encode(bytes(64)).decode()}}
+            (root/'pnpm-lock.yaml').write_text(json.dumps({'lockfileVersion':'9.0','importers':{'.':importer},'packages':packages,'snapshots':{}}))
+        else:(root/'node_modules').mkdir(exist_ok=True)
+        return subprocess.CompletedProcess(argv,0,'','')
+
+    def test_mobile_dependency_transaction_and_source_preservation(self):
+        root=self.new();original=(root/'src/components/Counter.tsx').read_bytes()
+        with patch.object(app,'object_owned',return_value=False),patch.object(app,'toolchain',return_value='sha256:'+'2'*64),patch.object(app,'run_in_app',side_effect=self.fake_dependency_job):
+            deps.operate(root,'install');self.assertEqual(deps.status(root)['state'],'dependencies-ready')
+            deps.operate(root,'add','zod','4.3.6');self.assertEqual(json.loads((root/'package.json').read_text())['dependencies']['zod'],'4.3.6')
+            deps.operate(root,'remove','zod');self.assertNotIn('zod',json.loads((root/'package.json').read_text())['dependencies'])
+        self.assertEqual(original,(root/'src/components/Counter.tsx').read_bytes());self.assertFalse(list(app.STORE.glob('*.json')))
+
+    def test_mobile_interrupted_install_recovers_same_operation(self):
+        root=self.new()
+        with patch.object(app,'object_owned',return_value=False),patch.object(app,'toolchain',return_value='sha256:'+'2'*64):
+            with patch.object(app,'run_in_app',side_effect=app.AppError('timeout')):
+                with self.assertRaises(app.AppError):deps.operate(root,'install')
+            operation=deps.status(root)['operation']['operation_id']
+            with patch.object(app,'run_in_app',side_effect=self.fake_dependency_job):
+                deps.operate(root,'recover',operation_id=operation)
+            self.assertEqual(deps.status(root)['state'],'dependencies-ready')
+
     def test_unknown_job_fields_refuse_environment_forwarding(self):
         root=self.new()
         with patch.object(app,'object_owned',return_value=False):state=mobile.job_state(root,app.target(root)[1])

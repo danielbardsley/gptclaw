@@ -190,7 +190,8 @@ synthetic acceptance targets after implementation authorization, record their ex
 IDs/source/profile hashes and fixture-retention disposition, and leave existing apps
 untouched. Mark only MOB-001 Delivered after merge and AC-001–009 pass; retain
 TPL-004's native-device/remaining scope and all M1/M2/M3/M4 work as follow-ups.
-No acceptance file exists yet because no implementation checks have been run.
+Local verification is recorded in [acceptance.md](acceptance.md); installed, CI,
+private repository and owner acceptance remain separately pending.
 
 The implementation author must first propose and verify the exact Expo-compatible
 matrix, attach the evidence and exact pins to this design/implementation PR before

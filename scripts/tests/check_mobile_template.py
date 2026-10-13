@@ -45,7 +45,7 @@ def main():
         file=root/'src/app/defect.tsx'
         try:
             file.write_text("const invalid: number = 'wrong';\nexport default invalid;\n");run(root,['pnpm','typecheck'],False)
-            file.write_text('debugger;\n');run(root,['pnpm','lint'],False)
+            file.write_text('export default function Broken( {\n');run(root,['pnpm','lint'],False)
             file.write_text('export default function X(){return null}\n');run(root,['node','checks/quality.cjs','format-check'],False)
         finally:file.unlink(missing_ok=True)
     (base/'result.json').write_text(json.dumps({'state':'passed','artifact_kind':'javascript-assets','projects':[str(p) for p in roots],'checks':records},indent=2)+'\n')
