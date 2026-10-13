@@ -43,6 +43,9 @@ class UnixClient(http.client.HTTPConnection):
 class CollectorTests(unittest.TestCase):
     def test_timeout_output_limit_and_reaping(self):
         before = {p.pid for p in multiprocessing.active_children()}
+        # Bootstrap the trusted forkserver before measuring a worker deadline.
+        # Its one-time imports are separate from the per-project read budget.
+        self.assertEqual(collector.bounded(ready, {}, 2), {'state': 'ready'})
         started = time.monotonic()
         self.assertEqual(collector.bounded(hung, {}, .2)['error'], 'observation-timeout')
         self.assertLess(time.monotonic()-started, 1)

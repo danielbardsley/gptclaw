@@ -138,6 +138,7 @@ def cached_reads():
     with READ_LOCK:
         original = app.command
         original_bundle = app.provider_bundle
+        original_healthy = app.healthy
         original_save, original_save_text = app.save, app.save_text
         cache = {}
         def command(argv, timeout=300, optional=False):
@@ -169,9 +170,18 @@ def cached_reads():
             if readonly:
                 cache[key] = result
             return result
+        def healthy(receipt, contract):
+            # Lifecycle probes may wait five seconds. Dashboard reads must leave
+            # room for ownership/timing checks inside the two-second budget.
+            service = contract['service']
+            bounded = {**contract, 'service': {**service, 'health': {
+                **service['health'], 'timeout_seconds': min(
+                    service['health']['timeout_seconds'], .25)}}}
+            return original_healthy(receipt, bounded)
         def refuse_write(*_, **__):
             raise app.AppError('conflict')
         app.command = command
+        app.healthy = healthy
         # verify_unit compares trusted bootstrap bytes. It needs no snapshot
         # publication while observing from source or an installed snapshot.
         app.provider_bundle = lambda: app.REPO
@@ -180,6 +190,7 @@ def cached_reads():
             yield
         finally:
             app.command = original
+            app.healthy = original_healthy
             app.provider_bundle = original_bundle
             app.save, app.save_text = original_save, original_save_text
 

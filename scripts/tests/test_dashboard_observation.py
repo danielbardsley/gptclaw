@@ -171,6 +171,20 @@ class ObservationTests(unittest.TestCase):
         self.assertEqual(invalid['uptime_reason'],'clock-anomaly')
         self.assertEqual(observation.timing({},False,start)['uptime_reason'],'not-applicable')
 
+    def test_dashboard_probe_deadline_preserves_lifecycle_contract(self):
+        contract={'service':{'health':{'path':'/projects/synthetic/ready',
+                                      'timeout_seconds':5}}}
+        receipt={'port':18080}
+        original=app.healthy
+        with observation.cached_reads():
+            app.healthy(receipt,contract)
+            opener=observation.urllib.request.build_opener.return_value
+            self.assertEqual(opener.open.call_args.kwargs['timeout'],.25)
+            self.assertEqual(opener.open.call_args.args[0],
+                             'http://127.0.0.1:18080/projects/synthetic/ready')
+        self.assertIs(app.healthy,original)
+        self.assertEqual(contract['service']['health']['timeout_seconds'],5)
+
     def test_expected_root_identity_mismatch_and_no_lifecycle_operations(self):
         root=self.root('web')
         expected={'root':str(root),'id':'web','identity':[-1,-1,os.getuid()]}
