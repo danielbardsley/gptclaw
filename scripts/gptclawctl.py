@@ -119,7 +119,7 @@ def main(argv=None):
    elif action=='rotate':result=broker.rotate(args.key_file)
    elif action=='disable':result=broker.disable(args.project_root)
    elif action=='enable':result=broker.enable(args.project_root)
-   elif action=='canary':result=broker.create(args.repository,args.directory,getattr(args,'template',None),getattr(args,'template_version',None),canary=True)
+   elif action=='canary':result=broker.create(args.repository,args.directory,canary=True,template=getattr(args,'template',None),version=getattr(args,'template_version',None))
    elif action=='resume':result=broker.resume(args.operation_id,args.confirm_repository_id)
    elif action=='pull-request':
     from pathlib import Path

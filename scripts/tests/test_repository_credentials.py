@@ -212,6 +212,13 @@ class Tests(unittest.TestCase):
         broker.set_active(True)
         token=broker.Broker().project_token(self.projects/'baseline','git')
         self.assertEqual(token.metadata['permissions'],broker.ROLES['git']);token.close()
+    def test_cli_canary_forwards_exact_mobile_selection(self):
+        import contextlib,io
+        import gptclawctl
+        with patch.object(app.os,'getuid',return_value=1002),patch.object(broker,'create',return_value={'state':'repository-ready'}) as create,contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(gptclawctl.main(['credentials','canary','--repository','mobile-one','--directory',str(self.projects/'mobile-one'),'--template','expo-react-native','--template-version','1.0.0']),0)
+        create.assert_called_once_with('mobile-one',str(self.projects/'mobile-one'),canary=True,template='expo-react-native',version='1.0.0')
+
     def test_four_name_workflow_policy_preserves_legacy_bounds_and_singleton_tokens(self):
         self.workflow_profile(['one','two','three','four'])
         self.assertEqual(broker.profile()['schema_version'],4)
