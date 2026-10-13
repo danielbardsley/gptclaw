@@ -197,7 +197,7 @@ Add only the minimal display/validation changes; no Metro/device/build telemetry
 |---|---|---|---|
 | New schema/catalogue/release and typed substitutions | EXPO-001, EXPO-002 | T-002, T-003, T-004 | AC-001, AC-002 |
 | Resolver/generator, staging/publication, provenance | EXPO-001, EXPO-003 | T-004 | AC-001, AC-003 |
-| Node/toolchain policy selection and mobile dependencies | EXPO-004 | T-002/005 | AC-004 |
+| Node/toolchain policy selection and mobile dependencies | EXPO-004 | T-002, T-005 | AC-004 |
 | Mobile job dispatch, native source, tests and bundles | EXPO-005 | T-003, T-006 | AC-005 |
 | GitHub plans/broker/initial PR and interrupted recovery | EXPO-006 | T-007 | AC-006 |
 | Generated guidance/workflow/runbook/adaptation conventions | EXPO-007 | T-003, T-008 | AC-007 |
@@ -223,8 +223,8 @@ snapshot. Rollback does not undo app commits, dependency edits or remote creatio
 | Decision / unknown | Owner and resolution gate |
 |---|---|
 | Exact SDK/package/toolchain matrix and script exceptions | Implementation author collects compatibility and real-job evidence; record exact verified pins in the implementation PR before freeze (T-002). Owner disposition is needed for any policy exception or scope change, not routine version selection. |
-| Manifest/catalogue version and additive capability encoding | Implementation author rechecks reservations and consumer compatibility before T-003/009; retain schemas 1–4 and version any breaking payload change. |
-| Resource bounds for cold install and bundle jobs | Implementation author measures T-002/006; any changed ceiling is concrete scope review before live verification. |
+| Manifest/catalogue version and additive capability encoding | Implementation author rechecks reservations and consumer compatibility before T-003, T-009; retain schemas 1–4 and version any breaking payload change. |
+| Resource bounds for cold install and bundle jobs | Implementation author measures T-002, T-006; any changed ceiling is concrete scope review before live verification. |
 | Private fixture names and provisioning authority | Project owner selects/authorizes exact two names in T-011; existing broker policy and retained-fixture waiver gates apply. No account setup is presumed necessary. |
 
 Primary technical references checked October 13, 2026:
