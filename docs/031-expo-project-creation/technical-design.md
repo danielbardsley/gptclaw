@@ -1,6 +1,6 @@
 # TDD-031: Expo creation through the existing project platform
 
-- **Status:** Approved approach — implementation in progress
+- **Status:** Implemented — owner acceptance and merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-031](spec.md) · **Tasks:** [TASKS-031](tasks.md)
@@ -256,8 +256,8 @@ Both native-target exports passed; full source verification passed with the owne
 two exact temporary advisory exceptions, which remain visible and expire October 27.
 See security-review.md. Controlled user-event timers and a finite 15-second Jest
 case deadline remove dependence on native press timer scheduling under bounded CPU;
-assertions/coverage remain enforced. Final generated/installed/CI evidence remains
-separate and is recorded in acceptance.md when those checks complete.
+assertions/coverage remain enforced. Generated/installed/CI evidence is recorded separately in acceptance.md; all
+technical checks passed, with owner confirmation and merge remaining.
 
 Platform verify and golden verification execute serial individually bounded steps
 under one operation lock, retaining the existing 300-second job limit. A combined

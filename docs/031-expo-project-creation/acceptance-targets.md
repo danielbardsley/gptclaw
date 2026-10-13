@@ -53,7 +53,7 @@ snapshot or restore the previous reviewed policy through its typed interface
 before rollback.
 
 Two existing bindings refer to source archived by the earlier authorized cleanup.
-The helper update currently requires every source root to exist. Propose preserving
+The prior helper update required every source root to exist. The approved change preserves
 absent-root bindings/helpers without changing their path or reading archived Git
 config, while keeping incomplete helper-upgrade journals blocking. Refresh only
 existing owned live helper paths. Restored source requires a compatible reviewed

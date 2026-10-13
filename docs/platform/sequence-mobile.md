@@ -286,8 +286,10 @@ Expo/EAS, Apple/Google and AWS acceptance are separate evidence, not one deploy 
 **First selected specification (October 13):** [SPEC-031](../031-expo-project-creation/spec.md)
 selects MOB-001 and its minimum template/schema/toolchain/quality/repository
 prerequisites from stages 1/3. It deliberately closes creation before private
-Metro/device and backend integration; M1 remains incomplete. Implementation is
-not authorized by this specification request.
+Metro/device and backend integration; M1 remains incomplete. The owner subsequently approved implementation; source
+creation/quality/private-repository acceptance is implemented in PR #73 and remains
+In review pending owner confirmation and merge. [Evidence](../031-expo-project-creation/acceptance.md)
+records actual checks and scope. Other roadmap stages retain their separate gates.
 
 **M1 spans stages 1–4 across compatible initiatives:** SPEC-031 begins with
 creation; subsequent TPL-004, MOB-002/005/010/011 slices add the private runtime,

@@ -1,6 +1,6 @@
 # ACCEPTANCE-031: Expo / React Native creation foundation
 
-- **Status:** Implementation in review; private repositories/CI passed; final corrective-release and owner acceptance pending
+- **Status:** In review — technical checks and private rollout passed; owner acceptance and merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Spec:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md) · **Tasks:** [TASKS-031](tasks.md)
@@ -12,15 +12,15 @@
 
 | Criterion | State | Evidence / remaining action |
 |---|---|---|
-| AC-001 | passed earlier; corrective release checking | Exact selection, checksum/schema/path rejection, web-default retention and historical-release immutability passed. Published 1.0.0 is unchanged; final 1.0.1 validation is in progress. |
+| AC-001 | passed local/CI/installed | Exact selection, checksum/schema/path rejection, historical immutability and web-default retention passed. Both releases remain valid; installed 1.0.1 discovery and two offline creations/validations passed with exact digest. |
 | AC-002 | passed local/installed | Distinct mobile identities and schema-5 static configuration validate. Duplicate/malformed/dynamic/native inputs are rejected. Ordinary source edits preserve provenance. |
 | AC-003 | passed local | Offline normalized generation, no command/network invocation, destination/symlink/race/concurrency/failure preservation and existing catalogue recovery tests passed. |
-| AC-004 | passed local/snapshot; live checks finishing | Real cold/warm frozen preparation and exact image selection passed; SDK/policy denials and transaction/recovery/source-retention tests passed. Live target preparation/check outcomes are being recorded. |
-| AC-005 | passed local/CI/snapshot; live checks finishing | Two generated apps pass all seven gates and both native-target exports; interaction/type/syntax/style defects fail. Both private repositories pass all quality gates. Live installed checks remain separate. |
+| AC-004 | passed local/CI/installed | Cold/warm frozen preparation, exact image, SDK/policy denials and transaction/recovery/source-retention tests passed. Both live installations preserved package/lock/workspace hashes; complete managed checks passed. |
+| AC-005 | passed local/CI/installed | Two generated apps and both private targets pass all seven gates and iOS/Android JS/assets export. Representative behavior/type/syntax/style defects fail. Live installed verification passed for both targets; no device/binary claim. |
 | AC-006 | passed local/private | Approved broker policy/canary created two private repositories with distinct IDs, exact 1.0.0 release provenance, initial PRs and existing explicit private-dev protection waiver. Offline denial/lost-response/changed-plan/resume cases passed. |
-| AC-007 | passed private CI; corrected golden checking | Both generated repositories' final-head CI passed after reviewed workflow/guidance fixes. New golden CI executes the generated workflow itself, including its checkout ownership contract. |
-| AC-008 | passed source/consumer; live recovery/owner pending | Real private inventory contains both mobile rows, no service components or app URLs, explicit unsupported runtime and correct repository links. Existing app observations need a quiet-host recovery check after verification load, plus owner browser confirmation. |
-| AC-009 | pending final correction/owner/merge | Core source/installed parity, rollout/rollback and platform CI passed. Corrective release final regression/CI, capable provider refresh and owner creation/edit/check confirmation remain. Implementation has not merged; MOB-001 is not Delivered. |
+| AC-007 | passed platform/private CI | Both generated repositories pass final-head CI after reviewed source fixes. Corrected golden CI executes the actual generated workflow with production-adapted guidance; all native checks/exports and defect gates pass. |
+| AC-008 | passed source/consumer/private | Final HTTPS snapshot contains four current source rows; both groups are Ready/current and both mobile rows have no components/app URL, honest runtime unavailability and correct repository links. Existing app/API-doc HTTP destinations return 200. Mobile lifecycle denials preserve owned units. |
+| AC-009 | technical checks passed; owner/merge pending | Full local and all configured implementation CI gates pass. Stable provider/new-source/old-source validation, owned refresh, compatible rollback/restoration and six unchanged application containers are verified. Owner creation/edit/check/browser confirmation and separate implementation merge remain. |
 
 ## Verified platform and native-source checks
 
@@ -44,19 +44,22 @@ CPU/memory/PID/time bounds and no host language/native SDK package installation.
   under concurrent load. Final orchestration runs serial, individually bounded
   steps under the operation lock; no resource or individual deadline was increased.
 - Full repository gate on 8b62bb4 passed with exit 0: **540 cases in 699.1 seconds**.
-  The corrected-release 22-case mobile suite subsequently passed in 211.691 seconds;
-  final complete regression results will be recorded separately.
+  Corrected-release focused mobile (22 cases, 211.691 seconds), repository (43 cases,
+  301.314 seconds) and immutability checks passed. The final complete gate on
+  implementation 528a883 passed **540 cases / 29 suites, exit 0, 841.8 seconds**.
 - Dashboard frozen install, frontend tests/types/build, actual collector socket/HTTP
   and pinned browser regressions passed, including mobile source/runtime messaging.
 
-All four platform workflows passed on `8b62bb4785b96ff4bb79e78a6a90e63cbc7b1c61`:
-[private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38455979332),
-[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38455979421),
-[development-host validation](https://github.com/danielbardsley/gptclaw/actions/runs/38455979264)
-and [federation validation](https://github.com/danielbardsley/gptclaw/actions/runs/38455979233).
-Private application CI includes all five jobs. Protected infrastructure plan/apply
-were skipped; no infrastructure deployment occurred. The corrective release has a
-separate final check gate.
+All four platform workflows passed on implementation
+`528a883524824af18715450130b99f5b40a774da`:
+[private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38460331577),
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38460331790),
+[development-host validation](https://github.com/danielbardsley/gptclaw/actions/runs/38460331532)
+and [federation validation](https://github.com/danielbardsley/gptclaw/actions/runs/38460331583).
+Application CI includes all five jobs, including actual generated-workflow execution
+and both native-target exports with broker-adapted guidance. Protected infrastructure
+plan/apply were skipped; no infrastructure deployment occurred. Subsequent delivery
+record edits are documentation only; their branch-head checks are tracked by PR #73.
 
 Two exact, owner-approved tooling advisory exceptions expire at the end of
 October 27, America/New_York: node-forge 1.4.0 / GHSA-86w9-cpqp-85rv and braces
@@ -99,20 +102,41 @@ claim or automatic initial-PR merge is made. Sources and PRs are retained for re
 
 ## Installed provider, dashboard and rollback
 
-Core stable provider **1.10.1** uses immutable snapshot
-`54e90ac2d178f1972a455ec54a93594afc472cb77c2130c0c0423b28620605cf`.
-Dashboard release is
-`24ab5773f969a5a02582660124b93de2bc0fee198806d58351d53a847d7aebd2`.
-Its collector uses the capable frozen provider. Both updates used reviewed owned
-interfaces; AWS, host policy, grants and Tailscale configuration were not changed.
+Final stable provider **1.10.1** uses immutable snapshot
+`48a1131521aae5c2e6671faec8b3a1701c56976de6a3099f1d1d0887a4f5a5ba`.
+Final dashboard release is
+`73cb3c7c7c38fc667090b5226e35bd359efc034242fc30b94ea8aa399a645420`.
+Its collector uses the same capable provider. Both updates used reviewed owned
+interfaces after all implementation checks passed. AWS, host policy, App grants and
+Tailscale configuration were unchanged. Exact stable 1.0.1 discovery, two offline
+1.0.1 source creations and validation passed; both original managed 1.0.0 source
+contracts validate under the final stable provider.
 
-The actual private HTTPS health/snapshot return 200. Metadata adds only both exact
-mobile root/ID/owner/repository entries and retains existing registry entries.
-Inventory contains four rows: two existing groups and two native source projects.
-Mobile rows have no components, runtime observation or app URL; repository links
-match their actual private destinations. Verification load can cause bounded
-observations to become stale/degraded; quiet-host recovery must be recorded before
-claiming current ready observations for existing projects.
+Both live target frozen installs preserved package/lock/workspace hashes. Complete
+installed verification passed in **324.533 seconds** for mob001-accept-one and
+**335.228 seconds** for mob001-accept-two, as serial individually bounded steps.
+These are total command durations, not increased individual job limits. Existing
+quality/dependency code is unchanged in the corrective snapshot. Managed start,
+stop, restart, observe and logs all reject mobile with `mobile-unsupported`; the nine
+owned unit files remained identical.
+
+Actual final private HTTPS health/snapshot return 200; inventory is current and
+complete with four rows. Both existing groups are Ready/current after verification
+load subsided. The two native rows have empty components, unavailable runtime and
+exact repository links. Both existing private app routes and Trailboard API-doc
+route return 200. Existing registry entries were preserved while adding only the
+two approved mobile entries.
+
+Refresh, compatible rollback and restoration passed. Rollback selected provider
+`54e90ac2d178f1972a455ec54a93594afc472cb77c2130c0c0423b28620605cf`
+and dashboard
+`24ab5773f969a5a02582660124b93de2bc0fee198806d58351d53a847d7aebd2`,
+both compatible with active profile 4. Private dashboard health returned 200 at
+each step; all six existing application/API/database container IDs remained
+identical. The final active profile remains schema 4, active/workflow-verified,
+with the exact four approved names. An initial rollout preflight matched display
+names too literally and stopped before any mutation; matching the reviewed hashed
+group identities corrected that inventory check.
 
 Earlier owned provider/dashboard rollback restored provider 1.9.0 and dashboard
 `d0485098d81d573b41943793b91a39b03f8a509bbfb22c3aa261ef3e64d803d1`,
@@ -131,10 +155,15 @@ adaptation must review/remove unwanted demos and test actual product behavior.
 
 ## Remaining delivery
 
-Complete corrected release/platform regression and CI, installed target checks,
-capable provider/collector refresh, quiet-host observation recovery and owner
-creation/edit/check/browser confirmation. Obtain the separate implementation merge
-disposition before merging #73. Keep source/private PRs and task-owned evidence for
-review; no incidental repository/source/data deletion. Mark only MOB-001 Delivered
-after merged implementation and AC-001–009 pass. TPL-004 device acceptance and mobile
-M1–M4 remain separate.
+Technical implementation and AC-001–008 evidence are complete. The owner is asked to
+confirm dashboard repository links/runtime messaging and the creation/edit/check
+workflow (AC-009). The earlier approval covered exact repositories, policy and
+archived-binding scope; implementation merge remains a separate gate. PR #73 is
+reviewable and unmerged. MOB-001 remains In review until owner acceptance and merge.
+
+Original main checkout remains unchanged. Both managed acceptance repositories have
+clean tracked source; initial PRs remain open. Task-owned `.verification/` evidence
+is retained untracked, and private repositories/source remain for owner inspection.
+No automatic repository/source/data deletion is performed. Mark only MOB-001
+Delivered after merge and AC-001–009 pass; TPL-004 device acceptance and mobile
+M1–M4 remain follow-ups. The approved advisory expiry/removal obligation remains.

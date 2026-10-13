@@ -1,6 +1,6 @@
 # TASKS-031: Reliable Expo / React Native creation
 
-- **Status:** Approved for implementation — work in progress
+- **Status:** Implementation/technical acceptance complete — owner acceptance and merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md)
@@ -64,7 +64,7 @@
 
 ## Installed and owner acceptance
 
-- [ ] T-011: With implementation/private scope authorized, record the exact provider/
+- [x] T-011: With implementation/private scope authorized, record the exact provider/
   dashboard releases, two synthetic project/repository names and retention plan.
   Refresh only the owned provider/collector/frontend through reviewed interfaces.
   Create two apps through source/installed local-only and activated-broker paths;
@@ -83,22 +83,16 @@
 
 ## Current handover
 
-The project owner approved implementation, the exact four-name credential profile,
-two private acceptance repositories and archived-binding preservation. Provider
-1.10.1/profile 4 are active, with unchanged App grants and singleton token scopes.
-Both private repositories/initial PRs exist and both native source rows appear in the
-private dashboard. Existing application source, containers and database data remain
-outside fixture operations.
+T-001–011 are complete. The approved four-name profile, two private repositories,
+final stable provider/dashboard and preserved archived bindings are recorded in
+[acceptance.md](acceptance.md). Corrective immutable starter 1.0.1, actual generated
+workflow/guidance CI, all 540 local cases, four implementation workflows, both
+private final-head quality jobs and both managed verification runs passed. Compatible
+provider/dashboard rollback/restoration passed with six unchanged application
+containers and both existing groups Ready/current afterward.
 
-Initial private CI exposed a Docker checkout UID mismatch; managed verification
-found an extra blank line in broker-adapted guidance. Preserve published 1.0.0,
-add corrected starter 1.0.1, fix guidance adaptation and execute the actual generated
-workflow in golden CI. The two existing acceptance projects retain their original
-1.0.0 provenance and receive ordinary reviewed workflow/guidance edits. Corrected
-private CI, installed checks and final implementation regressions are in progress.
-
-T-010's earlier local/CI/core rollout evidence passed; the corrective release must
-pass its final checks. T-011 remains open until those results are recorded. T-012
-requires owner confirmation of creation/edit/check acceptance and the separate
-implementation merge gate. MOB-002/device transport and MOB-010/backend binding
-remain follow-ups; no Metro, native binary, fake health service or backend is added.
+T-012 remains open for owner creation/edit/check/browser confirmation and the separate
+implementation merge gate. Subsequent delivery-record edits are documentation only,
+with branch-head CI tracked in PR #73. MOB-001 remains In review; TPL-004 native-device
+acceptance, MOB-002/003 transport, MOB-010 backend binding and mobile milestones remain
+follow-ups. Preserve both source/private PRs and untracked verification evidence.

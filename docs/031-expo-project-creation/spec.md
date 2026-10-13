@@ -1,6 +1,6 @@
 # SPEC-031: Repeatable Expo / React Native project creation
 
-- **Status:** Approved for implementation — work in progress
+- **Status:** Implementation complete — owner acceptance and merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** MOB-001
@@ -42,8 +42,10 @@ acceptance remains a follow-up; completing MOB-001 does not complete M1 or TPL-0
 
 ## Existing contracts and boundaries
 
-- Provider 1.9.0 currently understands manifest schemas 1–4 and kinds web/API/group.
-  It has no accepted mobile creation/quality adapter. Schema 4 requires web/API/DB.
+- At the planning baseline, provider 1.9.0 understood manifest schemas 1–4 and kinds web/API/group.
+  It had no accepted mobile creation/quality adapter. Schema 4 requires web/API/DB.
+  Implemented provider 1.10.1 adds the accepted creation/quality adapter; the
+  acceptance record identifies the actual active immutable snapshot.
 - SPEC-021's immutable catalogue/generation, SPEC-020's toolchain selection,
   SPEC-019's dependency transactions and SPEC-022/023's private repository/broker
   operations are the reuse points. They need bounded mobile extensions, not
