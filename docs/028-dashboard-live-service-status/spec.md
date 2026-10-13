@@ -1,6 +1,6 @@
 # SPEC-028: Dashboard live service status
 
-- **Status:** Implemented and accepted — review/merge pending
+- **Status:** Delivered and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Primary feature:** DSH-002
@@ -15,7 +15,8 @@ uptime, restart count and last observed status change from the private dashboard
 The view must remain honest when the collector or runtime provider is unavailable.
 
 The October 12 request authorizes this separate specification/design/task set and
-planning PR. Implementation is now authorized; installation, deployment and acceptance remain pending.
+planning PR. Authorized implementation, private rollout and owner acceptance are
+now recorded in [acceptance.md](acceptance.md).
 This initiative extends the read-only inventory; it does not authorize runtime actions.
 
 ## Scope and existing readiness
@@ -33,7 +34,7 @@ backup/recovery data and is not an appropriate wholesale dashboard payload. Reus
 reviewed provider health observation, including its existing credential handling,
 without forwarding database credentials, SQL diagnostics or raw inspection output.
 
-DSH-001 is a dependency, not installed capability. New provider observation fields
+DSH-001 is a dependency with installed capability verified in its acceptance record. New provider observation fields
 must be additive/versioned and preserve existing CLI/lifecycle behavior. This feature
 adds current runtime facts and bounded in-memory observation, not a telemetry store.
 
@@ -134,4 +135,4 @@ On October 12 the project owner instructed: “In order implement the specs for
 DSH-001, DSH-002 and DSH-003. Finish once all acceptance criteria have been met.”
 This approves the specified scope and defaults and authorizes implementation and
 necessary reversible private runtime verification. Existing operator, review/merge,
-public-exposure and production gates remain in force. Actual local/CI/private/owner evidence is recorded in [acceptance.md](acceptance.md); review/merge remains.
+public-exposure and production gates remain in force. Actual local/CI/private/owner evidence is recorded in [acceptance.md](acceptance.md); implementation merged in PR #69; acceptance passed.

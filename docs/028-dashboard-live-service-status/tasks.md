@@ -1,6 +1,6 @@
 # TASKS-028: Dashboard live service status
 
-- **Status:** Implementation authorized — work in progress
+- **Status:** Delivered and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-028](spec.md) · **Design:** [TDD-028](technical-design.md)
@@ -35,7 +35,7 @@
   clock and state tests, real timeout/coalescing load checks, frontend accessibility
   and relevant repository/stack gates. Inspect routes/UI for scope and starter demos
   if inherited; check diff/links. Record executed commands/outcomes. (AC-001–005)
-- [ ] T-006: Deliver implementation PR with separate CI evidence; deploy through the
+- [x] T-006: Deliver implementation PR with separate CI evidence; deploy through the
   reviewed private platform/provider path. Use task-owned synthetic single/group/DB
   targets for explicit CLI degradation/recovery acceptance and owner browser review.
   Verify rollback leaves inventory/lifecycle/data intact. Record per-criterion local,
@@ -53,8 +53,8 @@ one fixed authenticated DB readiness query and a documented finite four-second
 project deadline; the actual 20-project default-budget test still finishes under
 15 seconds. Clean live degradation/recovery completed in 9.62/14.96 seconds.
 
-Review/merge of PR #69 remains. No catalogue feature is Delivered before merge.
+PR #69 is merged after final-head CI and the owner's explicit merge approval.
+The approved initial DSH-001/002/003 scope is Delivered.
 Existing applications/data, private access and unrelated handlers remain intact.
-Synthetic source/data is retained; only owned fixtures may be stopped after
-verification. Logs/preview integrations await their separate prerequisites, and
+The three named synthetic runtimes are stopped; their source/data is retained. Logs/preview integrations await their separate prerequisites, and
 the owner deferred visual cleanup.

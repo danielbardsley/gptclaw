@@ -1,6 +1,6 @@
 # SPEC-029: Dashboard project links
 
-- **Status:** Implemented and accepted — review/merge pending
+- **Status:** Delivered — initial integration scope
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Primary feature:** DSH-003
@@ -15,7 +15,8 @@ stable internal logs destination when a reviewed log viewer exists, and display 
 active public-preview URL only when an authoritative reviewed registry supplies it.
 
 The October 12 request authorizes this separate planning set and reviewable planning
-PR. Specification approval and implementation authorization are recorded below; acceptance remains pending. Opening
+PR. Specification approval and implementation authorization are recorded below;
+actual private/owner acceptance is recorded in [acceptance.md](acceptance.md). Opening
 an existing destination is distinct from starting services, creating previews or
 changing exposure; no new exposure or preview lifecycle is authorized here.
 
@@ -135,4 +136,4 @@ On October 12 the project owner instructed: “In order implement the specs for
 DSH-001, DSH-002 and DSH-003. Finish once all acceptance criteria have been met.”
 This approves the specified scope and defaults and authorizes implementation and
 necessary reversible private runtime verification. Existing operator, review/merge,
-public-exposure and production gates remain in force. Actual local/CI/private/owner evidence is recorded in [acceptance.md](acceptance.md); review/merge remains.
+public-exposure and production gates remain in force. Actual local/CI/private/owner evidence is recorded in [acceptance.md](acceptance.md); implementation merged in PR #69; acceptance passed.
