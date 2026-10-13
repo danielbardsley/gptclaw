@@ -46,7 +46,7 @@
   Run focused tests and prepared-environment repository checks, relevant changed
   shell syntax, diff/relative-link checks. Record exact commands/results and
   limitations; clean only task-owned synthetic fixtures. (WT-001–007; AC-001–007)
-- [ ] T-008: Write operator/agent allocation, guidance-loading, source-only checks,
+- [x] T-008: Write operator/agent allocation, guidance-loading, source-only checks,
   publication, handoff/resume, canonical integration, cleanup and rollback
   instructions. Preserve unknown guidance and installed host policy. Obtain a
   specifically authorized enrolled private fixture, remote-operation scope and
@@ -63,13 +63,15 @@
 
 ## Current handover
 
-Lifecycle, ownership/generations, receipt recovery, short project locks, scoped
-helper refresh/membership checks, owned hook adaptation, runtime/discovery guards,
-handoff and conservative cleanup are implemented. The runbook and inert agent
-adoption reference are written. The local repository gate and canonical regressions passed. The expanded lifecycle and targeted timeout/UID tests passed, and all four
-implementation CI workflows passed at `4db542d`. The final follow-up is evidence
-only; its PR checks remain governed by the ordinary final-head merge gate. See [acceptance](acceptance.md)
-for actual observations and unresolved private/owner gates. The branch remains
-`codex/prj-006-spec`; PR #74 contains the implementation and evidence. Named private Git acceptance,
-fresh-task guidance, owner acceptance and merge remain pending.
-No installed host-policy, AWS/HCP or production changes are made.
+Implementation and the authorized two-task Trailboard live exercise passed.
+Fresh consumer CLI sessions verified guidance, owner/head handoff and dirty-file
+retention; clean test checkouts were removed while branches/receipts remain.
+Canonical Trailboard source/index/HEAD and independent Shelfmark health were
+preserved. See [acceptance](acceptance.md) for exact scope, retained allocations,
+commands and evidence limitations. The project owner explicitly authorized merge.
+
+Reviewed mobile main was integrated to preserve installed credential schema 4.
+The combined provider is 1.11.0, and this initiative is 032 after the concurrent
+Expo numbering collision. Integrated local checks and final-head CI must pass
+before the already-authorized PR #74 merge. No installed host-policy, AWS/HCP,
+production, fixture main or application-data changes were made.

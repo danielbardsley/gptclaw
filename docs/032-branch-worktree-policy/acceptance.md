@@ -1,6 +1,6 @@
 # SPEC-032 acceptance evidence
 
-- **Status:** Implemented; code CI passed, private/owner acceptance pending
+- **Status:** Live acceptance passed; integrated CI and authorized merge pending
 - **Owner:** Project owner
 - **Evidence date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-032](spec.md) · **Design:** [TDD-032](technical-design.md) · **Tasks:** [TASKS-032](tasks.md)
@@ -13,11 +13,11 @@
 |---|---|---|---|
 | AC-001 | passed | Real isolated Git: read-only plan, two distinct task branches/checkouts from the recorded base, preserved dirty canonical bytes/index, invalid IDs/paths/base/collisions/occupied refs and unsupported states rejected, duplicate create reconciled. | Retain regression checks in CI. |
 | AC-002 | passed | Real child processes edit independent files/indexes. Same-project lock contention returns busy; another project progresses. A killed mutator retains creation intent and retry reconciles one allocation. Explicit ownership transfer succeeds; stale owner/generation fails. | Retain regression checks in CI. |
-| AC-003 | pending | Synthetic broker plus real local Git verifies exact singleton repository scope, remote-head readback/revocation, disabled binding and forged/config/moved-membership denial before issuance. Recognized hooks migrate; an actual task hook process returns source-only before runtime execution. | Authorize named private fixture and prove native scoped fetch/push; project owner. |
-| AC-004 | pending | Local task/component guards deny runtime/dependency/database execution. Managed and moved task roots are absent from inventory. Existing web, Python and group regressions passed; the complete local repository/database regression gate passed. A read-only independent Shelfmark observation reports ready/healthy; observation throughout a live Git exercise remains pending. | Independent live private-app observation throughout the named Git exercise; project owner/implementation agent. |
+| AC-003 | passed | Synthetic broker plus real local Git verifies exact singleton repository scope, remote-head readback/revocation, disabled binding and forged/config/moved-membership denial before issuance. Recognized hooks migrate; an actual task hook process returns source-only before runtime execution. | Both Trailboard task branches passed native fetch/push with the exact enrolled helper and verified remote head; scoped receipt permissions remain contents write/metadata read. |
+| AC-004 | passed | Local task/component guards deny runtime/dependency/database execution. Managed and moved task roots are absent from inventory. Existing web, Python and group regressions passed; the complete local repository/database regression gate passed. A read-only independent Shelfmark observation reports ready/healthy; observation throughout a live Git exercise remains pending. | Shelfmark reported ready/healthy before, during and after the live exercise; no runtime/data operations were executed. |
 | AC-005 | passed | Producer handoff records actual head, dirty presence and attributed check/remaining labels; consumer resumes the same head and preserved dirty source. Stale owners/ref changes fail. Local and remote-observed publication differ; no automatic canonical integration or merge. | Owner acceptance of live handoff belongs to AC-007. |
 | AC-006 | passed | Active, dirty, ignored/untracked, unpublished, moved/tampered and busy-Git checkouts are retained. Exact clean released checkout removal leaves branch, tombstone and other checkout intact. Lost create/removal responses reconcile. Squash retention revalidates PR head/merge against canonical ancestry. | Live cleanup only within explicit named-fixture scope. |
-| AC-007 | pending | Focused isolated tests passed and documentation/runbook/adoption guidance exist. No infrastructure, production, runtime activation or installed-host-policy changes were made. | Named private exercise, fresh-task guidance verification, owner acceptance and merge remain separate gates. |
+| AC-007 | pending | Focused isolated tests passed and documentation/runbook/adoption guidance exist. No infrastructure, production, runtime activation or installed-host-policy changes were made. | Named live exercise and fresh consumer CLI guidance checks passed; the owner authorized the fixture and merge. Integrated final-head CI and merge remain pending. |
 
 ## Executed verification
 
@@ -94,17 +94,61 @@ checkout no longer exists. The absent `gptclaw-prj005-one` root was not recreate
 auto-adopted or removed from enrollment. Do not treat enrollment metadata alone
 as proof that a live checkout exists.
 
-The alternative enrolled synthetic app `gptclaw-trailboard` passes read-only
-worktree planning. Its existing upstream branch configuration is retained; known
-provider dependency caches are excluded from nested-source-repository detection.
-No task allocation, helper/hook change, remote write, app/database operation or
-checkout removal has occurred there. A named-target question proposes two Git-only
-synthetic task branches, retaining branches/receipts and removing only clean released
-test checkouts. This authorization remains pending; no answer is inferred.
+## Authorized live acceptance — October 13
 
-After authorization, use the operator runbook for the two-task exercise, native
-scoped fetch/push, producer/consumer handoff and cleanup/retention disposition.
-Observe a separate existing app without mutation. Verify adopted guidance in a
-fresh task and record actual project-owner acceptance. Keep the guarded helper/
-provider snapshots while managed allocations exist; rollback must retain paths,
-branches and receipts and preserve runtime/discovery exclusions.
+The project owner authorized the described Trailboard Git-only exercise and
+merge by instructing: “oh yes it is fine to do that and merge the mr”. This covers
+two test allocations, scoped fetch/push and removal of only clean synthetic test
+checkouts, retaining branches/receipts. No repeat approval is required.
+
+The first scoped fetch was denied with credential-policy because the concurrently
+merged mobile release upgraded the installed profile to schema 4 while this
+branch still supported 1–3. No fallback credential, profile downgrade or grant
+change was used. Reviewed main (`f40a7f3`, PR #73) was merged into this branch,
+preserving Expo capabilities and schema-4 rules. The combined provider is 1.11.0.
+Only Trailboard's recognized owned helper/hook snapshot was refreshed. Existing
+application source, data, grants and installed host policy remain unchanged.
+The worktree initiative moved from 031 to 032 to preserve the merged Expo
+initiative's numbering; WT/AC/task IDs and approved scope are unchanged.
+
+Live commands ran in two independent Python processes:
+`.venv-manifest/bin/python -B /tmp/prj006-live/exercise.py` (producer) and
+`.venv-manifest/bin/python -B /tmp/prj006-live/consumer.py` (fresh consumer).
+These task-owned scripts invoke the actual trusted provider, native `git fetch
+origin` and `git push origin HEAD:refs/heads/<allocated-branch>`, and fresh process
+handoff/resume/cleanup. Sanitized JSON evidence is retained locally under
+`/tmp/prj006-live/`; durable allocation receipts remain in the provider store.
+No authentication material or environment dumps appear in these artifacts.
+
+| Task | Allocation ID | Retained local and remote branch |
+|---|---|---|
+| prj006-acceptance-one | d083e675f590e6fa9ee8d44e8fddc0bf | codex/prj006-acceptance-one-d083e675f590e6fa9ee8d44e8fddc0bf |
+| prj006-acceptance-two | 3d2b7f3e2cce2dd1518dbbbbdb3151c7 | codex/prj006-acceptance-two-3d2b7f3e2cce2dd1518dbbbbdb3151c7 |
+
+Both allocations started at the recorded main commit
+`71950aee782f47a523175372aaf043c2cfcb8f5e`. Both native fetches and branch pushes
+passed through the exact enrolled helper; remote-head readback verified publication.
+Existing owned hooks and start/verify/deps/db/hooks commands returned source-only
+before execution. Two distinct synthetic source markers survived producer handoff
+and explicit consumer resume at the recorded head. A fresh consumer process read
+allocated root/API/web guidance plus the platform worktree guide/runbook, verified
+owner/generation and source state, and ran `git diff --check`. This proves the CLI
+task-session contract; it does not claim automatic AI-client guidance adoption.
+Canonical AGENTS.md files were not rewritten.
+
+Dirty cleanup apply was refused for each released allocation. After explicitly
+resuming and removing only its own verified synthetic marker, each clean checkout
+passed preview and non-force removal. Local/remote branches and receipt tombstones
+were independently verified as retained. Canonical ancestry provided retention;
+the published remote branch head was also verified. No fixture PR or main merge
+was performed in Trailboard; runtime/database operations were absent.
+
+Trailboard canonical HEAD, source-status hash and index hash matched their baseline
+before and after all operations. Shelfmark observations before, during and after
+reported `state: ready`, `health: healthy`. No private route, database or runtime
+source was activated from either worktree. All fixture checkouts are removed;
+retained branches/receipts are the approved final disposition.
+
+Integrated repository checks, final-head CI and platform merge remain the delivery
+gates. The current merge includes both reviewed mobile and worktree behavior;
+record those checks below before marking Delivered.

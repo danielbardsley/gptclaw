@@ -1,6 +1,6 @@
 # SPEC-032: Branch and worktree policy
 
-- **Status:** Implemented — verification and review pending
+- **Status:** Live acceptance passed — final checks and authorized merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** PRJ-006, initial single-host Git coordination slice
