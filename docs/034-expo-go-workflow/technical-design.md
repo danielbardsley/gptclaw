@@ -1,6 +1,6 @@
 # TDD-034: Expo Go compatibility and launch UX
 
-- **Status:** Draft proposal — not installed capability
+- **Status:** Implementation authorized — not installed capability
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-034](spec.md) · **Tasks:** [TASKS-034](tasks.md)

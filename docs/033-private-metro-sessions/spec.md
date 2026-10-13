@@ -1,6 +1,6 @@
 # SPEC-033: Owned private Metro sessions
 
-- **Status:** Draft — planning requested; implementation not authorized
+- **Status:** Approved for implementation by active goal — acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** MOB-002 — Physical-device development
@@ -18,7 +18,10 @@ projects and backend lifecycles. Stopping Metro stops development delivery, not 
 installed application's existence or an independently managed API/database.
 
 The project owner requested separate MOB-002 and MOB-003 specs. This authorizes
-planning and a reviewable PR only. This spec owns lifecycle, protocol transport,
+the initial planning set. The subsequent active goal explicitly requests “In order
+first implement MOB-002 followed by MOB-003. Finish when all acceptance criteria
+are met.” This authorizes implementation in that order, preserving the concrete
+runtime-security and operator gates below. This spec owns lifecycle, protocol transport,
 operational readiness and a typed endpoint descriptor. [SPEC-034](../034-expo-go-workflow/spec.md)
 owns Expo Go compatibility, user launch/QR presentation and the supported client loop.
 MOB-002 can use a compatible existing native client during its protocol spike; it

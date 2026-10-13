@@ -227,12 +227,13 @@ dispositions independently of feature implementation status.
   [Tasks](032-branch-worktree-policy/tasks.md) ·
   [Acceptance status](032-branch-worktree-policy/acceptance.md)
 
-- **033 — Owned private Metro sessions (MOB-002), draft:**
+- **033 — Owned private Metro sessions (MOB-002), implementation authorized:**
   [Specification](033-private-metro-sessions/spec.md) ·
   [Technical design](033-private-metro-sessions/technical-design.md) ·
-  [Tasks](033-private-metro-sessions/tasks.md)
+  [Tasks](033-private-metro-sessions/tasks.md) ·
+  [Acceptance tracking](033-private-metro-sessions/acceptance.md)
 
-- **034 — Compatible Expo Go workflow (MOB-003), draft:**
+- **034 — Compatible Expo Go workflow (MOB-003), implementation authorized:**
   [Specification](034-expo-go-workflow/spec.md) ·
   [Technical design](034-expo-go-workflow/technical-design.md) ·
   [Tasks](034-expo-go-workflow/tasks.md)

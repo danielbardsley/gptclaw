@@ -138,6 +138,14 @@ if ! python3 -B scripts/tests/test_project_mobile.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_metro_security.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_metro_spike.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/tests/test_project_templates.py; then
   status=1
 fi

@@ -1,6 +1,6 @@
 # TASKS-034: Expo Go workflow
 
-- **Status:** Draft — planning only
+- **Status:** Implementation authorized — awaiting Metro provider
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-034](spec.md) · **Design:** [TDD-034](technical-design.md)
@@ -10,7 +10,7 @@
 - [x] T-000: Review delivered creation/security, SPEC-033 interface proposal,
   catalogue/sequence and official Go/client references; draft this separate consumer
   plan. No Expo Go installation, phone operation, account or launch implementation.
-- [ ] T-001: Owner reviews bounded Go workflow, proposed platform/freshness matrix
+- [x] T-001: Owner reviews bounded Go workflow, proposed platform/freshness matrix
   and acquisition/fallback boundaries, then authorizes implementation. Confirm
   exact device/fixture scope before live acceptance.
 - [ ] T-002: After authorization, verify actual SDK/native/client/OS acquisition and
@@ -52,3 +52,7 @@ Only T-000 is complete. Proposed default is physical iOS and Android; a requeste
 first-platform slice must be labeled. Metro/private transport and runtime security
 are SPEC-033 prerequisites. Device/client eligibility and launch rules are not yet
 verified; no source upgrade, route, account, signing or phone operation was performed.
+
+The active owner goal authorizes implementation after MOB-002. This records scope
+authorization only; no Go implementation or physical acceptance has occurred. Exact
+device/client versions and fixture use remain live-test prerequisites.

@@ -1,6 +1,6 @@
 # TASKS-033: Private Metro sessions
 
-- **Status:** Draft — planning only
+- **Status:** Implementation authorized — runtime security/spike pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md)
@@ -10,7 +10,7 @@
 - [x] T-000: Read delivered MOB-001/PRJ-006, mobile catalogue/sequence, current
   lifecycle/ingress/security contracts and official references; draft separate plans.
   Read-only source/installed capabilities inspected; no Metro/client/route mutation.
-- [ ] T-001: Owner reviews lifecycle/private-transport scope and proposed bounds,
+- [x] T-001: Owner reviews lifecycle/private-transport scope and proposed bounds,
   platform matrix and operator/security decisions, then authorizes implementation.
   Planning/merge approval alone does not enable a Metro service or extend exceptions.
 - [ ] T-002: Collect exact runtime security evidence and resolve patched-input or
@@ -53,6 +53,19 @@
 
 ## Handover
 
-Only T-000 is complete. Two planning sets were requested; approval/implementation,
-runtime security disposition, private operator scope, measured transport and native
-device evidence remain future work. No runtime/exposure/account changes were made.
+T-000 and T-001 are complete. T-002 is in progress: fresh exact audit evidence,
+a separate disabled runtime policy, fail-closed admission tests and a bounded
+loopback SDK-spike helper are prepared. Runtime disposition, actual SDK execution,
+private operator scope and physical evidence remain pending. No Metro service or
+route/account change has been made. See [security proposal](security-review.md) and
+[acceptance tracking](acceptance.md). Other implementation tasks remain open.
+
+Implementation authorization: the active owner goal requires MOB-002 followed by
+MOB-003 with all acceptance criteria met. Runtime advisory exceptions and exact
+operator routes are not inferred from this general authorization. Device
+prerequisites have been requested; independent source implementation continues.
+
+Owner-reported device prerequisites relayed with authorization: Android 11 on the
+development tailnet, with Expo Go reported up to date. Exact model/build/client
+version and actual loads/reloads remain unverified; no iPhone is confirmed. This
+does not remove iOS criteria or establish physical-device acceptance.

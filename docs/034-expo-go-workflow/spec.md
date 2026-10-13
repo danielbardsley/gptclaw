@@ -1,6 +1,6 @@
 # SPEC-034: Compatible Expo Go development workflow
 
-- **Status:** Draft — planning requested; implementation not authorized
+- **Status:** Approved for implementation by active goal — acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** MOB-003 — Expo Go workflow
@@ -17,7 +17,8 @@ interruptions. Repeat for a second project without new platform account credenti
 or hand-configuring Metro URLs. Unsupported combinations give a precise reason and
 point to the separately scoped development-build workflow (MOB-004).
 
-The owner requested separate MOB-002/003 plans, authorizing planning only. SPEC-033
+The owner requested separate MOB-002/003 plans and subsequently explicitly
+authorized their ordered implementation through the active goal. SPEC-033
 owns Metro/session/routes/operational descriptor; this spec consumes that interface
 and owns Go compatibility, launch UX and physical client acceptance. Implement the
 MOB-002 provider and verify host/private protocols first; final native acceptance

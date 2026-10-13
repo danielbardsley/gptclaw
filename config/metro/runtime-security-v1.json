@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "scope": "private-metro-session",
+  "approved_at": null,
+  "owner": "project owner",
+  "expires_at": "2026-10-28T04:00:00Z",
+  "lock_sha256": "8e89525975b4a0e9bfd55523a61901e33e1a3aac59fc85174d142cbf6b2eeeac",
+  "sdk": 57,
+  "expo_cli": "57.0.29",
+  "max_session_seconds": 28800,
+  "offline": true,
+  "exceptions": [
+    {
+      "id": "GHSA-86w9-cpqp-85rv",
+      "package": "node-forge",
+      "version": "1.4.0",
+      "severity": "high"
+    },
+    {
+      "id": "GHSA-vfj7-8cjw-p6xm",
+      "package": "braces",
+      "version": "3.0.3",
+      "severity": "high"
+    }
+  ]
+}
