@@ -16,6 +16,7 @@ MAX_ENTRIES = 4096
 MAX_OUTPUT = 1024 * 1024
 MAX_REGISTRY = 128 * 1024
 SCAN_SECONDS = 10
+# Managed source-only task checkouts are never independent dashboard projects.
 NAME = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,127}')
 ID = re.compile(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*')
 REPOSITORY = re.compile(r'https://github\.com/[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9_.-]{1,100}')
@@ -172,6 +173,11 @@ class Scanner:
         fd = owned_directory(root_fd, name)
         try:
             info = os.fstat(fd)
+            from project_worktrees import managed
+            from private_apps import AppError
+            try:is_task=managed(self.projects/name)
+            except AppError:raise InventoryError('unsafe-path') from None
+            if is_task:raise FileNotFoundError
             meta = owned_directory(fd, '.gptclaw')
             try:
                 file_info = os.stat('project.yaml', dir_fd=meta, follow_symlinks=False)

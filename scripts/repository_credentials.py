@@ -418,11 +418,12 @@ def set_installation_policy(repository_selection):
     return {**result,'state':'installation-policy-updated','active':False}
 
 
-def upgrade_registered_helpers():
+def upgrade_registered_helpers(roots=None):
     """Refresh only validated owned helper paths, with hash-bound interruption recovery."""
     import project_dependencies as deps
     bundle=app.provider_bundle()
     for initial in bindings():
+        if roots is not None and initial['root'] not in roots:continue
         if initial['helper_command'] is None:continue
         root=Path(initial['root']);repo_id=initial['repository_id']
         with app.locked('credential-'+str(repo_id)):

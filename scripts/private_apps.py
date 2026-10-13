@@ -20,7 +20,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.10.1'
+VERSION = '1.11.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -164,6 +164,8 @@ def json_command(args):
 
 
 def target(root):
+ from project_worktrees import guard
+ guard(root)
  root = safe(Path(root).absolute())
  need(root.is_relative_to(PROJECTS) and root != PROJECTS and root != REPO and '.gptclaw-runtime' not in root.parts, 'path')
  need(root.is_dir() and root.stat().st_uid == os.getuid(), 'path')
@@ -700,6 +702,7 @@ WantedBy=default.target
 
 def provider_bundle():
  paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','project_dependencies.py','project_toolchains.py','gptclawctl.py','gptclawctl','project_repositories.py','repository_askpass.py','repository_credentials.py','repository_credential_helper.py','repository-credential-helper']]
+ paths += [Path('scripts/project_worktrees.py')]
  paths += [Path('scripts/project_mobile.py'), Path('config/mobile/v1.json'), Path('schemas/project/v5.schema.json')]
  paths += [Path('scripts/dashboard_inventory.py'), Path('scripts/dashboard_collector.py'), Path('scripts/dashboard_observation.py'), Path('scripts/dashboard_status.py'), Path('scripts/dashboard_links.py')]
  paths += [Path('config/project-dependencies/v1.json'),Path('schemas/project-dependencies/v1.schema.json')]
@@ -738,7 +741,9 @@ def install_hooks(root):
   directory=safe(root/'.git');need(directory.is_dir() and directory.stat().st_uid==os.getuid(),'conflict')
   hooks=safe(directory/'hooks');hooks.mkdir(exist_ok=True)
   snapshot=provider_bundle();launcher=snapshot/'scripts/gptclawctl'
-  text='#!/usr/bin/env bash\nset -euo pipefail\nexec '+str(launcher)+' verify --project-root '+str(root)+'\n'
+  from project_worktrees import hook_text, hooks as upgrade_hooks
+  upgrade_hooks(root,upgrade=True)
+  text=hook_text(launcher)
   path=safe(hooks/'pre-commit')
   if path.exists():
    need(deps.read_bytes(path,65536)==text.encode(),'conflict');return {'project':slug,'state':'hooks-installed','changed':False}

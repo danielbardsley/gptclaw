@@ -231,6 +231,8 @@ def validate_lock(documents, manifest, p, coherent=True, mobile=False):
 
 
 def context(root, coherent=True):
+    from project_worktrees import guard
+    guard(root)
     import project_python as py
     if py.is_python(root): return py.context(root, coherent)
     root = app().safe(Path(root)); p, digest = policy()

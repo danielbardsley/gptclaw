@@ -221,6 +221,12 @@ dispositions independently of feature implementation status.
   [Tasks](031-expo-project-creation/tasks.md) ·
   [Acceptance](031-expo-project-creation/acceptance.md)
 
+- **032 — Branch and worktree policy (PRJ-006), approved; implementation in progress:**
+  [Specification](032-branch-worktree-policy/spec.md) ·
+  [Technical design](032-branch-worktree-policy/technical-design.md) ·
+  [Tasks](032-branch-worktree-policy/tasks.md) ·
+  [Acceptance status](032-branch-worktree-policy/acceptance.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in
