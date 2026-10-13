@@ -283,14 +283,21 @@ Expo/EAS, Apple/Google and AWS acceptance are separate evidence, not one deploy 
 
 ## Proposed specification groups and decisions
 
-Start with **stages 1–4 as the first coherent private-development initiative**:
-TPL-004, MOB-001/002/005/010/011 and their narrow schema/toolchain/backend/quality
-extensions. Design the interfaces together; deliver provider/backend support before
-project creation, transport and device acceptance. Bring only the stage-5 build
-slice forward if the device spike proves a development client is required.
+**First selected specification (October 13):** [SPEC-031](../031-expo-project-creation/spec.md)
+selects MOB-001 and its minimum template/schema/toolchain/quality/repository
+prerequisites from stages 1/3. It deliberately closes creation before private
+Metro/device and backend integration; M1 remains incomplete. Implementation is
+not authorized by this specification request.
+
+**M1 spans stages 1–4 across compatible initiatives:** SPEC-031 begins with
+creation; subsequent TPL-004, MOB-002/005/010/011 slices add the private runtime,
+backend and native acceptance. Design the interfaces together and deliver each
+provider before its consumers. Backend support precedes integration/device
+acceptance but is not required for standalone source creation. Bring only the
+stage-5 build slice forward if the device spike requires a development client.
 Subsequent initiatives can cover development builds, preview/dashboard delivery,
-updates and product production separately. Features remain Candidate until their
-numbered specifications are selected; this roadmap authorizes no installation.
+updates and product production separately. Catalogue status follows each selected
+specification; this roadmap authorizes no installation.
 
 | Decision | Owner and next decision point |
 |---|---|

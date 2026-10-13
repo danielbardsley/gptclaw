@@ -215,6 +215,11 @@ dispositions independently of feature implementation status.
   [Acceptance](030-dashboard-visual-refinement/acceptance.md) ·
   [Reference brief](030-dashboard-visual-refinement/reference.md)
 
+- **031 — Repeatable Expo / React Native project creation (MOB-001), draft:**
+  [Specification](031-expo-project-creation/spec.md) ·
+  [Technical design](031-expo-project-creation/technical-design.md) ·
+  [Tasks](031-expo-project-creation/tasks.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in
