@@ -31,7 +31,7 @@
 
 ## Verification and delivery
 
-- [ ] T-005: Run meaningful provider projection/secret/mutation tests, deterministic
+- [x] T-005: Run meaningful provider projection/secret/mutation tests, deterministic
   clock and state tests, real timeout/coalescing load checks, frontend accessibility
   and relevant repository/stack gates. Inspect routes/UI for scope and starter demos
   if inherited; check diff/links. Record executed commands/outcomes. (AC-001–005)
@@ -45,9 +45,16 @@
 
 ## Current handover
 
-Implementation is authorized and local source integration is in progress. The
-separate inventory foundation, status observation/store and link projection/UI
-are now implemented in dependency order. Relevant offline and browser checks
-have passed; final repository/CI results, installed-service/private-route evidence,
-review/merge and owner acceptance remain pending. See the technical design for
-exact implementation choices. No deployed completion is claimed.
+Implementation, local checks, all four CI workflows, private rollout and owner
+acceptance passed. Inventory, status and links were activated in order. Exact
+release/provider/image provenance and per-criterion evidence are in acceptance.md.
+Owner-reported group timeouts were corrected through trusted validation reuse,
+one fixed authenticated DB readiness query and a documented finite four-second
+project deadline; the actual 20-project default-budget test still finishes under
+15 seconds. Clean live degradation/recovery completed in 9.62/14.96 seconds.
+
+Review/merge of PR #69 remains. No catalogue feature is Delivered before merge.
+Existing applications/data, private access and unrelated handlers remain intact.
+Synthetic source/data is retained; only owned fixtures may be stopped after
+verification. Logs/preview integrations await their separate prerequisites, and
+the owner deferred visual cleanup.

@@ -1,6 +1,6 @@
 # TDD-029: Validated destination projection and capability gates
 
-- **Status:** Implemented on feature branch — final validation and rollout pending
+- **Status:** Privately deployed and accepted — review/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-029](spec.md) · **Tasks:** [TASKS-029](tasks.md)

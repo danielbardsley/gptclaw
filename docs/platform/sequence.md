@@ -188,14 +188,12 @@ Deferral leaves restore/replacement evidence outstanding until this stage runs.
 
 ## 11. Deliver the platform dashboard over proven interfaces
 
-**Selected planning (October 12):** [SPEC-027](../027-dashboard-project-inventory/spec.md)
-drafts DSH-001 and the bounded discovery/private dashboard foundation;
-[SPEC-028](../028-dashboard-live-service-status/spec.md) separately drafts DSH-002;
-[SPEC-029](../029-dashboard-project-links/spec.md) separately drafts DSH-003.
-All three are Draft: approval and implementation authorization are pending. Inventory
-precedes status and link integration. Log-viewer/public-preview links remain unavailable
-until their separately reviewed prerequisites exist; this planning does not move public
-exposure into the dashboard stage or complete general PRJ-007 discovery.
+**Selected implementation (October 12):** [SPEC-027](../027-dashboard-project-inventory/spec.md)
+implements DSH-001's bounded discovery/private foundation;
+[SPEC-028](../028-dashboard-live-service-status/spec.md) adds DSH-002 observations;
+[SPEC-029](../029-dashboard-project-links/spec.md) adds DSH-003 destinations.
+The increments are privately deployed in order and remain in review/acceptance.
+No broader dashboard feature or future live log/preview integration is claimed.
 
 | Features | Delivery and exit evidence |
 |---|---|

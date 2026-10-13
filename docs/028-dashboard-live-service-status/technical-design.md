@@ -1,6 +1,6 @@
 # TDD-028: Owned runtime observation and status snapshots
 
-- **Status:** Implemented on feature branch — final validation and rollout pending
+- **Status:** Privately deployed and accepted — review/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-028](spec.md) · **Tasks:** [TASKS-028](tasks.md)

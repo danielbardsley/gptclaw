@@ -1,6 +1,6 @@
 # TDD-027: Private dashboard foundation and inventory adapter
 
-- **Status:** Implementation in progress — exact inventory packaging recorded
+- **Status:** Privately deployed and accepted — review/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-027](spec.md) · **Tasks:** [TASKS-027](tasks.md)

@@ -44,21 +44,16 @@
 
 ## Current handover
 
-Only planning documents and roadmap/index references are prepared. Approval and all
-implementation/CI/live/browser acceptance remain pending. These plans do not install
-a service or change infrastructure. Next action: project owner reviews T-001; then
-implement the inventory foundation before SPEC-028 and SPEC-029 integrations. Preserve
-unrelated work and clean up only task-owned synthetic verification fixtures.
+Implementation, local checks, all four CI workflows, private rollout and owner
+acceptance passed. Inventory, status and links were activated in order. Exact
+release/provider/image provenance and per-criterion evidence are in acceptance.md.
+Owner-reported group timeouts were corrected through trusted validation reuse,
+one fixed authenticated DB readiness query and a documented finite four-second
+project deadline; the actual 20-project default-budget test still finishes under
+15 seconds. Clean live degradation/recovery completed in 9.62/14.96 seconds.
 
-Implementation authorization is recorded in the specification. Exact packaging and
-interface choices are being recorded in the design before rollout; no prior acceptance
-result is implied.
-
-Inventory source, socket API, accessible frontend and owned release/unit packaging are
-implemented on the isolated branch. Local inventory (12), socket/worker (3), release
-recovery (6), frontend boundary (2) tests passed; TypeScript and production build passed.
-Live read-only scan found 13 valid projects. Real loopback HTTP and browser checks
-passed for inventory rendering, read restrictions, keyboard navigation and error/recovery
-states. The initial root-disk ENOSPC build failure was resolved by moving only this
-task's worktree/build files to the project volume. Full repository checks passed. CI, service
-rollout, private route/operator evidence and owner desktop acceptance remain pending.
+Review/merge of PR #69 remains. No catalogue feature is Delivered before merge.
+Existing applications/data, private access and unrelated handlers remain intact.
+Synthetic source/data is retained; only owned fixtures may be stopped after
+verification. Logs/preview integrations await their separate prerequisites, and
+the owner deferred visual cleanup.

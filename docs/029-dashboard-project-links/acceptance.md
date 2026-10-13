@@ -1,82 +1,120 @@
 # ACCEPTANCE-029: Dashboard project links
 
-- **Status:** In progress — local evidence; CI, installed/private and owner gates pending
+- **Status:** Local/CI/private/owner acceptance passed — review/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-029](spec.md) · **Design:** [TDD-029](technical-design.md) · **Tasks:** [TASKS-029](tasks.md)
-- **Source:** isolated `codex/dashboard-specs` branch, [PR #69](https://github.com/danielbardsley/gptclaw/pull/69); committed integrated revision to be recorded
 
 ## Criterion mapping
 
 | Criterion | State | Evidence / remaining action |
 |---|---|---|
-| AC-001 | Passed locally | Exact web/API/group route paths are capability-bound; stopped/stale/conflicted/unrouted fixtures disable links. Actual API and group docs capability was observed from fixed private paths. |
-| AC-002 | Passed locally; live conditional | Repository independence and missing metadata pass. Synthetic bound viewer capability generates only the opaque same-origin destination; actual absent viewer is unavailable and no log reader exists. |
-| AC-003 | Passed locally; live pending | Six link tests cover active/expired/revoked/stale/absent/wrong-project/forbidden previews. Browser expiry uses collector time plus elapsed time. No real registry/exposure is created; installed absence evidence remains. |
-| AC-004 | Passed locally | Backend/rendering URL tests reject credentials, unsafe schemes/ports/query/fragment/traversal/encoding; pure link projection execution/network spies pass. Browser tabs use noopener/noreferrer and labels render as text. |
-| AC-005 | Pending live/owner | Production browser tests pass for enabled/disabled links, unavailable explanations, repository survival and expiry. Owner navigation to task-owned real app/API/group docs and recorded repository remains; future viewer/registry live integration is explicitly separate. |
+| AC-001 | Passed local/CI/live | Exact owned app/API/group capabilities; stopped/stale/conflicted cases; live web stop withdraws app link. |
+| AC-002 | Passed local/CI/live | Actual fixture repository survives web stop; absent viewer has no enabled logs link or log read. |
+| AC-003 | Passed local/CI/live absence | Synthetic preview expiry/revocation/binding/clock cases; actual absent registry is unavailable; no exposure created. |
+| AC-004 | Passed local/CI/live | Structural URL validation/spies/text/safe-tabs; actual HTTPS UI and boundary checks. |
+| AC-005 | Passed local/CI/live/owner | Owner explicitly confirmed corrected group details and task-owned web, standalone API, group docs and repository navigation. |
 
-## Executed verification
+## Verification and delivery evidence
 
-Using `/srv/forge/projects/gptclaw/.venv-manifest/bin/python -B` in the isolated
-project-volume worktree:
+Implementation is in [PR #69](https://github.com/danielbardsley/gptclaw/pull/69),
+branch `codex/dashboard-specs`. Source is `platform/dashboard/` plus trusted
+collector/provider/lifecycle scripts. The current implementation is privately
+deployed; review/merge remains pending.
 
-- `scripts/tests/test_dashboard_observation.py`: seven tests passed.
-- `scripts/tests/test_dashboard_status.py`: eight tests passed, including actual bounded multiprocessing workers and timeout handling.
-- `scripts/tests/test_dashboard_links.py`: six pure destination/capability/security tests passed.
-- Inventory/collector/release suites passed (12/5/7 tests respectively).
-- `scripts/tests/check_dashboard.py --engine podman --reuse-node-image localhost/gptclaw-node:24.21.0-pnpm12.10.1 --reuse-browser-image <verified pinned browser image> --output <task-owned output>` passed frozen install, seven frontend tests, type generation/TypeScript checking, production build, actual socket/HTTP and browser acceptance.
-- `PATH=/srv/forge/projects/gptclaw/.venv-manifest/bin:$PATH ./scripts/check-repository.sh`: full offline repository gate passed; ignored task-owned log retained.
-- `git diff --check`, changed Python parsing and checker shell syntax passed.
+Executed focused checks use the isolated manifest interpreter:
 
-A live read-only pool on the existing 13-project inventory returned current
-ready/stopped states for every project, including both PostgreSQL-backed groups
-and the web/API group, in about five seconds. It observed exact standalone/group
-docs capabilities. No lifecycle operation or application dataset mutation was
-used for this measurement; it does not replace the required task-owned lifecycle
-acceptance or owner desktop evidence.
+- `scripts/tests/test_project_manifest.py`: 28 tests passed; exact current schema bytes still control full manifest validation.
+- `scripts/tests/test_dashboard_inventory.py`: 12 tests passed.
+- `scripts/tests/test_dashboard_collector.py`: 5 tests passed, including real Unix HTTP, bounded worker termination/reaping and partial/failure recovery.
+- `scripts/tests/test_dashboard_install.py`: 8 tests passed, including owned rollback and separately bounded compiled checksum metadata.
+- `scripts/tests/test_dashboard_observation.py`: 9 tests passed, including fixed query/probe bounds and restoration of ordinary lifecycle helpers.
+- `scripts/tests/test_dashboard_status.py`: 8 tests passed. The actual four-second default with 20 projects, a hung worker and coalesced readers completed within the 15-second criterion (suite about 6.2 seconds).
+- `scripts/tests/test_dashboard_links.py`: 6 tests passed.
+- Portable `scripts/tests/check_dashboard.py --engine podman` with verified existing Node/browser images passed frozen install, seven frontend tests, type generation/TypeScript, production build, socket/HTTP and browser checks. Browser cases include keyboard, escaped labels, empty/partial/stale/recovery, zero/null metrics, safe tabs and preview expiry with a twelve-hour wall-clock skew.
+- `git diff --check` and `git diff --cached --check`: passed.
 
-Initial concurrent native reads exceeded the per-project deadline under process
-startup/CPU contention. Trusted forkserver preloading, scoped inspection reuse and
-CPU-aware concurrency resolved this without enlarging the two-second limit.
-Unknown/timeouts were kept unavailable, never claimed healthy.
+All four CI workflows passed on final implementation revision
+`7df93cbeedc986c92c5554f2e43fc7b5376dc2a7`:
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38328187626),
+[development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38328187624),
+[Tailscale federation](https://github.com/danielbardsley/gptclaw/actions/runs/38328187633),
+and [private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38328187608).
+`PATH=/srv/forge/projects/gptclaw/.venv-manifest/bin:$PATH ./scripts/check-repository.sh`
+passed the full final offline repository gate (exit 0). Earlier reruns found a cold
+forkserver timing assertion or were interrupted (exit 143); none is claimed
+successful. The regression now separates one-time bootstrap from the strict
+warm-worker termination/reaping assertion.
 
-## Remaining delivery
+## Installed/private evidence
 
-Final integrated CI results and committed source/release/image/provider identity
-remain to be recorded. `/srv/forge/platform` is still an operator prerequisite;
-no installed dashboard/private Serve/owner acceptance is claimed. After the base
-is provisioned through the reviewed operator path, roll out inventory, status and
-links in order, verify owned listeners/mounts/Funnel-off/rollback and explicit
-synthetic target degradation/recovery. Complete owner browser checks and reviewed
-merge before marking Delivered. Preserve all existing projects/data and unrelated
-configuration. Future logs/preview integration requires accepted DSH-006/NET-108
-prerequisites and new live evidence; unavailable adapters satisfy only the initial
-explicitly scoped behavior.
+The project owner provisioned `/srv/forge/platform` through the reviewed existing
+SSM operator path and verified forge access. Observed ownership is forge:forge,
+mode 0700, on the existing project volume. No AWS configuration/apply ran.
+The owner then replied “done” to the exact reviewed Serve command after loopback
+health passed. Read-only inspection and real HTTPS checks verify:
 
-## Integrated revision evidence
+- `/dashboard/` -> `http://127.0.0.1:18200/dashboard/`.
+- Existing `/projects/` -> `http://127.0.0.1:18079/projects/` is preserved; Funnel is off.
+- Frontend is a rootless forge container, user 1002:1002, publishing only 127.0.0.1:18200. Its two read-only mounts are its immutable `/app` assets and `/run/gptclaw` socket directory.
+- Owned user units `gptclaw-dashboard-collector.service` and `gptclaw-dashboard.service` are active; no project/credential/Podman-socket frontend mount exists.
+- Actual private HTTPS page/health/snapshot return 200. POST returns 405; arbitrary root query returns 400; invalid Host and cross-origin reads return 403.
 
-Implementation revision `83f28412c3218684e55a5c004b7de5bd762223e1` passed all four
-GitHub Actions workflows: [dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38317412620),
-[development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38317412699),
-[Tailscale federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38317412793),
-and [private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38317412651).
-No protected deployment/apply was invoked.
+Inventory, status and links were activated in that order. Rollback from links to
+the status-only release retained inventory/status, then restoring the full release
+restored links. A real browser retained rows with “Inventory stale · collector
+unavailable” during an ownership-verified collector stop and refreshed on restart.
+Frontend/project runtimes/Serve remained intact.
 
-A task-owned collector with both status/links enabled and the actual production
-frontend on loopback completed integrated HTTP/browser checks: all 13 inventory
-rows were current, 10 ready and 3 stopped, with 13 enabled private app/docs links.
-The actual group panel displayed live web/API/DB status and timing/counters, and
-its API-doc link matched the owned prefix exactly. No real logs/preview link was
-enabled; no preview was created. The screenshot is ignored task-owned evidence.
-The exact QA socket lock and container ownership label proved cleanup authority;
-only those QA services were stopped/removed. Existing application data/services
-and Serve handlers were preserved.
+Current full release is
+`7ea8b649f931d93480c413f07edc40580ec76015a9a509e55f2071917d25b5a7`;
+its exact provider/image/checksum descriptor is retained privately under its
+immutable release directory. Frontend image is
+`sha256:56cb97c5d887e341f46dd848e859e357957c92951c8c0879e08b97c4b971052c`,
+with the prepared persistent manifest interpreter. The installed provider snapshot is
+`dad82ad62342c9fd0afea4249d3324ef7e709adec222ed8a7debb83000575e83`.
+Actual pair stop/start also passed: the synthetic API remained reachable while
+both dashboard services were stopped, then dashboard health recovered.
 
-This strengthens local/integrated evidence and does not satisfy installed main
-service, operator Serve, owner desktop, lifecycle recovery or merge gates. The
-base directory remains operator-required and the goal remains incomplete.
+## Synthetic lifecycle and owner evidence
 
-The portable production browser gate also passed with `Date.now()` shifted twelve
-hours in the browser. Preview withdrawal still followed collector time plus elapsed
-time without reload, and repository navigation remained available.
+Task-owned local-only projects are `dsh-accept-web`, `dsh-accept-api` and
+`dsh-accept-db` (web/API/PostgreSQL). Existing application data is untouched.
+Database fixture initialization required explicit stopped API dependency
+preparation; the same allocated operation then resumed and initialized successfully.
+No reset/reinitialization or existing-data deletion was used. Record this prerequisite
+rather than claiming the first initialization attempt succeeded.
+
+Web CLI stop withdrew its app link while retaining its configured repository link.
+CLI start recovered ready state. An explicit restart returned its operation ID and
+stop/start transition IDs; the dashboard current-instance counter was measured zero
+and uptime reset. The repository fixture destination is the fixture source repository,
+`https://github.com/danielbardsley/gptclaw`, recorded in task-owned metadata without Git
+configuration or credential reads.
+
+A reversible readiness-only source fault in the synthetic group produced CLI
+`degraded` and dashboard API-unhealthy/DB-healthy, with app/docs links withdrawn
+in 14.81 seconds. Exact original source bytes were restored in a finally block.
+The first immediate recovery deadline was missed during CPU contention. After
+the budget correction and full checks completed, a clean repeat observed degradation
+in 9.62 seconds and recovery in 14.96 seconds, with all three components healthy and
+both app/docs links restored. Neither scenario was caused by a dashboard action.
+
+The owner initially confirmed desktop inventory, keyboard component details and a ready
+project link “Works as described”, then identified working groups displaying
+observation timeouts. That report required a correction before group acceptance.
+The original two-second worker bound was too short on this two-CPU host. Trusted
+schema meta-check reuse, one authenticated DB revision read, bounded HTTP probes
+and a documented four-second project deadline address that cause. Subsequent
+live snapshots showed all 16 rows current (13 ready, 3 stopped), including all four
+groups. The owner then confirmed “Group details and all links work” after refreshing
+and opening the synthetic web app/repository, standalone API docs and group API docs. The owner explicitly deferred
+style/format changes, which are outside this delivery.
+
+Owner URL: `https://forge-dev-01-4.tail8c3304.ts.net/dashboard/`.
+Owner acceptance covers the task-owned web app, standalone `/docs`, group `/api/docs`,
+configured repository and corrected group details. Review/merge is still required
+before Delivered. After owner/browser verification, the three named synthetic runtimes were stopped
+through the reviewed CLI; source, restricted runtime credentials/data and ignored QA
+evidence are retained. Existing projects and their services/data are untouched. Logs/preview prerequisites remain unavailable;
+future live integrations require separately accepted DSH-006/NET-108 scope.

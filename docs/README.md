@@ -190,20 +190,20 @@ dispositions independently of feature implementation status.
   [Technical design](026-development-databases/technical-design.md) ·
   [Tasks](026-development-databases/tasks.md)
 
-- **027 — Dashboard project inventory (DSH-001), draft:**
+- **027 — Dashboard project inventory (DSH-001), accepted, merge pending:**
   [Specification](027-dashboard-project-inventory/spec.md) ·
   [Technical design](027-dashboard-project-inventory/technical-design.md) ·
-  [Tasks](027-dashboard-project-inventory/tasks.md)
+  [Tasks](027-dashboard-project-inventory/tasks.md) · [Acceptance](027-dashboard-project-inventory/acceptance.md)
 
-- **028 — Dashboard live service status (DSH-002), draft:**
+- **028 — Dashboard live service status (DSH-002), accepted, merge pending:**
   [Specification](028-dashboard-live-service-status/spec.md) ·
   [Technical design](028-dashboard-live-service-status/technical-design.md) ·
-  [Tasks](028-dashboard-live-service-status/tasks.md)
+  [Tasks](028-dashboard-live-service-status/tasks.md) · [Acceptance](028-dashboard-live-service-status/acceptance.md)
 
-- **029 — Dashboard project links (DSH-003), draft:**
+- **029 — Dashboard project links (DSH-003), accepted, merge pending:**
   [Specification](029-dashboard-project-links/spec.md) ·
   [Technical design](029-dashboard-project-links/technical-design.md) ·
-  [Tasks](029-dashboard-project-links/tasks.md)
+  [Tasks](029-dashboard-project-links/tasks.md) · [Acceptance](029-dashboard-project-links/acceptance.md)
 
 ## Current application milestone
 
