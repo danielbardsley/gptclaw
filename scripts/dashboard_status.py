@@ -55,7 +55,7 @@ def component_fields(raw):
 
 
 class StatusStore:
-    def __init__(self, run, *, clock=time.time, observe=status_job, deadline=2, window=20, workers=None):
+    def __init__(self, run, *, clock=time.time, observe=status_job, deadline=4, window=20, workers=None):
         self.run,self.clock,self.observe=run,clock,observe
         self.deadline,self.window=deadline,window
         self.workers=workers if workers is not None else min(4,max(1,os.cpu_count() or 1))

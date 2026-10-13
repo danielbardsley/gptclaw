@@ -160,7 +160,7 @@ and route schema 1. It remains read-only: ownership/readiness checks precede met
 projection, native calls are allowlisted, receipt writes are refused and no snapshot
 publication occurs from observation. Clean preloaded forkserver workers collect at
 most four projects concurrently, bounded by available CPUs, with at most three component-read threads per group
-and a two-second project deadline. Twenty projects form a bounded collection window;
+and a four-second project deadline. Twenty projects form a bounded collection window;
 larger inventories rotate windows and show capacity/freshness limitations. Status
 becomes stale after 30 seconds; first-observed and change-detected labels do not
 promise exact unseen event times. Uptime/counters describe the current instance.

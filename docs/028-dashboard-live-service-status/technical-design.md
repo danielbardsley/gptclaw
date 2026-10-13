@@ -59,9 +59,11 @@ restarts. No project or runtime receipt writes and no persistent history are nee
 ## Scheduling and failure bounds
 
 Proposed supported-load target is 20 projects. Poll every five seconds, with at most
-four project observations concurrently and a two-second deadline per project; kill
+four project observations concurrently and a four-second deadline per project; kill
 and reap owned observation workers on timeout so a stuck helper cannot occupy the
-queue forever. A full 20-project round is bounded to ten seconds plus scheduling;
+queue forever. A round of 20 entirely blocked projects is bounded to 80 seconds plus scheduling
+on a single-worker host (40 seconds on this two-CPU host); healthy supported-load
+fixtures with one blocked target must still meet the 15-second visibility criterion;
 prove the SPEC-028 15-second freshness target with the synthetic load test. Bound
 per-project results to 64 KiB and the status response to 1 MiB. A round never overlaps
 itself; browser clients share the same snapshots. Health request timeouts must fit
@@ -129,7 +131,7 @@ three threads inside one project worker; a failed component retains useful sibli
 
 The collector uses a clean Python forkserver with the known tooling path preloaded
 once, then restores its parent environment. This avoids repeated library startup
-inside the two-second per-project deadline and never forks the multithreaded HTTP
+inside the four-second per-project deadline and never forks the multithreaded HTTP
 process directly. Up to four project workers (bounded by available CPUs), a 20-project rotating window, 64 KiB per
 result and five-second collection scheduling remain bounded; hung workers and
 their owned process groups are killed/reaped. `dashboard_status.py` stores no more
@@ -144,3 +146,22 @@ keyboard-accessible component panel show current/last-known state, busy operatio
 current-run uptime, container-instance restart counts and observed-change semantics.
 Browser elapsed time also ages status when the last fetched observation is old.
 No lifecycle controls, logs, telemetry database or project dataset mutation is added.
+
+## Live budget correction
+
+Owner desktop acceptance exposed repeated group timeouts on the two-CPU host.
+The original two-second budget was too short for concurrent ownership checks,
+authenticated DB readiness and HTTP probes. Exact-byte trusted schema meta-checks
+are now reused (every manifest is still fully validated); the clean forkserver
+preloads all four validators. DB readiness uses one fixed authenticated revision
+query; HTTP readiness is bounded to 500 ms, and docs capability to 250 ms. Ordinary
+lifecycle helpers are restored after each observation and keep their own bounds.
+
+Project observations now have a finite four-second deadline. This is a budget
+correction, not acceptance by hiding failures: the real 20-project worker test
+uses this actual default, includes a hung target/coalesced readers, and must finish
+within 15 seconds. Whole-worker process-group termination, ownership validation,
+64 KiB results, 30-second stale threshold and 20-project rotating windows remain.
+All-blocked workloads can exceed the supported healthy-load latency; their rows
+remain explicitly unavailable/stale. Record actual deployed group refresh and
+degradation/recovery measurements separately.

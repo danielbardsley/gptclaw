@@ -174,7 +174,7 @@ def cached_reads():
             return result
         def healthy(receipt, contract):
             # Lifecycle probes may wait five seconds. Dashboard reads must leave
-            # room for ownership/timing checks inside the two-second budget.
+            # room for ownership/timing checks inside the four-second budget.
             service = contract['service']
             bounded = {**contract, 'service': {**service, 'health': {
                 **service['health'], 'timeout_seconds': min(

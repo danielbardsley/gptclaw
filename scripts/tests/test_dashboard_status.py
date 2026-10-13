@@ -112,7 +112,7 @@ class StatusTests(unittest.TestCase):
         self.assertEqual(self.store.snapshot('key',self.binding)['freshness'],'unavailable')
 
     def test_real_twenty_project_workers_timeout_reaping_and_read_coalescing(self):
-        store=StatusStore(bounded,observe=fake_observation,deadline=2)
+        store=StatusStore(bounded,observe=fake_observation)
         bindings={f'key-{index:02d}':{'id':f'project-{index}','components':['web','api','db'],'hang':index==0} for index in range(20)}
         started=time.monotonic()
         thread=threading.Thread(target=store.round,args=(bindings,));thread.start()
