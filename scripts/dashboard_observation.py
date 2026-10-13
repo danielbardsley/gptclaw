@@ -139,6 +139,8 @@ def cached_reads():
         original = app.command
         original_bundle = app.provider_bundle
         original_healthy = app.healthy
+        import project_database as db
+        original_revision = db.revision
         original_save, original_save_text = app.save, app.save_text
         cache = {}
         def command(argv, timeout=300, optional=False):
@@ -176,12 +178,20 @@ def cached_reads():
             service = contract['service']
             bounded = {**contract, 'service': {**service, 'health': {
                 **service['health'], 'timeout_seconds': min(
-                    service['health']['timeout_seconds'], .25)}}}
+                    service['health']['timeout_seconds'], .5)}}}
             return original_healthy(receipt, bounded)
+        def revision(receipt, generation=None):
+            # One authenticated read proves connectivity and migration revision.
+            # A missing table fails readiness without a second native query.
+            value = db.sql(receipt, 'SELECT version_num FROM public.alembic_version;',
+                           generation).strip()
+            app.need(re.fullmatch(r'[A-Za-z0-9_]{1,32}', value), 'database-schema')
+            return value
         def refuse_write(*_, **__):
             raise app.AppError('conflict')
         app.command = command
         app.healthy = healthy
+        db.revision = revision
         # verify_unit compares trusted bootstrap bytes. It needs no snapshot
         # publication while observing from source or an installed snapshot.
         app.provider_bundle = lambda: app.REPO
@@ -191,6 +201,7 @@ def cached_reads():
         finally:
             app.command = original
             app.healthy = original_healthy
+            db.revision = original_revision
             app.provider_bundle = original_bundle
             app.save, app.save_text = original_save, original_save_text
 

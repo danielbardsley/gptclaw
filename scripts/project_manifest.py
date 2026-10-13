@@ -1,5 +1,6 @@
 """Offline project contract validation. No project commands or code are loaded."""
 import errno
+from functools import lru_cache
 import json
 import math
 import os
@@ -163,9 +164,17 @@ StrictValidator = validators.extend(Draft202012Validator, type_checker=
     Draft202012Validator.TYPE_CHECKER.redefine('integer', lambda checker, value: type(value) is int))
 
 
+@lru_cache(maxsize=4)
+def check_schema_bytes(source):
+    # Reuse only the trusted schema's meta-validation, keyed by exact bytes.
+    # Each manifest still gets a fresh schema/validator and full validation.
+    StrictValidator.check_schema(json.loads(source))
+
+
 def load_schema(version=1):
     path = SCHEMA_PATH if version == 1 else SCHEMA_PATH.with_name("v"+str(version)+".schema.json")
-    schema = json.loads(path.read_text(encoding='utf-8'))
+    source = path.read_text(encoding='utf-8')
+    schema = json.loads(source)
     if schema.get('$id') != 'urn:gptclaw:project:v'+str(version) or schema.get('type') != 'object':
         raise ValueError('unexpected bundled schema')
     # No network retrieval, even if a future schema mistakenly adds an external ref.
@@ -179,7 +188,7 @@ def load_schema(version=1):
             for item in value:
                 check_refs(item)
     check_refs(schema)
-    StrictValidator.check_schema(schema)
+    check_schema_bytes(source)
     return schema, StrictValidator(schema, registry=Registry())
 
 

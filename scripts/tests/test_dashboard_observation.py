@@ -171,6 +171,19 @@ class ObservationTests(unittest.TestCase):
         self.assertEqual(invalid['uptime_reason'],'clock-anomaly')
         self.assertEqual(observation.timing({},False,start)['uptime_reason'],'not-applicable')
 
+    def test_dashboard_database_readiness_uses_one_fixed_query(self):
+        original=db.revision
+        receipt={'project':'synthetic'}
+        with patch.object(db,'sql',return_value='0001\n') as query:
+            with observation.cached_reads():
+                self.assertEqual(db.revision(receipt),'0001')
+                query.assert_called_once_with(receipt,
+                    'SELECT version_num FROM public.alembic_version;',None)
+            self.assertIs(db.revision,original)
+        with patch.object(db,'sql',return_value='SYNTHETIC_SECRET!'):
+            with observation.cached_reads(),self.assertRaises(app.AppError):
+                db.revision(receipt)
+
     def test_dashboard_probe_deadline_preserves_lifecycle_contract(self):
         contract={'service':{'health':{'path':'/projects/synthetic/ready',
                                       'timeout_seconds':5}}}
@@ -179,7 +192,7 @@ class ObservationTests(unittest.TestCase):
         with observation.cached_reads():
             app.healthy(receipt,contract)
             opener=observation.urllib.request.build_opener.return_value
-            self.assertEqual(opener.open.call_args.kwargs['timeout'],.25)
+            self.assertEqual(opener.open.call_args.kwargs['timeout'],.5)
             self.assertEqual(opener.open.call_args.args[0],
                              'http://127.0.0.1:18080/projects/synthetic/ready')
         self.assertIs(app.healthy,original)
