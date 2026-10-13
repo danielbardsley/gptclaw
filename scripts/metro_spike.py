@@ -9,11 +9,13 @@ from pathlib import Path
 import stat
 import math
 import time
+import threading
 from urllib.parse import urlsplit
 import uuid
 
 import private_apps as app
 import metro_security as security
+import metro_protocol as protocol
 import project_dependencies as deps
 import project_toolchains as tools
 
@@ -225,14 +227,22 @@ def run(root,advertised,duration):
                 deadline=time.monotonic()+remaining_seconds(policy,duration)
                 app.command(argv,timeout=20)
             receipt.update(phase='running',expires_at=time.time()+duration);app.save(stage/'spike.json',receipt)
+            evidence={};finished=threading.Event()
+            def observe():
+                try:evidence['protocol']=protocol.sample(port,value['advertised_origin'],deadline)
+                except (app.AppError,OSError,ValueError):evidence['failed']=True
+                finally:finished.set()
+            observer=threading.Thread(target=observe,daemon=True);observer.start()
             while time.monotonic()<deadline:
                 current=security.read_policy(app.REPO)
                 app.need(current==policy,'conflict')
                 app.need(ownership('container',name,token)=='owned','health')
+                if finished.is_set():break
                 time.sleep(min(1,max(0,deadline-time.monotonic())))
+            app.need(finished.is_set() and not evidence.get('failed'),'health')
             app.need(value['source']==source_inventory(root),'conflict')
-            receipt.update(phase='complete')
-            return {'project':value['project'],'state':'spike-complete','port':port,'audit':result,'source_unchanged':True}
+            receipt.update(phase='complete',protocol=evidence['protocol'])
+            return {'project':value['project'],'state':'spike-complete','port':port,'audit':result,'source_unchanged':True,'protocol':evidence['protocol']}
         except (app.AppError,security.AdmissionError,OSError,ValueError):
             receipt.update(phase='failed');raise
         finally:

@@ -42,10 +42,15 @@ EAS Update, custom signed client, certificate verification or public service app
 The initial spike is loopback only, on the two exact retained synthetic roots.
 Its helper permits at most 300 seconds and has no Tailscale administration, private
 proxy or device-launch behavior. Its read-only plan and actual unapproved start
-denial were verified. Seventeen additional offline tests cover source filtering,
+denial were verified. Twenty additional offline tests cover source filtering,
 symlink/hardlink/FIFO/traversal/size limits, exact fixture/origin scope, prepared
 dependency admission, security expiry, isolated resources and owned cleanup.
-These are local preflight tests, not proof of SDK protocol or deployed limits.
+Ten further synthetic loopback protocol tests cover a 3 MiB streamed response,
+size/header/deadline limits, malformed/truncated data, redirects and foreign/encoded
+credential URLs. The spike probes both target manifests/bundles and manifest-listed
+assets, retains hashes/counts rather than raw manifests, and never claims physical
+or private-route acceptance. These are local preflight tests, not proof of actual
+SDK protocol or deployed limits.
 
 Required controls for this initial SDK spike:
 

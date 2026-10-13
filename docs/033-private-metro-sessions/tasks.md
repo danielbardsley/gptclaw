@@ -55,7 +55,8 @@
 
 T-000 and T-001 are complete. T-002 is in progress: fresh exact audit evidence,
 a separate disabled runtime policy, fail-closed admission tests and a bounded
-loopback SDK-spike helper are prepared. Runtime disposition, actual SDK execution,
+loopback SDK-spike helper and sanitized native protocol probes are prepared.
+The full offline repository gate passed; all 38 focused new tests pass. Runtime disposition, actual SDK execution,
 private operator scope and physical evidence remain pending. No Metro service or
 route/account change has been made. See [security proposal](security-review.md) and
 [acceptance tracking](acceptance.md). Other implementation tasks remain open.

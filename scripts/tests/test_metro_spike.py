@@ -2,6 +2,7 @@
 """Offline SDK spike admission, filtered source and ownership failure cases."""
 import contextlib
 import hashlib
+import copy
 import json
 import os
 from pathlib import Path
@@ -107,6 +108,68 @@ class SpikeTests(unittest.TestCase):
         self.assertTrue(all(m.endswith(':ro') for m in mounts))
         self.assertEqual(len(mounts),2)
         self.assertFalse(any(x in options for x in ['--env-host','--privileged','--replace','--network=host']))
+    def simulate_run(self,failure=None):
+        self.prepare_plan()
+        self.patch(app,'STORE',self.root.parent/'runtime')
+        policy=security.read_policy(app.REPO,approved=False);policy=copy.deepcopy(policy)
+        policy['approved_at']='2026-10-13T20:00:00Z'
+        policy['lock_sha256']=hashlib.sha256((self.root/'pnpm-lock.yaml').read_bytes()).hexdigest()
+        self.patch(security,'read_policy',lambda *args,**kwargs:policy)
+        self.patch(spike,'prepared_dependencies',lambda *args:None)
+        self.patch(spike.deps,'require_clean',lambda *args:None)
+        self.patch(spike.tools,'selection',lambda *args:{})
+        self.patch(spike.tools,'observed',lambda *args:{'state':'verified','image_present':True,'receipt':{'image':'sha256:'+'1'*64}})
+        self.patch(app,'available',lambda *args:True)
+        resources={};calls=[];registry=False
+        @contextlib.contextmanager
+        def locked(name):
+            nonlocal registry
+            if name=='registry':registry=True
+            try:yield
+            finally:
+                if name=='registry':registry=False
+        self.patch(app,'locked',locked)
+        def command(argv,**kwargs):
+            calls.append(argv)
+            if argv[:3]==['podman','network','create']:
+                resources[argv[-1]]='owned'
+            if argv[:2]==['podman','run']:
+                name=argv[argv.index('--name')+1]
+                if name.endswith('-audit'):
+                    audit={'advisories':{str(i):{'github_advisory_id':e['id'],'module_name':e['package'],'severity':e['severity'],'findings':[{'version':e['version']}]} for i,e in enumerate(policy['exceptions'])},'metadata':{'vulnerabilities':{k:2 if k=='high' else 0 for k in security.LEVELS}}}
+                    return SimpleNamespace(returncode=1,stdout=json.dumps(audit))
+                self.assertTrue(registry);resources[name]='owned'
+                if failure=='start-timeout':raise app.AppError('timeout')
+            if argv[:2]==['podman','stop']:resources.pop(argv[-1],None)
+            if argv[:3]==['podman','network','rm']:resources.pop(argv[-1],None)
+            return SimpleNamespace(returncode=0,stdout='')
+        self.patch(app,'command',command)
+        self.patch(spike,'ownership',lambda kind,name,token,**kw:resources.get(name,'absent'))
+        def sample(*args):
+            self.assertFalse(registry)
+            if failure=='protocol':raise app.AppError('health')
+            return {'physical_client_verified':False,'private_route_verified':False,'native':{'ios':{},'android':{}}}
+        self.patch(spike.protocol,'sample',sample)
+        if failure:
+            with self.assertRaises(app.AppError):spike.run(self.root,self.origin,60)
+            result=None
+        else:result=spike.run(self.root,self.origin,60)
+        self.assertEqual(resources,{})
+        records=list((app.STORE/'metro-spikes').glob('*/spike.json'))
+        self.assertEqual(len(records),1)
+        return result,json.loads(records[0].read_text()),calls
+    def test_simulated_success_releases_registry_then_cleans_owned_handles(self):
+        result,record,calls=self.simulate_run()
+        self.assertTrue(result['source_unchanged']);self.assertEqual(record['phase'],'complete')
+        self.assertFalse(result['protocol']['physical_client_verified'])
+        self.assertFalse(result['protocol']['private_route_verified'])
+    def test_unknown_start_outcome_cleans_proven_owned_handles(self):
+        result,record,calls=self.simulate_run('start-timeout')
+        self.assertEqual(record['phase'],'failed')
+        self.assertTrue(any(c[:2]==['podman','stop'] for c in calls))
+    def test_protocol_failure_is_failed_and_owned_resources_are_reconciled(self):
+        result,record,calls=self.simulate_run('protocol')
+        self.assertEqual(record['phase'],'failed');self.assertNotIn('protocol',record)
     def test_expiry_bounds_disconnected_container(self):
         policy={'expires_at':'2026-10-13T22:00:00Z'}
         expiry=security.timestamp(policy['expires_at'])
