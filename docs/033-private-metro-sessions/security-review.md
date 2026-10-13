@@ -1,10 +1,10 @@
-# SPEC-033 runtime advisory disposition proposal
+# SPEC-033 runtime advisory disposition
 
-- **Status:** Proposed — runtime approval absent; Metro execution blocked
+- **Status:** Approved scoped temporary disposition — actual SDK evidence pending
 - **Owner:** Project owner
 - **Observed:** 2026-10-13 (America/New_York)
 - **Scope:** Exact locked SDK-57 native-development graph, private bounded Metro only
-- **Expiry proposed:** End of October 27, 2026 (America/New_York)
+- **Expiry:** End of October 27, 2026 (America/New_York)
 
 ## Actual evidence
 
@@ -27,10 +27,11 @@ file was opened, no signing bypass implemented, and no Metro process started.
 The frozen lock digest is enforced by the proposed runtime policy. Eight offline
 admission tests passed: unapproved/source-only policies, future/expired approval,
 changed graph/version, unknown high/critical, duplicate/omitted findings and broadened
-exceptions all fail. The committed proposed policy's approved_at is null, so actual
-runtime admission remains blocked.
+exceptions all fail. The earlier null approval correctly blocked runtime admission. The owner now
+approved the exact reviewed exceptions/fixtures; fresh audit and all controls
+remain enforced before execution.
 
-## Exact bounded proposal
+## Approved bounded scope
 
 Allow only the two exact advisory/package/version tuples above for private native
 Metro, through October 27, conditional on implementation and verification of all
@@ -76,8 +77,8 @@ Required controls for this initial SDK spike:
 
 The initial controls exist in scripts/metro_spike.py and scripts/metro_security.py
 and have offline negative-path evidence; actual SDK/resource/cleanup behavior
-remains unproven until the authorized spike runs. The separate policy is disabled
-until approval. Subsequent supervised/private controls remain requirements, so
+remains unproven until the authorized spike runs. The separate policy now records the verified owner approval timestamp;
+source-only exception files are unchanged. Subsequent supervised/private controls remain requirements, so
 approval alone cannot establish readiness or permit unimplemented exposure. Native
 Go compatibility and physical iOS/Android testing remain separate acceptance gates.
 
@@ -86,11 +87,24 @@ and remove exceptions, or obtain fresh concrete disposition before expiry. Expir
 blocks new runtime and revokes existing sessions; it never silently extends to an
 eight-hour lease. No standing exception is inherited by another client/release mode.
 
-## Reviewable acceptance targets
+## Approved acceptance targets
 
-Propose reusing only the retained synthetic mob001-accept-one and mob001-accept-two
+Reuse only the retained synthetic mob001-accept-one and mob001-accept-two
 canonical source roots for the bounded protocol/device fixtures, preserving Git
 history/private PRs and restoring only task-owned edits. No new GitHub grant/repository
 or data deletion is proposed. Exact new private listeners/access selectors are
 prepared after local protocol evidence and still need the reviewed operator path;
 this proposal does not let forge administer Tailscale.
+
+## Approval provenance
+
+The project owner explicitly instructed “Give approval due the exceptions please”
+in the monitoring chat after the exact linked review and pending decision were
+identified. The authorized relay was verified against that user message, not
+inferred from a heartbeat or general implementation goal. Approval timestamp: 2026-10-13T23:46:56Z.
+Source chat: 01a1375a-3836-70b1-bd8b-be3ed5ed52a3; user-message ID
+01a137a9-7a18-7852-a95b-30db1e88e468. This approves the two exact exceptions through
+October 27, the retained fixtures and an initial loopback-only spike of at most
+five minutes. Later private sessions still require verified controls, at most eight
+hours and separate operator listener approval. No public, signing, production,
+infrastructure or deployment-gate bypass scope was granted.
