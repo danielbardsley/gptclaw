@@ -1,6 +1,6 @@
 # TASKS-029: Dashboard project links
 
-- **Status:** Implementation authorized — work in progress
+- **Status:** Delivered — initial integration scope
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-029](spec.md) · **Design:** [TDD-029](technical-design.md)
@@ -34,7 +34,7 @@
   mutation/network/secret capture spies, keyboard checks and relevant stack/repository
   gates. Inspect UI/routes for scoped behavior and starter-only demos if inherited;
   check diff and relative links. Record exact local outcomes. (AC-001–005)
-- [ ] T-006: Deliver implementation PR and record CI separately; roll out privately
+- [x] T-006: Deliver implementation PR and record CI separately; roll out privately
   and obtain owner browser acceptance for task-owned web/API/group links and recorded
   repository destinations. Verify outage/unavailable states and rollback without route
   or exposure changes. Record per-criterion local/CI/live/owner evidence in acceptance.md.
@@ -55,8 +55,8 @@ one fixed authenticated DB readiness query and a documented finite four-second
 project deadline; the actual 20-project default-budget test still finishes under
 15 seconds. Clean live degradation/recovery completed in 9.62/14.96 seconds.
 
-Review/merge of PR #69 remains. No catalogue feature is Delivered before merge.
+PR #69 is merged after final-head CI and the owner's explicit merge approval.
+The approved initial DSH-001/002/003 scope is Delivered.
 Existing applications/data, private access and unrelated handlers remain intact.
-Synthetic source/data is retained; only owned fixtures may be stopped after
-verification. Logs/preview integrations await their separate prerequisites, and
+The three named synthetic runtimes are stopped; their source/data is retained. Logs/preview integrations await their separate prerequisites, and
 the owner deferred visual cleanup.

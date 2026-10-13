@@ -192,7 +192,8 @@ Deferral leaves restore/replacement evidence outstanding until this stage runs.
 implements DSH-001's bounded discovery/private foundation;
 [SPEC-028](../028-dashboard-live-service-status/spec.md) adds DSH-002 observations;
 [SPEC-029](../029-dashboard-project-links/spec.md) adds DSH-003 destinations.
-The increments are privately deployed in order and remain in review/acceptance.
+The increments were privately deployed in order, accepted by the project owner,
+and merged in PR #69.
 No broader dashboard feature or future live log/preview integration is claimed.
 
 | Features | Delivery and exit evidence |

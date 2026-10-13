@@ -1,6 +1,6 @@
 # SPEC-027: Dashboard project inventory
 
-- **Status:** Implemented and accepted — review/merge pending
+- **Status:** Delivered and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Primary feature:** DSH-001
@@ -130,4 +130,4 @@ On October 12 the project owner instructed: “In order implement the specs for
 DSH-001, DSH-002 and DSH-003. Finish once all acceptance criteria have been met.”
 This approves the specified scope and defaults and authorizes implementation and
 necessary reversible private runtime verification. Existing operator, review/merge,
-public-exposure and production gates remain in force. Actual local/CI/private/owner evidence is recorded in [acceptance.md](acceptance.md); review/merge remains.
+public-exposure and production gates remain in force. Actual local/CI/private/owner evidence is recorded in [acceptance.md](acceptance.md); implementation merged in PR #69; acceptance passed.

@@ -1,6 +1,6 @@
 # ACCEPTANCE-027: Dashboard project inventory
 
-- **Status:** Local/CI/private/owner acceptance passed — review/merge pending
+- **Status:** Delivered and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-027](spec.md) · **Design:** [TDD-027](technical-design.md) · **Tasks:** [TASKS-027](tasks.md)
@@ -13,14 +13,14 @@
 | AC-002 | Passed local/CI/live | Missing/invalid metadata and safe documentation labels; actual recorded synthetic metadata; no project schema rewrite. |
 | AC-003 | Passed local/CI | No-follow/race/size/bounds/secret fixtures and execution/network spies. |
 | AC-004 | Passed live/owner foundation | Rootless/private mounts/listener/Serve/Funnel and actual HTTPS rejection checks; owner desktop inventory opens. |
-| AC-005 | Passed local/CI/live/owner | Empty/partial/truncated/stale/outage/recovery and keyboard checks; actual collector recovery passed. Owner correction review passed; merge remains. |
+| AC-005 | Passed local/CI/live/owner | Empty/partial/truncated/stale/outage/recovery and keyboard checks; actual collector recovery passed. Owner correction review passed; implementation merged in PR #69. |
 
 ## Verification and delivery evidence
 
 Implementation is in [PR #69](https://github.com/danielbardsley/gptclaw/pull/69),
 branch `codex/dashboard-specs`. Source is `platform/dashboard/` plus trusted
 collector/provider/lifecycle scripts. The current implementation is privately
-deployed; review/merge remains pending.
+deployed; implementation merged in PR #69; acceptance passed.
 
 Executed focused checks use the isolated manifest interpreter:
 
@@ -113,8 +113,24 @@ style/format changes, which are outside this delivery.
 
 Owner URL: `https://forge-dev-01-4.tail8c3304.ts.net/dashboard/`.
 Owner acceptance covers the task-owned web app, standalone `/docs`, group `/api/docs`,
-configured repository and corrected group details. Review/merge is still required
-before Delivered. After owner/browser verification, the three named synthetic runtimes were stopped
+configured repository and corrected group details. Implementation merged in PR #69 after final-head CI and owner acceptance. After owner/browser verification, the three named synthetic runtimes were stopped
 through the reviewed CLI; source, restricted runtime credentials/data and ignored QA
 evidence are retained. Existing projects and their services/data are untouched. Logs/preview prerequisites remain unavailable;
 future live integrations require separately accepted DSH-006/NET-108 scope.
+
+## Merged delivery
+
+The project owner approved merge and finishing the delivery records.
+[PR #69](https://github.com/danielbardsley/gptclaw/pull/69) merged as `0db8d6514f04b51bfc1b806d86d28152ea24a604`
+after all four workflows passed on exact final head
+`883de03a4f91082a65c6d2a51fa45d62f7fa38ae`: [dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38329134382),
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38329134371),
+[Tailscale federation](https://github.com/danielbardsley/gptclaw/actions/runs/38329134398),
+and [private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38329134373).
+
+All initial criteria passed. The dashboard remains active at its reviewed private
+URL, with all 16 inventory/status rows current after fixture cleanup (10 ready,
+6 stopped). Only the three task-owned acceptance runtimes were stopped; their
+sources and persistent data are retained. Existing applications/data and handlers
+are intact. No Terraform apply or public exposure was performed. Style/format
+cleanup and separately gated live logs/preview integrations remain deferred.
