@@ -15,7 +15,10 @@ existing activated App broker. The existing private-dev protection waiver policy
 remains explicit; no enforced branch protection is claimed.
 
 The current workflow publication allowlist contains only Shelfmark and Trailboard.
-Add only these two new names through the reviewed workflow-policy interface,
+Propose broker profile schema 4 with a maximum of four explicitly selected names:
+`gptclaw-shelfmark`, `gptclaw-trailboard`, `mob001-accept-one` and
+`mob001-accept-two`. No wildcard or automatic enrollment is permitted. Add only
+these two new names through the reviewed workflow-policy interface,
 preserving both existing names and the App/installation grants. Briefly pause new
 credential issuance during that owned policy update, prove a mobile canary publishes
 its reviewed workflow, then reactivate and create the second application. Existing
@@ -38,3 +41,26 @@ TASKS-031 T-011 requires the owner to “record ... two synthetic project/reposi
 names and retention plan”; the design calls for selection/authorization of exact
 fixture names. This proposal supplies that concrete scope. No live target has been
 created and no workflow policy has been changed yet.
+
+## Additional supporting-scope approval needed
+
+The existing schema-3 policy has a hard two-name limit. A schema-4 four-name
+extension is needed to preserve both existing names while publishing the two
+mobile workflows. Existing App/installation grants and singleton token scopes
+remain unchanged. Older providers cannot interpret profile 4; retain the capable
+snapshot or restore the previous reviewed policy through its typed interface
+before rollback.
+
+Two existing bindings refer to source archived by the earlier authorized cleanup.
+The helper update currently requires every source root to exist. Propose preserving
+absent-root bindings/helpers without changing their path or reading archived Git
+config, while keeping incomplete helper-upgrade journals blocking. Refresh only
+existing owned live helper paths. Restored source requires a compatible reviewed
+helper update before credential use. No binding, repository or source is deleted.
+
+Automatic approval review rejected the earlier proposed 64-name schema and archived
+helper change because that persistent security-scope expansion lacked exact owner
+authorization. Nothing from that rejected command ran. This smaller four-name
+proposal is for explicit owner approval before coding or activation; it is not a
+workaround or a claim that approval already exists. Source-only acceptance and
+other authorized checks continue independently.
