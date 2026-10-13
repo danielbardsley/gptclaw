@@ -36,7 +36,7 @@
 
 ## Verification and delivery
 
-- [ ] T-005: Run meaningful synthetic layout/keyboard/contrast/bounds and existing
+- [x] T-005: Run meaningful synthetic layout/keyboard/contrast/bounds and existing
   status/link/security/expiry/shared-read checks; inspect the actual screen and routes
   against supported scope. Remove/avoid all demo controls/data/runtime from the supplied
   design while retaining health/private-read support. Run frontend tests/types/build and
@@ -58,9 +58,10 @@ validation and private request boundary are reused; unsupported reference contro
 and data are absent. Frozen install, seven frontend tests, typecheck/build and the
 real HTTP/browser gate passed. Browser checks cover six-row density, responsive
 bounds, keyboard/focus preservation, counters/freshness, expiry and contrast.
-The extended all-state browser checks passed; the full repository gate is being
-reconciled with explicit exit capture after a termination result.
-Private rollout, owner comparison and review/merge remain.
+The extended all-state browser checks and full repository gate passed; all four
+implementation CI workflows passed. Private rollout, actual HTTPS/group/navigation
+checks and owned old/new release rollback passed. Owner comparison/zoom acceptance
+and final review/merge remain. See acceptance.md for exact evidence.
 
 ## Implementation authorization
 
