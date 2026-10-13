@@ -1,6 +1,6 @@
 # TASKS-031: Reliable Expo / React Native creation
 
-- **Status:** Implementation/technical acceptance complete — owner acceptance and merge pending
+- **Status:** Delivered — all tasks and acceptance complete
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md)
@@ -73,7 +73,7 @@
   for existing projects. Rehearse scoped failure/recovery and provider/dashboard
   rollback with source retained. Record local/CI/installed behavior separately in
   acceptance.md. (EXPO-001–009; AC-001–009)
-- [ ] T-012: Project owner confirms the repeatable creation/edit/check/repository
+- [x] T-012: Project owner confirms the repeatable creation/edit/check/repository
   workflow. Complete review/merge under its applicable gate, record merged revision
   and accepted evidence, and mark only MOB-001 Delivered. Keep TPL-004 native-device
   acceptance, M1 and other mobile features incomplete. Update catalogue/sequence/
@@ -83,7 +83,7 @@
 
 ## Current handover
 
-T-001–011 are complete. The approved four-name profile, two private repositories,
+T-000–012 are complete. The approved four-name profile, two private repositories,
 final stable provider/dashboard and preserved archived bindings are recorded in
 [acceptance.md](acceptance.md). Corrective immutable starter 1.0.1, actual generated
 workflow/guidance CI, all 540 local cases, four implementation workflows, both
@@ -91,8 +91,11 @@ private final-head quality jobs and both managed verification runs passed. Compa
 provider/dashboard rollback/restoration passed with six unchanged application
 containers and both existing groups Ready/current afterward.
 
-T-012 remains open for owner creation/edit/check/browser confirmation and the separate
-implementation merge gate. Subsequent delivery-record edits are documentation only,
-with branch-head CI tracked in PR #73. MOB-001 remains In review; TPL-004 native-device
-acceptance, MOB-002/003 transport, MOB-010 backend binding and mobile milestones remain
-follow-ups. Preserve both source/private PRs and untracked verification evidence.
+PR #73 merged as `f40a7f33f6ba8a1f1880b10463cace88f6d88a45` with owner authorization.
+The owner subsequently replied “Confirmed” to the dashboard repository-link/runtime
+message and creation/edit/check workflow acceptance on October 13. MOB-001 is
+Delivered; all criteria pass. This documentation closeout preserves TPL-004's full
+native-device scope, MOB-002/003 transport, MOB-010 backend binding and mobile
+milestones as follow-ups. Retain both private starter PRs/source and task-owned
+verification evidence. The approved advisory exceptions still require removal or
+fresh disposition before their recorded October 27 expiry.

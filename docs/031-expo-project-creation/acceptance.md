@@ -1,10 +1,10 @@
 # ACCEPTANCE-031: Expo / React Native creation foundation
 
-- **Status:** In review — technical checks and private rollout passed; owner acceptance and merge pending
+- **Status:** Delivered — merged implementation and owner acceptance complete
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Spec:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md) · **Tasks:** [TASKS-031](tasks.md)
-- **Implementation PR:** [#73](https://github.com/danielbardsley/gptclaw/pull/73)
+- **Implementation PR:** [#73](https://github.com/danielbardsley/gptclaw/pull/73) — merged as `f40a7f33f6ba8a1f1880b10463cace88f6d88a45`
 - **Creation starter:** expo-react-native@1.0.0; digest `662482948e2c3b5f5ab8160cc2c23ba6ab1ba269831583e7155ac477cb2cabfa`
 - **Corrected future starter:** expo-react-native@1.0.1; digest `9a22fbea9fd28966dd23439e12e1ec2812b4ae5483c918aa5ab91a9c2ac80bc8`
 
@@ -20,7 +20,7 @@
 | AC-006 | passed local/private | Approved broker policy/canary created two private repositories with distinct IDs, exact 1.0.0 release provenance, initial PRs and existing explicit private-dev protection waiver. Offline denial/lost-response/changed-plan/resume cases passed. |
 | AC-007 | passed platform/private CI | Both generated repositories pass final-head CI after reviewed source fixes. Corrected golden CI executes the actual generated workflow with production-adapted guidance; all native checks/exports and defect gates pass. |
 | AC-008 | passed source/consumer/private | Final HTTPS snapshot contains four current source rows; both groups are Ready/current and both mobile rows have no components/app URL, honest runtime unavailability and correct repository links. Existing app/API-doc HTTP destinations return 200. Mobile lifecycle denials preserve owned units. |
-| AC-009 | technical checks passed; owner/merge pending | Full local and all configured implementation CI gates pass. Stable provider/new-source/old-source validation, owned refresh, compatible rollback/restoration and six unchanged application containers are verified. Owner creation/edit/check/browser confirmation and separate implementation merge remain. |
+| AC-009 | passed local/CI/installed/owner | Full regression, configured CI, source/installed parity, refresh and rollback/restoration passed. Implementation merged in PR #73. On October 13 the project owner replied “Confirmed” to dashboard link/runtime-message and source creation/edit/check acceptance. This is owner-reported browser/workflow acceptance, not device acceptance. |
 
 ## Verified platform and native-source checks
 
@@ -153,17 +153,26 @@ EAS project, signed native binary, device session or public exposure was created
 Intentional synthetic counter/about content remains for starter acceptance; product
 adaptation must review/remove unwanted demos and test actual product behavior.
 
-## Remaining delivery
+## Delivery and owner acceptance
 
-Technical implementation and AC-001–008 evidence are complete. The owner is asked to
-confirm dashboard repository links/runtime messaging and the creation/edit/check
-workflow (AC-009). The earlier approval covered exact repositories, policy and
-archived-binding scope; implementation merge remains a separate gate. PR #73 is
-reviewable and unmerged. MOB-001 remains In review until owner acceptance and merge.
+Implementation PR #73 merged into main as `f40a7f33f6ba8a1f1880b10463cace88f6d88a45`
+with explicit project-owner merge approval. Its final head
+`41ebb4513e00662cce3e85e8cc204b71cb2b78b9` passed all four workflows:
+[applications](https://github.com/danielbardsley/gptclaw/actions/runs/38463489249),
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38463489284),
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38463489227)
+and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38463489278).
 
-Original main checkout remains unchanged. Both managed acceptance repositories have
-clean tracked source; initial PRs remain open. Task-owned `.verification/` evidence
-is retained untracked, and private repositories/source remain for owner inspection.
-No automatic repository/source/data deletion is performed. Mark only MOB-001
-Delivered after merge and AC-001–009 pass; TPL-004 device acceptance and mobile
-M1–M4 remain follow-ups. The approved advisory expiry/removal obligation remains.
+On October 13, after being asked to confirm both mobile dashboard rows' runtime
+unavailability and working repository links, and acceptance of the Expo/React Native
+source creation/editing/checking workflow, the project owner replied **“Confirmed.”**
+This is owner-reported browser/workflow evidence. AC-001–009 and T-000–012 are complete;
+MOB-001 is Delivered. No phone loading, native-device or signed-build acceptance is
+inferred. TPL-004's full device scope and mobile M1–M4 remain follow-ups.
+
+Both private starter PRs and source are retained for owner inspection; the original
+main checkout and untracked `.verification/` artifacts are preserved. Finite source
+jobs completed; no mobile Metro/application service remains running. There is no
+automatic source/repository/data deletion. Provider names remain unchanged at the
+owner's request. Approved tooling advisory expiry/removal obligations remain as
+recorded in security-review.md; this closeout changes documentation only.

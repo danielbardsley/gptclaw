@@ -1,6 +1,6 @@
 # SPEC-031: Repeatable Expo / React Native project creation
 
-- **Status:** Implementation complete — owner acceptance and merge pending
+- **Status:** Delivered — implementation merged and owner accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** MOB-001
