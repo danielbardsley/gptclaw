@@ -1,8 +1,8 @@
 # GptClaw Platform Architecture
 
-- **Status:** Directional architecture and session handover
-- **Last updated:** 2026-09-06
-- **Implemented baseline:** [SPEC-001](../001-bootstrap-remote-development-host/spec.md)
+- **Status:** Current architecture and desired future state
+- **Last updated:** 2026-10-13
+- **Delivery evidence:** [README current state](../../README.md#current-state) and [initiative records](../README.md)
 - **Feature catalogue:** [Platform features](./features.md)
 
 ## 1. Purpose
@@ -55,8 +55,8 @@ The target platform should let the owner:
 - Development services bind to loopback or an isolated container network, not
   the public interface.
 - Tailscale Serve is the default publishing mechanism and remains tailnet-only.
-- Funnel is disabled by default, explicit per exposure, visibly public,
-  auditable, and automatically expires.
+- Funnel remains disabled. A future exposure manager must make publication
+  explicit, visibly public, auditable and automatically expiring.
 - The `forge` account remains unprivileged. Agents do not receive unrestricted
   `sudo`, production AWS credentials, or access to unrelated repositories.
 - Secrets never enter source control, prompts, dashboard payloads, build logs,
@@ -79,68 +79,65 @@ The target platform should let the owner:
 - Keep the dashboard useful when control actions are unavailable; observation
   must not depend on broad mutation permissions.
 
-## 4. Implemented foundation
+## 4. Current implemented architecture
 
-SPEC-001 provides the current platform floor:
+The foundation remains the private Ubuntu EC2 host, protected encrypted EBS volume
+at `/srv/forge`, unprivileged `forge` identity, Tailscale-only OpenSSH, independent
+SSM recovery and GitHub Actions/HCP Terraform infrastructure path. Daily DLM
+snapshots are deployed; restore drills and freshness monitoring are separate work.
+Host/tool-profile and replacement-enrollment acceptance gaps remain recorded in
+the [current-state summary](../../README.md#current-state).
 
-- An Ubuntu 24.04 EC2 host created only by GitHub Actions and HCP Terraform.
-- A protected, encrypted EBS project volume mounted at `/srv/forge`.
-- A constrained `forge` user with Tailscale-only OpenSSH access.
-- AWS Systems Manager as the independent recovery path.
-- Codex installed and authenticated for `forge`.
-- A write-enabled, repository-specific GitHub deploy key for GptClaw.
-- A ChatGPT SSH project connection to `/srv/forge/projects/gptclaw`.
-- CloudWatch bootstrap and authentication logging.
+The initial single-web workflow has grown into provider 1.9.0, with manifests
+1–4, pinned Next.js and FastAPI templates, dependency/toolchain policies,
+repository automation, scoped credential bindings, multi-service groups and
+managed development PostgreSQL. The dashboard inventory/status/link slices are
+merged and accepted. Its visual refinement is also merged and privately deployed;
+the actual-browser zoom acceptance check remains unrecorded. Historical initiative
+records can retain earlier pending gates; do not infer acceptance from code alone.
 
-The accepted baseline is recorded in
-[ACCEPTANCE-001](../001-bootstrap-remote-development-host/acceptance.md).
-
-## 5. Target logical architecture
+## 5. Current logical architecture and storage
 
 ```text
-Owner
-  |
-  +-- ChatGPT desktop/mobile -------------------------------+
-  |     remote tasks, approvals, diffs                      |
-  +-- Future Slack adapter                                  |
-  |     authenticated commands, notifications               |
-  |                                                         v
-  +--------------------------------------------------- Tailscale tailnet
-                                                            |
-                                                    SSH to forge-dev
-                                                            |
-┌──────────────────────────────── EC2 development host ─────┴───────────────┐
-│ Codex app server / CLI as forge                                           │
-│       |                                                                   │
-│       +-- layered AGENTS.md + repository skills                           │
-│       +-- gptclawctl project lifecycle CLI                                │
-│       +-- Git worktrees and repository-specific credentials               │
-│                                                                           │
-│ /srv/forge/projects/<project>          /srv/forge/platform                │
-│   .gptclaw/project.yaml                  registry and generated state      │
-│   AGENTS.md                              dashboard/control application     │
-│   docs/NNN-feature/...                   templates and skills              │
-│   application source                                                       │
-│          |                                                                │
-│          v                                                                │
-│ rootless Podman + user systemd/Quadlet                                    │
-│   project-a containers  127.0.0.1:41xx                                    │
-│   project-b containers  127.0.0.1:42xx                                    │
-│   project-c containers  127.0.0.1:43xx                                    │
-│          |                                                                │
-│          +--> private loopback ingress --> Tailscale Serve --> tailnet     │
-│          +--> explicit share ingress --> Tailscale Funnel --> internet     │
-│                                                                           │
-│ dashboard: inventory, health, Git, resources, URLs, logs, exposure state   │
-└───────────────────────────────────────────────────────────────────────────┘
+Project owner -> remote Codex/ChatGPT -> SSH as forge
+                                    |
+                          AGENTS.md + skills + selected spec
+                                    |
+                    reviewed gptclawctl provider and Git/PR workflow
+                                    |
+/srv/forge/projects/<slug>           | source + .gptclaw/project.yaml
+/srv/forge/projects/.gptclaw-runtime/v1/
+  immutable providers, owned receipts, allocated ports, credentials, DB data
+                                    |
+                rootless Podman + user systemd/Quadlet
+                   web | API | private PostgreSQL
+                                    |
+                  loopback ingress :18079 -> Tailscale Serve /projects/
 
-GitHub repositories
-  +-- pull requests, checks, releases, container images
-  +-- GitHub Actions
-          |
-          +-- HCP Terraform workspaces --> development AWS infrastructure
-          +-- HCP Terraform workspaces --> isolated production environments
+read-only Python collector as forge -> Unix socket -> rootless Next.js dashboard
+/srv/forge/platform/releases/<digest>                 loopback :18200
+/srv/forge/platform/run/collector.sock                Serve /dashboard/
+
+GitHub Actions -> HCP Terraform -> AWS infrastructure
+Future product production environments remain separate from this host.
 ```
+
+Project containers are individually managed services, not a requirement to use
+Podman pods. Group startup/readiness orders database, API and web as applicable;
+database ports are not published on the host. Application loopback allocations
+use the reviewed 18080–18179 range. Runtime state and database data stay outside
+Git checkouts. Stopping a service retains its source and persistent data.
+
+The dashboard frontend mounts only immutable application assets and the collector
+socket directory. It receives no project source, credential store or Podman socket.
+The collector uses bounded manifest discovery and owned provider observations;
+it does not execute repository code to discover inventory. These controls reduce
+accidental exposure within a shared forge identity; they do not isolate malicious
+code running under that same identity.
+
+Future additions include explicit public-preview management, richer observability,
+mobile workflows, constrained control actions and optional Slack integration.
+They must extend reviewed interfaces rather than turn the dashboard into a shell.
 
 ## 6. Control and data planes
 
@@ -152,7 +149,7 @@ application traffic. It comprises:
 - ChatGPT remote projects and Codex tasks.
 - Repository specifications, designs, tasks, decisions, and acceptance records.
 - Layered `AGENTS.md` instructions and repository skills.
-- The proposed `gptclawctl` command and project manifest schema.
+- The installed, versioned `gptclawctl` provider and manifest schemas.
 - The dashboard and its local status collector.
 - GitHub pull requests, checks, Actions, environments, and approvals.
 - HCP Terraform workspaces and phase-specific AWS identities.
@@ -164,11 +161,12 @@ application traffic. It comprises:
 The development data plane runs project code on the EC2 host:
 
 - One rootless runtime boundary per project.
-- Project-specific application, database, cache, and worker containers.
+- Supported web/API services and development PostgreSQL containers; cache and
+  worker profiles remain future extensions.
 - Loopback-only host port publication.
 - Health checks, user-journal logs, and resource limits.
 - Tailscale Serve routes for authenticated tailnet access.
-- Explicit Funnel routes for temporary public access.
+- Temporary public exposure remains a future, separately authorized capability.
 
 ### 6.3 Production data plane
 
@@ -187,44 +185,22 @@ secrets, domain configuration, budgets, and approval gates.
 
 ## 7. Project contract
 
-Every managed project should contain a versioned `.gptclaw/project.yaml`. This
-manifest is the contract between the repository, lifecycle tooling, dashboard,
-runtime, and ingress layer. A future specification will define its exact schema.
+Managed projects declare `.gptclaw/project.yaml`. The bundled schemas and provider,
+not illustrative architecture YAML, define the executable contract:
 
-Illustrative shape:
+| Schema | Supported shape | Contract source |
+|---|---|---|
+| 1 | Single private web service | [Schema](../../schemas/project/v1.schema.json) · [Initial reference](../project-manifest.md) |
+| 2 | Standalone Python FastAPI service | [Schema](../../schemas/project/v2.schema.json) · [API runbook](../../runbooks/manage-python-apis.md) |
+| 3 | One project containing web and API services | [Schema](../../schemas/project/v3.schema.json) · [Group runbook](../../runbooks/manage-multi-service-projects.md) |
+| 4 | Web/API group with managed development PostgreSQL | [Schema](../../schemas/project/v4.schema.json) · [Database runbook](../../runbooks/manage-development-databases.md) |
 
-```yaml
-schema_version: 1
-project:
-  id: example-app
-  name: Example App
-  kind: web
-repository:
-  default_branch: main
-runtime:
-  profile: nextjs
-  start: pnpm dev
-  health_path: /api/health
-  internal_port: 3000
-  resources:
-    memory_mb: 1024
-    cpu_shares: 512
-exposure:
-  private: true
-  base_path: /projects/example-app
-  funnel:
-    allowed: false
-data:
-  postgres: false
-quality:
-  test: pnpm test
-  lint: pnpm lint
-  build: pnpm build
-```
-
-The manifest must not contain credentials. It describes desired behavior;
-runtime identifiers, allocated ports, health history, and process state belong
-in generated platform state.
+Validation is separate from execution and does not authorize arbitrary commands.
+Template, dependency, toolchain and database registries pin approved capabilities;
+unsupported shapes are rejected rather than inferred. Manifests contain no secrets.
+Allocated ports, ownership receipts, credential bindings and observations belong
+in runtime-owned state outside source. New schema/adaptor support requires its own
+specification, compatibility tests, reviewed rollout and acceptance evidence.
 
 ## 8. Repository and documentation conventions
 
@@ -233,9 +209,9 @@ in generated platform state.
 - `gptclaw` remains the platform control repository: host infrastructure,
   platform services, templates, schema, shared agent policy, and runbooks.
 - New products receive their own GitHub repository by default.
-- Each repository uses a dedicated host credential or a future narrowly scoped
-  GitHub App installation. Credentials are never shared across unrelated
-  projects.
+- Repository automation and the GitHub App credential broker use explicit
+  repository bindings and constrained runtime handoff. App installation breadth
+  does not authorize unrelated credential use; follow the credential runbook.
 - Agents work on branches or Codex worktrees. Reviewable changes flow through
   pull requests before they reach a protected default branch.
 
@@ -263,7 +239,7 @@ propose a decision, but the record preserves why the platform default changed.
 ## 9. Agent configuration model
 
 Codex loads project guidance from `AGENTS.md` files, with instructions closer
-to the working directory taking precedence. GptClaw will use that hierarchy
+to the working directory taking precedence. GptClaw uses that hierarchy
 deliberately:
 
 1. **Host policy:** `~/.codex/AGENTS.md`, installed from a reviewed platform
@@ -287,7 +263,7 @@ The host policy should require agents to:
 - Ask before adding production dependencies, exposing a Funnel, changing data,
   or performing destructive operations.
 - Run stack-specific checks and report exact evidence.
-- Preserve user changes, use feature branches/worktrees, and leave clean status.
+- Preserve user changes, use feature branches/worktrees, and report Git status without discarding unrelated work.
 - Update documentation and acceptance evidence as part of completion.
 
 Templates should supply a short repository `AGENTS.md`; detailed procedures
@@ -295,6 +271,11 @@ belong in skills or referenced documentation so the instruction chain remains
 focused.
 
 ## 10. Framework and tooling defaults
+
+The table combines implemented families with desired defaults. Current catalogue
+entries support Next.js, FastAPI and web/API/PostgreSQL groups. Tailwind, Vitest,
+Fastify, Expo, Redis and SQLite support is not implied by this table. The dashboard
+uses repository-local CSS and the Node test runner.
 
 Versions are pinned when a project is created and updated through reviewed
 dependency automation. This document names families, not permanent versions.
@@ -325,21 +306,18 @@ an architectural default, not a substitute for product requirements.
 Projects live under `/srv/forge/projects/<slug>`. Runtime data lives outside the
 Git checkout, under a platform-owned location on the persistent volume.
 
-The future lifecycle manager should:
+The reviewed provider allocates loopback ports, generates owned user services,
+applies finite resource limits, checks readiness and serializes lifecycle changes.
+Its interfaces include start, stop, restart, status, observe, logs, test, dependency,
+toolchain, template, repository and database operations. Use the applicable
+runbook rather than inventing commands from this overview. Scoped credential
+handoff is separate from arbitrary environment-file forwarding.
 
-- Allocate a collision-free loopback port range per project.
-- Create a rootless container network, volumes, and user services per project.
-- Apply default CPU, memory, process, and log limits.
-- Build from a pinned container definition or run a declared development
-  command inside a controlled development container.
-- Require a health check before marking a project available.
-- Maintain start, stop, restart, rebuild, pause, resume, and remove operations.
-- Serialize destructive operations per project while allowing unrelated
-  projects and Codex worktrees to run concurrently.
-- Detect stale worktrees, orphaned containers, abandoned ports, and excessive
-  disk use.
-- Never infer a command from dashboard input; execute only manifest-defined,
-  schema-validated operations.
+General pause/resume/remove commands, orphan detection, disk reclamation and idle
+suspension remain future work. Recent project retirement used reviewed stop
+operations followed by source archival outside inventory discovery, retaining data;
+it did not introduce a general deletion API. Future destructive operations need
+explicit scope, data protection and ownership checks.
 
 ## 12. Private and public routing
 
@@ -356,13 +334,17 @@ The preferred URL pattern is:
 https://<forge-magicdns-name>/projects/<project-slug>/
 ```
 
-Templates must support a configurable development base path. Projects that
-cannot safely operate beneath a path receive a dedicated private HTTPS port
-recorded in the manifest and dashboard.
+Current templates support the declared private base path. Standalone API docs
+use `/projects/<slug>/docs`; group API docs use `/projects/<slug>/api/docs`.
+Dedicated private HTTPS-port fallback for incompatible frameworks is a future
+design, not a current manifest capability. Forge cannot administer Tailscale;
+shared Serve handlers are installed through the reviewed operator path.
 
 ### 12.2 Funnel only on request
 
-Funnel is a public publication action, not a development default. The exposure
+This section defines desired future behavior; no exposure manager or automatic
+expiry service is delivered. Funnel is a public publication action, not a
+development default. The exposure
 manager must require:
 
 - The project manifest to permit Funnel.
@@ -379,23 +361,26 @@ services must never be exposed through Funnel.
 
 ## 13. Dashboard and local control service
 
-The dashboard is the human-readable control plane for all projects. Its first
-release should be read-only and available only through Tailscale Serve.
+The private, read-only dashboard delivers manifest inventory, supported component
+status/health/resources and available app/API-doc/repository links. Missing or
+stale observations remain explicit, and unavailable destinations explain missing
+prerequisites. README/docs presence is metadata, not an assessment of quality.
 
-It should combine:
+The Python collector runs as a forge user service. The Next.js frontend reads its
+Unix socket and exposes only health/snapshot reads. Collection is bounded in size,
+concurrency and time; timeouts preserve clearly labeled last-known state. Status
+observations and observed changes are bounded in-memory data, reset on collector
+restart. There is no durable service history, uptime ledger or event timeline.
 
-- Manifest metadata and repository location.
-- Git branch, dirty state, ahead/behind status, and last commit.
-- Runtime state, health, uptime, restart count, and resource consumption.
-- Private URL and any active Funnel URL with expiry.
-- Build/test status and recent deployment revision.
-- Recent structured logs with secret redaction.
-- Storage consumption and backup freshness.
+The owned dashboard manager prepares immutable releases and performs activation,
+status, stop and rollback without managing project runtime data. See the
+[dashboard runbook](../../runbooks/manage-dashboard.md) for exact flags, resource
+limits, socket ownership and operator-only Serve setup.
 
-Later control actions call a narrow local API or `gptclawctl`. The API runs as
-`forge`, uses a Unix-domain socket where practical, accepts typed operations,
-and never accepts arbitrary shell text. High-impact actions require explicit
-confirmation and produce an audit event.
+Git telemetry, build/test summaries, log viewing, public-preview registry, host
+resource graphs, backup freshness, search/filter/rescan and lifecycle buttons remain
+future work. Later actions must use a typed, narrow interface with ownership,
+authorization and audit checks; no API may accept arbitrary shell text.
 
 ## 14. Software installation boundary
 
@@ -414,36 +399,37 @@ access, and ad hoc host configuration are not platform features.
 
 ## 15. Secrets, data, and identity
 
-- Project runtime secrets are stored in an external secret manager and
-  materialized only at process start.
-- Each project receives the smallest repository and cloud permissions it needs.
-- Dashboard responses show whether a secret is configured, never its value.
-- Local `.env` files are ignored, mode-restricted, and treated as temporary
-  development material rather than the system of record.
-- Database migrations are versioned, reversible where practical, and backed up
-  before destructive execution.
-- Seed data is synthetic unless a specification explicitly approves another
-  source and its handling controls.
-- Production identities are unavailable to development containers and agents
-  by default.
+Current development PostgreSQL credentials are restricted local role files outside
+checkouts, handed only to selected components through the reviewed database
+profile. Repository credentials use explicitly scoped broker bindings. The
+provider does not grant general forwarding of `.env` or authentication files.
+Dashboard payloads exclude credentials; secrets never belong in manifests or logs.
+
+An external runtime-secret manager and broader application-secret injection are
+desired future capabilities, not delivered integrations. Each extension must define
+identity, materialization, rotation, redaction and recovery before use.
+
+Development database data lives under the runtime-owned project data tree, separate
+from application source. Versioned migrations and confirmed backup/reset/restore/
+rotation/recovery operations follow the database runbook. Local native backups
+share the project volume and are not independent disaster recovery. Use synthetic
+data unless another source and its handling are explicitly approved. Production
+identities, databases, data and state remain separate.
 
 ## 16. Observability, backup, and cost
 
-- Every service defines a health check and writes structured logs to stdout or
-  stderr.
-- User-service logs remain queryable through journald; selected platform logs
-  may be shipped to CloudWatch with retention controls.
-- The dashboard reports host CPU, memory, disk, load, container use, and failed
-  health checks.
-- Alerts initially target ChatGPT notifications or email; Slack becomes an
-  additional destination later.
-- The protected project EBS volume receives an automated snapshot policy
-  created by Terraform, with retention and a documented restore test. RES-001
-  permits silent DLM failures; backup monitoring and notifications are excluded.
-- Budgets and cost visibility cover EC2, EBS, snapshots, CloudWatch, data
-  transfer, HCP Terraform, Expo/EAS, and production resources.
-- Idle projects can be stopped automatically; the development host may gain a
-  deliberate schedule only after remote wake-up and recovery are designed.
+Supported services have health probes and bounded runtime resources; owned service
+logs are available through the lifecycle interface and user journal. The dashboard
+shows current component observations, not host-wide monitoring or durable history.
+CloudWatch foundation logging and daily seven-retention DLM snapshots are deployed.
+Retention-expiry evidence remains unrecorded; restore drills, backup freshness
+monitoring and alert delivery are not delivered by RES-001.
+
+Desired extensions include host CPU/memory/disk/load visibility, storage and cost
+reporting, backup alerts, ChatGPT/email notifications and later Slack delivery.
+Budgets should cover development and separately designed production resources.
+Automatic idle shutdown and host scheduling require reviewed wake-up/recovery
+contracts before implementation.
 
 ## 17. Lifecycle from idea to production
 
@@ -462,26 +448,28 @@ feature catalogue
   -> GitHub Actions + HCP Terraform deployment
 ```
 
+The sequence describes the desired end-to-end workflow; Funnel and production
+stages require future product-specific implementation. Local tests, CI, merge,
+private rollout and owner acceptance are distinct gates, with sanitized evidence
+recorded for each.
+
 An agent may help draft every artifact, but the owner selects scope, approves
 public exposure, reviews infrastructure plans, and authorizes production
 promotion.
 
 ## 18. Handover guidance
 
-When starting a new ChatGPT session on `forge-dev`, provide or point the agent
-to these files in order:
+Start with applicable host, repository and area `AGENTS.md` guidance, then the
+[documentation index](../README.md), selected specification/design/tasks and its
+acceptance record. Consult operational runbooks for runtime or host work. Use this
+architecture and the [feature catalogue](./features.md) for direction, not as
+execution authority.
 
-1. This architecture document.
-2. [The feature catalogue](./features.md).
-3. The selected feature's future `spec.md`, `technical-design.md`, and
-   `tasks.md`.
-4. The repository's `AGENTS.md` once the agent-configuration feature is
-   implemented.
-5. [ACCEPTANCE-001](../001-bootstrap-remote-development-host/acceptance.md) and
-   the applicable runbooks when work touches the host.
-
-The agent should not implement a catalogue item until a specification exists
-and the owner has asked for that specification to be implemented.
+Verify actual Git/runtime state and preserve unrelated work. Check pending gates
+rather than treating installation, passing CI or merge as proof of acceptance.
+Future features should add compatible reviewed contracts and meaningful tests,
+keep development access private and retain separate infrastructure/production
+approval paths. A catalogue entry alone never authorizes implementation.
 
 ## 19. Reference basis
 

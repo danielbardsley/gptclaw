@@ -101,3 +101,14 @@ as documented; application container-instance timing remains independent.
 Owner confirmation is requested for the visual comparison, Group details, keyboard,
 destinations and actual 200% browser zoom. It is not inferred from the rootless-browser
 or CSS-reflow checks. Final review/merge and criterion bookkeeping remain.
+
+## Post-merge update — October 13, 2026
+
+The project owner reported “Looks great” and explicitly requested merging the
+visual refresh into main. PR #71 was squash-merged as
+`50b377368b44b6aaa0ea0b883a2f3087aec88dd3` after all four workflows passed on
+head `a50ff08deac25323ec0cccf46b628ee663198aed` (dashboard, private applications,
+development host and Tailscale federation). The existing private rollout remains
+in place. This records appearance feedback and the completed merge gate; it does
+not substitute for the separately requested actual-browser 200% zoom check,
+which remains unrecorded. Earlier pending-merge statements above are historical.

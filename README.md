@@ -12,35 +12,34 @@ across compute replacement.
 
 ## Current state
 
-As of October 10, 2026, the repository has progressed beyond the initial host
-bootstrap. The statuses below distinguish accepted capabilities from merged
-code that still needs deployment or acceptance.
+As of October 13, 2026, GptClaw runs private web applications, Python APIs,
+web/API groups and managed development PostgreSQL, with a read-only projects
+dashboard. Delivered scope and remaining acceptance are distinguished below.
 
 | Capability | Current state and evidence |
 |---|---|
-| Remote development foundation | **Delivered.** EC2 host, persistent project volume, Tailscale-only SSH, SSM recovery, repository-scoped Git access, remote project connection, and HCP AWS workload identity. [SPEC-001 acceptance](docs/001-bootstrap-remote-development-host/acceptance.md). |
-| Automated project-volume backups | **Delivered.** Daily DLM snapshots with seven-snapshot retention; a naturally scheduled snapshot and a subsequent no-change plan were verified. Retention-expiry follow-up remains unrecorded in the acceptance document; restore testing and freshness monitoring are not delivered. [SPEC-002 acceptance](docs/002-automated-ebs-snapshots/acceptance.md). |
-| Agent guidance and workflows | **Deployed, with acceptance remaining.** Reviewed host policy, repository and nested guidance templates, specification and project-bootstrap skills, runtime-operation and release-promotion skills, handovers, decision records, and context validation. Fresh-session, client, or live-workflow checks remain outstanding by initiative. [Initiatives 003–012](docs/README.md). |
-| Project manifest v1 | **Delivered.** A versioned declaration for one private HTTP service, JSON Schema, offline validator, and synthetic example. Validation does not create or run an application. [Reference](docs/project-manifest.md) · [SPEC-013 acceptance](docs/013-versioned-project-manifest/acceptance.md). |
-| Rootless container toolchain | **Deployed; remaining host acceptance pending.** Rootless packages/configuration and matching receipts are installed. October 9 container build/run, network, file ownership, crash restart and cleanup checks passed; independent logout/reboot and synthetic-source replacement checks remain pending. [PR #26](https://github.com/danielbardsley/gptclaw/pull/26) · [SPEC-014 evidence](docs/014-rootless-container-toolchain/acceptance.md). |
-| Declared host tool profile | **Deployed; final acceptance pending.** Successful receipts cover all 26 components and match the reviewed profile/deployment revision. Protected deployment is correlated; recovery/rollback reconciliation and owner acceptance remain pending. Temporary upstream-source exceptions expire November 1, 2026 (America/New_York). [SPEC-015 evidence](docs/015-host-tool-profile/acceptance.md). |
-| Private application workflow | **Delivered for the initial single-web slice.** CLI 1.0.1, pinned Next.js template, independent rootless services and shared private routing merged in PR #40/#43. Both desktop apps/counters and automatic source updates confirmed; first-app stop/start retained source and left the second app available. [SPEC-018 evidence](docs/018-first-private-application/acceptance.md). |
-| Automatic replacement-host Tailscale enrollment | **Deployed; final acceptance pending.** Account issuer/trust and matching host receipts are recorded; the node is tagged online, retained storage checks passed, and Daniel confirmed independent SSM access. Recovered October 8 verification records manual-key-free enrollment and protected-run provenance; final owner acceptance remains pending. [PR #28](https://github.com/danielbardsley/gptclaw/pull/28) · [SPEC-016 evidence](docs/016-tailscale-workload-identity/acceptance.md). |
+| Remote development foundation | **Delivered.** Protected encrypted project storage, private SSH, SSM recovery and infrastructure workload identity. [SPEC-001 acceptance](docs/001-bootstrap-remote-development-host/acceptance.md). |
+| Project-volume snapshots | **Delivered initial scope.** Daily DLM snapshots with seven-snapshot retention. Retention-expiry evidence, restore testing and freshness monitoring remain outstanding or separately scoped. [SPEC-002 acceptance](docs/002-automated-ebs-snapshots/acceptance.md). |
+| Agent guidance and workflows | **Deployed, with initiative-specific acceptance remaining.** Host/repository/area guidance, planning/bootstrap/runtime/release skills, handovers and decision records. [Initiatives 003–012](docs/README.md). |
+| Rootless runtime and host profile | **Deployed; remaining host acceptance pending.** Rootless Podman, user systemd/Quadlet and the declared 26-component tool profile. Logout/reboot/replacement and recovery/owner checks remain as recorded. Tool-profile source exceptions expire November 1, 2026. [SPEC-014](docs/014-rootless-container-toolchain/acceptance.md) · [SPEC-015](docs/015-host-tool-profile/acceptance.md). |
+| Automatic replacement-host enrollment | **Deployed; final acceptance pending.** Tailscale workload-identity enrollment and retained-storage evidence are recorded; remaining owner gates are documented. [SPEC-016](docs/016-tailscale-workload-identity/acceptance.md). |
+| Private project lifecycle | **Initial web workflow delivered; subsequently extended.** Installed provider 1.9.0 supports manifest schemas 1–4: web, standalone FastAPI, web/API groups and groups with PostgreSQL. Shared private ingress, health, logs, quality commands and owned lifecycle operations are available. [Web](runbooks/manage-private-apps.md) · [API](runbooks/manage-python-apis.md) · [Groups](runbooks/manage-multi-service-projects.md). SPEC-025's historical acceptance record still lists its review/merge closeout as pending. |
+| Dependencies, toolchains and templates | **Initial slices delivered, extended for Python and groups.** Reviewed dependency policies, pinned Node/pnpm and Python/uv profiles, immutable versioned template entries and explicit adoption/update workflows. [Dependencies](runbooks/manage-project-dependencies.md) · [Toolchains](runbooks/manage-project-toolchains.md) · [Templates](runbooks/manage-project-templates.md). |
+| GitHub repository automation and credentials | **Delivered scoped slices.** Reviewed repository creation/adoption and credential broker with explicit repository bindings. This grants no production or unrelated credential access. [Repositories](runbooks/manage-project-repositories.md) · [Credentials](runbooks/manage-repository-credentials.md). |
+| Development databases | **Delivered initial development slice.** Private PostgreSQL, persistent data outside source checkouts, migrations, native backup/restore and explicitly confirmed destructive operations. Local backups do not replace volume recovery or production database design. [SPEC-026 evidence](docs/026-development-databases/acceptance.md) · [Operations](runbooks/manage-development-databases.md). |
+| Private projects dashboard | **Inventory, live status and links delivered and accepted.** Web/API/DB component details and available private app/API-doc/repository links; bounded in-memory observations, with no durable status history or mutation API. [SPEC-027](docs/027-dashboard-project-inventory/acceptance.md) · [SPEC-028](docs/028-dashboard-live-service-status/acceptance.md) · [SPEC-029](docs/029-dashboard-project-links/acceptance.md). The visual refresh is deployed and merged in [PR #71](https://github.com/danielbardsley/gptclaw/pull/71); owner appearance feedback is positive, while the separately requested actual-browser zoom check remains unrecorded. |
 
-The first private-app workflow is merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40)
-and running on EC2. Its narrow CLI creates a pinned Next.js/TypeScript app and
-manages independent rootless containers, loopback ports, health and private URLs.
-Daniel confirmed both Hello World and Hello Second pages/counters from his desktop.
-One shared Tailscale Serve prefix handles all app routes; subsequent app starts
-need no individual Serve commands. See [the app runbook](runbooks/manage-private-apps.md).
-Desktop automatic source-update and first-app stop/source-retention acceptance
-passed; the provider 1.0.1 port-reuse repair merged in PR #43. The initial workflow
-is Delivered in [SPEC-018](docs/018-first-private-application/acceptance.md).
+The current active inventory contains `gptclaw-shelfmark` and
+`gptclaw-trailboard`, each with web, API and database containers. Earlier demo and
+acceptance projects were stopped and their sources archived outside active
+discovery; persistent data was retained. This is an operational snapshot, not a
+limit on the supported project types. The dashboard itself runs in a separate
+rootless container at the private `/dashboard/` route.
 
-The planning bootstrap remains a separate local planning-ready starter. Runtime
-and promotion skills use reviewed interfaces; production promotion requires an
-existing product pipeline. A dashboard, public-preview manager, databases, secrets
-management and product production pipelines are not yet delivered.
+Planning bootstrap remains separate from runnable application creation. Public
+preview management, general runtime-secret management, mobile templates,
+dashboard lifecycle controls and product production pipelines remain future
+work. Release/promotion skills require an existing reviewed product pipeline.
 
 Use the [documentation index](docs/README.md) for specifications, designs, task
 lists, and acceptance records. The [platform architecture](docs/platform/architecture.md)
@@ -55,14 +54,15 @@ authorize implementation.
 ```text
 .agents/skills/            Repository-local agent workflows and supporting resources
 .github/                   Protected infrastructure workflows and dependency automation
-config/codex/              Canonical reviewed host-policy source
+config/                    Host policy, dependency/toolchain/template/database catalogues
 docs/                      Initiative plans, acceptance evidence, and platform direction
 examples/                  Synthetic manifest and rootless-container acceptance fixtures
 infra/dev-host/            Development host, storage, backups, and bootstrap tooling
 infra/tailscale-federation/Separate account-level workload-identity issuer stack
 requirements/              Hash-pinned manifest validation dependencies
 runbooks/                  Setup, connection, maintenance, and recovery procedures
-schemas/                   Versioned project manifest schema
+platform/dashboard/        Private Next.js dashboard frontend
+schemas/                   Versioned manifest and catalogue schemas
 scripts/                   Bootstrap, validation, verification, and offline tests
 templates/                 App starters, container toolchain, planning and guidance templates
 ```
@@ -88,6 +88,9 @@ templates/                 App starters, container toolchain, planning and guida
 | Deploy and accept the rootless toolchain | [Manage rootless tooling](runbooks/manage-rootless-toolchain.md) |
 | Manage project dependencies | [Manage project dependencies](runbooks/manage-project-dependencies.md) |
 | Create, start, stop and inspect private apps | [Manage private apps](runbooks/manage-private-apps.md) |
+| Manage Python APIs and multi-service groups | [Python APIs](runbooks/manage-python-apis.md) · [Groups](runbooks/manage-multi-service-projects.md) |
+| Operate development PostgreSQL | [Development databases](runbooks/manage-development-databases.md) |
+| Prepare, activate or roll back the private dashboard | [Dashboard](runbooks/manage-dashboard.md) |
 | Configure automatic Tailscale enrollment | [Manage workload identity federation](runbooks/manage-tailscale-federation.md) |
 
 Merging a PR does not deploy infrastructure. Plans and applies use protected
@@ -100,14 +103,20 @@ For any future replacement, verify the account issuer and exact-role tailnet
 trust described in the federation runbook. Replacement also requires a suitable
 recovery point, a reviewed window, and post-deployment verification of private
 access and preserved project storage.
-Deployment and final acceptance remain separate from local and PR checks.
+Project runtime operations use the reviewed unprivileged CLI; dashboard releases use
+the owned release manager. These are distinct from AWS infrastructure deployment.
+Operator-only directory allocation and Tailscale administration retain their
+reviewed SSM path. Deployment and final acceptance remain separate from local
+and PR checks.
 
 ## Local validation
 
 For policies, templates, scripts, workflows, or infrastructure changes, run
 `./scripts/check-repository.sh` from the repository root. It includes offline
 checks for agent workflows, host policy/bootstrap, project manifests, host tools,
-rootless containers, and Tailscale federation. First prepare and activate the
+rootless containers, Tailscale federation, project providers and dashboard contracts.
+Dashboard frontend checks and private rollout are documented in its runbook;
+repository checks alone do not prove browser acceptance. First prepare and activate the
 isolated Python 3.12 environment:
 
 ```sh
