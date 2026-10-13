@@ -40,7 +40,9 @@ Only `.gptclaw/project.yaml` changes: schema 6 adds the Metro opt-in object. Sou
 SDK packages, immutable templates, static identity and provenance are preserved.
 Review and commit that metadata change through the project's PR workflow before
 use. Dirty/untracked metadata, stale inputs, wrong canonical root, unsupported SDK
-or toolchain, unknown field/mode and unresolved publication reject adoption.
+or toolchain, unknown field/mode, unresolved publication and active/unknown source
+jobs reject adoption. An idle saved job must also have no extant container;
+unknown containers are preserved, never stopped to make adoption succeed.
 Source opt-in is not proof of session readiness or Go-client eligibility.
 
 ## Metadata interruption and recovery

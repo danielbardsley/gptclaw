@@ -85,6 +85,11 @@ def enable(root,ttl_seconds=7200,apply=False,confirm_plan=None):
     root=Path(value['root'])
     with app.locked(value['project']):
         deps.require_clean(root,value['project'])
+        source_job=mobile.load_state(root,value['project'])
+        if source_job:
+            app.need(source_job['phase']!='checking' and source_job['operation_result'] not in {'running','unknown'},'busy')
+            present=app.command(['podman','container','exists',source_job['name']+'-job'],timeout=10,optional=True)
+            app.need(present.returncode==1,'busy' if present.returncode==0 else 'command')
         fresh=plan(root,ttl_seconds)
         app.need(fresh['plan_digest']==value['plan_digest'],'conflict')
         # Atomic exchange retains the displaced inode. Even an editor racing

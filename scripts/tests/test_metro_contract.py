@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 import os
+from types import SimpleNamespace
 from pathlib import Path
 import sys
 import tempfile
@@ -60,6 +61,21 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(validate_project(self.root)[2],0);self.assertEqual(app.target(self.root)[1]['schema_version'],6)
         self.assertFalse(value['private_route_changed']);self.assertTrue(value['metadata_commit_required'])
         self.assertFalse(list(app.STORE.glob('*.json')))
+    def test_unknown_source_job_blocks_metadata_adoption_before_publication(self):
+        with patch.object(app,'object_owned',return_value=False):state=mobile.job_state(self.root,app.target(self.root)[1])
+        state.update(phase='checking',operation_result='unknown');mobile.save_state(state)
+        planned=metro.enable(self.root)
+        with patch.object(app,'command',side_effect=AssertionError('unknown job must not be operated')),self.assertRaises(app.AppError) as error:metro.enable(self.root,apply=True,confirm_plan=planned['plan_digest'])
+        self.assertEqual(error.exception.code,'busy');self.assertEqual(self.manifest.read_bytes(),self.before)
+        self.assertFalse((app.STORE/'metro-metadata').exists())
+    def test_idle_source_job_requires_absent_container_before_adoption(self):
+        with patch.object(app,'object_owned',return_value=False):mobile.job_state(self.root,app.target(self.root)[1])
+        planned=metro.enable(self.root)
+        with patch.object(app,'command',return_value=SimpleNamespace(returncode=0)),self.assertRaises(app.AppError) as error:metro.enable(self.root,apply=True,confirm_plan=planned['plan_digest'])
+        self.assertEqual(error.exception.code,'busy');self.assertEqual(self.manifest.read_bytes(),self.before)
+        with patch.object(app,'command',return_value=SimpleNamespace(returncode=1)) as command:value=metro.enable(self.root,apply=True,confirm_plan=planned['plan_digest'])
+        self.assertEqual(value['state'],'opt-in-enabled');self.assertEqual(command.call_count,1)
+        self.assertEqual(command.call_args.args[0][:3],['podman','container','exists'])
     def test_missing_wrong_or_stale_plan_cannot_write(self):
         for digest in [None,'0'*64]:
             with self.assertRaises(app.AppError):metro.enable(self.root,apply=True,confirm_plan=digest)

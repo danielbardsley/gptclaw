@@ -57,8 +57,8 @@ T-000 and T-001 are complete. T-002 is in progress: fresh exact audit evidence,
 a separate disabled runtime policy, fail-closed admission tests and a bounded
 loopback SDK-spike helper and sanitized native protocol probes are prepared.
 The original full offline gate passed. Current focused source/admission/protocol
-suites total 57 cases (including 18 opt-in cases); full final regression and CI
-are being completed. Schema-6 source opt-in, canonical guarded migration, non-HTTP source consumers
+suites cover 59 cases (18 opt-in cases plus two source-job guards). CI passed
+at fb7f4b2; the final source-job guard revision still needs its CI result. Schema-6 source opt-in, canonical guarded migration, non-HTTP source consumers
 and older installed-provider rejection now have evidence; typed session receipts
 and descriptors remain pending. Runtime disposition, actual SDK execution,
 private operator scope and physical evidence remain pending. No Metro service or
