@@ -1,11 +1,11 @@
 # SPEC-031 acceptance evidence
 
-- **Status:** Implemented; final CI and private/owner acceptance pending
+- **Status:** Implemented; code CI passed, private/owner acceptance pending
 - **Owner:** Project owner
 - **Evidence date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md) · **Tasks:** [TASKS-031](tasks.md)
 - **Delivery:** [PR #74](https://github.com/danielbardsley/gptclaw/pull/74), unmerged implementation update
-- **Revision context:** Working tree on `codex/prj-006-spec`, based on planning commit `933779b9d204572827897aac44642375b2706929`; implementation commit `f1dc27cd2d21a5754bd6112fa3568572114ea66e` was published, with the documented timeout/CI corrections being prepared as a follow-up.
+- **Revision context:** Working tree on `codex/prj-006-spec`, based on planning commit `933779b9d204572827897aac44642375b2706929`; initial implementation commit `f1dc27cd2d21a5754bd6112fa3568572114ea66e` and corrected implementation commit `4db542d766372ab935468ea6085ab320efd73e58`. This final update changes evidence documents only.
 
 ## Criterion mapping
 
@@ -14,10 +14,10 @@
 | AC-001 | passed | Real isolated Git: read-only plan, two distinct task branches/checkouts from the recorded base, preserved dirty canonical bytes/index, invalid IDs/paths/base/collisions/occupied refs and unsupported states rejected, duplicate create reconciled. | Retain regression checks in CI. |
 | AC-002 | passed | Real child processes edit independent files/indexes. Same-project lock contention returns busy; another project progresses. A killed mutator retains creation intent and retry reconciles one allocation. Explicit ownership transfer succeeds; stale owner/generation fails. | Retain regression checks in CI. |
 | AC-003 | pending | Synthetic broker plus real local Git verifies exact singleton repository scope, remote-head readback/revocation, disabled binding and forged/config/moved-membership denial before issuance. Recognized hooks migrate; an actual task hook process returns source-only before runtime execution. | Authorize named private fixture and prove native scoped fetch/push; project owner. |
-| AC-004 | pending | Local task/component guards deny runtime/dependency/database execution. Managed and moved task roots are absent from inventory. Existing web, Python and group regressions passed; the complete local repository/database regression gate passed. A read-only independent Shelfmark observation reports ready/healthy; observation throughout a live Git exercise remains pending. | Final repository/CI checks and independent live private-app observation; project owner/implementation agent. |
+| AC-004 | pending | Local task/component guards deny runtime/dependency/database execution. Managed and moved task roots are absent from inventory. Existing web, Python and group regressions passed; the complete local repository/database regression gate passed. A read-only independent Shelfmark observation reports ready/healthy; observation throughout a live Git exercise remains pending. | Independent live private-app observation throughout the named Git exercise; project owner/implementation agent. |
 | AC-005 | passed | Producer handoff records actual head, dirty presence and attributed check/remaining labels; consumer resumes the same head and preserved dirty source. Stale owners/ref changes fail. Local and remote-observed publication differ; no automatic canonical integration or merge. | Owner acceptance of live handoff belongs to AC-007. |
 | AC-006 | passed | Active, dirty, ignored/untracked, unpublished, moved/tampered and busy-Git checkouts are retained. Exact clean released checkout removal leaves branch, tombstone and other checkout intact. Lost create/removal responses reconcile. Squash retention revalidates PR head/merge against canonical ancestry. | Live cleanup only within explicit named-fixture scope. |
-| AC-007 | pending | Focused isolated tests passed and documentation/runbook/adoption guidance exist. No infrastructure, production, runtime activation or installed-host-policy changes were made. | Final repository checks, final-revision CI, named private exercise, fresh-task guidance verification, owner acceptance and merge remain separate gates. |
+| AC-007 | pending | Focused isolated tests passed and documentation/runbook/adoption guidance exist. No infrastructure, production, runtime activation or installed-host-policy changes were made. | Named private exercise, fresh-task guidance verification, owner acceptance and merge remain separate gates. |
 
 ## Executed verification
 
@@ -75,7 +75,17 @@ passed. Both Terraform quality workflows failed only the actual-hook test:
 Their runner is not forge, so the test received setup exit 2 before source-only
 exit 1. Lexical managed-task refusal is now performed before the execution-user
 gate without any filesystem reads; permitted operations still require forge.
-The corrected hook/UID behavior and final CI are tracked separately.
+The corrected hook/UID behavior passed targeted local checks. All four PR CI
+workflows passed at `4db542d766372ab935468ea6085ab320efd73e58`:
+[development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/38461514046),
+[federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/38461514039),
+[private-app workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38461514151),
+[dashboard workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38461514334).
+The successful quality workflows include the complete repository checker with
+28 worktree tests, Terraform formatting/validation/mock tests and existing scans.
+Protected remote plan/apply jobs were skipped; no infrastructure deployment occurred.
+This evidence-only follow-up does not change the tested implementation; its PR
+checks still must pass under the normal final-head merge gate.
 
 ## Private readiness and remaining work
 

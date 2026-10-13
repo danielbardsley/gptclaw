@@ -66,8 +66,10 @@
 Lifecycle, ownership/generations, receipt recovery, short project locks, scoped
 helper refresh/membership checks, owned hook adaptation, runtime/discovery guards,
 handoff and conservative cleanup are implemented. The runbook and inert agent
-adoption reference are written. The local repository gate and canonical regressions passed. Final targeted
-lifecycle/timeout/CI portability checks and final CI are being completed. See [acceptance](acceptance.md)
+adoption reference are written. The local repository gate and canonical regressions passed. The expanded lifecycle and targeted timeout/UID tests passed, and all four
+implementation CI workflows passed at `4db542d`. The final follow-up is evidence
+only; its PR checks remain governed by the ordinary final-head merge gate. See [acceptance](acceptance.md)
 for actual observations and unresolved private/owner gates. The branch remains
-`codex/prj-006-spec`; PR #74 is being updated to cover the implementation.
+`codex/prj-006-spec`; PR #74 contains the implementation and evidence. Named private Git acceptance,
+fresh-task guidance, owner acceptance and merge remain pending.
 No installed host-policy, AWS/HCP or production changes are made.
