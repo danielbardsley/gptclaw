@@ -1,6 +1,6 @@
 # TASKS-030: Dashboard visual refinement
 
-- **Status:** Draft — reference resolved; implementation approval pending
+- **Status:** Approved for implementation — work in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-030](spec.md) · **Design:** [TDD-030](technical-design.md)
@@ -16,19 +16,19 @@
   The attachment resolves the original unavailable URL. Table/full-width inline details,
   local token direction and complete component metrics are proposed concretely.
   Reference captures are planning evidence, not implementation acceptance. (VIS-001)
-- [ ] T-002: Project owner reviews this concrete spec/design and explicitly authorizes
+- [x] T-002: Project owner reviews this concrete spec/design and explicitly authorizes
   implementation/private rollout. Record new scope approval separately from prior
   delivered DSH-001/002/003 authorization and from review/merge/acceptance.
   (VIS-001–006; AC-001–006)
 
 ## Dependency-ordered implementation
 
-- [ ] T-003: After T-002, implement the reference-derived shell/tokens, managed tile,
+- [x] T-003: After T-002, implement the reference-derived shell/tokens, managed tile,
   freshness toolbar and compact semantic table with stable full-width disclosure.
   Retain metadata/order/row identity; adapt narrow screens, long values and snapshot
   failures. Omit search/filter/rescan and extra aggregate counters. (VIS-001/VIS-002/VIS-003/VIS-005/VIS-006;
   AC-001/AC-002/AC-004/AC-005)
-- [ ] T-004: Adapt actual component details and destinations to bordered panels and
+- [x] T-004: Adapt actual component details and destinations to bordered panels and
   compact pills. Preserve all counters/timing/freshness, state vocabulary, accessible
   reasons, safe anchors and repository independence. Keep refresh focus/open state and
   link activation independent of disclosure. No reference adapter/mock data/logs/preview
@@ -52,9 +52,19 @@
 
 ## Current handover
 
-The attached HTML has been inspected and captured; reference-specific planning is
-complete. SPEC-030/TDD-030 map its compact table and expanded panels to the existing
-supported dashboard, with unsupported controls, demo data and capabilities explicitly
-omitted. Stable reference captures and baseline measurements are in reference.md.
-No application code, service, provider or deployment has changed. Next step is scope
-review and implementation authorization; visual/behavior acceptance is not yet run.
+The compact semantic overview, full-width detail panels/component region and
+responsive styling are implemented. Existing polling, freshness, destination
+validation and private request boundary are reused; unsupported reference controls
+and data are absent. Frozen install, seven frontend tests, typecheck/build and the
+real HTTP/browser gate passed. Browser checks cover six-row density, responsive
+bounds, keyboard/focus preservation, counters/freshness, expiry and contrast.
+The extended all-state browser checks passed; the full repository gate is being
+reconciled with explicit exit capture after a termination result.
+Private rollout, owner comparison and review/merge remain.
+
+## Implementation authorization
+
+The project owner instructed “implement the spec” on October 12. This approves
+SPEC-030 and its documented supported-only adaptation and authorizes implementation
+and necessary reversible private rollout/verification through the owned dashboard
+release path. Review/merge and actual owner acceptance remain separate delivery gates.

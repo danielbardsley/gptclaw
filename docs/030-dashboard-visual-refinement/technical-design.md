@@ -1,6 +1,6 @@
 # TDD-030: Reference-derived dashboard presentation
 
-- **Status:** Draft — concrete visual plan; implementation unapproved
+- **Status:** Approved for implementation — work in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Specification:** [SPEC-030](spec.md) · **Tasks:** [TASKS-030](tasks.md)
@@ -129,5 +129,12 @@ existing integrity/ownership/refusal gates still apply.
 | VIS-005 | Responsive semantic structure, bounds/focus/contrast checks | T-003/T-004/T-005 | AC-002/AC-004 |
 | VIS-006 | Existing shared snapshot and private read boundary | T-003/T-004/T-005/T-006 | AC-005/AC-006 |
 
-Project-owner review/implementation authorization remains outstanding. The visual
+Implementation is authorized; verification, owner acceptance and review/merge remain. The visual
 reference is resolved; unsupported design features are explicitly excluded.
+
+## Implementation authorization
+
+The project owner instructed “implement the spec” on October 12. This approves
+SPEC-030 and its documented supported-only adaptation and authorizes implementation
+and necessary reversible private rollout/verification through the owned dashboard
+release path. Review/merge and actual owner acceptance remain separate delivery gates.

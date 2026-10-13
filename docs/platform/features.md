@@ -182,7 +182,7 @@ capabilities; those are not prerequisites for creating the first applications.
 | DSH-012 | Mobile-friendly dashboard | 4 | Candidate | Make status, approvals, logs, and safe controls usable from a phone over Tailscale. |
 | DSH-013 | Search and filtering | 4 | Candidate | Find projects by status, stack, owner, tag, repository, health, or exposure. |
 | DSH-014 | Read-only degraded mode | 3 | Candidate | Preserve useful diagnosis when the lifecycle manager or a project is unhealthy. |
-| DSH-015 | Dashboard visual refinement | 3 | Draft | [SPEC-030](../030-dashboard-visual-refinement/spec.md) proposes a compact, readable presentation closer to the project owner's reference, preserving delivered inventory/status/link behavior. Attached HTML is inspected; unsupported demo features are omitted. Scope review and implementation approval pending. |
+| DSH-015 | Dashboard visual refinement | 3 | In review | [SPEC-030](../030-dashboard-visual-refinement/spec.md) proposes a compact, readable presentation closer to the project owner's reference, preserving delivered inventory/status/link behavior. Attached HTML is inspected; unsupported demo features are omitted. Implementation/private rollout authorized; frontend and local browser checks passed. CI, private/owner acceptance and merge pending. |
 
 ## 11. Mobile and Expo workflow
 

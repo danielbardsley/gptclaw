@@ -1,6 +1,6 @@
 # SPEC-030: Dashboard visual refinement
 
-- **Status:** Draft — based on supplied HTML reference; implementation unapproved
+- **Status:** Approved for implementation — work in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-12 (America/New_York)
 - **Primary feature:** DSH-015
@@ -18,7 +18,7 @@ and clear project/service details.
 The project owner requested this planning work October 12 and supplied
 `Projects Dashboard redesign.html`, explicitly excluding unsupported features.
 This authorizes the specification, design/tasks and a reviewable planning PR.
-It does not authorize application implementation or deployment. Prior delivered
+Implementation and necessary private rollout were subsequently authorized below. Prior delivered
 DSH-001/002/003 approvals and acceptance remain intact.
 
 The attached reference supersedes the unavailable artifact URL. It was inspected
@@ -174,8 +174,15 @@ this refinement changes no provider, socket protocol, Serve or infrastructure.
 ## Completion and ownership
 
 The reference mapping and concrete adaptation are prepared for project-owner scope
-review. Implementation/private rollout remain unapproved; the supplied HTML is a
+review. Implementation/private rollout are authorized; the supplied HTML is a
 visual reference, not an application to install. Completion requires authorized
 implementation, all criteria, actual private browser acceptance and merged evidence.
 Mark only DSH-015 Delivered then; preserve prior dashboard acceptance and create
 acceptance.md when this redesign's verification evidence exists.
+
+## Implementation authorization
+
+The project owner instructed “implement the spec” on October 12. This approves
+SPEC-030 and its documented supported-only adaptation and authorizes implementation
+and necessary reversible private rollout/verification through the owned dashboard
+release path. Review/merge and actual owner acceptance remain separate delivery gates.
