@@ -1,6 +1,6 @@
 # TDD-031: Expo creation through the existing project platform
 
-- **Status:** Proposed — not implemented or approved
+- **Status:** Approved approach — implementation in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-031](spec.md) · **Tasks:** [TASKS-031](tasks.md)
@@ -237,3 +237,29 @@ Primary technical references checked October 13, 2026:
 [Apple bundle identifiers](https://developer.apple.com/documentation/bundleresources/information-property-list/cfbundleidentifier)
 and [Android application IDs](https://developer.android.com/build/configure-app-module).
 These inform the proposal, not proof that the tools or mobile adapter are installed.
+
+
+## Implementation decisions recorded October 13
+
+Implementation authorization was supplied by the project owner. Verified the SDK-57
+matrix against the integrity-checked Expo package and official starter metadata:
+Expo 57.0.28, React Native 0.86.3, React 19.2.3, Router 57.0.26, TypeScript 6.0.3,
+Jest 30.5.2/jest-expo 57.0.6, React Native Testing Library 14.1.0 and ESLint 9.39.5.
+The initial ESLint-10 trial was incompatible with the React plugin; the final exact
+9.x pin passed. Reused Node 24.21.0/pnpm 12.10.1 and the existing verified image.
+Real frozen installation/export established isolated dependency layout with install
+scripts disabled, so no hoisted layout or script exception was required. Five
+exact public lock aliases are validated only for mobile; web policy remains intact.
+Details and the pure-JS addition allowlist are in config/mobile/v1.json.
+
+Both native-target exports passed; full source verification passed with the owner's
+two exact temporary advisory exceptions, which remain visible and expire October 27.
+See security-review.md. Controlled user-event timers and a finite 15-second Jest
+case deadline remove dependence on native press timer scheduling under bounded CPU;
+assertions/coverage remain enforced. Final generated/installed/CI evidence remains
+separate and is recorded in acceptance.md when those checks complete.
+
+Platform verify and golden verification execute serial individually bounded steps
+under one operation lock, retaining the existing 300-second job limit. A combined
+verification trial timed out under concurrent host checks; the per-step interface
+keeps failures attributable without increasing a job's resource/time ceiling.

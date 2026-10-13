@@ -160,7 +160,7 @@ def validate_plan(value, vacant=False):
     keys = {'schema_version', 'operation_id', 'account', 'repository', 'private', 'destination',
             'template', 'branches', 'protection', 'environments', 'secret_references',
             'capabilities', 'description', 'plan_digest'}
-    require(isinstance(value, dict) and set(value) == keys)
+    require(isinstance(value, dict) and set(value) in (keys, keys|{'mobile_inputs'}))
     require(type(value['schema_version']) is int and value['schema_version'] == 1)
     require(isinstance(value['operation_id'], str) and re.fullmatch(r'[a-f0-9]{32}', value['operation_id']))
     require(value['account'] == ACCOUNT and value['private'] is True)
@@ -173,6 +173,10 @@ def validate_plan(value, vacant=False):
     require(isinstance(selected,dict) and set(selected)=={'schema_version','id','version','digest'})
     release, _ = templates.resolve(selected['id'],selected['version'])
     require(value['template'] == templates.provenance(release))
+    if release['provider']=='expo-v1':
+        import project_mobile as mobile
+        require(value.get('mobile_inputs')==mobile.creation_inputs(name,release))
+    else: require('mobile_inputs' not in value)
     require(value['branches'] == {'base': 'main', 'head': 'codex/bootstrap-' + value['operation_id']})
     require(value['protection'] == PROTECTION)
     require(value['description'] == 'Private application; GptClaw setup ' + value['operation_id'])
@@ -211,6 +215,9 @@ def plan(name, destination, api, environments=(), secret_references=(), template
              'secret_references': sorted(secret_references, key=lambda r: (r['scope'], r['name'])),
              'capabilities': capabilities(environments, secret_references),
              'description': 'Private application; GptClaw setup ' + operation}
+    if release['provider']=='expo-v1':
+        import project_mobile as mobile
+        value['mobile_inputs']=mobile.creation_inputs(name,release)
     value['plan_digest'] = digest(value)
     validate_plan(value, vacant=True)
     actor = api.actor()

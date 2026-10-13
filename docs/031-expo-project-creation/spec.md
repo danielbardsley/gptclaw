@@ -1,6 +1,6 @@
 # SPEC-031: Repeatable Expo / React Native project creation
 
-- **Status:** Draft — planning requested; implementation not authorized
+- **Status:** Approved for implementation — work in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** MOB-001
@@ -18,7 +18,9 @@ project guidance and optional private GitHub provisioning. Creating a second app
 requires no copied configuration, hand-installed host tools or new account setup.
 
 The project owner requested a MOB-001 specification on October 13, emphasizing
-reliable, consistent platform creation. This request authorizes planning only.
+reliable, consistent platform creation. The owner subsequently approved this spec and authorized implementation with
+“Ok, let's implement the spec. looks good.” Scope includes the creation foundation
+and its supporting interfaces; device/runtime/release follow-ups remain separate.
 The mobile sequence is a planning dependency in PR #73; its broader milestones
 are not implementation approval. This initiative selects the creation foundation
 from sequence stages 1/3, rather than the entire private-device milestone M1.

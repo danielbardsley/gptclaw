@@ -166,7 +166,7 @@ class Scanner:
         if (not isinstance(caps, dict) or caps.get('provider') != 'gptclawctl'
                 or not isinstance(caps.get('project_manifest_schemas'), list)):
             return 'unavailable'
-        return 'supported' if version in caps['project_manifest_schemas'] else 'unsupported'
+        return 'supported' if version in caps.get('runtime_manifest_schemas', caps['project_manifest_schemas']) else 'unsupported'
 
     def candidate(self, root_fd, name, metadata):
         fd = owned_directory(root_fd, name)
@@ -190,7 +190,7 @@ class Scanner:
             project = contract['project']
             root = str(self.projects / name)
             key = hashlib.sha256((root + '\0' + project['id'] + '\0' + str(identity(info))).encode()).hexdigest()[:32]
-            components = sorted(contract['components']) if contract['schema_version'] in (3, 4) else [project['kind']]
+            components = sorted(contract['components']) if contract['schema_version'] in (3, 4) else [] if contract['schema_version'] == 5 else [project['kind']]
             fields = metadata.get((root, project['id']), {})
             row = {'key': key, 'id': project['id'], 'name': project['name'], 'kind': project['kind'],
                    'components': components, 'location': name, 'manifest_version': contract['schema_version'],

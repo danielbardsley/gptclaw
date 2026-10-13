@@ -6,6 +6,9 @@ on:
       - platform/**
       - scripts/dashboard*.py
       - scripts/manage_dashboard.py
+      - scripts/project_mobile.py
+      - config/mobile/**
+      - schemas/project/**
       - scripts/project_manifest.py
       - scripts/private_apps.py
       - scripts/project_groups.py
@@ -23,6 +26,9 @@ on:
     paths:
       - platform/**
       - scripts/*dashboard*
+      - scripts/project_mobile.py
+      - config/mobile/**
+      - schemas/project/**
       - scripts/project_manifest.py
       - scripts/private_apps.py
       - scripts/project_groups.py

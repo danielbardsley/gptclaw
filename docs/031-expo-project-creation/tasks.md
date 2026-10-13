@@ -1,6 +1,6 @@
 # TASKS-031: Reliable Expo / React Native creation
 
-- **Status:** Draft — no implementation authorization
+- **Status:** Approved for implementation — work in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md)
@@ -11,7 +11,7 @@
   toolchain/job, repository and inventory contracts; draft this planning set. The
   owner requested MOB-001 planning October 13. Official Expo guidance was consulted;
   no implementation, package setup, app generation or service operation ran.
-- [ ] T-001: Project owner reviews SPEC-031's creation-only scope and supporting
+- [x] T-001: Project owner reviews SPEC-031's creation-only scope and supporting
   slices, then separately authorizes implementation. Record the disposition;
   do not infer mobile runtime/backend/build authorization from planning approval.
 - [ ] T-002: After authorization for the preparation work, propose and verify exact
@@ -83,8 +83,12 @@
 
 ## Current handover
 
-Only discovery and drafting are complete. All implementation, pins, real jobs,
-provider/collector updates, generated repositories, CI and owner acceptance are
-pending. The next action is the owner's review of SPEC-031 and implementation
-scope. MOB-002/device transport and MOB-010/backend integration follow independently;
+Implementation is authorized and source work is in progress. Exact pins, frozen
+install, native-source checks/exports and focused generation/repository checks are
+recorded in the design/security review. Final golden/regression/CI, installed
+provider/collector updates, private repositories and owner acceptance remain
+pending. Live target scope is prepared in acceptance-targets.md. MOB-002/device transport and MOB-010/backend integration follow independently;
 no placeholder health service or fake backend is introduced to close creation.
+
+Implementation authorization was supplied by the project owner October 13.
+Local source work and compatibility verification are underway; acceptance remains pending.

@@ -174,8 +174,9 @@ def validate_workspace(value, p):
     check(len(exclusions) == len(set(exclusions)))
 
 
-def validate_lock(documents, manifest, p, coherent=True):
+def validate_lock(documents, manifest, p, coherent=True, mobile=False):
     applications = []
+    aliases=__import__('project_mobile').profile().get('lock_aliases',{}) if mobile else {}
     manager_count = 0
     for document in documents:
         check(document.get('lockfileVersion') == '9.0')
@@ -209,8 +210,13 @@ def validate_lock(documents, manifest, p, coherent=True):
             for group in ('dependencies', 'optionalDependencies'):
                 deps = value.get(group, {}); check(isinstance(deps, dict))
                 for name, version in deps.items():
-                    package_name(name); check(isinstance(version, str)); exact_version(version.split('(', 1)[0])
-                    check(name+'@'+version.split('(', 1)[0] in packages)
+                    package_name(name); check(isinstance(version, str))
+                    resolved=version.split('(',1)[0]
+                    if mobile and aliases.get(name)==resolved:
+                        alias_name,alias_version=package_key(resolved)
+                        check(alias_name+'@'+alias_version in packages)
+                    else:
+                        exact_version(resolved);check(name+'@'+resolved in packages)
     check(len(applications) == 1)
     importer, packages = applications[0]
     for group in GROUPS:
@@ -234,7 +240,10 @@ def context(root, coherent=True):
     blobs = {name: read_bytes(root/name, 65536 if name != 'pnpm-lock.yaml' else 2*1024*1024) for name in FILES}
     manifest = json_data(blobs['package.json']); validate_package(manifest, p)
     workspace = yaml_documents(blobs['pnpm-workspace.yaml'])[0]; validate_workspace(workspace, p)
-    validate_lock(yaml_documents(blobs['pnpm-lock.yaml'], 2), manifest, p, coherent)
+    if manifest.get('gptclawMobile') == 'expo-v1':
+        import project_mobile as mobile
+        mobile.validate_package(manifest)
+    validate_lock(yaml_documents(blobs['pnpm-lock.yaml'], 2), manifest, p, coherent, mobile=manifest.get('gptclawMobile')=='expo-v1')
     return {'policy': p, 'policy_hash': digest, 'files': blobs, 'manifest': manifest,
             'hashes': {k: hashlib.sha256(v).hexdigest() for k, v in blobs.items()}}
 
@@ -327,13 +336,20 @@ def status(root, operation_id=None):
     except a.AppError as error:
         result.update(policy='invalid', error=error.code, state='error')
     s = a.state_for(slug)
+    if contract['schema_version'] == 5:
+        import project_mobile as mobile
+        s = mobile.load_state(root, slug)
     result['operation_busy'] = a.object_owned('container', s['name']+'-job', s['token']) if s else False
     if journal and journal['phase'] not in {'complete', 'aborted'}: result['state'] = 'recovery-required'
     return result
 
 
 def stopped_state(root, contract):
-    a = app(); s = a.reserve(root, contract)
+    a = app()
+    if contract['schema_version'] == 5:
+        import project_mobile as mobile
+        return mobile.job_state(root, contract)
+    s = a.reserve(root, contract)
     check(not a.object_owned('container', s['name']+'-job', s['token']), 'busy')
     active, _ = a.inspect_service(s, contract) if a.unit_path(s).exists() else (False, False)
     check(not active and not a.object_owned('container', s['name'], s['token']), 'busy')
@@ -342,6 +358,9 @@ def stopped_state(root, contract):
 
 
 def invalidate(s, complete=False, operation_id=None):
+    if s.get('adapter') == 'mobile':
+        import project_mobile as mobile
+        return mobile.invalidate(s, complete, operation_id)
     s.update(phase='stopped' if complete else 'failed', health_ready=False, operation='deps',
              operation_result='passed' if complete else 'unknown')
     if operation_id: s['operation_id'] = operation_id
@@ -483,8 +502,10 @@ def operate(root, action, name=None, version=None, kind='runtime', operation_id=
                 if abort:
                     # Abandon without reverting user edits; a partial pair must first be reconciled.
                     context(root)
-                    invalidate(s); s.update(phase='stopped', operation_result='failed'); s.pop('error',None)
-                    a.save(a.STORE/(slug+'.json'),s)
+                    invalidate(s); s.update(phase='idle' if s.get('adapter')=='mobile' else 'stopped', operation_result='failed'); s.pop('error',None)
+                    if s.get('adapter') == 'mobile':
+                        __import__('project_mobile').save_state(s)
+                    else: a.save(a.STORE/(slug+'.json'),s)
                     journal.update(phase='aborted', error=None); save_journal(journal); attempt_cleanup(journal)
                 elif journal['after']:
                     finish(root, s, journal)
@@ -513,6 +534,8 @@ def operate(root, action, name=None, version=None, kind='runtime', operation_id=
             manifest.setdefault(group, {})[name] = version
         elif action == 'remove':
             for group in groups: del manifest[group][name]
+        if manifest.get('gptclawMobile') == 'expo-v1':
+            __import__('project_mobile').validate_package(manifest)
         import project_toolchains as tools
         selected = tools.selection(root)
         s['image'] = a.toolchain(root); s['toolchain_hash'] = selected['selection_hash']

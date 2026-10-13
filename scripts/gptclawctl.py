@@ -72,7 +72,9 @@ def main(argv=None):
    selection=p.add_mutually_exclusive_group(required=True);selection.add_argument('--repository',action='append');selection.add_argument('--disable',action='store_true')
   if name=='rotate':p.add_argument('--key-file',required=True)
   if name in ['disable','enable','pull-request']:p.add_argument('--project-root',required=True)
-  if name=='canary':p.add_argument('--repository',required=True);p.add_argument('--directory',required=True)
+  if name=='canary':
+   p.add_argument('--repository',required=True);p.add_argument('--directory',required=True)
+   p.add_argument('--template');p.add_argument('--template-version')
   if name=='resume':p.add_argument('--operation-id',required=True);p.add_argument('--confirm-repository-id',type=int)
   if name=='pull-request':
    p.add_argument('--head',required=True);p.add_argument('--title',required=True);p.add_argument('--body-file',required=True)
@@ -81,7 +83,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2,3,4],'project_kinds':['web','api','group'],'toolchain_schemas':[1,2],'template_catalogue_schema':4,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':3,'credential_profile_schemas':[1,2,3],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2,3,4,5],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4],'toolchain_schemas':[1,2],'template_catalogue_schema':5,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':3,'credential_profile_schemas':[1,2,3],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -96,7 +98,10 @@ def main(argv=None):
     templates.validate_provenance(Path(args.project_root).absolute())
    print(json.dumps(result,sort_keys=True));return code
   app.need(os.getuid()==1002 and os.geteuid()!=0,'setup')
-  if args.action=='db':
+  if args.action in {'start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','deps','toolchain','db','hooks'} and app.target(args.project_root)[1]['schema_version'] == 5:
+   import project_mobile as mobile
+   result=mobile.dispatch(args)
+  elif args.action=='db':
    import project_database as database
    result=database.dispatch(args.project_root,args.database_action,getattr(args,'selected',None),getattr(args,'operation_id',None),getattr(args,'confirm',None))
   elif args.action=='credentials':
@@ -114,7 +119,7 @@ def main(argv=None):
    elif action=='rotate':result=broker.rotate(args.key_file)
    elif action=='disable':result=broker.disable(args.project_root)
    elif action=='enable':result=broker.enable(args.project_root)
-   elif action=='canary':result=broker.create(args.repository,args.directory,canary=True)
+   elif action=='canary':result=broker.create(args.repository,args.directory,getattr(args,'template',None),getattr(args,'template_version',None),canary=True)
    elif action=='resume':result=broker.resume(args.operation_id,args.confirm_repository_id)
    elif action=='pull-request':
     from pathlib import Path

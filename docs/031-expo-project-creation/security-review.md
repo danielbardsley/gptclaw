@@ -1,6 +1,6 @@
 # SPEC-031 dependency advisory disposition
 
-- **Status:** Proposed temporary exceptions; owner decision pending
+- **Status:** Approved temporary exceptions — exact package/version and expiry required
 - **Owner:** Project owner
 - **Observed:** 2026-10-13 (America/New_York)
 - **Scope:** Exact SDK-57 starter's bounded development/CI source-quality and JavaScript/asset export jobs only
@@ -32,7 +32,9 @@ Removal: the project owner owns follow-through; the implementation author checks
 upstream fixes, pins verified patched packages in a new immutable starter release,
 reruns all gates and removes the exceptions. If no patch is accepted by expiry,
 source verification becomes blocked; do not extend silently or mutate an already
-published starter release. No exception has yet been enabled.
+published starter release. The project owner approved the scoped temporary exceptions on October 13 with
+“Approve scoped temporary exceptions.” Implementation must enforce this record
+and keep subsequent runtime/release scope outside the exception.
 
 The approved specification requires disposition for a “change outside the approved
 scope.” This proposal changes the failed security gate's treatment and therefore

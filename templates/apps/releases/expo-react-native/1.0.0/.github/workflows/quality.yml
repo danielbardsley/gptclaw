@@ -1,0 +1,22 @@
+name: React Native source quality
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build exact verified Node/pnpm toolchain
+        run: docker build -t gptclaw-mobile-check -f checks/toolchain/Containerfile checks/toolchain
+      - name: Frozen install and native-source verification
+        run: |
+          docker run --rm --memory=1536m --cpus=1 --pids-limit=256 --cap-drop=all --security-opt=no-new-privileges \
+            -v "$PWD:/workspace:rw" -w /workspace -e CI=1 -e EXPO_NO_TELEMETRY=1 -e EXPO_NO_DOTENV=1 \
+            gptclaw-mobile-check sh -c 'pnpm install --frozen-lockfile --ignore-scripts --no-runtime --pm-on-fail=error --ignore-pnpmfile --registry=https://registry.npmjs.org/ && pnpm verify'
