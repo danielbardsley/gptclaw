@@ -40,7 +40,9 @@ dispositions independently of feature implementation status.
 
 - **Platform direction:**
   [Architecture](./platform/architecture.md) ·
-  [Feature catalogue](./platform/features.md)
+  [Feature catalogue](./platform/features.md) ·
+  [General sequence](./platform/sequence.md) ·
+  [Mobile delivery sequence](./platform/sequence-mobile.md)
 
 - **001 — Bootstrap the remote development host:**
   [Specification](./001-bootstrap-remote-development-host/spec.md) ·
