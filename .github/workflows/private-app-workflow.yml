@@ -4,6 +4,9 @@ on:
     paths:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
+      - config/mobile/**
+      - docs/031-expo-project-creation/**
+      - runbooks/manage-expo-projects.md
       - config/templates/**
       - schemas/templates/**
       - docs/023-repository-credential-broker/**
@@ -36,6 +39,9 @@ on:
     paths:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
+      - config/mobile/**
+      - docs/031-expo-project-creation/**
+      - runbooks/manage-expo-projects.md
       - config/templates/**
       - schemas/templates/**
       - docs/023-repository-credential-broker/**
@@ -85,6 +91,7 @@ jobs:
         run: |
           .venv-manifest/bin/python scripts/tests/test_repository_credentials.py
           .venv-manifest/bin/python scripts/tests/test_project_repositories.py
+          .venv-manifest/bin/python scripts/tests/test_project_mobile.py
           .venv-manifest/bin/python scripts/tests/test_project_templates.py
           .venv-manifest/bin/python scripts/tests/test_project_groups.py
           .venv-manifest/bin/python scripts/tests/test_private_apps.py
@@ -123,6 +130,23 @@ jobs:
         run: .venv-manifest/bin/python scripts/tests/check_dependency_template.py "$RUNNER_TEMP/gptclaw-dependency-template" --image gptclaw-toolchain-ci
       - name: Verify selected toolchain acquisition and lifecycle preparation
         run: .venv-manifest/bin/python scripts/tests/check_toolchain_template.py "$RUNNER_TEMP/gptclaw-toolchain-template"
+
+  mobile-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Prepare isolated validator dependencies
+        run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
+      - name: Build exact mobile authoring toolchain
+        run: docker build -t gptclaw-mobile-ci -f templates/apps/releases/expo-react-native/1.0.1/checks/toolchain/Containerfile templates/apps/releases/expo-react-native/1.0.1/checks/toolchain
+      - name: Generate two native projects and verify both targets and defect rejection
+        run: .venv-manifest/bin/python scripts/tests/check_mobile_template.py "$RUNNER_TEMP/gptclaw-mobile-source" --engine docker --image gptclaw-mobile-ci
 
   python-api:
     runs-on: ubuntu-24.04

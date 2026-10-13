@@ -26,7 +26,7 @@ from project_manifest import load_schema
 
 # Compile the four immutable contracts once in the clean forkserver. Workers
 # still read exact schema bytes and fully validate each project's current data.
-for schema_version in (1, 2, 3, 4):
+for schema_version in (1, 2, 3, 4, 5):
     load_schema(schema_version)
 
 multiprocessing.set_forkserver_preload(['dashboard_collector'])

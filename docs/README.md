@@ -40,7 +40,9 @@ dispositions independently of feature implementation status.
 
 - **Platform direction:**
   [Architecture](./platform/architecture.md) ·
-  [Feature catalogue](./platform/features.md)
+  [Feature catalogue](./platform/features.md) ·
+  [General sequence](./platform/sequence.md) ·
+  [Mobile delivery sequence](./platform/sequence-mobile.md)
 
 - **001 — Bootstrap the remote development host:**
   [Specification](./001-bootstrap-remote-development-host/spec.md) ·
@@ -212,6 +214,12 @@ dispositions independently of feature implementation status.
   [Tasks](030-dashboard-visual-refinement/tasks.md) ·
   [Acceptance](030-dashboard-visual-refinement/acceptance.md) ·
   [Reference brief](030-dashboard-visual-refinement/reference.md)
+
+- **031 — Repeatable Expo / React Native project creation (MOB-001), in review:**
+  [Specification](031-expo-project-creation/spec.md) ·
+  [Technical design](031-expo-project-creation/technical-design.md) ·
+  [Tasks](031-expo-project-creation/tasks.md) ·
+  [Acceptance](031-expo-project-creation/acceptance.md)
 
 ## Current application milestone
 

@@ -135,7 +135,7 @@ class StatusStore:
         if not self.round_lock.acquire(blocking=False):
             return False
         try:
-            keys=sorted(bindings)
+            keys=sorted(key for key,binding in bindings.items() if binding['components'])
             with self.lock:
                 self.capacity={'limited':len(keys)>self.window,'projects':len(keys),'supported_projects':self.window}
             if not keys:return True
@@ -167,6 +167,8 @@ class StatusStore:
         return value
 
     def snapshot(self, key, binding):
+        if not binding['components']:
+            return {**self._public(self._failure(None,'unsupported')),'components':{},'publication':{'state':'unavailable','origin':None},'provider_version':None}
         with self.lock:
             entry=self.entries.get(key)
             if entry is None or set(entry['components'])!=set(binding['components']):

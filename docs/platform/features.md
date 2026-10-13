@@ -1,8 +1,9 @@
 # GptClaw Platform Feature Catalogue
 
 - **Status:** Directional backlog; not a specification
-- **Last updated:** 2026-10-12 (America/New_York)
+- **Last updated:** 2026-10-13 (America/New_York)
 - **Architecture:** [GptClaw platform architecture](./architecture.md)
+- **Mobile delivery track:** [React Native / Expo sequence](./sequence-mobile.md)
 
 ## 1. How to use this catalogue
 
@@ -142,7 +143,7 @@ capabilities; those are not prerequisites for creating the first applications.
 | TPL-001 | Next.js full-stack template | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
 | TPL-002 | TypeScript API template | 4 | Candidate | Fastify service with schema validation, OpenAPI, health checks, tests, container, and migrations. |
 | TPL-003 | Python API/AI template | 4 | Delivered | Initial standalone FastAPI API slice delivered under [SPEC-024](../024-python-fastapi-template/spec.md) and merged in [PR #56](https://github.com/danielbardsley/gptclaw/pull/56): pinned Python/uv execution and dependency policy, exact catalogue release, typed synthetic API/settings, owner-derived standards and quality/security/coverage/CI, private docs/routing and managed lifecycle/repository selection. Local, final-head CI and live checks passed; the project owner confirmed independent docs/echo behavior and accepted the result October 11. [Acceptance](../024-python-fastapi-template/acceptance.md) records the evidence and retained fixtures. AI integrations, databases and multi-service orchestration remain separate scope. |
-| TPL-004 | Expo universal application template | 4 | Candidate | Expo Router, TypeScript, web export, device development, EAS profiles, tests, and environment separation. |
+| TPL-004 | React Native application template (Expo) | 4 | Candidate | Native iOS/Android starter using React Native, Expo Router and TypeScript; pinned compatible SDK/toolchain, accessible native UI, optional typed backend binding, tests and separate environment/build profiles. Web preview is optional; native device acceptance is required. [SPEC-031](../031-expo-project-creation/spec.md) records the implemented creation/quality foundation awaiting review; full template/device scope remains Candidate. Delivery order: [mobile sequence](sequence-mobile.md). |
 | TPL-005 | Static site template | 4 | Candidate | Minimal static output with accessibility, link, performance, and private-preview checks. |
 | TPL-006 | CLI/automation template | 5 | Optional | Typed CLI, structured output, tests, packaging, and scheduled execution hooks. |
 | TPL-007 | Multi-package product template | 5 | Optional | pnpm workspace with shared contracts and UI packages when one release lifecycle justifies a monorepo. |
@@ -186,17 +187,25 @@ capabilities; those are not prerequisites for creating the first applications.
 
 ## 11. Mobile and Expo workflow
 
+The project owner selected mobile delivery planning on October 13. Follow the
+[mobile sequence](sequence-mobile.md) to reuse the delivered backend/platform
+while extending native contracts. MOB-001 is now selected for
+[SPEC-031](../031-expo-project-creation/spec.md); other entries retain their own status. Sequencing does not authorize implementation,
+account changes or publication.
+
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| MOB-001 | Expo project creation | 4 | Candidate | Generate the approved Expo Router template with consistent native/web structure. |
-| MOB-002 | Physical-device development | 4 | Candidate | Connect a device to Metro over the tailnet or an explicitly approved Expo transport. |
-| MOB-003 | Expo Go workflow | 4 | Candidate | Provide the quickest compatible feedback loop for applications without unsupported native modules. |
-| MOB-004 | Development builds | 4 | Candidate | Create signed EAS development builds when native modules or production parity require them. |
-| MOB-005 | Environment profiles | 4 | Candidate | Separate local, development, preview, and production configuration and credentials. |
-| MOB-006 | EAS Build and Submit | 5 | Candidate | Produce reviewable iOS/Android artifacts and owner-approved store submissions. |
+| MOB-001 | Expo project creation | 4 | In review | [SPEC-031](../031-expo-project-creation/spec.md) selects repeatable native source creation through the existing exact catalogue, mobile manifest/provider, pinned toolchain/dependencies, quality/bundle checks and private repository workflow. Scope approved and implementation authorized October 13; creation/quality/inventory implementation is in [PR #73](https://github.com/danielbardsley/gptclaw/pull/73). Local checks, implementation/private-repository CI, installed verification and private rollout/rollback passed; owner acceptance and merge remain tracked in [acceptance](../031-expo-project-creation/acceptance.md). Local-only creation retained; Metro/device access, backend binding and signed builds remain follow-ups. |
+| MOB-002 | Physical-device development | 4 | Candidate | Owned bounded Metro sessions, private device transport including bundle/assets/WebSocket reload, accurate launch links and disconnect/reconnect behavior. Reuse lifecycle/port ownership; no automatic public tunnel fallback. |
+| MOB-003 | Expo Go workflow | 4 | Candidate | Optional quick device loop for a verified compatible SDK/native-module/transport set; use a development build when requirements exceed Expo Go support. |
+| MOB-004 | Development builds | 4 | Candidate | Create and install the project's own signed Expo development client, with reviewed EAS account/signing custody, native-module compatibility and private Metro/API access. |
+| MOB-005 | Environment profiles | 4 | Candidate | Separate local/development/preview/production API bindings, app identities, builds and update channels. Client configuration is public; server, EAS and signing credentials have scoped storage/handoff and never enter bundles. |
+| MOB-006 | EAS Build and Submit | 5 | Candidate | Record reproducible build inputs and external job/artifact provenance, signed development/internal-preview binaries and authorized install access; deliver store testing/submission/release as separately gated slices. |
 | MOB-007 | EAS Update policy | 5 | Candidate | Define channels, runtime compatibility, rollout, rollback, and owner approval for updates. |
 | MOB-008 | Universal web preview | 4 | Candidate | Export or serve the Expo web target through the same private preview model when appropriate. |
-| MOB-009 | Device and release dashboard state | 5 | Candidate | Show active Metro sessions, build jobs, QR links, channels, and release versions. |
+| MOB-009 | Device and release dashboard state | 5 | Candidate | Show distinct Metro/backend/build states, safe launch/install links, freshness, channels and native release versions through reviewed adapters; do not infer a device is online or model installed apps as HTTP containers. |
+| MOB-010 | Mobile backend integration | 4 | Candidate | Bind native clients to existing FastAPI/private HTTPS and PostgreSQL lifecycles; typed API contracts, explicit environment selection, error/reconnect behavior and installed-client compatibility. Extend reviewed API/DB-only backend shapes without replacing database ownership/recovery. |
+| MOB-011 | Native application acceptance tests | 4 | Candidate | Pinned native component and device/end-to-end checks for iOS/Android, API CRUD/persistence, app relaunch, offline/reconnect, accessibility and build/update compatibility; record physical-device acceptance separately from web tests. |
 
 ## 12. Secrets, data, and security
 

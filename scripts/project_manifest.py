@@ -164,7 +164,7 @@ StrictValidator = validators.extend(Draft202012Validator, type_checker=
     Draft202012Validator.TYPE_CHECKER.redefine('integer', lambda checker, value: type(value) is int))
 
 
-@lru_cache(maxsize=4)
+@lru_cache(maxsize=5)
 def check_schema_bytes(source):
     # Reuse only the trusted schema's meta-validation, keyed by exact bytes.
     # Each manifest still gets a fresh schema/validator and full validation.
@@ -220,7 +220,7 @@ def validate_project(project_root, *, directory_fd=None):
             return failure('setup', 2)
         document = parse_manifest(read_manifest(project_root, directory_fd))
         version = document.get('schema_version')
-        if type(version) is not int or version not in (1, 2, 3, 4):
+        if type(version) is not int or version not in (1, 2, 3, 4, 5):
             result, contract, code = failure('version')
             result['errors'][0]['path'] = '/schema_version'
             return result, contract, code
@@ -241,7 +241,7 @@ def validate_project(project_root, *, directory_fd=None):
                 errors.append(diagnostic(code, safe_pointer(parts, schema)))
         # Cross-field checks run only on a structurally valid contract.
         if not errors:
-            if document['exposure']['base_path'] != '/projects/' + document['project']['id'] + '/':
+            if version != 5 and document['exposure']['base_path'] != '/projects/' + document['project']['id'] + '/':
                 errors.append(diagnostic('field_value', '/exposure/base_path'))
             if version in (3, 4):
                 roots = [document['components'][name]['root'] for name in ('api', 'web')]
@@ -273,6 +273,10 @@ def validate_project(project_root, *, directory_fd=None):
                         health = document['components'][name]['service'][probe]['path']
                         if any(segment in ('.', '..') for segment in health.split('/')):
                             errors.append(diagnostic('field_value', '/components/'+name+'/service/'+probe+'/path'))
+            elif version == 5:
+                import project_mobile
+                if not project_mobile.manifest_config(project_root, document, directory_fd):
+                    errors.append(diagnostic('field_value', '/mobile/app_config'))
             else:
                 health = document['service']['health']['path']
                 if any(segment in ('.', '..') for segment in health.split('/')):
