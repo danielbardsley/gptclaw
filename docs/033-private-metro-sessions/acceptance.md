@@ -20,7 +20,7 @@
 | AC-005 | Pending | Spike plan says approval-pending and unavailable start is blocked; production typed observation/descriptor/collector remain to implement. |
 | AC-006 | Pending | Fresh audit, disabled exact runtime admission and offline safety tests recorded in [security proposal](security-review.md); owner disposition and real runtime revocation/secret checks remain. |
 | AC-007 | Pending | Offline absent/foreign ownership cleanup passes; actual crashes, leases, compatible provider refresh/rollback and app regression evidence remain. |
-| AC-008 | Pending | Local preflight/source-contract evidence only. Private application CI passed at 319925a; two invariant jobs failed on the simulated forge-UID fixture and are being corrected. Final CI/installed operations/operator/device acceptance and merge remain required. |
+| AC-008 | Pending | Local source/admission/protocol evidence and all four CI workflows passed at fb7f4b2. Final source-job guard CI, actual Metro/installed operations, operator/device acceptance and merge remain required. |
 
 ## Actual local verification
 
