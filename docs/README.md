@@ -205,6 +205,13 @@ dispositions independently of feature implementation status.
   [Technical design](029-dashboard-project-links/technical-design.md) ·
   [Tasks](029-dashboard-project-links/tasks.md) · [Acceptance](029-dashboard-project-links/acceptance.md)
 
+
+- **030 — Dashboard visual refinement (DSH-015), draft; attached reference inspected:**
+  [Specification](030-dashboard-visual-refinement/spec.md) ·
+  [Technical design](030-dashboard-visual-refinement/technical-design.md) ·
+  [Tasks](030-dashboard-visual-refinement/tasks.md) ·
+  [Reference brief](030-dashboard-visual-refinement/reference.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in

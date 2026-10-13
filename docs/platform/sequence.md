@@ -199,6 +199,7 @@ No broader dashboard feature or future live log/preview integration is claimed.
 | Features | Delivery and exit evidence |
 |---|---|
 | TPL-008, QLT-005 — UI foundation and accessibility | Establish reusable accessible UI conventions and checks; apply them to the dashboard and supported templates. |
+| DSH-015 — visual refinement | Refine the delivered read-only dashboard after [SPEC-030](../030-dashboard-visual-refinement/spec.md) reference/scope review; keep the existing runtime contracts. |
 | DSH-001, DSH-002, DSH-003, DSH-004, DSH-014 — inventory, status, links, Git state, degraded mode | Deliver the read-only dashboard over discovery/runtime/route interfaces; handle unavailable backends explicitly. |
 | DSH-005, DSH-006, DSH-007, DSH-008, DSH-011 — telemetry, logs, checks, backup state, audit timeline | Integrate existing metrics, redacted logs, build results, RES-003 recovery data, and audit events. Include OPS-001 cost views. |
 | DSH-013, DSH-012 — search and mobile-friendly layout | Make the populated dashboard navigable and usable from a phone over the tailnet. |
