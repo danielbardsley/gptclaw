@@ -1,6 +1,6 @@
 # TASKS-032: Branch and worktree policy
 
-- **Status:** Implemented — verification and review pending
+- **Status:** Completed — initial single-host source-only slice
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-032](spec.md) · **Design:** [TDD-032](technical-design.md)
@@ -55,7 +55,7 @@
   verify guidance in a fresh task. Record actual per-criterion evidence in
   acceptance.md, separating local/CI/private/owner observations. (WT-005/006/007;
   AC-003–007)
-- [ ] T-009: Deliver implementation through a reviewed PR; verify final-revision
+- [x] T-009: Deliver implementation through a reviewed PR; verify final-revision
   CI, merge under existing authorization and obtain project-owner acceptance.
   Update index/catalogue to Delivered only after merge and all criteria pass.
   Preserve pending broader task-runtime scope and retained-resource follow-through.
@@ -72,6 +72,7 @@ commands and evidence limitations. The project owner explicitly authorized merge
 
 Reviewed mobile main was integrated to preserve installed credential schema 4.
 The combined provider is 1.11.0, and this initiative is 032 after the concurrent
-Expo numbering collision. Integrated local checks and final-head CI must pass
-before the already-authorized PR #74 merge. No installed host-policy, AWS/HCP,
+Expo numbering collision. Integrated local repository checks and all four final-head CI workflows
+passed. PR #74 merged as `9bbdf75b79599e7674f4b6d3e7c4d9bfaeb9a3e3`; all acceptance
+criteria passed for the bounded CLI/source-only scope. The feature is Delivered. No installed host-policy, AWS/HCP,
 production, fixture main or application-data changes were made.

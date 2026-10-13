@@ -1,6 +1,6 @@
 # SPEC-032: Branch and worktree policy
 
-- **Status:** Live acceptance passed — final checks and authorized merge pending
+- **Status:** Delivered — initial single-host source-only slice
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** PRJ-006, initial single-host Git coordination slice
@@ -148,3 +148,13 @@ through a reviewed implementation PR after authorization. Create acceptance.md
 when actual implementation evidence exists. Mark only this bounded PRJ-006 slice
 Delivered after implementation merge and all acceptance criteria pass. Runtime
 checks in independent task worktrees remain separately scoped future work.
+
+## Delivery — October 13
+
+The project owner authorized the named Trailboard exercise and platform merge.
+The live exercise passed, the integrated local repository checker passed, and all
+four final-head CI workflows passed. [PR #74](https://github.com/danielbardsley/gptclaw/pull/74)
+merged as `9bbdf75b79599e7674f4b6d3e7c4d9bfaeb9a3e3`. [Acceptance](acceptance.md) records
+per-criterion evidence, fresh consumer CLI guidance checks and retained branches/
+receipts. This completes the initial PRJ-006 slice; general task runtime/build/
+database adapters and automatic AI-client guidance adoption remain outside scope.

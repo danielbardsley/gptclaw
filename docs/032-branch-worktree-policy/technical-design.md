@@ -1,6 +1,6 @@
 # TDD-032: Branch and worktree policy
 
-- **Status:** Implemented design — acceptance pending
+- **Status:** Implemented and accepted — initial source-only slice
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-032](spec.md) · **Tasks:** [TASKS-032](tasks.md)
@@ -161,7 +161,8 @@ A later authorized live exercise uses two task allocations in an exact enrolled
 private fixture and an independent running app. Record scoped fetch/branch push,
 optional requested PR, producer/consumer handoff, denied task runtime operations,
 continued app health and cleanup/retention disposition. Real remote writes and checkout removal require the named fixture scope
-described in SPEC-032; it remains pending. Owner acceptance and implementation
+described in SPEC-032; the project owner authorized the Trailboard exercise
+and merge on October 13, and the observed exercise passed. Owner acceptance and implementation
 merge are separate gates; no existing app/database is a disposable test fixture.
 
 ## Traceability and decisions
