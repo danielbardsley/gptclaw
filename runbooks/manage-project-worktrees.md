@@ -1,6 +1,6 @@
 # Manage source-only task worktrees
 
-[SPEC-031](../docs/031-branch-worktree-policy/spec.md) supplies the single-host
+[SPEC-032](../docs/032-branch-worktree-policy/spec.md) supplies the single-host
 policy. Run as forge using the reviewed `scripts/gptclawctl` provider or an
 updated content-addressed snapshot. Existing unmanaged worktrees are retained;
 there is no automatic adoption, agent scheduling or distributed locking.

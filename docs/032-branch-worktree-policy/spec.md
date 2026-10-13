@@ -1,10 +1,10 @@
-# SPEC-031: Branch and worktree policy
+# SPEC-032: Branch and worktree policy
 
 - **Status:** Implemented — verification and review pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** PRJ-006, initial single-host Git coordination slice
-- **Design:** [TDD-031](technical-design.md) · **Tasks:** [TASKS-031](tasks.md)
+- **Design:** [TDD-032](technical-design.md) · **Tasks:** [TASKS-032](tasks.md)
 - **Context:** [Catalogue](../platform/features.md) · [Architecture](../platform/architecture.md)
 
 ## Outcome and authorization
@@ -19,6 +19,12 @@ The project owner subsequently instructed “Ok, lets implement the spec.” Thi
 approves the bounded defaults and authorizes implementation and necessary
 reversible verification. Merge, fixture remote writes and removal of retained
 resources remain governed by the explicit delivery/fixture gates below.
+
+This initiative was drafted as SPEC-031. It is renumbered SPEC-032 after the
+concurrently reviewed Expo initiative occupied 031 on main; approved scope and
+WT/AC/task identifiers remain unchanged. The project owner explicitly authorized
+the named Trailboard Git-only exercise, clean test-checkout removal with retained
+branches/receipts, and PR #74 merge on October 13.
 
 ## Scope and baseline
 

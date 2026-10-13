@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "scope": "source-check-and-export",
+  "exceptions": [
+    {
+      "id": "GHSA-86w9-cpqp-85rv",
+      "package": "node-forge",
+      "version": "1.4.0",
+      "owner": "project owner",
+      "approved_at": "2026-10-13",
+      "expires_at": "2026-10-28T04:00:00Z",
+      "reason": "No signing or release verification in this source-only adapter."
+    },
+    {
+      "id": "GHSA-vfj7-8cjw-p6xm",
+      "package": "braces",
+      "version": "3.0.3",
+      "owner": "project owner",
+      "approved_at": "2026-10-13",
+      "expires_at": "2026-10-28T04:00:00Z",
+      "reason": "Bounded source checks/export; no externally exposed glob-processing service."
+    }
+  ]
+}

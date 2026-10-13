@@ -1,9 +1,9 @@
-# SPEC-031 acceptance evidence
+# SPEC-032 acceptance evidence
 
 - **Status:** Implemented; code CI passed, private/owner acceptance pending
 - **Owner:** Project owner
 - **Evidence date:** 2026-10-13 (America/New_York)
-- **Specification:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md) · **Tasks:** [TASKS-031](tasks.md)
+- **Specification:** [SPEC-032](spec.md) · **Design:** [TDD-032](technical-design.md) · **Tasks:** [TASKS-032](tasks.md)
 - **Delivery:** [PR #74](https://github.com/danielbardsley/gptclaw/pull/74), unmerged implementation update
 - **Revision context:** Working tree on `codex/prj-006-spec`, based on planning commit `933779b9d204572827897aac44642375b2706929`; initial implementation commit `f1dc27cd2d21a5754bd6112fa3568572114ea66e` and corrected implementation commit `4db542d766372ab935468ea6085ab320efd73e58`. This final update changes evidence documents only.
 

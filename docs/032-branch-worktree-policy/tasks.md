@@ -1,21 +1,21 @@
-# TASKS-031: Branch and worktree policy
+# TASKS-032: Branch and worktree policy
 
 - **Status:** Implemented — verification and review pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
-- **Specification:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md)
+- **Specification:** [SPEC-032](spec.md) · **Design:** [TDD-032](technical-design.md)
 
 ## Planning and authorization
 
 - [x] T-001: Inspect catalogue/index, repository guidance, current Git version,
   credential binding/configuration, runtime lock/source identity and hook behavior.
   Draft the bounded specification/design/tasks and update the index/catalogue.
-  Evidence: cited source interfaces in TDD-031; this planning revision.
+  Evidence: cited source interfaces in TDD-032; this planning revision.
 - [x] T-002: Project owner reviews source-only scope and proposed defaults, then
   explicitly approves the specification and authorizes implementation. Resolve
   receipt/CLI schemas and lock-order audit before dependent coding. The project owner approved the scope and authorized implementation on
   October 13: “Ok, lets implement the spec.” CLI/receipt schemas and lock order
-  are now specified in TDD-031; named live fixture writes remain separately gated. (WT-001–007)
+  are now specified in TDD-032; named live fixture writes remain separately gated. (WT-001–007)
 
 ## Implementation, in dependency order
 

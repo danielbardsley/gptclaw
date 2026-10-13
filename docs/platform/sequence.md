@@ -2,9 +2,10 @@
 
 - **Status:** Recommended delivery order; not implementation authorization
 - **Owner:** Daniel
-- **Last updated:** 2026-10-11 (America/New_York)
+- **Last updated:** 2026-10-13 (America/New_York)
 - **Feature definitions and current status:** [Feature catalogue](./features.md)
 - **Architecture:** [Platform architecture](./architecture.md)
+- **Selected mobile track:** [React Native / Expo delivery sequence](./sequence-mobile.md)
 
 ## Goal and sequencing rules
 
@@ -207,6 +208,13 @@ No broader dashboard feature or future live log/preview integration is claimed.
 
 ## 12. Expand supported templates and mobile development
 
+**Mobile planning selection (October 13):** use the dedicated
+[mobile sequence](sequence-mobile.md) for React Native/Expo ordering, reuse of the
+delivered FastAPI/PostgreSQL backend and native build/update/store gates. Its milestone order
+takes precedence for selected mobile work, which can build from the delivered
+baseline without completing unrelated dashboard/operations stages first. Other
+tracks and the existing RES deferral retain their scope and gates.
+
 **Delivered initial API slice (October 11):** the project owner prefers Python
 with FastAPI for backends and requested [SPEC-024](../024-python-fastapi-template/spec.md)
 for TPL-003 before RUN-006. The approved scope moves this initial standalone API slice
@@ -222,7 +230,7 @@ persistent data, AI integrations and existing deferred RES work retain their own
 | QLT-008, TPL-002, TPL-003, TPL-005 — API contracts, TypeScript API, Python API, static site | Deliver these stacks with their required toolchains, tests, health, data/migration support where relevant, and private routing. Finish SYS-002 Python/uv support and update PRJ-003/PRJ-009/QLT-009 for each stack. |
 | TPL-009, TPL-010 — authentication and AI starters | Build on scoped secrets, rotation, supported data services, and existing quality checks. Use synthetic identities/data for acceptance. |
 | QLT-006 — performance budgets | Establish measured build, response, resource, and startup budgets for supported templates. |
-| MOB-005, TPL-004 — mobile environment profiles and Expo template | Separate configuration/credentials first, then introduce Expo and its pinned tools with explicit native/web runtime behavior. |
+| MOB-005, TPL-004 — mobile environment profiles and React Native/Expo template | Separate configuration/credentials first, then introduce Expo and its pinned tools with explicit native/web runtime behavior. |
 | MOB-001, MOB-002, MOB-003, MOB-008 — creation, device access, Expo Go, web preview | Integrate Expo project creation, private device connectivity, compatible Expo Go iteration, and universal web previews. |
 | MOB-004 — development builds | Add signed development builds when native modules require them; prove credential handling and artifact access. Store submissions remain stage 15. |
 | MOB-009 — mobile dashboard state, development slice | Show Metro sessions, device links, and development build jobs. Release/channel views finish in stage 15. |
