@@ -32,6 +32,10 @@ class SpikeTests(unittest.TestCase):
     def prepare_plan(self):
         self.patch(spike,'TARGETS',{self.root})
         self.patch(app,'target',lambda root:(self.root,{'schema_version':5,'project':{'id':'synthetic'}}))
+    def test_real_operator_guard_denies_foreign_uid_and_root(self):
+        for uid,euid in [(1001,1001),(0,0),(1002,0)]:
+            with patch.object(os,'getuid',return_value=uid),patch.object(os,'geteuid',return_value=euid),self.assertRaises(app.AppError) as failure:spike.require_operator()
+            self.assertEqual(failure.exception.code,'setup')
     def test_exact_owned_origin_only(self):
         self.assertEqual(spike.origin(self.origin+'/'),self.origin)
         for value in ['http://'+spike.HOST+':8443','https://foreign.ts.net:8443',self.origin+'/projects/',self.origin+'?target=http://localhost',self.origin+'#fragment','https://user@'+spike.HOST+':8443','https://'+spike.HOST+':443','https://'+spike.HOST+':bad']:
@@ -48,7 +52,9 @@ class SpikeTests(unittest.TestCase):
         with patch.object(spike,'TARGETS',set()),self.assertRaises(app.AppError):spike.plan(self.root,self.origin,60)
     def test_unapproved_run_denies_before_store_and_runtime_writes(self):
         self.prepare_plan()
-        with patch.object(os,'getuid',return_value=1002),patch.object(os,'geteuid',return_value=1002),patch.object(spike,'source_inventory',return_value={}),patch.object(app,'locked',side_effect=AssertionError('no lock write')),patch.object(app,'command',side_effect=AssertionError('no process')):
+        value=copy.deepcopy(security.read_policy(app.REPO,approved=False));value['approved_at']=None
+        def policy_reader(repo,now=None,approved=True):return security.policy(value,now,approved)
+        with patch.object(security,'read_policy',side_effect=policy_reader),patch.object(spike,'require_operator',return_value=None),patch.object(spike,'source_inventory',return_value={}),patch.object(app,'locked',side_effect=AssertionError('no lock write')),patch.object(app,'command',side_effect=AssertionError('no process')):
             with self.assertRaises(security.AdmissionError):spike.run(self.root,self.origin,60)
     def test_filtered_view_excludes_credential_and_git_trees(self):
         for name in ['.git','.ssh','.aws']:
@@ -109,6 +115,7 @@ class SpikeTests(unittest.TestCase):
         self.assertEqual(len(mounts),2)
         self.assertFalse(any(x in options for x in ['--env-host','--privileged','--replace','--network=host']))
     def simulate_run(self,failure=None):
+        self.patch(spike,'require_operator',lambda:None)
         self.prepare_plan()
         self.patch(app,'STORE',self.root.parent/'runtime')
         policy=security.read_policy(app.REPO,approved=False);policy=copy.deepcopy(policy)

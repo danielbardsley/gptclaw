@@ -18,6 +18,11 @@ def main(argv=None):
   if name in {'logs','test','build','format','lint','typecheck','security','verify'}:p.add_argument('--component',choices=['web','api','db'] if name=='logs' else ['web','api'])
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
+ metro=sub.add_parser('metro',help='Explicit native Metro source opt-in; no session starts')
+ metro_actions=metro.add_subparsers(dest='metro_action',required=True)
+ enable=metro_actions.add_parser('enable',allow_abbrev=False)
+ enable.add_argument('--project-root',required=True);enable.add_argument('--ttl-seconds',type=int,default=7200)
+ enable.add_argument('--apply',action='store_true');enable.add_argument('--confirm-plan')
  templates=sub.add_parser('templates',help='Discover bundled exact template releases')
  template_actions=templates.add_subparsers(dest='template_action',required=True)
  template_actions.add_parser('list',allow_abbrev=False)
@@ -94,7 +99,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['worktrees','db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2,3,4,5],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4],'toolchain_schemas':[1,2],'template_catalogue_schema':5,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':4,'credential_profile_schemas':[1,2,3,4],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['metro','worktrees','db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'metro_actions':['enable'],'metro_contract_manifest_schemas':[6],'metro_session_schemas':[],'project_manifest_schemas':[1,2,3,4,5,6],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4],'toolchain_schemas':[1,2],'template_catalogue_schema':5,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':4,'credential_profile_schemas':[1,2,3,4],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -117,7 +122,12 @@ def main(argv=None):
   if hasattr(args,'project_root') and args.action not in {'worktrees','credentials','repo','validate'}:
    from project_worktrees import guard
    guard(args.project_root)
-  if args.action=='worktrees':
+  if args.action=='metro':
+   import metro_contract
+   result=metro_contract.public(metro_contract.enable(args.project_root,args.ttl_seconds,args.apply,args.confirm_plan))
+   print(json.dumps(result,sort_keys=True))
+   return 1 if result['state']=='metadata-recovery-required' else 0
+  elif args.action=='worktrees':
    import project_worktrees as worktrees
    action=args.worktree_action
    common=(args.project_root,args.task)
@@ -130,7 +140,7 @@ def main(argv=None):
     result=worktrees.handoff(*common,args.owner,args.generation,checks,args.remaining,args.published,args.pr)
    elif action=='resume':result=worktrees.resume(*common,args.owner,args.generation,args.target_owner)
    else:result=worktrees.cleanup(*common,args.owner,args.generation,args.head,args.apply)
-  elif args.action in {'start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','deps','toolchain','db','hooks'} and app.target(args.project_root)[1]['schema_version'] == 5:
+  elif args.action in {'start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','deps','toolchain','db','hooks'} and app.target(args.project_root)[1]['schema_version'] in (5,6):
    import project_mobile as mobile
    result=mobile.dispatch(args)
   elif args.action=='db':

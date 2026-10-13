@@ -14,7 +14,7 @@ import metro_security as security
 class SecurityTests(unittest.TestCase):
     def setUp(self):
         self.repo=Path(__file__).resolve().parents[2]
-        self.value=security.read_policy(self.repo,1791930000,approved=False)
+        self.value=json.loads((self.repo/'config/metro/runtime-security-v1.json').read_text())
         self.value=copy.deepcopy(self.value);self.value['approved_at']='2026-10-13T20:00:00Z'
         self.lock=(self.repo/'templates/apps/releases/expo-react-native/1.0.1/pnpm-lock.yaml').read_bytes()
         self.now=1791930000

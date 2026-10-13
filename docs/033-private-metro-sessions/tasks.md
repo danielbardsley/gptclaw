@@ -18,7 +18,7 @@
   pinned SDK URL/manifest/assets/large bundles and WebSocket behavior with an eligible
   native client; propose exact owned origins/listeners/access scope and measured bounds.
   Obtain owner/operator disposition for changes outside reviewed scope. (MET-003/004/006; AC-003/004/006)
-- [ ] T-003: Recheck schema reservations; implement opt-in migration/validation,
+- [ ] T-003 (in progress): Recheck schema reservations; implement opt-in migration/validation,
   canonical-root guard, capability/receipt/descriptor versions and older-provider
   rejection, preserving schema-5 source and all frozen releases. (MET-001/005; AC-001/005)
 - [ ] T-004: Implement owned user-unit lifecycle, atomic port/cache leases, mutation
@@ -56,7 +56,11 @@
 T-000 and T-001 are complete. T-002 is in progress: fresh exact audit evidence,
 a separate disabled runtime policy, fail-closed admission tests and a bounded
 loopback SDK-spike helper and sanitized native protocol probes are prepared.
-The full offline repository gate passed; all 38 focused new tests pass. Runtime disposition, actual SDK execution,
+The original full offline gate passed. Current focused source/admission/protocol
+suites total 57 cases (including 18 opt-in cases); full final regression and CI
+are being completed. Schema-6 source opt-in, canonical guarded migration, non-HTTP source consumers
+and older installed-provider rejection now have evidence; typed session receipts
+and descriptors remain pending. Runtime disposition, actual SDK execution,
 private operator scope and physical evidence remain pending. No Metro service or
 route/account change has been made. See [security proposal](security-review.md) and
 [acceptance tracking](acceptance.md). Other implementation tasks remain open.

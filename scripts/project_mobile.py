@@ -138,7 +138,7 @@ def invalidate(state, complete=False, operation_id=None):
 def quality(root, action):
     import project_dependencies as deps
     import project_toolchains as tools
-    a=app();root,document=a.target(root);check(document['schema_version']==5)
+    a=app();root,document=a.target(root);check(document['schema_version'] in (5,6))
     check(action in document['commands'],'mobile-unsupported')
     slug=document['project']['id']
     # Preparation is a shared transactional operation; it owns its own lock.

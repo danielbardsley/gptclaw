@@ -319,7 +319,7 @@ def acquire(selected):
 def inspect(root):
     root, contract = app().target(root); selected = selection(root)
     result = observed(selected)
-    state = (__import__('project_mobile').load_state(root, contract['project']['id']) if contract['schema_version']==5 else app().state_for(contract['project']['id']))
+    state = (__import__('project_mobile').load_state(root, contract['project']['id']) if contract['schema_version'] in (5,6) else app().state_for(contract['project']['id']))
     result.update(project=contract['project']['id'], active_selection_hash=state.get('toolchain_hash') if state else None,
                   active_image=state['image'] if state else None)
     return result
@@ -336,7 +336,7 @@ def prepare(root):
         # A stopped target can move to the selected verified image. Source is untouched.
         if s['image'] != result['receipt']['image'] or s.get('toolchain_hash') != selected['selection_hash']:
             s.pop('prepared_digest', None); s.pop('build_digest', None)
-        if contract['schema_version']==5:
+        if contract['schema_version'] in (5,6):
             s.update(image=result['receipt']['image'], toolchain_hash=selected['selection_hash'], phase='idle')
             __import__('project_mobile').save_state(s)
         else:

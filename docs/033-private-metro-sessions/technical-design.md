@@ -15,18 +15,30 @@ port leases, selected origin, lifecycle/operation outcome, start/expiry timestam
 and route readback. Do not store client credentials or device identity. Stop preserves
 source, dependencies and caches. Web/backend receipts retain their existing meaning.
 
-Propose an explicitly versioned opt-in manifest extension (schema 6 if still vacant),
-with static approved mode/config and runtime capability separate from schema-5 source.
-Recheck reservations before coding; no mutation of schema 5 or published templates.
+Schema 6 was vacant and is selected for explicit opt-in. It preserves the schema-5
+source fields and adds only `metro: {adapter: metro-v1, mode: expo-go, ttl_seconds: N}`
+with an integer lifetime of 60–28800 seconds (default 7200). Schema 5 and published
+templates remain unchanged; no host, port, environment or URL is project-declared.
+Source validation capability includes schema 6 separately from actual runtime
+capability. The development provider is 1.12.0; installed 1.10.1 is unchanged.
 Provide a reviewed opt-in upgrade/validation operation for existing canonical source;
-reject dirty/concurrently changed metadata and preserve source/provenance. A new exact
+reject dirty/concurrently changed metadata and preserve source/provenance.
+Migration reuses PRJ-006 canonical identity/configuration checks, requires tracked
+clean metadata and exact mobile toolchain/dependency inputs, and revalidates under
+the project lock. Atomic exchange retains displaced metadata in an owned journal
+archive. A racing edit or unknown publication leaves both copies recoverable and
+blocks further migration until reconciliation. Commit the reviewed manifest before
+using it; the source plan digest grants neither runtime nor security permission. A new exact
 starter release is needed only if reviewed source/SDK inputs change. Later MOB-004
 can consume the generic transport descriptor without this spec creating its client.
 
 Proposed CLI uses existing lifecycle verbs after mobile dispatch, with explicit
 Metro enablement and a finite lifetime. Existing schema-5 behavior remains unsupported
 for lifecycle. Exact flag/schema syntax is finalized and tested during implementation;
-these are interface requirements, not currently runnable commands. Logs and observation
+the lifecycle/transport interfaces remain pending. The implemented source command
+`metro enable --project-root ROOT` emits a read-only plan; `--apply --confirm-plan
+DIGEST` explicitly upgrades metadata and starts no session. A supported provider
+will advertise session/runtime capability only after the adapter is available. Logs and observation
 use bounded read-only provider calls; state changes stay in lifecycle/recovery paths.
 Require the main-branch PRJ-006 canonical-root guard even though the installed launcher
 observed at planning was older. Do not add worktree runtime previews or auto-integration.

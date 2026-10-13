@@ -187,8 +187,12 @@ def remaining_seconds(policy,requested):
     return seconds
 
 
-def run(root,advertised,duration):
+def require_operator():
     app.need(os.getuid()==1002 and os.geteuid()!=0,'setup')
+
+
+def run(root,advertised,duration):
+    require_operator()
     value=plan(root,advertised,duration);root=Path(value['root'])
     # Default admission checks happen before locks/store/toolchain writes.
     policy=security.read_policy(app.REPO)

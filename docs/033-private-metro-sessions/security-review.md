@@ -42,7 +42,7 @@ EAS Update, custom signed client, certificate verification or public service app
 The initial spike is loopback only, on the two exact retained synthetic roots.
 Its helper permits at most 300 seconds and has no Tailscale administration, private
 proxy or device-launch behavior. Its read-only plan and actual unapproved start
-denial were verified. Twenty additional offline tests cover source filtering,
+denial were verified. Twenty-one additional offline tests cover source filtering,
 symlink/hardlink/FIFO/traversal/size limits, exact fixture/origin scope, prepared
 dependency admission, security expiry, isolated resources and owned cleanup.
 Ten further synthetic loopback protocol tests cover a 3 MiB streamed response,

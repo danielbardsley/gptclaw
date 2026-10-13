@@ -196,7 +196,7 @@ class Scanner:
             project = contract['project']
             root = str(self.projects / name)
             key = hashlib.sha256((root + '\0' + project['id'] + '\0' + str(identity(info))).encode()).hexdigest()[:32]
-            components = sorted(contract['components']) if contract['schema_version'] in (3, 4) else [] if contract['schema_version'] == 5 else [project['kind']]
+            components = sorted(contract['components']) if contract['schema_version'] in (3, 4) else [] if contract['schema_version'] in (5,6) else [project['kind']]
             fields = metadata.get((root, project['id']), {})
             row = {'key': key, 'id': project['id'], 'name': project['name'], 'kind': project['kind'],
                    'components': components, 'location': name, 'manifest_version': contract['schema_version'],

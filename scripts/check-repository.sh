@@ -150,6 +150,10 @@ if ! python3 -B scripts/tests/test_metro_protocol.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_metro_contract.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/tests/test_project_templates.py; then
   status=1
 fi
