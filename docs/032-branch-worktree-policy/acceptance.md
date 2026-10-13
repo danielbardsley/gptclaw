@@ -171,4 +171,3 @@ reads were verified; automatic AI-client guidance adoption was not claimed.
 No additional owner approval, fixture cleanup or infrastructure operation remains
 for this slice. Both named fixture branches/receipts are intentionally retained.
 Broader worktree runtime/build/database adapters remain separately scoped.
-
