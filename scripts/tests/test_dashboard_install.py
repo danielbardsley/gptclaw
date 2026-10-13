@@ -73,6 +73,17 @@ class ReleaseTests(unittest.TestCase):
         descriptor=manager.read_owned(manager.PLATFORM/'releases'/release/'release.json')
         self.assertEqual(descriptor['image'],'sha256:'+'1'*64)
 
+    def test_compiled_checksum_metadata_has_its_own_finite_bound(self):
+        file=self.base/'compiled-record.json'
+        value={f'asset-{index}':'a'*64 for index in range(1500)}
+        file.write_text(json.dumps(value));file.chmod(0o600)
+        self.assertGreater(file.stat().st_size,65536)
+        self.assertEqual(manager.read_owned(file),value)
+        file.write_text('x'*1048577)
+        with self.assertRaises(app.AppError):manager.read_owned(file)
+        file.write_text('{"duplicate":1,"duplicate":2}')
+        with self.assertRaises(app.AppError):manager.read_owned(file)
+
     def test_unknown_units_and_modified_release_are_preserved(self):
         release=manager.prepare()
         unit=manager.USER_UNITS/manager.COLLECTOR_UNIT

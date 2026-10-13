@@ -58,10 +58,26 @@ def operation_lock():
 
 
 def read_owned(path):
+    # Compiled-file checksum records exceed the app receipt's 64 KiB limit.
+    # Keep a separate finite bound without widening any runtime/secret reader.
+    path=app.safe(path)
     info = path.lstat()
     app.need(stat.S_ISREG(info.st_mode) and info.st_uid == os.getuid()
-             and info.st_nlink == 1 and not info.st_mode & 0o022, 'conflict')
-    return app.read_json(path)
+             and info.st_nlink == 1 and not info.st_mode & 0o022 and info.st_size<=1048576, 'conflict')
+    fd=os.open(path,os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(fd,'rb') as source:
+        opened=os.fstat(source.fileno())
+        app.need((opened.st_dev,opened.st_ino)==(info.st_dev,info.st_ino)
+                 and stat.S_ISREG(opened.st_mode) and opened.st_uid==os.getuid()
+                 and opened.st_nlink==1 and not opened.st_mode & 0o022, 'conflict')
+        data=source.read(1048577)
+    app.need(len(data)<=1048576,'conflict')
+    def unique(pairs):
+        value={}
+        for key,item in pairs:
+            app.need(key not in value,'conflict');value[key]=item
+        return value
+    return json.loads(data,object_pairs_hook=unique)
 
 
 def origin():
