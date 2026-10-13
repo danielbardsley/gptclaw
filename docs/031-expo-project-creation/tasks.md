@@ -14,7 +14,7 @@
 - [x] T-001: Project owner reviews SPEC-031's creation-only scope and supporting
   slices, then separately authorizes implementation. Record the disposition;
   do not infer mobile runtime/backend/build authorization from planning approval.
-- [ ] T-002: After authorization for the preparation work, propose and verify exact
+- [x] T-002: After authorization for the preparation work, propose and verify exact
   SDK/package/toolchain pins, pnpm layout, native package/script compatibility and
   bounded resource profile in owned rootless fixtures. Recheck version-5 availability.
   Record sources/digests/outcomes and resolve any necessary policy/resource change
@@ -23,21 +23,21 @@
 
 ## Dependency-ordered implementation
 
-- [ ] T-003: Add strict mobile manifest/catalogue/policy contracts, capability metadata,
+- [x] T-003: Add strict mobile manifest/catalogue/policy contracts, capability metadata,
   development identity rules and compatibility validation. Preserve schemas 1–4,
   published catalogues and web default. Author the minimal native starter/standards
   without automatic upstream agent/plugin adoption or dynamic app config.
   (EXPO-001/002/005/007; AC-001/002/005/007)
-- [ ] T-004: Integrate exact release selection and generation into the shared resolver;
+- [x] T-004: Integrate exact release selection and generation into the shared resolver;
   add typed config substitutions/provenance, no-overwrite staging/publication and
   normalized-source golden tests. Cover invalid/tampered/occupied/symlink/race/
   concurrent/interrupted cases and deterministic offline local-only creation.
   (EXPO-001/003; AC-001/003)
-- [ ] T-005: Extend exact toolchain/dependency selection for the chosen mobile policy;
+- [x] T-005: Extend exact toolchain/dependency selection for the chosen mobile policy;
   verify executable/image pins, frozen install, SDK compatibility checks and safe
   staged add/update/remove/recovery. Reject unsupported native/config-plugin changes
   and preserve concurrent edits and legacy policy behavior. (EXPO-004; AC-004)
-- [ ] T-006: Implement mobile quality jobs through shared owned-job/lock/receipt
+- [x] T-006: Implement mobile quality jobs through shared owned-job/lock/receipt
   mechanisms without HTTP reservations. Add format/lint/type/test/security/SDK
   checks, interaction/navigation tests and separate iOS/Android JS/assets exports.
   Exercise intentional defects, cold/warm preparation, timeouts and job recovery.
@@ -46,17 +46,17 @@
   for exact mobile identities/inputs. Exercise local-only, private initial PR,
   protection/readback, denial, changed-plan and ambiguous/interrupted resume cases
   with synthetic adapters before authorized live provisioning. (EXPO-006; AC-006)
-- [ ] T-008: Add pinned least-permission generated CI, README/architecture/mobile
+- [x] T-008: Add pinned least-permission generated CI, README/architecture/mobile
   standards, adaptation guidance and an Expo-creation runbook. Review retained
   synthetic examples and remove unrelated upstream demos/configuration. Explicitly
   document bundle versus binary output and unsupported Metro/backend/device/release
   operations; do not advertise unimplemented commands. (EXPO-007; AC-007)
-- [ ] T-009: Update safe inventory/provider capability handling for mobile source rows;
+- [x] T-009: Update safe inventory/provider capability handling for mobile source rows;
   distinguish quality support from absent runtime support, keep repo links available
   and reject mobile lifecycle/DB calls without side effects. Add collector/frontend
   regression tests and prepare the required frozen dashboard consumer update.
   (EXPO-008; AC-008)
-- [ ] T-010: Package schemas/release/policies into immutable providers and extend
+- [x] T-010: Package schemas/release/policies into immutable providers and extend
   source/installed parity, release immutability and older-provider rejection tests.
   Run full relevant repository, frontend and generated-project gates and configured
   final-head CI. Resolve failures before activation; document exact revisions.
@@ -92,3 +92,10 @@ no placeholder health service or fake backend is introduced to close creation.
 
 Implementation authorization was supplied by the project owner October 13.
 Local source work and compatibility verification are underway; acceptance remains pending.
+
+Local/CI/core private evidence is recorded in acceptance.md. T-007 has implemented
+mobile repository-plan/fingerprint support and passing offline tests; its supporting
+live policy extension remains unapproved and is not applied. T-011 core provider/
+dashboard rollout and rollback are verified; exact two-repository acceptance and
+new mobile inventory rows await acceptance-targets.md disposition. T-012 remains
+pending; no merge or full MOB-001 Delivered claim is made.

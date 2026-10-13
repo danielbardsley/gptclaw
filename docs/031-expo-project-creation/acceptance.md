@@ -1,6 +1,6 @@
 # ACCEPTANCE-031: Expo / React Native creation foundation
 
-- **Status:** Implementation in review; local verification in progress, installed/repository/owner acceptance pending
+- **Status:** Implementation in review; local/CI/core private rollout passed; repository/owner acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Spec:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md) · **Tasks:** [TASKS-031](tasks.md)
@@ -49,7 +49,7 @@ image, with finite CPU/memory/PID/time bounds and no host language package insta
 - A broad gate started during release authoring and failed on changing hashes; that
   run is retained separately. A subsequent gate's only recorded failure was the
   legacy cache-bound assertion of four rather than five supported schemas. The
-  corrected 28-case manifest suite passed; final full-gate outcome is pending.
+  corrected 28-case manifest suite passed; final full-gate repeat passed with explicit exit 0 in 766 seconds (535 cases, 29 suites).
 - Initial combined generated-app verification exceeded its 300-second deadline
   under concurrent checks. Final CLI/golden orchestration runs serial bounded steps;
   no individual job resource/deadline ceiling was increased. The timed-out task-owned
@@ -88,3 +88,42 @@ unit tests assumed forge UID on the differently numbered GitHub runner. Correcte
 the setup and exercised the non-HTTP dispatcher directly in isolated tests, keeping
 the real forge-only CLI gate unchanged. Final head CI must be rerun; no failed run
 is reported as successful.
+
+The prepared immutable provider eecb5885ee44c504fad0c3f42763f2189b4bc1ed6a53641d9131fd96ecee5d1d
+reports 1.10.0, lists the exact starter digest and validates a real generated fixture.
+Its bounded frozen dependency installation passed in 19.935 seconds with no changed
+package/lock/workspace inputs. Its complete per-step verification passed in 171.474 seconds. The stable launcher
+and dashboard were then activated through their reviewed owned interfaces;
+credential policy/grants remain unchanged.
+
+## Final implementation and core rollout evidence
+
+All four workflows passed on bc5cf664c58dc219456a9c74a0717de998808e40:
+[private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38440294877),
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38440294956),
+[development-host validation](https://github.com/danielbardsley/gptclaw/actions/runs/38440295048)
+and [federation validation](https://github.com/danielbardsley/gptclaw/actions/runs/38440294903).
+Application CI includes all five jobs and the complete corrected two-native-project
+golden/defect driver. Infrastructure apply/plan were skipped for this PR.
+
+Core private activation: stable provider 1.10.0 from immutable snapshot
+eecb5885ee44c504fad0c3f42763f2189b4bc1ed6a53641d9131fd96ecee5d1d;
+dashboard release 69e47c010c99b1e145f77d31c1f0fc56cd803b52632a3e2254064b881dd1b7ea.
+Actual private HTTPS health and snapshot returned 200, with Shelfmark and Trailboard
+ready/current. Their six app/API/DB containers remain, alongside the dashboard.
+Existing /projects/ and /dashboard/ handlers were verified and Funnel remains off.
+The manager's generic operator_route_pending field did not require a new operator
+action: the already owned handler was present and actual HTTPS passed.
+
+Dashboard rollback restored d0485098d81d573b41943793b91a39b03f8a509bbfb22c3aa261ef3e64d803d1
+and health 200, then the verified release was restored. Owned provider rollback
+restored previous version 1.9.0 and then 1.10.0. The older provider rejected a mobile
+manifest with source bytes retained. No existing project lifecycle, data, credential
+grants, host controls or infrastructure was changed by these rehearsals.
+
+AC-004/005 now have local and immutable-provider evidence; AC-005's complete
+generated-app checks also passed CI. AC-007's golden generated workflow/guidance
+checks passed CI, while actual private generated-repository CI remains pending.
+AC-008's core consumer/UI/rollout regressions pass, with new live mobile rows pending.
+AC-009's local/CI/provider/dashboard parity and rollback pass; merge and owner
+acceptance remain pending. AC-006 awaits exact four-name scope authorization.
