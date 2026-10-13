@@ -34,7 +34,7 @@ setup and store publication require their concrete scope to be authorized.
 | Existing capability | Reuse and boundary |
 |---|---|
 | FND-001–006; AGT guidance/skills | Use the existing private host, protected volume, unprivileged forge account, repository/area instructions and planning/PR workflow. Do not rebuild the foundation. Remaining host/client acceptance stays recorded separately. |
-| PRJ-001/002/003; SYS-002/003 | Reuse versioned validation, the installed provider, immutable template catalogue and pinned dependency/toolchain policies. Provider 1.9.0 supports web/API/group kinds and schemas 1–4; it has no accepted mobile/Metro adapter. Expo may require a different reviewed Node/pnpm profile. |
+| PRJ-001/002/003; SYS-002/003 | Reuse versioned validation, the installed provider, immutable template catalogue and pinned dependency/toolchain policies. MOB-001 delivers schema-5 mobile source creation/quality using exact Node 24.21.0/pnpm 12.10.1. Planning readback sees stable 1.10.1 and main source 1.11.0 with PRJ-006; implementation must preserve both mobile and canonical-worktree contracts. Neither provides an accepted Metro session. Recheck installed capability at rollout. |
 | PRJ-004/005; PRJ-006 | Reuse private repository creation, explicit credential bindings, branches/worktrees and owned-operation locking. Repository credentials do not become Expo, Apple or Google credentials. |
 | TPL-003; RUN-006/011 | Reuse FastAPI, ordered group lifecycle and PostgreSQL persistence/migrations/recovery. Current schema 4 and `notes-postgres@1.0.0` require web + API + DB; an API/DB-only shape is an extension, not an existing capability. SPEC-026 is delivered; SPEC-025's historical closeout still lists review/merge as pending. |
 | NET-101–103; DSH-001–003 | Reuse private HTTPS API routes, inventory, observations and safe links. Metro transport, WebSocket behavior and native launch links have not been accepted through this routing path. |
@@ -290,6 +290,18 @@ Metro/device and backend integration; M1 remains incomplete. The owner subsequen
 creation/quality/private-repository implementation merged in PR #73, and the owner
 confirmed acceptance October 13. MOB-001 is Delivered; M1 remains incomplete. [Evidence](../031-expo-project-creation/acceptance.md)
 records actual checks and scope. Other roadmap stages retain their separate gates.
+
+**Next selected planning sets:** [SPEC-033](../033-private-metro-sessions/spec.md)
+(MOB-002) owns bounded Metro lifecycle, private native transport, operator routing and
+runtime security admission. [SPEC-034](../034-expo-go-workflow/spec.md) (MOB-003)
+consumes its versioned endpoint descriptor for verified Go compatibility, safe local
+launch/QR and actual native edit/reconnect acceptance. Implement the Metro provider
+before the Go consumer; device evidence may close both together, without requiring
+the provider's Delivered label before its consumer can be developed. Neither draft
+authorizes implementation, account setup, exposure or an extension of MOB-001's
+source-only advisory exceptions. Proposed scope is both physical iOS and Android;
+a selected first-platform slice must retain explicit limitations. Backend CRUD,
+private API/database persistence and full M1 remain MOB-010/011 work.
 
 **M1 spans stages 1–4 across compatible initiatives:** SPEC-031 begins with
 creation; subsequent TPL-004, MOB-002/005/010/011 slices add the private runtime,
