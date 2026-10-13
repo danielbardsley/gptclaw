@@ -1,6 +1,6 @@
 # TDD-031: Branch and worktree policy
 
-- **Status:** Draft proposal; implementation not authorized
+- **Status:** Approved design — implementation in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-031](spec.md) · **Tasks:** [TASKS-031](tasks.md)
@@ -13,7 +13,12 @@ resume/cleanup` subcommands accept a canonical `--project-root` and stable task
 identity. Create consumes the validated plan; cleanup defaults to preview and
 requires an explicit apply selection. Mutation results and JSON errors contain
 fixed codes and sanitized metadata, never raw config, credentials or Git output.
-These are proposed interfaces, not available commands.
+These interfaces are implemented in this revision. Mutation commands require
+the expected owner/generation, create requires the planned base commit, and
+cleanup apply additionally binds the recorded head. Check reports are slug/result
+metadata explicitly attributed to the owner; no project check command executes
+through this source-only interface. Base observation/update times are UTC Unix
+seconds.
 
 Git 2.43.0 is the observed baseline; verify used options against that version and
 fail with a setup result if unavailable. Use explicit argv, validated refs and
@@ -61,8 +66,10 @@ bypass this coordination; observe drift and explain that limitation.
 
 Managed allocation/handoff/removal need only the worktree-project lock. Prefer
 credential issuance outside that lock; when nesting is unavoidable, use
-worktree-project then credential-profile then credential-repository, and audit
-existing paths so none acquire these in reverse. Runtime guards read managed-root
+worktree-project before credential-repository or credential-profile. The Git
+helper now issues its token under the existing profile lock before taking the
+repository lock to write its receipt; it rechecks the binding after acquiring
+that lock. It no longer acquires the profile lock beneath a repository lock. Runtime guards read managed-root
 identity without taking worktree locks; task lifecycle never acquires runtime,
 group, registry or database locks. No lock is held while awaiting user input.
 
@@ -167,8 +174,8 @@ merge are separate gates; no existing app/database is a disposable test fixture.
 | WT-006 | Retention proof, cleanup preview/recheck and tombstones | T-006/007/008 | AC-006/007 |
 | WT-007 | Opt-in guidance, regressions and separate live acceptance | T-008/009 | AC-004/007 |
 
-Project-owner decision: approve the bounded source-only defaults in SPEC-031
-before implementation. Implementation must settle exact CLI flags, error/receipt
+The project owner approved the bounded source-only defaults and authorized
+implementation on October 13. Implementation must settle exact CLI flags, error/receipt
 schemas and hook recognition with tests, within those defaults. Parallel task
 runtime/build/database adapters and broader repository enrollment require separate
 scope decisions; they are not prerequisites for this initial Git policy.

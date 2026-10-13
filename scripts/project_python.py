@@ -116,6 +116,8 @@ def dependencies(manifest):
 
 
 def context(root, coherent=True):
+    from project_worktrees import guard
+    guard(root)
     root = app().safe(Path(root)); p, digest = policy()
     for item in root.iterdir():
         deps.check(not (item.name.startswith('.env') or item.name in {'.ssh', '.aws', '.netrc', '.pypirc', 'uv.toml', 'pip.conf', '.tool-versions', 'mise.toml', '.mise.toml', 'package.json'}))

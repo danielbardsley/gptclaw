@@ -1,6 +1,6 @@
 # SPEC-031: Branch and worktree policy
 
-- **Status:** Draft — specification approval and implementation authorization pending
+- **Status:** Approved — implementation in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** PRJ-006, initial single-host Git coordination slice
@@ -15,8 +15,10 @@ an accountable owner and a recoverable handoff. Shared Git changes are serialize
 unfinished work survives interruption and cleanup cannot silently discard it.
 
 The October 13 request authorizes this planning set and a reviewable planning PR.
-It does not approve the proposed defaults or authorize implementation, application
-publication, merging, infrastructure changes or deletion of existing work.
+The project owner subsequently instructed “Ok, lets implement the spec.” This
+approves the bounded defaults and authorizes implementation and necessary
+reversible verification. Merge, fixture remote writes and removal of retained
+resources remain governed by the explicit delivery/fixture gates below.
 
 ## Scope and baseline
 
@@ -131,8 +133,7 @@ between authorized agents, not isolation from hostile code or users.
 
 The project owner reviews: source-only initial scope, enrolled repositories only,
 `origin/main` as the recorded default base, no implicit fetch, one owner per task,
-short locks, retained branches and explicit cleanup. These are draft choices;
-approval and implementation authorization remain pending. Existing repository
+short locks, retained branches and explicit cleanup. These defaults were approved with implementation authorization on October 13. Existing repository
 and area guidance still govern every task, including task-specific delegation
 permission and review/merge gates.
 

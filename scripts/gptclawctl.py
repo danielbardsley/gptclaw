@@ -59,6 +59,17 @@ def main(argv=None):
   if name in ['apply','resume']:p.add_argument('--create-only',action='store_true',help='Create private repository, then pause for a repository-specific credential')
   if name=='resume':p.add_argument('--allow-unprotected-main',action='store_true',help='Explicit owner waiver for this recorded operation; no environments or protection removal')
   if name=='resume':p.add_argument('--confirm-repository-id',type=int,help='Explicit owner reconciliation after a lost creation response')
+ worktrees=sub.add_parser('worktrees',help='Source-only task checkouts and explicit handoff')
+ worktree_actions=worktrees.add_subparsers(dest='worktree_action',required=True)
+ for name in ['plan','create','status','handoff','resume','cleanup']:
+  p=worktree_actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True);p.add_argument('--task',required=True)
+  if name!='status':p.add_argument('--owner',required=True)
+  if name=='create':p.add_argument('--base-commit',required=True)
+  if name in {'handoff','resume','cleanup'}:p.add_argument('--generation',type=int,required=True)
+  if name=='handoff':
+   p.add_argument('--checks-file');p.add_argument('--remaining',action='append',default=[]);p.add_argument('--published',action='store_true');p.add_argument('--pr',type=int)
+  if name=='resume':p.add_argument('--target-owner',required=True)
+  if name=='cleanup':p.add_argument('--head',required=True);p.add_argument('--apply',action='store_true')
  credentials=sub.add_parser('credentials',help='Private GitHub App setup and managed repository access')
  credential_actions=credentials.add_subparsers(dest='credential_action',required=True)
  for name in ['configure','installation-policy','workflow-policy','doctor','status','activate','deactivate','rotate','disable','enable','canary','resume','pull-request']:
@@ -81,7 +92,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2,3,4],'project_kinds':['web','api','group'],'toolchain_schemas':[1,2],'template_catalogue_schema':4,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':3,'credential_profile_schemas':[1,2,3],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['worktrees','db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2,3,4],'project_kinds':['web','api','group'],'toolchain_schemas':[1,2],'template_catalogue_schema':4,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':3,'credential_profile_schemas':[1,2,3],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -96,7 +107,23 @@ def main(argv=None):
     templates.validate_provenance(Path(args.project_root).absolute())
    print(json.dumps(result,sort_keys=True));return code
   app.need(os.getuid()==1002 and os.geteuid()!=0,'setup')
-  if args.action=='db':
+  if hasattr(args,'project_root') and args.action not in {'worktrees','credentials','repo','validate'}:
+   from project_worktrees import guard
+   guard(args.project_root)
+  if args.action=='worktrees':
+   import project_worktrees as worktrees
+   action=args.worktree_action
+   common=(args.project_root,args.task)
+   if action=='status':result=worktrees.status(*common)
+   elif action=='plan':result=worktrees.plan(*common,args.owner)
+   elif action=='create':result=worktrees.create(*common,args.owner,args.base_commit)
+   elif action=='handoff':
+    from pathlib import Path
+    checks=json.loads(worktrees.small_file(Path(args.checks_file).absolute())) if args.checks_file else []
+    result=worktrees.handoff(*common,args.owner,args.generation,checks,args.remaining,args.published,args.pr)
+   elif action=='resume':result=worktrees.resume(*common,args.owner,args.generation,args.target_owner)
+   else:result=worktrees.cleanup(*common,args.owner,args.generation,args.head,args.apply)
+  elif args.action=='db':
    import project_database as database
    result=database.dispatch(args.project_root,args.database_action,getattr(args,'selected',None),getattr(args,'operation_id',None),getattr(args,'confirm',None))
   elif args.action=='credentials':

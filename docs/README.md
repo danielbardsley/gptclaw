@@ -213,10 +213,11 @@ dispositions independently of feature implementation status.
   [Acceptance](030-dashboard-visual-refinement/acceptance.md) ·
   [Reference brief](030-dashboard-visual-refinement/reference.md)
 
-- **031 — Branch and worktree policy (PRJ-006), draft:**
+- **031 — Branch and worktree policy (PRJ-006), approved; implementation in progress:**
   [Specification](031-branch-worktree-policy/spec.md) ·
   [Technical design](031-branch-worktree-policy/technical-design.md) ·
-  [Tasks](031-branch-worktree-policy/tasks.md)
+  [Tasks](031-branch-worktree-policy/tasks.md) ·
+  [Acceptance status](031-branch-worktree-policy/acceptance.md)
 
 ## Current application milestone
 
