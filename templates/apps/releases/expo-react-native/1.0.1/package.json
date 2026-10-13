@@ -1,0 +1,48 @@
+{
+  "name": "gptclaw-expo-starter",
+  "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "gptclawMobile": "expo-v1",
+  "packageManager": "pnpm@12.10.1",
+  "engines": {
+    "node": "24.21.0",
+    "pnpm": "12.10.1"
+  },
+  "scripts": {
+    "format": "node checks/quality.cjs format",
+    "lint": "node checks/quality.cjs lint",
+    "typecheck": "node checks/quality.cjs typecheck",
+    "test": "node checks/quality.cjs test",
+    "build": "node checks/quality.cjs build",
+    "security": "node checks/quality.cjs security",
+    "verify": "node checks/quality.cjs verify"
+  },
+  "dependencies": {
+    "expo": "57.0.28",
+    "expo-router": "57.0.26",
+    "expo-constants": "57.0.21",
+    "expo-linking": "57.0.12",
+    "expo-status-bar": "57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "5.7.0",
+    "react-native-screens": "4.26.0",
+    "expo-font": "57.0.4",
+    "@expo/metro-runtime": "57.0.16"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "@types/react": "19.2.2",
+    "@types/jest": "30.0.0",
+    "jest": "30.5.2",
+    "jest-expo": "57.0.6",
+    "@react-native/jest-preset": "0.86.3",
+    "@testing-library/react-native": "14.1.0",
+    "eslint-config-expo": "57.0.2",
+    "prettier": "3.9.10",
+    "eslint": "9.39.5",
+    "test-renderer": "1.3.1"
+  },
+  "license": "UNLICENSED"
+}

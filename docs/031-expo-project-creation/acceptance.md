@@ -1,129 +1,140 @@
 # ACCEPTANCE-031: Expo / React Native creation foundation
 
-- **Status:** Implementation in review; local/CI/core private rollout passed; repository/owner acceptance pending
+- **Status:** Implementation in review; private repositories/CI passed; final corrective-release and owner acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Spec:** [SPEC-031](spec.md) · **Design:** [TDD-031](technical-design.md) · **Tasks:** [TASKS-031](tasks.md)
-- **PR:** [#73](https://github.com/danielbardsley/gptclaw/pull/73)
-- **Implementation baseline:** 6c8ce2b; subsequent documentation c2b3dbb and additional transaction tests are being verified
-- **Exact starter:** expo-react-native@1.0.0; digest 662482948e2c3b5f5ab8160cc2c23ba6ab1ba269831583e7155ac477cb2cabfa
+- **Implementation PR:** [#73](https://github.com/danielbardsley/gptclaw/pull/73)
+- **Creation starter:** expo-react-native@1.0.0; digest `662482948e2c3b5f5ab8160cc2c23ba6ab1ba269831583e7155ac477cb2cabfa`
+- **Corrected future starter:** expo-react-native@1.0.1; digest `9a22fbea9fd28966dd23439e12e1ec2812b4ae5483c918aa5ab91a9c2ac80bc8`
 
 ## Criteria
 
 | Criterion | State | Evidence / remaining action |
 |---|---|---|
-| AC-001 | passed local/CI | Exact list/show, digest/path/release checks; historical release immutability against origin/main passed. Default remains Next.js. |
-| AC-002 | passed local | Two-source generation/identity tests, valid schema 5 and typed static configuration, occupied/duplicate identity and dynamic/native rejection. |
-| AC-003 | passed local | Generation performs no repository execution/network download; normalized source equivalence, destination/symlink/failure preservation and existing catalogue race/recovery regressions passed. |
-| AC-004 | passed local/snapshot | Real frozen install and exact image verification passed; scoped SDK/policy denials passed. The 22-case mobile suite passed, including add/remove/source retention and exact-operation install recovery; installed proof remains. |
-| AC-005 | passed local/CI/snapshot | Authored starter passed lint/types/interaction/coverage, exact advisory policy and both native exports. Both generated apps completed frozen install and all seven source checks/exports. Counter-behavior and type defects were rejected; an initial debugger lint fixture was permitted by the upstream lint config, so a real syntax defect and style defect were rerun and rejected. The complete corrected driver is also a CI gate. No device or signed-binary acceptance is claimed. |
-| AC-006 | pending | Local private Git/repository-plan regression passed, including mobile identity/profile fingerprints. Exact two private live targets and supporting credential policy require the owner disposition in acceptance-targets.md. |
-| AC-007 | pending private-repository CI | Generated guidance, locked source workflow and quality helper implemented; native golden/defect CI passed; generated-private-repository final-head CI remains. |
-| AC-008 | pending live | Dashboard frozen install, unit/type/build, real socket/HTTP and pinned browser regression passed, including mobile source/unavailable runtime. Actual updated collector/frontend rollout and rollback passed; new private repo rows remain pending. |
-| AC-009 | pending | Source/installed packaging tests passed locally; complete final gate/head CI, owned private refresh/rollback and owner creation/edit/check acceptance remain. No merge or Delivered claim. |
+| AC-001 | passed earlier; corrective release checking | Exact selection, checksum/schema/path rejection, web-default retention and historical-release immutability passed. Published 1.0.0 is unchanged; final 1.0.1 validation is in progress. |
+| AC-002 | passed local/installed | Distinct mobile identities and schema-5 static configuration validate. Duplicate/malformed/dynamic/native inputs are rejected. Ordinary source edits preserve provenance. |
+| AC-003 | passed local | Offline normalized generation, no command/network invocation, destination/symlink/race/concurrency/failure preservation and existing catalogue recovery tests passed. |
+| AC-004 | passed local/snapshot; live checks finishing | Real cold/warm frozen preparation and exact image selection passed; SDK/policy denials and transaction/recovery/source-retention tests passed. Live target preparation/check outcomes are being recorded. |
+| AC-005 | passed local/CI/snapshot; live checks finishing | Two generated apps pass all seven gates and both native-target exports; interaction/type/syntax/style defects fail. Both private repositories pass all quality gates. Live installed checks remain separate. |
+| AC-006 | passed local/private | Approved broker policy/canary created two private repositories with distinct IDs, exact 1.0.0 release provenance, initial PRs and existing explicit private-dev protection waiver. Offline denial/lost-response/changed-plan/resume cases passed. |
+| AC-007 | passed private CI; corrected golden checking | Both generated repositories' final-head CI passed after reviewed workflow/guidance fixes. New golden CI executes the generated workflow itself, including its checkout ownership contract. |
+| AC-008 | passed source/consumer; live recovery/owner pending | Real private inventory contains both mobile rows, no service components or app URLs, explicit unsupported runtime and correct repository links. Existing app observations need a quiet-host recovery check after verification load, plus owner browser confirmation. |
+| AC-009 | pending final correction/owner/merge | Core source/installed parity, rollout/rollback and platform CI passed. Corrective release final regression/CI, capable provider refresh and owner creation/edit/check confirmation remain. Implementation has not merged; MOB-001 is not Delivered. |
 
-## Executed evidence and corrective checks
+## Verified platform and native-source checks
 
-Use the prepared isolated Python 3.12 environment for offline repository tests;
-Node/package commands run in the existing exact rootless Node 24.21.0/pnpm 12.10.1
-image, with finite CPU/memory/PID/time bounds and no host language package installs.
+Use the prepared isolated Python 3.12 environment for offline tests. Native package
+commands use the reviewed rootless Node 24.21.0/pnpm 12.10.1 image, with finite
+CPU/memory/PID/time bounds and no host language/native SDK package installation.
 
-- Official Expo 57.0.28 package and starter metadata were integrity-verified without
-  running a generator. Frozen installation passed in 21 seconds with scripts disabled.
-- The authored starter's formatter/lint/type/interaction tests, 100% counter coverage,
-  exact SDK check, approved advisory policy and iOS/Android exports passed. SDK 57
-  selects React Native 0.86.3/React 19.2.3; Native app compilation was not run.
-- Initial ESLint 10 was incompatible with its React plugin; exact ESLint 9.39.5 passed.
-  Missing Jest ambient types were corrected. Controlled press timers and a finite
-  15-second test deadline preserve interaction assertions under bounded scheduling.
-- Focused mobile generation suite: 18 cases passed; catalogue suite: 21 passed;
-  repository suite: 43 passed. Additional immutable-policy/state/transaction cases
-  are tracked in the final gate rather than inferred from those earlier counts.
-- Initial release inventory accidentally included Jest cache; caches were excluded
-  and the frozen inventory now contains 31 source files. SDK/test lock references
-  require five exact public aliases, accepted only by the mobile profile.
-- Dashboard check: frozen install, seven frontend tests, type generation/check,
-  production build, actual Unix socket/HTTP and pinned browser checks passed. The
-  first attempt could not find a retired cached browser image; a fresh verified
-  pinned image completed all checks including native source/unavailable-runtime UI.
-- A broad gate started during release authoring and failed on changing hashes; that
-  run is retained separately. A subsequent gate's only recorded failure was the
-  legacy cache-bound assertion of four rather than five supported schemas. The
-  corrected 28-case manifest suite passed; final full-gate repeat passed with explicit exit 0 in 766 seconds (535 cases, 29 suites).
-- Initial combined generated-app verification exceeded its 300-second deadline
-  under concurrent checks. Final CLI/golden orchestration runs serial bounded steps;
-  no individual job resource/deadline ceiling was increased. The timed-out task-owned
-  container subsequently completed/was removed; no existing service was stopped.
+- Integrity-checked Expo metadata established Expo 57.0.28, React Native 0.86.3,
+  React 19.2.3 and Router 57.0.26. TypeScript 6.0.3, Jest 30.5.2/jest-expo 57.0.6,
+  React Native Testing Library 14.1.0 and ESLint 9.39.5 passed actual jobs. The
+  earlier ESLint-10 trial was incompatible with the React plugin.
+- Frozen installation passed with isolated pnpm layout and all install scripts
+  disabled. Five exact public transitive aliases are mobile-only; no hoisted-layout
+  or package-script exception was required. Protected SDK/toolchain/advisory inputs
+  remain tied to the immutable release.
+- Real formatter/lint/types/interaction tests, 100% counter coverage, SDK checks,
+  approved advisory policy and separate iOS/Android JS/assets exports passed.
+  Golden behavior/type/syntax/style defects were rejected. A debugger-only lint
+  fixture was permitted by upstream rules, so the meaningful syntax defect replaced it.
+- Combined platform verification initially exceeded its single 300-second job bound
+  under concurrent load. Final orchestration runs serial, individually bounded
+  steps under the operation lock; no resource or individual deadline was increased.
+- Full repository gate on 8b62bb4 passed with exit 0: **540 cases in 699.1 seconds**.
+  The corrected-release 22-case mobile suite subsequently passed in 211.691 seconds;
+  final complete regression results will be recorded separately.
+- Dashboard frozen install, frontend tests/types/build, actual collector socket/HTTP
+  and pinned browser regressions passed, including mobile source/runtime messaging.
 
-Two approved unpatched tooling advisories remain explicit, with expiry at the end
-of October 27, America/New_York. Moderate findings remain visible; this is not a
-clean-vulnerability assertion. See [security review](security-review.md) for owner
-approval, exact versions, mitigations and removal/follow-through.
+All four platform workflows passed on `8b62bb4785b96ff4bb79e78a6a90e63cbc7b1c61`:
+[private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38455979332),
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38455979421),
+[development-host validation](https://github.com/danielbardsley/gptclaw/actions/runs/38455979264)
+and [federation validation](https://github.com/danielbardsley/gptclaw/actions/runs/38455979233).
+Private application CI includes all five jobs. Protected infrastructure plan/apply
+were skipped; no infrastructure deployment occurred. The corrective release has a
+separate final check gate.
 
-## Private scope, safety and remaining work
+Two exact, owner-approved tooling advisory exceptions expire at the end of
+October 27, America/New_York: node-forge 1.4.0 / GHSA-86w9-cpqp-85rv and braces
+3.0.3 / GHSA-vfj7-8cjw-p6xm. Unexpected high/critical findings, version drift,
+incomplete/unavailable audit evidence or expiry block verification. Moderate findings
+remain visible. See [security review](security-review.md) for scope, approval,
+mitigation and owner removal/follow-through; this is not a clean-vulnerability claim.
 
-No native acceptance repository, Metro session, application service, EAS account,
-native binary or infrastructure mutation has been created by this implementation.
-Existing Shelfmark/Trailboard source/data/containers remain outside fixture operations.
-Synthetic counter/about content and the local starter icon are deliberately retained
-for this starter's stated acceptance purpose; product adaptation must review/remove
-unwanted demos and test the product's actual behavior.
+## Approved broker policy and actual private repositories
 
-The exact four-name credential/fixture proposal is in
-[acceptance-targets.md](acceptance-targets.md). Automatic approval review rejected the
-broader unapproved 64-name schema/helper command; none of that command ran. The
-smaller proposal awaits explicit authorization. Archived bindings are not deleted
-or silently adopted. Source-only work continues independently.
+The project owner approved [the exact four-name scope](acceptance-targets.md) with
+“Yes, all approved.” Profile 4 permits at most four explicit names, while profile 3
+retains its two-name limit. Active names are exactly Shelfmark, Trailboard and the
+two targets below. Existing App/installation grants and singleton token scopes
+remain unchanged. Two live helpers were refreshed; two absent archived-source
+bindings/helpers were preserved. Incomplete helper-upgrade journals still block.
 
-Complete final local/CI checks, authorized owned private provider/dashboard rollout,
-source/installed parity and rollback, live private repository CI and owner acceptance.
-Retain synthetic fixtures/logs for review, with source archival only under the stated
-retention plan; no automatic remote-repository or application-data deletion. Mark
-only MOB-001 Delivered after merged implementation and all criteria pass. TPL-004's
-full device acceptance and mobile M1–M4 remain separate.
+The reviewed policy update briefly paused new credential issuance, proved the first
+mobile canary's workflow publication and reactivated before creating the second app.
+No wildcard, automatic enrollment, 64-name policy, PAT or Expo/signing account was
+added. The earlier unapproved 64-name command was rejected and did not run; the
+smaller exact scope was subsequently authorized and applied.
 
-CI on c2b3dbb: dashboard passed; web/API/group/database jobs passed where reached.
-The new native job had duplicate isolated-environment setup, and native CLI-denial
-unit tests assumed forge UID on the differently numbered GitHub runner. Corrected
-the setup and exercised the non-HTTP dispatcher directly in isolated tests, keeping
-the real forge-only CLI gate unchanged. Final head CI must be rerun; no failed run
-is reported as successful.
+| Target | Repository ID | Initial app PR | Final corrected head | Quality CI |
+|---|---|---|---|---|
+| mob001-accept-one | 1417864877 | [#1](https://github.com/danielbardsley/mob001-accept-one/pull/1) | `3e90ca75f579935cef58815b390d7644dd15a96b` | [passed](https://github.com/danielbardsley/mob001-accept-one/actions/runs/38459224503) |
+| mob001-accept-two | 1417867323 | [#1](https://github.com/danielbardsley/mob001-accept-two/pull/1) | `be73a6963b394b7e1d490beb8af991307d5e9477` | [passed](https://github.com/danielbardsley/mob001-accept-two/actions/runs/38459243651) |
 
-The prepared immutable provider eecb5885ee44c504fad0c3f42763f2189b4bc1ed6a53641d9131fd96ecee5d1d
-reports 1.10.0, lists the exact starter digest and validates a real generated fixture.
-Its bounded frozen dependency installation passed in 19.935 seconds with no changed
-package/lock/workspace inputs. Its complete per-step verification passed in 171.474 seconds. The stable launcher
-and dashboard were then activated through their reviewed owned interfaces;
-credential policy/grants remain unchanged.
+Both were created from immutable 1.0.0. Their first actual CI exposed the Docker
+image user's mismatch with GitHub's checkout owner. Managed format-check also found
+an extra blank line in broker-adapted AGENTS.md. Reviewed ordinary source commits
+fix the workflow UID/GID and guidance on their existing initial PR branches. Original
+creation provenance and protected policy inputs are retained. New release 1.0.1
+carries the workflow fix for future explicit creation; it does not rewrite 1.0.0.
 
-## Final implementation and core rollout evidence
+Both final private CI jobs passed toolchain build, frozen install and complete
+formatter/lint/type/interaction/SDK/security/iOS-and-Android export verification.
+The existing explicit unprotected-private-dev waiver applies; no server enforcement
+claim or automatic initial-PR merge is made. Sources and PRs are retained for review.
 
-All four workflows passed on bc5cf664c58dc219456a9c74a0717de998808e40:
-[private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38440294877),
-[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38440294956),
-[development-host validation](https://github.com/danielbardsley/gptclaw/actions/runs/38440295048)
-and [federation validation](https://github.com/danielbardsley/gptclaw/actions/runs/38440294903).
-Application CI includes all five jobs and the complete corrected two-native-project
-golden/defect driver. Infrastructure apply/plan were skipped for this PR.
+## Installed provider, dashboard and rollback
 
-Core private activation: stable provider 1.10.0 from immutable snapshot
-eecb5885ee44c504fad0c3f42763f2189b4bc1ed6a53641d9131fd96ecee5d1d;
-dashboard release 69e47c010c99b1e145f77d31c1f0fc56cd803b52632a3e2254064b881dd1b7ea.
-Actual private HTTPS health and snapshot returned 200, with Shelfmark and Trailboard
-ready/current. Their six app/API/DB containers remain, alongside the dashboard.
-Existing /projects/ and /dashboard/ handlers were verified and Funnel remains off.
-The manager's generic operator_route_pending field did not require a new operator
-action: the already owned handler was present and actual HTTPS passed.
+Core stable provider **1.10.1** uses immutable snapshot
+`54e90ac2d178f1972a455ec54a93594afc472cb77c2130c0c0423b28620605cf`.
+Dashboard release is
+`24ab5773f969a5a02582660124b93de2bc0fee198806d58351d53a847d7aebd2`.
+Its collector uses the capable frozen provider. Both updates used reviewed owned
+interfaces; AWS, host policy, grants and Tailscale configuration were not changed.
 
-Dashboard rollback restored d0485098d81d573b41943793b91a39b03f8a509bbfb22c3aa261ef3e64d803d1
-and health 200, then the verified release was restored. Owned provider rollback
-restored previous version 1.9.0 and then 1.10.0. The older provider rejected a mobile
-manifest with source bytes retained. No existing project lifecycle, data, credential
-grants, host controls or infrastructure was changed by these rehearsals.
+The actual private HTTPS health/snapshot return 200. Metadata adds only both exact
+mobile root/ID/owner/repository entries and retains existing registry entries.
+Inventory contains four rows: two existing groups and two native source projects.
+Mobile rows have no components, runtime observation or app URL; repository links
+match their actual private destinations. Verification load can cause bounded
+observations to become stale/degraded; quiet-host recovery must be recorded before
+claiming current ready observations for existing projects.
 
-AC-004/005 now have local and immutable-provider evidence; AC-005's complete
-generated-app checks also passed CI. AC-007's golden generated workflow/guidance
-checks passed CI, while actual private generated-repository CI remains pending.
-AC-008's core consumer/UI/rollout regressions pass, with new live mobile rows pending.
-AC-009's local/CI/provider/dashboard parity and rollback pass; merge and owner
-acceptance remain pending. AC-006 awaits exact four-name scope authorization.
+Earlier owned provider/dashboard rollback restored provider 1.9.0 and dashboard
+`d0485098d81d573b41943793b91a39b03f8a509bbfb22c3aa261ef3e64d803d1`,
+then restored the capable releases. Older-provider mobile rejection preserved source.
+Profile 4 now requires a compatible provider; retain it or restore the previous
+reviewed policy through its typed interface before selecting an older provider.
+Reconcile unresolved mobile jobs with a capable snapshot first. Rollback does not
+undo app commits, dependencies or private repository creation.
+
+Shelfmark/Trailboard source, six app/API/DB containers and persistent data remain
+outside acceptance fixture operations. Existing /projects/ and /dashboard/ private
+Serve handlers remain present and Funnel is off. No mobile Metro/application service,
+EAS project, signed native binary, device session or public exposure was created.
+Intentional synthetic counter/about content remains for starter acceptance; product
+adaptation must review/remove unwanted demos and test actual product behavior.
+
+## Remaining delivery
+
+Complete corrected release/platform regression and CI, installed target checks,
+capable provider/collector refresh, quiet-host observation recovery and owner
+creation/edit/check/browser confirmation. Obtain the separate implementation merge
+disposition before merging #73. Keep source/private PRs and task-owned evidence for
+review; no incidental repository/source/data deletion. Mark only MOB-001 Delivered
+after merged implementation and AC-001–009 pass. TPL-004 device acceptance and mobile
+M1–M4 remain separate.

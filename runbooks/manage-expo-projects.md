@@ -1,7 +1,8 @@
 # Create and check React Native / Expo projects
 
-[SPEC-031](../docs/031-expo-project-creation/spec.md) adds the `expo-react-native@1.0.0`
-source starter. Provider 1.10.0 supports mobile manifest/catalogue schema 5 and native
+[SPEC-031](../docs/031-expo-project-creation/spec.md) adds the `expo-react-native@1.0.1`
+source starter. Published 1.0.0 remains immutable; 1.0.1 fixes generated CI checkout
+permissions. Provider 1.10.1 supports mobile manifest/catalogue schema 5 and native
 source quality jobs; consult the acceptance record for actual installed status.
 Run as forge with the prepared isolated Python environment and reviewed rootless
 Node/pnpm toolchain. No host native SDK, Expo login or signing account is required.
@@ -18,8 +19,8 @@ installed stable launcher after its recorded refresh:
 Check `--version`, then inspect and select the release explicitly:
 
 ```sh
-gptclawctl templates show --template expo-react-native --template-version 1.0.0
-gptclawctl new example-mobile --template expo-react-native --template-version 1.0.0 --local-only
+gptclawctl templates show --template expo-react-native --template-version 1.0.1
+gptclawctl new example-mobile --template expo-react-native --template-version 1.0.1 --local-only
 gptclawctl validate --project-root /srv/forge/projects/example-mobile
 ```
 

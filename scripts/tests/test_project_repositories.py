@@ -447,7 +447,7 @@ class Tests(unittest.TestCase):
 
 
     def test_mobile_plan_binds_identity_and_private_creation(self):
-        value = repos.plan('mobile-one', str(self.projects/'mobile-one'), self.api, template='expo-react-native', template_version='1.0.0')['plan']
+        value = repos.plan('mobile-one', str(self.projects/'mobile-one'), self.api, template='expo-react-native', template_version='1.0.1')['plan']
         self.assertEqual(value['mobile_inputs']['identity']['ios']['bundleIdentifier'], 'dev.gptclaw.mobile-one')
         changed=copy.deepcopy(value);changed['mobile_inputs']['identity']['scheme']='changed'
         changed['plan_digest']=repos.digest({k:v for k,v in changed.items() if k!='plan_digest'})

@@ -270,3 +270,16 @@ credential profile 4 (maximum four names), while profile 3 retains its two-name
 bound. Tokens/App grants are unchanged. No wildcard or 64-name scope is included.
 Schema/activation/helper compatibility and isolated singleton-token tests precede
 actual policy activation and private repository creation.
+
+
+### Acceptance corrections
+
+Actual private repository CI found a checkout UID mismatch hidden by the earlier
+golden helper's Docker flags. Published expo-react-native@1.0.0 remains unchanged;
+1.0.1 adds the runner UID/GID to the generated Docker workflow. Future exact creation
+should select 1.0.1. The updated golden driver executes the generated workflow command
+itself on Docker, and applies the production broker guidance adaptation before all
+format/quality checks. A single extra blank line in that adaptation was removed.
+Existing private acceptance projects retain 1.0.0 provenance and receive ordinary
+reviewed workflow/guidance edits; neither their release metadata nor protected SDK/
+toolchain/advisory files is rewritten. Exact package/profile selections are unchanged.

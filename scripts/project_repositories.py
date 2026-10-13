@@ -362,6 +362,13 @@ def bootstrap(receipt):
     persist(receipt)
 
 
+def adapt_guidance(root, repository, waived=False):
+    extra = '\nRepository: https://github.com/' + ACCOUNT + '/' + repository + '\nDefault branch: main. Use codex/ branches and pull requests; never bypass main protection.\n'
+    if waived:
+        extra = extra.replace('never bypass main protection.', 'the owner explicitly waived main branch protection for this repository; PR review remains the workflow, with no server enforcement claim.')
+    with (root/'AGENTS.md').open('a') as out: out.write(extra)
+
+
 def starter(receipt):
     root = workspace(receipt['operation_id'])/'source'
     require(inventory(root) == receipt['bootstrap_inventory'], 'repository-drift')
@@ -376,10 +383,7 @@ def starter(receipt):
             out = root/path.relative_to(generated)
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_bytes(path.read_bytes())
-    extra = '\n\nRepository: https://github.com/' + ACCOUNT + '/' + receipt['plan']['repository'] + '\nDefault branch: main. Use codex/ branches and pull requests; never bypass main protection.\n'
-    if receipt.get('protection_waiver'):
-        extra = extra.replace('never bypass main protection.', 'the owner explicitly waived main branch protection for this repository; PR review remains the workflow, with no server enforcement claim.')
-    with (root/'AGENTS.md').open('a') as out: out.write(extra)
+    adapt_guidance(root, receipt['plan']['repository'], bool(receipt.get('protection_waiver')))
     adaptation = {'schema_version': 1, 'operation_id': receipt['operation_id'],
                   'repository': ACCOUNT+'/'+receipt['plan']['repository'],
                   'template': receipt['plan']['template'],
@@ -661,7 +665,7 @@ def run(receipt, api, create_only=False):
             api.request('POST', base+'/pulls', {'title': 'Review private application starter',
                 'head': value['branches']['head'], 'base': 'main',
                 'body': 'Exact starter '+value['template']['id']+'@'+value['template']['version']+
-                    '. Review manifest, guidance and dependency/toolchain pins. Local quality checks remain required; no CI workflow or deployment is implied.'})
+                    '. Review manifest, guidance and dependency/toolchain pins. Local quality checks remain required; '+('the bundled source-quality workflow must pass; no deployment is implied.' if any(item['output'].startswith('.github/workflows/') for item in templates.resolve(value['template']['id'],value['template']['version'])[0]['files']) else 'no CI workflow or deployment is implied.')})
             observed = observe(receipt, api)
         require(observed['pull_request'] is not None, 'repository-recovery')
         receipt['pull_request'] = observed['pull_request']; persist(receipt)

@@ -31,9 +31,9 @@ class MobileTests(unittest.TestCase):
         self.units=Path(temp.name)/'units';self.units.mkdir()
         for name,value in [('PROJECTS',self.projects),('STORE',self.projects/'.gptclaw-runtime/v1'),('UNITS',self.units)]:
             p=patch.object(app,name,value);p.start();self.addCleanup(p.stop)
-        self.release,self.contents=templates.resolve('expo-react-native','1.0.0')
+        self.release,self.contents=templates.resolve('expo-react-native','1.0.1')
     def new(self,name='mobile-one',**kwargs):
-        return Path(app.create(name,template='expo-react-native',template_version='1.0.0',**kwargs)['root'])
+        return Path(app.create(name,template='expo-react-native',template_version='1.0.1',**kwargs)['root'])
     def test_exact_discovery_preserves_web_default(self):
         with patch.object(app,'command') as command:
             data=templates.discover();self.assertEqual(data['default']['id'],'nextjs')

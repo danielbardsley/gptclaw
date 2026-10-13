@@ -1,10 +1,10 @@
-# SPEC-031 proposed private acceptance targets
+# SPEC-031 private acceptance targets
 
-- **Status:** Approved — four-name policy and private target creation authorized
+- **Status:** Approved — policy active; both private targets created
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 
-| Target | Source root | Planned private repository | Public development identities |
+| Target | Source root | Private repository | Public development identities |
 |---|---|---|---|
 | mob001-accept-one | /srv/forge/projects/mob001-accept-one | https://github.com/danielbardsley/mob001-accept-one | iOS dev.gptclaw.mob001-accept-one; Android dev.gptclaw.mob001_accept_one |
 | mob001-accept-two | /srv/forge/projects/mob001-accept-two | https://github.com/danielbardsley/mob001-accept-two | iOS dev.gptclaw.mob001-accept-two; Android dev.gptclaw.mob001_accept_two |
@@ -14,8 +14,8 @@ provider. Create private repositories and initial review branches/PRs with the
 existing activated App broker. The existing private-dev protection waiver policy
 remains explicit; no enforced branch protection is claimed.
 
-The current workflow publication allowlist contains only Shelfmark and Trailboard.
-Propose broker profile schema 4 with a maximum of four explicitly selected names:
+The previous workflow publication allowlist contained only Shelfmark and Trailboard.
+The owner approved broker profile schema 4 with a maximum of four explicitly selected names:
 `gptclaw-shelfmark`, `gptclaw-trailboard`, `mob001-accept-one` and
 `mob001-accept-two`. No wildcard or automatic enrollment is permitted. Add only
 these two new names through the reviewed workflow-policy interface,
@@ -43,9 +43,9 @@ fixture names. This proposal supplies that concrete scope. The project owner app
 October 13, following the clarification of repositories, policy and archived
 bindings. Activation and actual results are recorded separately.
 
-## Additional supporting-scope approval needed
+## Approved supporting scope
 
-The existing schema-3 policy has a hard two-name limit. A schema-4 four-name
+The prior schema-3 policy has a hard two-name limit. A schema-4 four-name
 extension is needed to preserve both existing names while publishing the two
 mobile workflows. Existing App/installation grants and singleton token scopes
 remain unchanged. Older providers cannot interpret profile 4; retain the capable
@@ -63,3 +63,22 @@ Automatic approval review rejected the earlier proposed 64-name schema and archi
 helper change because that persistent security-scope expansion lacked exact owner
 authorization. Nothing from that rejected command ran. The smaller four-name proposal was subsequently explicitly approved by the
 project owner; the rejected 64-name scope remains excluded.
+
+
+## Actual targets
+
+Both repositories were created privately through the activated App broker on
+October 13. The profile is schema 4 with exactly the four named repositories above;
+canary workflow publication and reactivation passed. Two archived bindings were
+preserved; two live existing helpers were refreshed without application operations.
+
+| Target | GitHub repository ID | Initial app PR | Original starter |
+|---|---|---|---|
+| mob001-accept-one | 1417864877 | [#1](https://github.com/danielbardsley/mob001-accept-one/pull/1) | expo-react-native@1.0.0 |
+| mob001-accept-two | 1417867323 | [#1](https://github.com/danielbardsley/mob001-accept-two/pull/1) | expo-react-native@1.0.0 |
+
+Private CI identified a workflow UID mismatch and broker guidance formatting issue.
+Ordinary reviewed source edits fix both targets while retaining their original exact
+creation provenance. Corrected starter 1.0.1 is for future explicit creation; neither
+published 1.0.0 nor existing target provenance is silently retargeted. Final source/
+CI/installed and owner results are maintained in [acceptance.md](acceptance.md).

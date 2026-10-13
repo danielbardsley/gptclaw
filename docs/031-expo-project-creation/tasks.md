@@ -42,7 +42,7 @@
   checks, interaction/navigation tests and separate iOS/Android JS/assets exports.
   Exercise intentional defects, cold/warm preparation, timeouts and job recovery.
   (EXPO-005; AC-005)
-- [ ] T-007: Extend broker/repository plan fingerprints and generated source publication
+- [x] T-007: Extend broker/repository plan fingerprints and generated source publication
   for exact mobile identities/inputs. Exercise local-only, private initial PR,
   protection/readback, denial, changed-plan and ambiguous/interrupted resume cases
   with synthetic adapters before authorized live provisioning. (EXPO-006; AC-006)
@@ -83,19 +83,22 @@
 
 ## Current handover
 
-Implementation is authorized and source work is in progress. Exact pins, frozen
-install, native-source checks/exports and focused generation/repository checks are
-recorded in the design/security review. Final golden/regression/CI, installed
-provider/collector updates, private repositories and owner acceptance remain
-pending. Live target scope is prepared in acceptance-targets.md. MOB-002/device transport and MOB-010/backend integration follow independently;
-no placeholder health service or fake backend is introduced to close creation.
+The project owner approved implementation, the exact four-name credential profile,
+two private acceptance repositories and archived-binding preservation. Provider
+1.10.1/profile 4 are active, with unchanged App grants and singleton token scopes.
+Both private repositories/initial PRs exist and both native source rows appear in the
+private dashboard. Existing application source, containers and database data remain
+outside fixture operations.
 
-Implementation authorization was supplied by the project owner October 13.
-Local source work and compatibility verification are underway; acceptance remains pending.
+Initial private CI exposed a Docker checkout UID mismatch; managed verification
+found an extra blank line in broker-adapted guidance. Preserve published 1.0.0,
+add corrected starter 1.0.1, fix guidance adaptation and execute the actual generated
+workflow in golden CI. The two existing acceptance projects retain their original
+1.0.0 provenance and receive ordinary reviewed workflow/guidance edits. Corrected
+private CI, installed checks and final implementation regressions are in progress.
 
-Local/CI/core private evidence is recorded in acceptance.md. T-007 has implemented
-mobile repository-plan/fingerprint support and passing offline tests; its supporting
-live policy extension remains unapproved and is not applied. T-011 core provider/
-dashboard rollout and rollback are verified; exact two-repository acceptance and
-new mobile inventory rows await acceptance-targets.md disposition. T-012 remains
-pending; no merge or full MOB-001 Delivered claim is made.
+T-010's earlier local/CI/core rollout evidence passed; the corrective release must
+pass its final checks. T-011 remains open until those results are recorded. T-012
+requires owner confirmation of creation/edit/check acceptance and the separate
+implementation merge gate. MOB-002/device transport and MOB-010/backend binding
+remain follow-ups; no Metro, native binary, fake health service or backend is added.

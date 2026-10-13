@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import shlex
 from pathlib import Path
 import subprocess
 import sys
@@ -11,6 +12,8 @@ import uuid
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import private_apps as app
+import project_repositories as repos
+import yaml
 
 
 def main():
@@ -20,7 +23,8 @@ def main():
     args=parser.parse_args();base=Path(args.directory).absolute()
     app.need(not base.exists() and base.parent.is_dir(),'conflict');base.mkdir(mode=0o700)
     app.PROJECTS=base;app.STORE=base/'.gptclaw-runtime/v1'
-    roots=[Path(app.create(name,template='expo-react-native',template_version='1.0.0')['root']) for name in ['mobile-one','mobile-two']]
+    roots=[Path(app.create(name,template='expo-react-native',template_version='1.0.1')['root']) for name in ['mobile-one','mobile-two']]
+    for root in roots:repos.adapt_guidance(root,root.name,waived=True)
     name='gptclaw-mobile-check-'+uuid.uuid4().hex;records=[]
     def run(root,argv,passed=True):
         command=[args.engine,'run','--rm','--name',name,'--memory=1536m','--cpus=1','--pids-limit=256','--cap-drop=all','--security-opt=no-new-privileges','--label','com.gptclaw.check-owner='+name]
@@ -32,9 +36,19 @@ def main():
         records.append({'project':root.name,'action':argv[-1],'returncode':result.returncode,'log':log.name})
     for root in roots:
         before={f:hashlib.sha256((root/f).read_bytes()).hexdigest() for f in ['package.json','pnpm-lock.yaml','pnpm-workspace.yaml']}
-        run(root,['pnpm','install','--frozen-lockfile','--ignore-scripts','--no-runtime','--pm-on-fail=error','--ignore-pnpmfile','--registry=https://registry.npmjs.org/','--store-dir=/workspace/.gptclaw-cache/pnpm'])
-        for step in ['format-check','lint','typecheck','test','sdk','security','build']:
-            run(root,['node','checks/quality.cjs',step])
+        if args.engine=='docker' and root==roots[0]:
+            # Execute the published starter's actual workflow command. A different
+            # checkout UID must work; the helper's own Docker flags cannot mask it.
+            workflow=yaml.safe_load((root/'.github/workflows/quality.yml').read_text())
+            script=workflow['jobs']['quality']['steps'][-1]['run'].replace('gptclaw-mobile-check',shlex.quote(args.image))
+            result=subprocess.run(['bash','-eu','-o','pipefail','-c',script],cwd=root,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=900)
+            log=base/(root.name+'-generated-ci.log');log.write_bytes(result.stdout[-1024*1024:])
+            if result.returncode:raise RuntimeError('Generated workflow failed; inspect '+str(log))
+            records.append({'project':root.name,'action':'generated-ci','returncode':0,'log':log.name})
+        else:
+            run(root,['pnpm','install','--frozen-lockfile','--ignore-scripts','--no-runtime','--pm-on-fail=error','--ignore-pnpmfile','--registry=https://registry.npmjs.org/','--store-dir=/workspace/.gptclaw-cache/pnpm'])
+            for step in ['format-check','lint','typecheck','test','sdk','security','build']:
+                run(root,['node','checks/quality.cjs',step])
         assert before=={f:hashlib.sha256((root/f).read_bytes()).hexdigest() for f in before}
         for platform in ['ios','android']:assert (root/'.gptclaw-build'/platform/'metadata.json').is_file()
     if not args.skip_failure_checks:
