@@ -12,14 +12,14 @@
 
 | Criterion | State | Evidence / remaining action |
 |---|---|---|
-| AC-001 | passed local; CI pending | Exact list/show, digest/path/release checks; historical release immutability against origin/main passed. Default remains Next.js. |
+| AC-001 | passed local/CI | Exact list/show, digest/path/release checks; historical release immutability against origin/main passed. Default remains Next.js. |
 | AC-002 | passed local | Two-source generation/identity tests, valid schema 5 and typed static configuration, occupied/duplicate identity and dynamic/native rejection. |
 | AC-003 | passed local | Generation performs no repository execution/network download; normalized source equivalence, destination/symlink/failure preservation and existing catalogue race/recovery regressions passed. |
-| AC-004 | pending final/live | Real frozen install and exact image verification passed; scoped SDK/policy denials passed. The 22-case mobile suite passed, including add/remove/source retention and exact-operation install recovery; installed proof remains. |
-| AC-005 | pending final | Authored starter passed lint/types/interaction/coverage, exact advisory policy and both native exports. Both generated apps completed frozen install and all seven source checks/exports. Counter-behavior and type defects were rejected; an initial debugger lint fixture was permitted by the upstream lint config, so a real syntax defect and style defect were rerun and rejected. The complete corrected driver is also a CI gate. No device or signed-binary acceptance is claimed. |
+| AC-004 | passed local/snapshot | Real frozen install and exact image verification passed; scoped SDK/policy denials passed. The 22-case mobile suite passed, including add/remove/source retention and exact-operation install recovery; installed proof remains. |
+| AC-005 | passed local/CI/snapshot | Authored starter passed lint/types/interaction/coverage, exact advisory policy and both native exports. Both generated apps completed frozen install and all seven source checks/exports. Counter-behavior and type defects were rejected; an initial debugger lint fixture was permitted by the upstream lint config, so a real syntax defect and style defect were rerun and rejected. The complete corrected driver is also a CI gate. No device or signed-binary acceptance is claimed. |
 | AC-006 | pending | Local private Git/repository-plan regression passed, including mobile identity/profile fingerprints. Exact two private live targets and supporting credential policy require the owner disposition in acceptance-targets.md. |
-| AC-007 | pending CI | Generated guidance, locked source workflow and quality helper implemented; native golden/defect CI and generated-private-repository final-head CI remain. |
-| AC-008 | pending live | Dashboard frozen install, unit/type/build, real socket/HTTP and pinned browser regression passed, including mobile source/unavailable runtime. Actual updated collector/frontend and new private repo rows not yet deployed. |
+| AC-007 | pending private-repository CI | Generated guidance, locked source workflow and quality helper implemented; native golden/defect CI passed; generated-private-repository final-head CI remains. |
+| AC-008 | pending live | Dashboard frozen install, unit/type/build, real socket/HTTP and pinned browser regression passed, including mobile source/unavailable runtime. Actual updated collector/frontend rollout and rollback passed; new private repo rows remain pending. |
 | AC-009 | pending | Source/installed packaging tests passed locally; complete final gate/head CI, owned private refresh/rollback and owner creation/edit/check acceptance remain. No merge or Delivered claim. |
 
 ## Executed evidence and corrective checks
