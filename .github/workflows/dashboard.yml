@@ -1,0 +1,58 @@
+name: Private platform dashboard
+on:
+  pull_request:
+    paths:
+      - .github/workflows/dashboard.yml
+      - platform/**
+      - scripts/dashboard*.py
+      - scripts/manage_dashboard.py
+      - scripts/project_manifest.py
+      - scripts/private_apps.py
+      - scripts/project_groups.py
+      - scripts/project_database.py
+      - scripts/tests/*dashboard*
+      - config/toolchains/**
+      - config/browser-checks/**
+      - templates/apps/node-toolchain/**
+      - docs/027-dashboard-project-inventory/**
+      - docs/028-dashboard-live-service-status/**
+      - docs/029-dashboard-project-links/**
+      - runbooks/manage-dashboard.md
+  push:
+    branches: [main]
+    paths:
+      - platform/**
+      - scripts/*dashboard*
+      - scripts/project_manifest.py
+      - scripts/private_apps.py
+      - scripts/project_groups.py
+      - scripts/project_database.py
+      - scripts/tests/*dashboard*
+      - .github/workflows/dashboard.yml
+permissions:
+  contents: read
+jobs:
+  dashboard:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out reviewed source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Prepare Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Prepare isolated validator environment
+        run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
+      - name: Offline dashboard security and behavior
+        run: |
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_inventory.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_collector.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_install.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_observation.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_status.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_links.py
+      - name: Exact frontend and browser acceptance
+        run: .venv-manifest/bin/python -B scripts/tests/check_dashboard.py --engine docker --output "$RUNNER_TEMP/gptclaw-dashboard-check"

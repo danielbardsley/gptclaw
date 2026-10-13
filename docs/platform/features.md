@@ -1,7 +1,7 @@
 # GptClaw Platform Feature Catalogue
 
 - **Status:** Directional backlog; not a specification
-- **Last updated:** 2026-10-11 (America/New_York)
+- **Last updated:** 2026-10-12 (America/New_York)
 - **Architecture:** [GptClaw platform architecture](./architecture.md)
 
 ## 1. How to use this catalogue
@@ -168,9 +168,9 @@ capabilities; those are not prerequisites for creating the first applications.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| DSH-001 | Project inventory | 3 | Candidate | List all managed projects with type, repository, owner, runtime, and documentation state. |
-| DSH-002 | Live service status | 3 | Candidate | Show health, uptime, restarts, components, and last status change. |
-| DSH-003 | Private/open links | 3 | Candidate | Open project UI, API docs, repository, logs, and active preview URLs. |
+| DSH-001 | Project inventory | 3 | In review | [SPEC-027](../027-dashboard-project-inventory/spec.md) implements private inventory, bounded safe discovery, metadata/documentation state and the initial dashboard foundation on the feature branch; local/CI/private/lifecycle/owner acceptance passed; review/merge pending. |
+| DSH-002 | Live service status | 3 | In review | [SPEC-028](../028-dashboard-live-service-status/spec.md) defines approved observed health/components, current-instance uptime/restarts, last observed change and explicit freshness over SPEC-027; implemented on the feature branch after inventory; local/CI/private/owner acceptance passed; review/merge pending. |
+| DSH-003 | Private/open links | 3 | In review | [SPEC-029](../029-dashboard-project-links/spec.md) defines approved private app/docs/repository links and unavailable/capability-gated logs and preview destinations; implemented on the feature branch after status; local/CI/private/owner acceptance passed; review/merge pending. Live logs/preview integration depends on separately accepted prerequisites. |
 | DSH-004 | Git status | 3 | Candidate | Show branch, dirty state, ahead/behind, last commit, pull request, and active worktrees. |
 | DSH-005 | Resource telemetry | 3 | Candidate | Display host and per-project CPU, memory, disk, network, and process consumption. |
 | DSH-006 | Log viewer | 4 | Candidate | Stream and search redacted recent logs with project/component filters. |
