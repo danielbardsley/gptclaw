@@ -14,7 +14,7 @@
 | Criterion | State | Current evidence and remaining action |
 |---|---|---|
 | AC-001 | Passed | Schema-6 opt-in, canonical/input denial, versioned capabilities/receipts and installed parity pass. Historical contracts and immutable releases are preserved. |
-| AC-002 | In progress | Real independent sessions, idempotence, SSM reconnect, crash restart, mutation/input drift denial and bounded expiry pass. The repeated physical stop/isolation check now passes: app one is unavailable while unchanged app two remains usable. The earlier both-failed result remains recorded; intended-session restart/crash/expiry checks remain pending. |
+| AC-002 | Passed (Android-first) | Real independent sessions, idempotence, SSM reconnect, crash restart, mutation/input drift denial and bounded expiry pass. The repeated physical stop/isolation check now passes: app one is unavailable while unchanged app two remains usable. The earlier both-failed result remains recorded; Owner confirms intended-session restart, post-crash Reload and physical expiry isolation; app-two identity/expiry and source are preserved. |
 | AC-003 | Passed (Android-first) | Private manifests, >2 MiB native bundles, assets/maps and both WebSocket paths pass. Owner verifies Android 11 / Go 57.0.9 native load, local assets, Fast Refresh and reload. Owner selected Android-first delivery; iOS remains explicitly unsupported/follow-up. |
 | AC-004 | In progress | Approved HTTP conversion, exact route readback, preserved HTTPS handlers/Funnel off and owner-reported off-tailnet denial pass. All devices on this tailnet are owner-permitted. Exact operator-owned listener-removal readback remains pending. |
 | AC-005 | Passed | Installed CLI/collector distinguish readiness/expiry and withdraw launch targets; typed generation/origin/expiry, source parity and Go-only rollback/roll-forward pass. No device-online/backend-health claim is made. |
@@ -1290,3 +1290,43 @@ same generation independently verified the terminal state and resource absence.
 The first PATH-based CLI check could not find a command; the installed store
 launcher was resolved and checked separately. Neither interrupted attempt is
 reported as passing. Physical expiry confirmation remains pending.
+
+
+## Owner confirms app-one physical expiry
+
+In response to the after-expiry phone check, the project owner reports:
+“App one no longer works after expiration.” This accepts native unavailability
+for expired generation `8989c4bc00f749c6b3712439415aae76`. No particular
+error message is inferred. The owner has not separately reported app two's
+post-expiry Reload result; that final physical isolation item remains pending.
+A current independent host probe verifies app two still serves its private
+Android manifest with its original generation and 7:34 p.m. Eastern expiry;
+original HTTPS/Funnel handlers are preserved. The host result does not substitute
+for the remaining phone report.
+
+
+## Owner confirms final physical expiry isolation
+
+The project owner separately reports “App two still works” after the prior
+“App one no longer works after expiration.” Together these accept the final
+physical expiry isolation: expired app-one generation
+`8989c4bc00f749c6b3712439415aae76` is unavailable while unchanged app-two
+generation `00b5662918864f26829652ccb881412e` remains usable. No specific
+counter value or error wording is inferred. The selected Android 11 / Go 57.0.9
+physical load/edit/reload/network/compile/stop/restart/crash/expiry matrix now passes.
+iOS remains unsupported/follow-up, as selected by the owner.
+
+Owned temporary runtime/listener cleanup, final published-head CI, owner delivery
+acceptance and review/authorized merge remain separate gates. Neither feature is
+marked Delivered before those gates complete.
+
+
+## Owned temporary runtimes cleaned up before operator removal
+
+After completed physical expiry isolation, the owner provider stopped only app-two
+generation `00b5662918864f26829652ccb881412e`, with stopped/passed outcome.
+App one retains its expired generation/state and original expiry evidence. Both
+SDK/audit containers, networks and loopback listeners are absent. Source checkouts,
+metadata/history and exact HTTP Serve handlers are retained; no source or data was
+deleted. App-two listener removal is requested through the reviewed SSM operator
+path; execution/readback remains pending. Forge performs no Tailscale mutation.

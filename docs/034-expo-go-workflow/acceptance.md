@@ -15,7 +15,7 @@
 | AC-002 | Passed (Android-first) | Owner confirms both fresh locally rendered QR images open the correct native apps after restart. Encoding, foreign origin, generation/expiry/port-reuse and privacy rejection plus independent PNG decode pass. Further runtime failure/reconnect remains AC-005. |
 | AC-003 | Passed | Read-only inspect/launch and minimum Open/copy/QR UI preserve existing links and fail closed on missing/stale capability. Portable browser tests and installed CLI/collector parity pass; launch performs no hidden runtime/route/account action. Physical product QR is separately pending under AC-002. |
 | AC-004 | Passed (Android-first) | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. Owner accepted the Android-first scope; iOS remains unsupported/follow-up. |
-| AC-005 | In progress | Prior network/tailnet/background/compile recovery passes. Earlier stop/reload isolation failed because app two also could not reload. The installed capacity correction now has owner-confirmed loading for both fresh sessions; the owner reports Reload still works and the repeated physical stop/isolation check passes. The owner confirms native reconnection after app-one restart and post-crash Reload of both apps. The final physical expiry check remains. |
+| AC-005 | Passed (Android-first) | Prior network/tailnet/background/compile recovery passes. Earlier stop/reload isolation failed because app two also could not reload. The installed capacity correction now has owner-confirmed loading for both fresh sessions; the owner reports Reload still works and the repeated physical stop/isolation check passes. The owner confirms native reconnection after app-one restart and post-crash Reload of both apps. Owner separately confirms expired app one is unavailable while app two remains usable; the physical expiry check passes. |
 | AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. Implementation CI passes at 92119fb; final merge/delivery is separately AC-007. |
 | AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback and implementation CI pass. Merge and owner matrix/retention acceptance remain. |
 
@@ -614,3 +614,43 @@ same generation independently verified the terminal state and resource absence.
 The first PATH-based CLI check could not find a command; the installed store
 launcher was resolved and checked separately. Neither interrupted attempt is
 reported as passing. Physical expiry confirmation remains pending.
+
+
+## Owner confirms app-one physical expiry
+
+In response to the after-expiry phone check, the project owner reports:
+“App one no longer works after expiration.” This accepts native unavailability
+for expired generation `8989c4bc00f749c6b3712439415aae76`. No particular
+error message is inferred. The owner has not separately reported app two's
+post-expiry Reload result; that final physical isolation item remains pending.
+A current independent host probe verifies app two still serves its private
+Android manifest with its original generation and 7:34 p.m. Eastern expiry;
+original HTTPS/Funnel handlers are preserved. The host result does not substitute
+for the remaining phone report.
+
+
+## Owner confirms final physical expiry isolation
+
+The project owner separately reports “App two still works” after the prior
+“App one no longer works after expiration.” Together these accept the final
+physical expiry isolation: expired app-one generation
+`8989c4bc00f749c6b3712439415aae76` is unavailable while unchanged app-two
+generation `00b5662918864f26829652ccb881412e` remains usable. No specific
+counter value or error wording is inferred. The selected Android 11 / Go 57.0.9
+physical load/edit/reload/network/compile/stop/restart/crash/expiry matrix now passes.
+iOS remains unsupported/follow-up, as selected by the owner.
+
+Owned temporary runtime/listener cleanup, final published-head CI, owner delivery
+acceptance and review/authorized merge remain separate gates. Neither feature is
+marked Delivered before those gates complete.
+
+
+## Owned temporary runtimes cleaned up before operator removal
+
+After completed physical expiry isolation, the owner provider stopped only app-two
+generation `00b5662918864f26829652ccb881412e`, with stopped/passed outcome.
+App one retains its expired generation/state and original expiry evidence. Both
+SDK/audit containers, networks and loopback listeners are absent. Source checkouts,
+metadata/history and exact HTTP Serve handlers are retained; no source or data was
+deleted. App-two listener removal is requested through the reviewed SSM operator
+path; execution/readback remains pending. Forge performs no Tailscale mutation.

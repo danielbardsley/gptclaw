@@ -39,7 +39,7 @@
 
 ## Private acceptance and delivery
 
-- [ ] T-008: Select exact synthetic fixture roots/retention and device matrix with
+- [x] T-008: Select exact synthetic fixture roots/retention and device matrix with
   owner; use the reviewed operator path for the approved private listeners. Verify
   two-session isolation, actual permitted/denied device transport, Fast Refresh/reload,
   expiry/reconnect and rollback with existing apps/data untouched. Record each
@@ -297,3 +297,10 @@ generation and expiry remain unchanged during crash recovery. Detailed counter
 values are not inferred from these reports. Physical expiry and owned-listener
 removal are still pending under T-008; final CI, review/merge and delivery remain
 T-007/009. Earlier checkpoint sections are historical.
+
+
+T-008 physical/private acceptance is complete for Android-first delivery: the
+owner separately confirms expired app one fails while unchanged app two remains
+usable. The earlier failed isolation attempts remain historical evidence. T-009
+retains exact owned-listener cleanup, final revision/CI, review/authorized merge
+and delivery records; neither feature is marked Delivered yet.

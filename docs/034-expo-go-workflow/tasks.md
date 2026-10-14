@@ -34,7 +34,7 @@
 
 ## Physical acceptance and delivery
 
-- [ ] T-007: On each claimed physical platform, launch both approved source fixtures,
+- [x] T-007: On each claimed physical platform, launch both approved source fixtures,
   validate native UI/assets/interaction, restore a demonstrated Fast Refresh edit,
   force reload and exercise network/tailnet/background/compile/Metro interruption
   and intended-session reconnect. Record actual versions and owner confirmation,
@@ -165,3 +165,8 @@ The actual owned SDK recovered once with the same generation/expiry; no detailed
 counter result is inferred. T-007 retains the final physical expiry check; T-006/008
 retain final CI, operator cleanup, review/merge and delivery records. iOS remains
 unsupported/follow-up. See the current acceptance tables for present state.
+
+
+The owner separately confirms expired app one is unavailable and app two still
+works. T-007 physical acceptance is complete for the Android-first matrix;
+operator cleanup and final delivery gates remain. iOS is not certified.
