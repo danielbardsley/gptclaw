@@ -32,6 +32,26 @@ class SpikeTests(unittest.TestCase):
     def prepare_plan(self):
         self.patch(spike,'TARGETS',{self.root})
         self.patch(app,'target',lambda root:(self.root,{'schema_version':5,'project':{'id':'synthetic'}}))
+
+    def test_watching_is_explicit_runtime_only_and_keeps_all_bounds(self):
+        defaults=spike.container_options(self.root,self.root,60)
+        watching=spike.container_options(self.root,self.root,60,watch=True)
+        self.assertIn('CI=1',defaults);self.assertNotIn('CI=false',defaults)
+        self.assertIn('CI=false',watching);self.assertNotIn('CI=1',watching)
+        self.assertEqual([v for v in defaults if v!='CI=1'],[v for v in watching if v!='CI=false'])
+        for flag in ['--read-only','--http-proxy=false','--memory=1536m','--cpus=1','--pids-limit=256',
+                     '--log-driver=none','EXPO_NO_TELEMETRY=1','EXPO_NO_DOTENV=1','--timeout=60']:
+            self.assertIn(flag,watching)
+        with self.assertRaises(app.AppError):
+            spike.container_options(self.root,self.root,60,watch=1)
+
+    def test_ephemeral_sdk_input_is_closed_and_never_an_operator_tty(self):
+        runner=spike.EphemeralOutput([sys.executable,'-c',
+              "import sys; assert not sys.stdin.isatty(); assert not sys.stdout.isatty(); assert sys.stdin.read()==''"])
+        runner.finish()
+        self.assertEqual(runner.process.returncode,0)
+        self.assertEqual(runner.output,b'')
+
     def test_ephemeral_output_is_bounded_and_evidence_cannot_contain_source_text(self):
         runner=spike.EphemeralOutput([sys.executable,'-c',"import sys; sys.stdout.write('secret-canary ' * 20000 + ' EACCES'); sys.exit(1)"])
         runner.finish()

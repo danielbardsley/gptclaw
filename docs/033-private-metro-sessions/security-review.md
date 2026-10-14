@@ -108,3 +108,17 @@ October 27, the retained fixtures and an initial loopback-only spike of at most
 five minutes. Later private sessions still require verified controls, at most eight
 hours and separate operator listener approval. No public, signing, production,
 infrastructure or deployment-gate bypass scope was granted.
+
+## Runtime source watching and noninteractive input
+
+Pinned @expo/cli 57.0.29 source in instantiateMetro.js explicitly disables watch/
+reloads when its boolish CI flag is true. Supervised development SDK sessions
+therefore use CI=false; audit/source/spike jobs retain CI=1. This implements the
+already approved source-edit development loop rather than extending advisory,
+account or exposure scope. The pinned interactive utility additionally requires
+stdout.isTTY. Runtime Podman has no interactive/TTY flags; its launcher explicitly
+uses stdin DEVNULL and bounded piped non-TTY output. Offline Go mode, telemetry/
+dotenv disabling, public-only configuration, readonly mounts, internal network,
+loopback publishing and all resource/TTL limits are preserved. No package or
+advisory exception changed. Focused tests verify watcher opt-in/default separation,
+unchanged bounds and actual closed-input/non-TTY behavior.

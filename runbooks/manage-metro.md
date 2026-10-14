@@ -203,3 +203,11 @@ No native session is represented as a web/API/DB component or Open app/API-doc
 target. Source checks and physical-client acceptance remain separate; Go launch
 links/QR require SPEC-034. Source implementation/browser checks do not install
 a collector release or prove a phone loaded. Current private rollout remains pending.
+
+Established-session protocol probe failures report protocol unavailable and retry
+in the same owned process/generation/lifetime; they do not by themselves trigger a
+restart. Initial readiness still has a 300-second deadline. Actual SDK exit, owned
+proxy failure, security/input/mount drift and expiry retain their cleanup paths.
+Supervised development enables the pinned CLI's source watching with CI=false,
+closed stdin and non-TTY output; audit/spike jobs retain CI=1. Do not enable a TTY,
+public tunnel or credential prompt to obtain Fast Refresh.

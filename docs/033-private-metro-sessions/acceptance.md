@@ -505,3 +505,17 @@ protocol failure/unavailable and retries in place, retaining the live process,
 generation and original expiry. Initial readiness still has a finite deadline.
 All 48 controller cases passed. A corrected live cold-load/edit rehearsal remains
 pending; this is not phone Fast Refresh acceptance.
+
+The corrected-controller first-fixture generation
+7a04519f8dec4aeb891951d4c506f4ce successfully served its cold Android bundle
+(6,441,560 B) without requiring a source reset. The immediate edit test returned
+the same bundle hash; its finally block restored the exact source and preserved
+the second fixture. This did not pass rebuild or Fast Refresh acceptance.
+
+Pinned CLI source then established the specific watcher defect: instantiateMetro.js
+isWatchEnabled returns false for env.CI. Supervised SDK sessions inherited CI=1
+from the audit/spike container defaults, so reload watching was disabled.
+Runtime-only watch opt-in now uses CI=false with explicitly closed stdin/non-TTY
+piped output; audit/spike defaults remain CI=1. All existing offline/resource/
+readonly/privacy bounds remain. The 24 spike and 48 controller cases passed.
+Corrected actual rebuild proof remains pending; no physical result is inferred.

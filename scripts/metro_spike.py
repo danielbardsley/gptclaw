@@ -158,7 +158,8 @@ def cleanup(name,network,token):
     if errors:raise errors[0]
 
 
-def container_options(view,root,seconds):
+def container_options(view,root,seconds,*,watch=False):
+    app.need(type(watch) is bool,'invalid')
     app.safe(root/'node_modules')
     app.need((root/'node_modules').is_dir() and (root/'node_modules').stat().st_uid==os.getuid(),'path')
     return ['--rm','--pull=never','--userns=keep-id','--memory=1536m','--memory-swap=1536m','--cpus=1','--pids-limit=256',
@@ -166,7 +167,7 @@ def container_options(view,root,seconds):
             '--timeout='+str(seconds),'--stop-timeout=20','--log-driver=none',
             '--tmpfs=/tmp:rw,size=256m,mode=1777','--tmpfs=/workspace/.expo:rw,size=16m,mode=1777',
             '--volume',str(view)+':/workspace:ro','--volume',str(root/'node_modules')+':/workspace/node_modules:ro','--workdir','/workspace',
-            '--env','CI=1','--env','HOME=/tmp/gptclaw-home','--env','NODE_OPTIONS=--max-old-space-size=1024',
+            '--env','CI=false' if watch else 'CI=1','--env','HOME=/tmp/gptclaw-home','--env','NODE_OPTIONS=--max-old-space-size=1024',
             '--env','EXPO_NO_TELEMETRY=1','--env','EXPO_NO_DOTENV=1']
 
 
@@ -176,7 +177,7 @@ class EphemeralOutput:
     def __init__(self,argv):
         env={'HOME':'/home/forge','PATH':'/usr/local/bin:/usr/bin:/bin',
              'XDG_RUNTIME_DIR':'/run/user/1002','DBUS_SESSION_BUS_ADDRESS':'unix:path=/run/user/1002/bus'}
-        self.process=subprocess.Popen(argv,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env)
+        self.process=subprocess.Popen(argv,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env)
         self.output=bytearray()
         def drain():
             while True:

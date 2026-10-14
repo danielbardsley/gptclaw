@@ -29,10 +29,10 @@
   readback. Test large/slow requests, origins/TLS, native reload paths and unowned
   route conflicts. Do not change existing handlers or use a public fallback.
   (MET-003/004; AC-003/004)
-- [ ] T-006: Add safe observation/CLI endpoint descriptor, minimum source/session
+- [ ] T-006 (in progress): Add safe observation/CLI endpoint descriptor, minimum source/session
   presentation and reviewed runbook; distinguish all readiness layers and leave
   full native/device/build telemetry to MOB-009. (MET-005; AC-005)
-- [ ] T-007: Run relevant offline, real rootless protocol/lifecycle and legacy app/
+- [ ] T-007 (in progress): Run relevant offline, real rootless protocol/lifecycle and legacy app/
   dashboard/credential/worktree regressions and CI. Package a combined source/
   installed provider and any frozen collector update; prove parity and recovery.
   (MET-001–007; AC-001–007)
@@ -185,3 +185,9 @@ and final-head CI remain pending. T-006/T-007 remain in progress.
 Real format-job attempts are blocked on both active fixtures (exit 1), with clean
 source and unchanged owned generation/SDK. The underlying active-session guard
 independently returns busy without writes.
+
+The established-session protocol watchdog is corrected and passes 48 controller
+cases. Actual cold bundling on the corrected first fixture passed, but rebuild
+exposed the pinned CLI's CI-mode watcher disablement. Runtime watch opt-in and
+closed stdin/non-TTY output now pass 24 spike cases; corrected live rebuild and
+paired private sessions still require verification. Source was exactly restored.

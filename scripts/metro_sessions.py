@@ -499,7 +499,7 @@ def supervise(root,generation):
         app.command(['podman','network','create','--internal','--label',LABEL+'='+value['token'],network(value)],timeout=20)
         seconds=math.floor(value['expires_at']-time.time());app.need(seconds>0,'invalid')
         args=['podman','run','--name',value['name'],'--label',LABEL+'='+value['token'],'--network',network(value),
-              '--publish','127.0.0.1:'+str(value['metro_port'])+':8081',*spike.container_options(view,root,seconds)]
+              '--publish','127.0.0.1:'+str(value['metro_port'])+':8081',*spike.container_options(view,root,seconds,watch=True)]
         live_mounts=mount_identities(root);app.need(live_mounts==data['mount_identities'],'conflict')
         for name in ['src','assets']:
             if live_mounts[name] is not None:args+=['--volume',str(root/name)+':/workspace/'+name+':ro']
