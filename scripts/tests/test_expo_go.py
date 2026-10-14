@@ -54,7 +54,8 @@ class Tests(unittest.TestCase):
         self.assertFalse(result['launch_available'])
     def test_ios_assumption_does_not_certify_os_or_launch(self):
         result=go.inspect(self.root,'ios','57.0.9','19.0')
-        self.assertEqual(result['reason'],'os-version-not-verified');self.assertFalse(result['launch_available'])
+        self.assertEqual(result['reason'],'expo-go-cli-login-outside-scope');self.assertFalse(result['launch_available'])
+        self.assertTrue(result['requires_cli_login']);self.assertEqual(result['follow_up'],'MOB-004')
     def test_lock_drift_is_unsupported_without_source_mutation(self):
         path=self.root/'pnpm-lock.yaml';path.write_bytes(path.read_bytes()+b'\n# changed graph\n')
         original=path.read_bytes();result=self.inspect()
@@ -72,6 +73,14 @@ class Tests(unittest.TestCase):
         original=go.deps.read_bytes
         for field,value in [('sdk',58),('certification_max_age_seconds',604801),('source_profile_sha256','0'*64)]:
             candidate=go.profile();candidate[field]=value
+            def read(path,*args):
+                return json.dumps(candidate).encode() if Path(path).name=='expo-go-v1.json' else original(path,*args)
+            with patch.object(go.deps,'read_bytes',side_effect=read):
+                with self.assertRaises(app.AppError):go.profile()
+    def test_unreviewed_acquisition_or_hidden_login_bypass_is_rejected(self):
+        original=go.deps.read_bytes
+        for field,value in [('acquisition_source','https://untrusted.invalid'),('requires_cli_login',False)]:
+            candidate=go.profile();candidate['targets']['ios'][field]=value
             def read(path,*args):
                 return json.dumps(candidate).encode() if Path(path).name=='expo-go-v1.json' else original(path,*args)
             with patch.object(go.deps,'read_bytes',side_effect=read):

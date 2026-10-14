@@ -55,6 +55,18 @@ def main():
             run(['build','--file',str(work/'browser/Containerfile'),'--tag',browser_image,str(work/'browser')])
         run(['run','--rm',*common,browser_image,'node','-e',
              "if(require('playwright-core/package.json').version !== '1.64.0')process.exit(1)"])
+        # Decode the final SVG rasterization, not just the encoder's internal matrix.
+        qr_dir=work/'qr';qr_dir.mkdir(mode=0o700)
+        generate_qr="import fs from 'node:fs'; import {localQr} from '/workspace/lib/local-qr.ts'; const payload='exps://forge-dev.example.ts.net:8443/?gptclawSession='+'a'.repeat(32); fs.writeFileSync('/qr/code.svg',localQr(payload).svg,{flag:'wx'});"
+        run(['run','--rm',*common,'--network=none',
+             '--volume',str(ROOT/'platform/dashboard')+':/workspace:ro',
+             '--volume',str(qr_dir)+':/qr:rw','--workdir','/workspace',image,
+             'node','--input-type=module','--eval',generate_qr])
+        run(['run','--rm',*common,'--network=none','--env','HOME=/tmp',
+             '--volume',str(qr_dir)+':/qr:ro',
+             '--volume',str(ROOT/'platform/dashboard/node_modules')+':/dashboard-modules:ro',
+             '--volume',str(ROOT/'scripts/tests/dashboard-qr-browser.cjs')+':/checks/dashboard-qr-browser.cjs:ro',
+             browser_image,'node','/checks/dashboard-qr-browser.cjs'])
         # Trusted synthetic fixture constructor; no project command/runtime starts.
         sys.path.insert(0,str(ROOT/'scripts/tests'))
         from test_dashboard_inventory import InventoryTests

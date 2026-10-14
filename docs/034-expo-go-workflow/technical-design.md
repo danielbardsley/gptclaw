@@ -127,3 +127,27 @@ membership in that development tailnet, with no additional per-device ACL select
 Private host protocol evidence and session-bound root entry/old-generation denial
 now exist for both fixture origins. Exact Go-client nonce preservation, physical
 reload/interaction and local QR proof remain required before supported launch claims.
+
+
+## Selected local QR and acquisition prerequisites
+
+The reviewed exact encoder is `toqr` 0.1.1 (MIT, zero runtime dependencies), already
+present in the approved locked Expo CLI graph. The frontend now pins it directly;
+`jsqr` 1.4.0 (Apache-2.0, zero runtime dependencies) is a test-only independent decoder.
+Registry integrity metadata and installed licenses were inspected; frozen install,
+fresh zero-finding audit, exact decode and rendered-SVG checks are recorded in
+[QR review](qr-review.md). These do not certify native URI semantics.
+
+`localQr` is pure local rendering with a 512-byte printable-ASCII input limit,
+finite matrix/output bounds and a four-module white quiet zone. Generated SVG has
+only numeric paths and contains no raw payload markup, external asset or network
+reference. Browser/decode tests rasterize the final SVG rather than only checking
+its internal matrix. Public launch integration still requires the validated current
+provider/target/generation/profile payload; no launch action is enabled by this utility.
+
+The official September 3 notice rechecked October 14 says latest physical iOS Go
+requires matching Expo CLI/app login; Android enforcement is described as future.
+The candidate iOS profile therefore reports the CLI-login prerequisite as outside
+this spec's credential-free scope and points to MOB-004. Keep the iOS native software
+path and protocol evidence, without claiming a usable credential-free Go client or
+changing SDK/signing/accounts. Android 57.0.9 is still an unverified reported candidate.

@@ -16,18 +16,23 @@
       ],
       "status": "candidate",
       "physical_verified_at": null,
-      "launch_rule_verified": false
+      "launch_rule_verified": false,
+      "acquisition_source": "https://expo.dev/go",
+      "requires_cli_login": false
     },
     "ios": {
       "client_version": "57.0.9",
       "reported_os_versions": [],
       "status": "candidate",
       "physical_verified_at": null,
-      "launch_rule_verified": false
+      "launch_rule_verified": false,
+      "acquisition_source": "https://expo.dev/go",
+      "requires_cli_login": true
     }
   },
   "references": [
     "https://expo.dev/go",
-    "https://docs.expo.dev/linking/into-your-app/"
+    "https://docs.expo.dev/linking/into-your-app/",
+    "https://expo.dev/changelog/expo-go-57-login"
   ]
 }

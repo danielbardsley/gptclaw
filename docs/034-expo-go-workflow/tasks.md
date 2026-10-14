@@ -83,3 +83,12 @@ startup), with Ready Metro but client check-required/launch unavailable. Stable
 installed pointer remains unchanged. T-002's actual Go nonce/manifest behavior,
 local QR, launch/frontend, profile certification, installed rollout and physical
 acceptance remain open. See [acceptance](acceptance.md).
+
+
+Local QR selection and pure rendering now have a pinned zero-finding frontend graph,
+independent decode and actual rendered-SVG/browser proof. T-004 remains in progress:
+validated Go payload production, CLI ownership/expiry and native stale-QR acceptance
+remain open. Fifteen inspection cases and thirteen frontend cases pass; type/build
+and full portable browser gate pass. The iOS candidate explicitly reports the current
+CLI-login prerequisite outside this credential-free scope; no account fallback or
+certification is performed. The Android launch-rule owner check remains pending.

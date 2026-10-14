@@ -54,3 +54,38 @@ is available; complete Android interaction and both-platform recovery checks. Th
 verify installed provider/consumer parity and rollback, CI, reviewed merge and owner
 acceptance. Retain synthetic counter/navigation/assets for this deliberately scoped
 starter/client test; this is not a product or backend CRUD acceptance claim.
+
+
+## Local QR and current iOS prerequisite checkpoint
+
+The exact reviewed encoder/test decoder are pinned and described in
+[QR review](qr-review.md). Thirteen frontend tests, type checking, production build
+and the complete portable socket/HTTP/browser gate passed. The final SVG independently
+decodes after actual browser rasterization; fresh complete frontend audit has zero
+findings. No Go product link or native-device certification follows from these checks.
+
+The official [September 3 Expo login notice](https://expo.dev/changelog/expo-go-57-login)
+rechecked October 14 says latest iOS Go requires matching CLI/app account login, with
+Android enforcement described as future. The candidate iOS profile now explicitly
+reports that prerequisite as outside the credential-free scope and routes to MOB-004.
+Fifteen focused inspection cases pass, including acquisition/login-bypass rejection.
+The owner requested continued iOS software development; the native protocol/software
+path remains, with physical/client acquisition and any separate credential/build scope
+pending. No account credential or login was installed.
+
+An Android candidate launch-rule check was requested using current session-bound
+private URLs; no device answer has arrived. The second session subsequently reached
+its original expiry and became unavailable, with exact owned cleanup verified. The
+first candidate remains finite. These are implementation prerequisites and pending
+owner evidence, not completed physical criteria.
+
+
+Updated source/frozen inspection parity passed on both actual fixtures for Android
+57.0.9 / Android 11 and the assumed iOS client/OS input. Android remains check-required;
+iOS returns the explicit out-of-scope CLI-login reason; Metro separately shows the
+first Ready and the second expired. Frozen candidate
+`2e51878ec8cea1c71a405969cc5c8f9dc423acc25a77cda228cd9f7683ccf3da` matches source;
+observations took 0.735–1.107 seconds. Immutable dashboard release
+`953e8e25851985e8ad1be08eeb791392fa9e93d85477abd0f84bfefcebf46a78` was prepared
+with existing status/link flags; no stable pointer or active dashboard selection had
+changed at this checkpoint. Preparation is not installed acceptance.

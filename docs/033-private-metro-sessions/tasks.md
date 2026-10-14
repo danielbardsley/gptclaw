@@ -216,3 +216,12 @@ frozen-checker gate is still required.
 Remaining recovery, installed collector/provider/rollback, physical iOS/Android
 acceptance and merge remain open. MOB-003 launch/profile/QR work follows the now-proven
 private host protocol foundation. Historical checkpoints remain stage-specific.
+
+
+At 73913b3 all four CI workflows passed after scoped template retry. The latest full
+local checker terminated with exit 143 during worktree tests; no complete local pass
+is claimed. Actual second-session private expiry and occupied-proxy denial now pass,
+with exact cleanup, prior receipt/source and first generation preserved. Frozen
+installed/candidate existing group observations agree (API/DB healthy; pre-existing
+web observation-inconsistent). Compatible installed collector/provider rollout and
+rollback, remaining recovery/revocation and physical checks remain pending.

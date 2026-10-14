@@ -645,3 +645,31 @@ changes require their own CI. The traced local diagnostic retry was interrupted 
 editing its shell script while Bash was still reading it (exit 2); this is a harness
 interruption, not a passing complete gate. Subsequent full checks use a frozen copy
 of the completed checker to prevent that concurrent-read failure.
+
+
+## Private expiry, bind denial and pre-rollout baseline
+
+The second private generation cbe287fcd42e4cfbbb18d2981be4853f reached its original
+16:52:49 UTC expiry. Independent inspection confirmed terminal expired state, absent
+exact owned SDK/network, released loopback ports, clean source and default-trust HTTPS
+entry HTTP 502 (no backend). It was not auto-renewed. An exact task-owned temporary
+loopback socket then occupied its proxy port; start denied with conflict before receipt
+publication. The prior receipt/source and first live generation were preserved; the
+temporary socket was released. No foreign listener was adopted or removed.
+
+The installed and candidate frozen providers independently report identical current
+Shelfmark/Trailboard observations: API/DB healthy, web unknown with observation-
+inconsistent, aggregate degraded. That pre-existing web observation limitation is
+not presented as healthy app acceptance. The first comparison harness used a source
+launcher with the wrong interpreter and was corrected to the exact frozen launchers;
+no application runtime or data changed. Existing backend status parity is recorded
+before platform rollout.
+
+All four workflows at 73913b3 passed after the isolated template-job retry. The two
+intermittently failing credential-bootstrap cases passed four additional isolated
+local repetitions (eight cases total) with non-secret require-location diagnostics;
+no failure was reproduced or production guard bypassed. The full local frozen-checker
+process later terminated with SIGTERM/exit 143 during the worktree suite, after prior
+reported suites passed; cause is unknown and no complete local pass is claimed.
+CI's complete repository gates at the exact revision remain separate successful
+checks. Subsequent QR/profile changes need their own relevant gates/CI.
