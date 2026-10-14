@@ -133,6 +133,15 @@ class SessionTests(unittest.TestCase):
         calls=[]
         with patch.object(metro,'ownership',side_effect=['owned','absent','absent','owned','absent']),patch.object(app,'command',side_effect=lambda argv,**kw:calls.append(argv)):metro.cleanup(self.value)
         self.assertEqual(calls,[['podman','stop','--time','20','gptclaw-metro-fixture'],['podman','network','rm','gptclaw-metro-fixture-net']])
+    def test_auto_removed_owned_sdk_race_requires_independent_absence(self):
+        with patch.object(metro,'ownership',side_effect=['owned','absent','absent','absent']),             patch.object(app,'command',side_effect=app.AppError('command')) as command:
+            metro.cleanup(self.value)
+        self.assertEqual(command.call_count,1)
+    def test_failed_cleanup_cannot_mask_a_foreign_replacement(self):
+        with patch.object(metro,'ownership',side_effect=['owned','foreign','absent','absent']),             patch.object(app,'command',side_effect=app.AppError('command')) as command:
+            with self.assertRaises(app.AppError):metro.cleanup(self.value)
+        self.assertEqual(command.call_count,1)
+
     def test_foreign_cleanup_is_preserved_and_not_killed(self):
         with patch.object(metro,'ownership',return_value='foreign'),patch.object(app,'command') as command,self.assertRaises(app.AppError):metro.cleanup(self.value)
         command.assert_not_called()

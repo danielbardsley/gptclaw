@@ -300,3 +300,65 @@ payload matches. Elapsed command duration is excluded from behavioral equality.
 The retained HTTP-capable, Go-disabled rollback provider is
 `a99e4012c3b0232ddf0dffc3ef7161e34f2eed20976ac9a6bcf9bd11a812963c`.
 Stable launcher/dashboard remain unchanged at this checkpoint.
+
+
+## Installed collector correction, rollout and recovery checkpoint
+
+All four CI workflows pass at implementation 78a9d45b344cd3655c72ef719ebb4c88e178d79b:
+dashboard 38627048749, private applications 38627048657, development host
+38627048864 and federation 38627048631. No protected AWS apply ran. Later
+collector/cleanup corrections below require their own final CI.
+
+Actual installation exposed two missed boundaries: the collector entrypoint
+hard-coded only schemas 1–4, and provider observation sent a reduced native
+projection where StatusStore expected the typed descriptor. Source now reads
+capabilities from its bundled read-only CLI and hands the typed session descriptor
+to the collector; the public native projection remains unchanged and removes
+origin/transport details. Six collector cases and ten observation cases pass,
+including CLI-capability parity and the real provider-to-StatusStore handoff.
+Nine native projection and six Go projection cases also pass. The portable
+dashboard install/test/type/build/socket/QR/browser gate passes again (17 frontend
+cases). Earlier readiness harness attempts failed; the harness also initially
+assumed a non-null observation and an inactive session whose old TTL had not
+elapsed. Those task-harness assumptions are corrected and not product successes.
+
+New immutable paired candidates retain the original snapshots unchanged: Go
+provider 4791d30c239a6b145ea108d564b259c69b2b34102f355d3e96515f47c2c53959 /
+dashboard a17ec4fb9f9b5ba6dba0cd5bc872eb2848abd30818947b70f2eba83d0bd40a35,
+and HTTP-capable Go-disabled provider cc9850dcbc31cc30d838e99ad9ed6600a60db2f713cbce9be61e42f3f0a1ab2d /
+dashboard 833e14ab9ccf727ff97824f73646b10187cd452d879e504bdb2981f55e95dfd5.
+The disabled candidate is a new snapshot built from a task-owned copy of the
+previous HTTP provider plus the two collector corrections; no old snapshot was
+modified. Actual install → Go enable → Go-only rollback → roll-forward passed.
+Installed CLI launch, live collector Ready/Go launch and withdrawal during rollback
+were verified. Both session generations/expiries, canonical sources, group behavior,
+original HTTPS handler baseline and Funnel-off state were preserved throughout.
+
+Effective metadata on the owned second SDK verifies read-only source/dependency
+mounts/rootfs, 1 CPU/1536 MiB/256 PIDs, loopback-only publish, internal network,
+log driver none and offline/no-dotenv/no-telemetry/ephemeral HOME predicates.
+Only necessary metadata and boolean fixed-environment predicates were inspected;
+no environment, credential, control token or SDK-output dump was recorded.
+
+The original second generation 9d717649f4c64a56b7b3a96fa9575e97 expired normally
+at its one-hour bound with absent SDK/network/proxy and clean source. A subsequent
+explicit ten-minute installed-test generation e18a2397bd4f4acc8f914f8453a969fd
+ended recovery-required with sanitized owned-cleanup/conflict, although all resources
+and listeners were independently absent. Exact owned recover-stop reconciled the
+receipt. An inspect/auto-removal race is a possible cause, not a proven trace.
+Cleanup now accepts a failed removal command only after independent absence is
+proven, while foreign/unknown replacements still block. All 51 controller cases
+pass, including both absence and foreign-replacement regressions. A new-runtime
+expiry check remains required before claiming that intermittent path fixed live.
+
+The owner later reported neither old app link could download. At that time app
+one was intentionally stopped and app two's original URL was obsolete after its
+finite expiry/rehearsal replacement; this is not confirmation that the other app
+remained usable during the earlier stop window. Following that response, app one
+was explicitly restarted (ed16a0fa76ca4e879505c670d3a03c9e, expiry 21:25:12 UTC).
+The second bounded rollout generation is b015056fcff54f35a85a7f92393a87c9,
+expiry 20:32:13 UTC. Both Android bundles are warm and unchanged at 6,441,558 bytes.
+Cold compilation briefly made the first protocol layer unavailable; subsequent
+process/protocol/route observations are Ready. Current dashboard QR/copy and
+intended native restart confirmation have been requested; no owner result is
+assumed. Stable Go installation at this checkpoint precedes the cleanup race fix.

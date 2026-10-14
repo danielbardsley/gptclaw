@@ -374,8 +374,14 @@ def cleanup(value):
         try:
             found=ownership(kind,name,value['token']);app.need(found!='foreign','conflict')
             if found=='owned':
-                app.command(['podman','stop','--time','20',name] if kind=='container' else ['podman','network','rm',name],timeout=30)
-                app.need(ownership(kind,name,value['token'])=='absent','conflict')
+                try:
+                    app.command(['podman','stop','--time','20',name] if kind=='container' else ['podman','network','rm',name],timeout=30)
+                except app.AppError:
+                    # A bounded --rm SDK may disappear between inspect and stop.
+                    # Success still requires independently proven absence.
+                    app.need(ownership(kind,name,value['token'])=='absent','conflict')
+                else:
+                    app.need(ownership(kind,name,value['token'])=='absent','conflict')
         except app.AppError:failed=True
     app.need(not failed,'conflict')
 

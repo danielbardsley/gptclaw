@@ -236,7 +236,7 @@ def _project(root, *, expected=None, clock=time.time):
             overall='ready' if state=='ready' else 'stopped' if state in {'not-started','stopped','expired'} else 'starting' if state in {'preparing','starting','stopping','loopback-running'} else 'failed' if state=='failed' else 'degraded'
             result={'observation_schema':SCHEMA_VERSION,'provider_version':app.VERSION,'project':slug,
                     'observed_at':now,'components':{},'state':overall,'provider_state':overall,
-                    'health':'not-applicable','operation_busy':False,'reason':None,'metro':native,'expo_go':go,
+                    'health':'not-applicable','operation_busy':False,'reason':None,'metro':descriptor,'expo_go':go,
                     'publication':{'state':'unavailable','origin':None},
                     'routes':{'schema_version':1,'project':slug,'app_path':None,'docs_path':None}}
             app.need(identity(Path(root).stat(follow_symlinks=False))==before,'conflict')

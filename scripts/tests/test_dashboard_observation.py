@@ -83,6 +83,11 @@ class ObservationTests(unittest.TestCase):
             result=observation.project(root)
         self.assertEqual(result['components'],{})
         self.assertEqual(result['metro']['state'],'not-started')
+        from dashboard_status import StatusStore
+        store=StatusStore(lambda *args:None,clock=lambda:result['observed_at'])
+        binding={'id':'mobile','components':[],'native_session':1}
+        store.update('mobile',binding,result)
+        self.assertEqual(store.snapshot('mobile',binding)['metro']['state'],'not-started')
         self.assertEqual(result['health'],'not-applicable')
         self.assertEqual(result['publication'],{'state':'unavailable','origin':None})
         self.assertIsNone(result['routes']['app_path'])
