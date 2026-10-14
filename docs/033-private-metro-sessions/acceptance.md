@@ -1138,3 +1138,30 @@ slots and one health slot within the unchanged eight-slot total. Complete reques
 remain protected; diagnostics contain aggregate counts only. New regression keeps
 four WebSockets open while proving the current manifest and health return 200,
 with excess WebSockets rejected. Installed/native revalidation is still required.
+
+
+## WebSocket reservation installed; device retry pending (October 14)
+
+At implementation head `22a458b`, the proxy retains eight total connections,
+reserves one for control requests and limits WebSockets to four within seven
+forwarded native slots. The regression holds four upgraded WebSockets while the
+current manifest and health requests succeed; all 29 proxy cases pass. Its first
+run exposed a missing test-server behavior, corrected before installation; that
+failed run is not counted as success.
+
+Immutable provider `960457be4f02e2aef1bc604009a8e79a901557ba751ce3445345601a7943d96b`
+was selected through the reviewed provider path. Both fresh one-hour sessions
+serve 6,441,558-byte Android bundles through the private HTTP listeners. A real
+private app-one check held four upgraded WebSockets open concurrently: its current
+Android manifest and diagnostics returned 200, with active=5, native=4,
+websockets=4 and limit=8. All four test connections were closed afterward. This
+proves the installed capacity reservation; it does not prove the phone failure
+is resolved.
+
+Fresh app-one generation `06f4d67221ff4d26bf2d14d12b433d35` expires at
+7:32 p.m. Eastern; app-two generation `00b5662918864f26829652ccb881412e`
+expires at 7:34 p.m. Eastern on October 14. Both locally rendered QR PNGs were
+independently decoded to their complete current launch payloads. Source checkouts
+and the original HTTPS/Funnel baseline remain unchanged. Phone scan/reload,
+repeated isolation/recovery, owned listener removal and final CI/review/delivery
+remain pending; neither feature is marked Delivered.
