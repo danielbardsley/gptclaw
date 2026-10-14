@@ -1,5 +1,8 @@
 """Bounded loopback SDK probes; never redirects, publishes or retains manifests."""
 import hashlib
+import base64
+import os
+import socket
 import http.client
 import json
 import math
@@ -108,6 +111,56 @@ def request(port,advertised,path,platform,max_bytes=MAX_RESPONSE,deadline=None,m
     finally:connection.close()
 
 
+
+def websocket(port,advertised,path,deadline):
+    """Bounded RFC6455 handshake/ping only; never persist SDK message content."""
+    advertised=origin(advertised)
+    app.need(type(port) is int and port in range(18600,18632,2) and path in {'/message','/hot'},'invalid')
+    app.need(type(deadline) in {int,float} and math.isfinite(deadline) and time.monotonic()<deadline,'invalid')
+    key=base64.b64encode(os.urandom(16)).decode()
+    expected=base64.b64encode(hashlib.sha1((key+'258EAFA5-E914-47DA-95CA-C5AB0DC85B11').encode()).digest()).decode()
+    nonce=os.urandom(8);mask=os.urandom(4)
+    limit=min(deadline,time.monotonic()+5)
+    try:
+        with socket.create_connection(('127.0.0.1',port),timeout=max(.01,min(2,limit-time.monotonic()))) as peer:
+            peer.settimeout(max(.01,limit-time.monotonic()))
+            request=('GET '+path+' HTTP/1.1\r\nHost: '+urlsplit(advertised).netloc+'\r\nOrigin: '+advertised+
+                     '\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: '+key+'\r\n\r\n')
+            peer.sendall(request.encode());buffer=bytearray()
+            while b'\r\n\r\n' not in buffer:
+                app.need(time.monotonic()<limit,'timeout')
+                chunk=peer.recv(1024);app.need(bool(chunk),'health');buffer.extend(chunk)
+                app.need(len(buffer)<=MAX_HEADERS,'health')
+            header,tail=bytes(buffer).split(b'\r\n\r\n',1)
+            lines=header.decode('ascii').split('\r\n');app.need(lines[0].split(' ')[1]=='101','health')
+            headers={}
+            for line in lines[1:]:
+                app.need(':' in line,'health');name,value=line.split(':',1);name=name.lower()
+                app.need(name not in headers,'health');headers[name]=value.strip()
+            app.need(headers.get('sec-websocket-accept')==expected and headers.get('upgrade','').lower()=='websocket'
+                     and 'upgrade' in [x.strip().lower() for x in headers.get('connection','').split(',')],'health')
+            peer.sendall(bytes([0x89,0x80|len(nonce)])+mask+bytes(b^mask[i%4] for i,b in enumerate(nonce)))
+            pending=bytearray(tail)
+            def read(count):
+                while len(pending)<count:
+                    app.need(time.monotonic()<limit,'timeout');peer.settimeout(max(.01,limit-time.monotonic()))
+                    chunk=peer.recv(min(4096,count-len(pending)));app.need(bool(chunk),'health');pending.extend(chunk)
+                data=bytes(pending[:count]);del pending[:count];return data
+            total=0
+            for _ in range(16):
+                a,b=read(2);app.need(a&0x70==0 and b&0x80==0,'health');length=b&127;opcode=a&15
+                if length==126:length=int.from_bytes(read(2),'big')
+                elif length==127:length=int.from_bytes(read(8),'big')
+                app.need(length<=65536 and total+length<=131072 and (opcode not in {8,9,10} or length<=125),'health')
+                payload=read(length);total+=length
+                if opcode==10:
+                    app.need(payload==nonce,'health')
+                    close_mask=os.urandom(4);peer.sendall(bytes([0x88,0x80])+close_mask)
+                    return {'status':101,'ping_pong':True,'bytes_observed':total,'path':path}
+                app.need(opcode!=8,'health')
+            raise ProbeError('websocket-frame-limit')
+    except (OSError,UnicodeError,IndexError):raise ProbeError('websocket-transport') from None
+
 def sample(port,advertised,deadline):
     """Collect sanitized SDK evidence for both native targets, without a phone claim."""
     native={}
@@ -130,7 +183,12 @@ def sample(port,advertised,deadline):
         app.need(len(targets['assets'])<=8,'health')
         for target in targets['assets']:
             assets.append(request(port,advertised,target,platform,deadline=deadline))
-        native[platform]={'manifest':manifest,'bundle':bundle,'assets':assets,
+        asset=request(port,advertised,'/assets/assets/icon.png?platform='+platform,platform,deadline=deadline)
+        source_map_path=targets['bundle'].replace('.bundle?', '.map?',1)
+        app.need(source_map_path!=targets['bundle'],'health')
+        source_map=request(port,advertised,source_map_path,platform,deadline=deadline)
+        native[platform]={'starter_icon':asset,'source_map':source_map,'manifest':manifest,'bundle':bundle,'assets':assets,
                           'bundle_exceeds_two_mib':bundle['bytes']>2*1024*1024}
-    return {'protocol':'loopback-native-sdk','native':native,'physical_client_verified':False,
+    channels=[websocket(port,advertised,path,deadline) for path in ['/message','/hot']]
+    return {'protocol':'loopback-native-sdk','native':native,'websockets':channels,'physical_client_verified':False,
             'private_route_verified':False}

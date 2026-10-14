@@ -54,18 +54,19 @@
 ## Handover
 
 T-000 and T-001 are complete. T-002 is in progress: fresh exact audit evidence,
-a separate disabled runtime policy, fail-closed admission tests and a bounded
+a separate approved scoped runtime policy, fail-closed admission tests and a bounded
 loopback SDK-spike helper and sanitized native protocol probes are prepared.
 The original full offline gate passed. Current focused source/admission/protocol
 suites cover 59 cases (18 opt-in cases plus two source-job guards). CI passed
 at fb7f4b2; the final source-job guard revision still needs its CI result. Schema-6 source opt-in, canonical guarded migration, non-HTTP source consumers
-and older installed-provider rejection now have evidence; typed session receipts
-and descriptors remain pending. The exact runtime exceptions/retained fixtures are now approved and recorded.
+and older installed-provider rejection now have evidence; typed session receipt/descriptor validation now has 14 offline cases; execution,
+observation wiring and installed capability remain pending. The exact runtime exceptions/retained fixtures are now approved and recorded.
 Two authorized exact-SDK loopback spikes passed on the retained fixtures; both
 native manifests and bundles over 2 MiB were served with verified source/cleanup.
-See [measured SDK evidence](sdk-spike.md). Asset/WebSocket, supervision,
-private operator scope and physical evidence remain pending. No Metro service or
-route/account change has been made. See [security proposal](security-review.md) and
+See [measured SDK evidence](sdk-spike.md). Existing assets, source maps and reload/HMR handshake/ping checks passed on both
+fixtures with exact source/cleanup proof. Sustained native reload, supervision,
+private operator scope and physical evidence remain pending. Bounded sequential Metro probes were started/stopped; no persistent Metro service,
+private route or account change has been made. See [security proposal](security-review.md) and
 [acceptance tracking](acceptance.md). Other implementation tasks remain open.
 
 Implementation authorization: the active owner goal requires MOB-002 followed by

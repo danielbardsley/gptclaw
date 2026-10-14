@@ -161,3 +161,15 @@ of this design. [Tailscale Serve](https://tailscale.com/docs/features/tailscale-
 describes private serving; actual listener/access configuration still needs reviewed
 operator ownership. [SPEC-031 security scope](../031-expo-project-creation/security-review.md)
 excludes Metro and is the authoritative limit on existing exceptions.
+
+## State boundary implementation checkpoint
+
+`metro_state.py` now validates a separate receipt schema 1 with exact project/root/
+canonical key, ownership token and generation, immutable image/input/policy/unit
+hashes, bounded paired ports/origin, finite lifetime and independent process/protocol/
+route timestamps. Its pure descriptor hides an origin on expiry, stale/future
+observations, input drift, pending/failed route, unknown operation and inactive phase.
+It reports transport readiness separately from source quality and native-client
+acceptance; it emits no Go URI, web app link, credential or device-online claim.
+This boundary is bundled for the forthcoming controller. It is not yet connected
+to live lifecycle/collector observations and adds no installed session capability.

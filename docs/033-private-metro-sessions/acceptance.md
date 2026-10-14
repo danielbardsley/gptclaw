@@ -126,3 +126,11 @@ all source and unrelated services. Both approved fixtures now passed actual loop
 native manifest/bundle delivery and owned cleanup. Full lifecycle/private/native
 acceptance remains pending. Twenty-two preflight and ten protocol cases passed after
 nonpersistent diagnostic/argv corrections; final CI for those changes is pending.
+
+Extended actual SDK probes subsequently passed existing-icon delivery (99 bytes,
+exact retained-file hash), source maps (11,366,406 iOS / 12,348,753 Android bytes)
+and /message + /hot WebSocket upgrades/ping-pong on both unchanged fixtures.
+Source hashes and exact owned cleanup were verified again. These results do not
+establish sustained native reload/private TLS or phone acceptance. Fourteen pure
+state-boundary cases now verify independent readiness/freshness/expiry/ownership
+projection; live state wiring and installed capability remain pending. [Details](sdk-spike.md)

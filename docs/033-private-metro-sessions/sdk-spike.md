@@ -40,10 +40,30 @@ can enter owned diagnostics. Cold and retry outcomes remain separate records.
 
 ## Remaining acceptance
 
-Manifest asset lists were empty in these unchanged starter fixtures. Asset and
-source-map origin/read behavior, HMR/reload WebSocket traffic, sustained load,
+Manifest asset lists were empty; subsequent probes used the existing compiled
+icon path and derived .map URLs (see below). Sustained native HMR/reload traffic,
+private source-map/asset delivery, sustained load,
 full two-session supervised lifecycle, expiry/security revocation and compatible
 rollout/rollback still need implementation/evidence. Sequential spikes are not
 proof of simultaneous session isolation or shell-disconnect survival.
 Private listeners/access policy and physical iOS/Android have not been verified.
 No route/SDK account/production operation occurred. Keep all full criteria pending.
+
+## Extended asset/map/reload probes
+
+Both unchanged canonical fixtures passed the extended bounded loopback probes:
+
+| Target | Existing PNG asset bytes | Source-map bytes | Reload channels |
+|---|---:|---:|---|
+| iOS | 99 | 11366406 | /message and /hot: HTTP 101, masked ping/server pong |
+| Android | 99 | 12348753 | /message and /hot: HTTP 101, masked ping/server pong |
+
+Asset SHA-256 equals the actual retained assets/icon.png for both fixtures.
+Bundle-derived .map query/origin rules were preserved; responses were streamed
+and hashed. WebSocket probes validated RFC6455 accept/upgrade headers, used bounded
+control frames, discarded received content and closed both connections. These are
+handshake/control-channel checks, not sustained Fast Refresh or physical interaction.
+Exact owned containers/networks are absent and canonical filtered-source hashes
+still match after both probes. No source image, config or app edit was required.
+Twelve protocol cases passed including real synthetic WebSocket peers and wrong
+accept/path rejection; fourteen state-boundary cases passed. Current CI is pending.
