@@ -172,7 +172,11 @@ The broader local gate passed the mobile/admission/spike/protocol/opt-in/state/
 controller suites. Its template snapshot fixture lacked the newly bundled reviewed
 Metro policy and failed one case; the fixture now copies that provider input and
 asserts controller/policy byte parity, and the complete 21-case template suite passed.
-Remaining broad-suite results and new-head CI must be recorded separately. No private listener, installed pointer,
+The full local gate subsequently completed 36 suites / 672 cases with exit 1
+from that single fixture error; every other suite passed. The corrected complete
+21-case template rerun passed. This is not reported as a clean full-gate rerun.
+At implementation head 80e28eb, dashboard CI passed and the other three workflows
+were still running; final CI remains separate. No private listener, installed pointer,
 retained app metadata or phone acceptance changed. Live concurrent user units,
 streaming proxy, route readback, cache/renewal bounds, installed recovery and actual
 Android/iOS remain pending. Session/runtime capability remains unadvertised.
@@ -183,3 +187,12 @@ CLI readback reports 1.12.0, source manifest schemas 1–6, worktree receipt sch
 no Metro session schemas and runtime schemas 1–4. This did not select it as the
 installed launcher: the stable pointer still resolves to the original 1.10.1
 snapshot. Frozen byte/capability readback is distinct from installed lifecycle.
+
+The completed broad command was
+`PATH=/srv/forge/projects/gptclaw/.venv-manifest/bin:/usr/local/bin:/usr/bin:/bin ./scripts/check-repository.sh`.
+Its synthetic offline suites included mobile, canonical worktrees, repository/
+credential ownership, web/API/group/database and dashboard regressions. No local
+Terraform apply, infrastructure mutation, production use or host package setup
+ran. Whitespace, Python/shell syntax and changed relative-link checks passed.
+Private streaming transport is the next open implementation step; the pinned
+URL-builder limitation is recorded in [SDK evidence](sdk-spike.md).

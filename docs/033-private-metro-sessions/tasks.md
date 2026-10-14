@@ -99,4 +99,7 @@ The broader local gate passed current mobile and Metro suites. One template
 snapshot fixture missed the new bundled policy; its provider-input copy and
 controller/policy parity assertions were corrected, and all 21 template cases
 passed separately. A fresh frozen review snapshot matched source without changing
-the installed pointer. Remaining broad-suite results and new-head CI are pending.
+the installed pointer. The full local gate completed 36 suites / 672 cases, exit 1 solely from that
+fixture error; all other suites passed and the corrected complete template suite
+passed separately. At 80e28eb dashboard CI passed; the other three workflows were
+still running. Final CI and all live lifecycle/private/device gates remain pending.

@@ -67,3 +67,15 @@ Exact owned containers/networks are absent and canonical filtered-source hashes
 still match after both probes. No source image, config or app edit was required.
 Twelve protocol cases passed including real synthetic WebSocket peers and wrong
 accept/path rejection; fourteen state-boundary cases passed. Current CI is pending.
+
+## Pinned URL-builder follow-up
+
+Read-only inspection of the retained fixture's `@expo/cli` 57.0.29
+`build/src/start/server/UrlCreator.js` found that proxy URL conversion returns
+only scheme, hostname and port; its URL joiner emits only those components.
+Fingerprint: `7f46a089cc9f6e9ca920f5a057226d208582f42679234d0022d57a34a2b700b0`.
+This supports the selected origin-root approach. It does not establish a working
+generation path prefix or physical client URI behavior. No prefix/QR/route was
+configured or SDK restarted for this inspection. Generation-bound manifest launch
+and stale-QR rejection remain transport/Go verification work; do not silently rely
+on the CLI preserving a proxy-origin path or changing an `exp` URI to private TLS.
