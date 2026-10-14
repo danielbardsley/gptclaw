@@ -13,7 +13,7 @@
 - [x] T-001: Owner reviews lifecycle/private-transport scope and proposed bounds,
   platform matrix and operator/security decisions, then authorizes implementation.
   Planning/merge approval alone does not enable a Metro service or extend exceptions.
-- [ ] T-002: Collect exact runtime security evidence and resolve patched-input or
+- [x] T-002: Collect exact runtime security evidence and resolve patched-input or
   explicit runtime-disposition gate before execution. After authorization, spike
   pinned SDK URL/manifest/assets/large bundles and WebSocket behavior with an eligible
   native client; propose exact owned origins/listeners/access scope and measured bounds.
@@ -21,7 +21,7 @@
 - [x] T-003: Recheck schema reservations; implement opt-in migration/validation,
   canonical-root guard, capability/receipt/descriptor versions and older-provider
   rejection, preserving schema-5 source and all frozen releases. (MET-001/005; AC-001/005)
-- [ ] T-004 (in progress): Implement owned user-unit lifecycle, atomic port/cache leases, mutation
+- [x] T-004: Implement owned user-unit lifecycle, atomic port/cache leases, mutation
   locks, resource/TTL/security-revocation supervision, sanitized logs and typed recovery.
   Test two independent sessions, drift, concurrency, disconnect, crash and expiry.
   (MET-002/006/007; AC-002/006/007)
@@ -283,3 +283,17 @@ planning default no longer blocks this selected slice. Existing Android native
 interaction/edit/reload evidence is accepted for that matrix. Fresh inline QR/
 restart/isolation/reconnect, operator listener-removal, final owner acceptance and
 review/merge/retention gates remain; no Delivered label is applied.
+
+
+## Corrected Android isolation and recovery checkpoint
+
+T-002 and T-004 are complete for the owner-selected Android-first scope: exact
+runtime disposition, private transport amendment/operator readback, bounded
+protocol/security and owned lifecycle tests are recorded. Following the connection
+capacity correction, the owner reports both fresh apps work on Reload, stopped
+app one is unavailable while app two continues working, restarted app one opens,
+and both apps work after the single owned SDK crash/automatic recovery. App one's
+generation and expiry remain unchanged during crash recovery. Detailed counter
+values are not inferred from these reports. Physical expiry and owned-listener
+removal are still pending under T-008; final CI, review/merge and delivery remain
+T-007/009. Earlier checkpoint sections are historical.

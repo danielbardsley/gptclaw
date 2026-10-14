@@ -15,7 +15,7 @@
 | AC-002 | Passed (Android-first) | Owner confirms both fresh locally rendered QR images open the correct native apps after restart. Encoding, foreign origin, generation/expiry/port-reuse and privacy rejection plus independent PNG decode pass. Further runtime failure/reconnect remains AC-005. |
 | AC-003 | Passed | Read-only inspect/launch and minimum Open/copy/QR UI preserve existing links and fail closed on missing/stale capability. Portable browser tests and installed CLI/collector parity pass; launch performs no hidden runtime/route/account action. Physical product QR is separately pending under AC-002. |
 | AC-004 | Passed (Android-first) | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. Owner accepted the Android-first scope; iOS remains unsupported/follow-up. |
-| AC-005 | In progress | Prior network/tailnet/background/compile recovery passes. Earlier stop/reload isolation failed because app two also could not reload. The installed capacity correction now has owner-confirmed loading for both fresh sessions; the owner reports Reload still works and the repeated physical stop/isolation check passes. Native restart/crash/expiry recovery remains. |
+| AC-005 | In progress | Prior network/tailnet/background/compile recovery passes. Earlier stop/reload isolation failed because app two also could not reload. The installed capacity correction now has owner-confirmed loading for both fresh sessions; the owner reports Reload still works and the repeated physical stop/isolation check passes. The owner confirms native reconnection after app-one restart and post-crash Reload of both apps. The final physical expiry check remains. |
 | AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. Implementation CI passes at 92119fb; final merge/delivery is separately AC-007. |
 | AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback and implementation CI pass. Merge and owner matrix/retention acceptance remain. |
 
@@ -552,3 +552,65 @@ the former generation entry returns 503. App two retains its existing generation
 expiry, input/unit digests and available private transport. Existing HTTPS/Funnel
 handlers remain unchanged. The new physical reconnect and expiry checks are
 pending; host payload rejection alone is not native evidence.
+
+
+## Owner confirms intended-session restart; bounded crash check started
+
+At approximately 6:57 p.m. Eastern on October 14 the project owner reports:
+“App one ready for recovery - I opened it and it worked again.” This accepts
+native reconnection to restarted app-one generation
+`8989c4bc00f749c6b3712439415aae76`; it does not infer a counter value.
+The owner leaves the app open for the previously described bounded recovery check.
+
+After rechecking exact receipt/generation, active unit-file ownership, admission,
+clean source and exact SDK container ownership, one synthetic SDK crash was
+injected on app one only. Automatic recovery and the corresponding physical
+Reload result remain pending; app two is not stopped or restarted.
+
+
+The same owned app-one generation recovered automatically after exactly one
+unit restart. At 6:58 p.m. Eastern its private Android manifest returned 200 and
+the warm 6,441,558-byte bundle matched the pre-crash bundle digest. The generation
+and 7:06 p.m. expiry were unchanged; app two's generation/expiry/input/unit digests
+and available private transport were preserved. Existing HTTPS/Funnel handlers
+remain unchanged. This is actual installed recovery evidence; the owner's
+post-crash native Reload and subsequent physical expiry results remain pending.
+
+
+## Owner confirms post-crash native recovery
+
+In response to the explicit request to Reload both current apps after app one's
+synthetic SDK crash, the project owner reports: “App one and two both work.”
+This accepts native recovery using app one's unchanged generation/link and
+continued app-two usability. No detailed counter value is inferred. The separate
+after-7:07 p.m. Eastern expiry check remains pending; no renewal or restart extends
+the fixed 7:06 p.m. app-one deadline.
+
+
+All four CI workflows pass at `4ceb99b0916b674a9a2c5241ccedfd7c17213aa8`:
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38650749393),
+[private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38650749488),
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38650749490)
+and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38650749404).
+This is the revised proxy plus the earlier isolation/restart evidence head; pending
+new evidence edits still require their final published-head checks. CI does not
+substitute for physical expiry or operator removal.
+
+
+## Fixed app-one expiry verified on the host
+
+At 7:06 p.m. Eastern, generation `8989c4bc00f749c6b3712439415aae76`
+expired automatically with operation_result passed. The SDK, audit container,
+network and both loopback listeners are absent. Transport/launch availability
+is withdrawn; source and the actual installed CLI launcher refuse the expired
+generation with matching category `mobile-unsupported`. App two retains its
+original generation/expiry/input/unit identity and its private Android manifest
+returns 200; both source checkouts and original HTTPS/Funnel handlers remain
+unchanged. No renewal, manual stop or source deletion produced this expiry.
+
+The long-lived read-only waiting observer exited with SIGTERM/143 before returning
+a result; it is not counted as success. A bounded read-only reconciliation of the
+same generation independently verified the terminal state and resource absence.
+The first PATH-based CLI check could not find a command; the installed store
+launcher was resolved and checked separately. Neither interrupted attempt is
+reported as passing. Physical expiry confirmation remains pending.

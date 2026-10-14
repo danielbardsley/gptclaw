@@ -171,3 +171,33 @@ d0c41e928966c5d085e704d5826120b76ae4b4af854eb0aa570e447d52db5539,
 and emit the exact conversion/rollback commands in the
 [HTTP runbook](../../runbooks/manage-metro.md#approved-sdk-57-private-http-operator-conversion).
 No listener has been changed by forge. Native/iOS acceptance remains pending.
+
+
+## Current HTTP listener removal acceptance
+
+The earlier HTTPS removal commands describe the original listener mode. Following
+the approved conversion, remove only exact owned **HTTP** listeners. First stop
+or observe expiry through the capable Metro owner interface; verify the selected
+SDK/audit/network absent and both loopback ports released. Read back the current
+Serve config and require the exact root proxy with no additional handler.
+
+For the app-two removal check, the existing SSM operator runs:
+
+~~~sh
+sudo tailscale serve --bg --http=8444 off
+tailscale serve status --json
+~~~
+
+Independently verify that 8444 is absent while the 8443 HTTP proxy, port-443 HTTPS
+dashboard/project handlers and Funnel-off baseline are preserved. After acceptance,
+remove the app-one handler only after its expiry/absence proof:
+
+~~~sh
+sudo tailscale serve --bg --http=8443 off
+tailscale serve status --json
+~~~
+
+Retain both synthetic project repositories, source metadata, PRs, sticky leases,
+receipts and history; no project data or published release is deleted. Missing or
+changed ownership blocks removal. These commands use the already reviewed operator
+path; forge does not administer Tailscale. Operator execution/readback is pending.

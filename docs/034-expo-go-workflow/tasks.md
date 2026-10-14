@@ -13,7 +13,7 @@
 - [x] T-001: Owner reviews bounded Go workflow, proposed platform/freshness matrix
   and acquisition/fallback boundaries, then authorizes implementation. Confirm
   exact device/fixture scope before live acceptance.
-- [ ] T-002: After authorization, verify actual SDK/native/client/OS acquisition and
+- [x] T-002: After authorization, verify actual SDK/native/client/OS acquisition and
   private transport prerequisites. Consume the security-cleared SPEC-033 spike;
   prove native launch rules and stale-QR/session isolation. Record unsupported
   platforms accurately; any signed-client/account need is a separate MOB-004 scope.
@@ -153,3 +153,15 @@ planning default no longer blocks this selected slice. Existing Android native
 interaction/edit/reload evidence is accepted for that matrix. Fresh inline QR/
 restart/isolation/reconnect, operator listener-removal, final owner acceptance and
 review/merge/retention gates remain; no Delivered label is applied.
+
+
+## Corrected Android reconnect/recovery checkpoint
+
+T-002 prerequisites and launch/isolation rules now pass for the explicitly selected
+Android 11 / Go 57.0.9 matrix. The owner confirms Reload still works after the
+proxy capacity correction, stopped app one fails while app two remains usable,
+app-one restart reconnects to its new link, and post-crash Reload works for both.
+The actual owned SDK recovered once with the same generation/expiry; no detailed
+counter result is inferred. T-007 retains the final physical expiry check; T-006/008
+retain final CI, operator cleanup, review/merge and delivery records. iOS remains
+unsupported/follow-up. See the current acceptance tables for present state.
