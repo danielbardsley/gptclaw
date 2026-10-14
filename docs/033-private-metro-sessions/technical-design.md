@@ -315,3 +315,11 @@ complete HTTP/WebSocket work or increase the resource ceiling. Capacity diagnost
 contain counts only, with no peer/path/header/device data. Native saturation and
 idle-header tests accompany installed/device revalidation; prior failed reload
 isolation remains recorded until the repeated physical check passes.
+
+
+Within the seven forwarded native slots, at most four are WebSockets. This leaves
+three slots for manifest/bundle/asset HTTP requests, in addition to the fixed health
+slot. Native launch HTTP must remain available under a reconnecting WebSocket burst;
+health availability alone is not native readiness proof. Aggregate WebSocket count
+is not an online-device count. The open-WebSocket HTTP/health regression verifies
+this split without raising the eight-slot total.

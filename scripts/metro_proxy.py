@@ -18,6 +18,7 @@ MAX_REQUEST = 65536
 MAX_CONNECTIONS = 8
 # Reserve one of the existing slots for bounded health/diagnostic requests.
 MAX_NATIVE_CONNECTIONS = MAX_CONNECTIONS - 1
+MAX_WEBSOCKETS = 4
 HEADER_RECLAIM_SECONDS = 1.0
 CHUNK = 65536
 IDLE_SECONDS = 60
@@ -143,6 +144,7 @@ class Proxy:
         self.authority = urlsplit(receipt['origin']).netloc
         self.connections = set()
         self.native_connections = set()
+        self.websockets = set()
         self.header_tasks = {}
         self.tasks = set()
         self.server = None
@@ -165,7 +167,8 @@ class Proxy:
         return {'schema_version':1,'project':self.receipt['project'],
                 'generation':self.receipt['generation'],'expires_at':self.receipt['expires_at'],
                 'capacity':{'active':len(self.connections),'native':len(self.native_connections),
-                            'pending_headers':len(self.header_tasks),'limit':MAX_CONNECTIONS},
+                            'pending_headers':len(self.header_tasks),'websockets':len(self.websockets),
+                            'limit':MAX_CONNECTIONS},
                 'counters':dict(self.counters),'rejections':dict(self.rejections),
                 'resources':deepcopy(self.resources),
                 'native_client_acceptance':'unverified'}
@@ -263,6 +266,9 @@ class Proxy:
                 sent = True
                 return
             require(len(self.native_connections) < MAX_NATIVE_CONNECTIONS, 'connection-bound')
+            if websocket:
+                require(len(self.websockets) < MAX_WEBSOCKETS, 'connection-bound')
+                self.websockets.add(writer)
             self.native_connections.add(writer)
             session_entry = parsed.path in {SESSION_PREFIX + self.receipt['generation'],
                                             SESSION_PREFIX + self.receipt['generation'] + '/'}
@@ -344,6 +350,7 @@ class Proxy:
             self.header_tasks.pop(writer, None)
             self.connections.discard(writer)
             self.native_connections.discard(writer)
+            self.websockets.discard(writer)
             self.tasks.discard(task)
             if upstream_writer:
                 await close(upstream_writer)

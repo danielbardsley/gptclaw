@@ -214,7 +214,7 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payload['rejections']['stale-launch'],1)
         self.assertEqual(payload['rejections']['credential-header'],1)
         self.assertEqual(payload['native_client_acceptance'],'unverified')
-        self.assertEqual(set(payload['capacity']),{'active','native','pending_headers','limit'})
+        self.assertEqual(set(payload['capacity']),{'active','native','pending_headers','websockets','limit'})
         self.assertEqual(payload['capacity']['limit'],8)
         self.assertNotIn('synthetic-private-canary',response.decode())
         self.assertNotIn('authorization',response.decode().lower())
@@ -401,6 +401,31 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
                      b'Upgrade: websocket\r\nSec-WebSocket-Accept: '+accept+b'\r\n\r\n')
         await writer.drain()
         await self.ws_behavior(reader, writer)
+
+    async def test_websocket_reconnect_pressure_preserves_manifest_and_health_capacity(self):
+        self.behavior = self.websocket_server
+        clients = [await self.websocket_connect() for _ in range(module.MAX_WEBSOCKETS)]
+        try:
+            self.assertEqual(len(self.proxy.websockets), 4)
+            reader, writer, response = await self.websocket_connect()
+            try:
+                self.assertTrue(response.startswith(b'HTTP/1.1 503'))
+            finally:
+                await module.close(writer)
+            self.assertEqual(len(self.proxy.websockets), 4)
+            self.behavior = None
+            entry = module.SESSION_PREFIX+self.value['generation']
+            self.assertTrue((await self.request(entry)).startswith(b'HTTP/1.1 200'))
+            self.assertTrue((await self.request('/_gptclaw/metro-health')).startswith(b'HTTP/1.1 200'))
+            self.assertLessEqual(len(self.proxy.connections), module.MAX_CONNECTIONS)
+        finally:
+            for _, writer, _ in clients:
+                await module.close(writer)
+        for _ in range(100):
+            if not self.proxy.websockets:
+                break
+            await asyncio.sleep(.01)
+        self.assertEqual(self.proxy.websockets, set())
 
     async def test_websocket_masked_ping_and_fragmented_reload_frames_roundtrip(self):
         async def behavior(reader, writer):

@@ -1118,3 +1118,23 @@ All four CI workflows pass at prior documentation head e67ce44: dashboard
 38639886338, private applications 38639886322, development host 38639886301 and
 federation 38639886350. Protected infrastructure actions were skipped. The capacity
 fix needs new-head CI, installed verification and repeated device isolation/recovery.
+
+
+## First capacity correction did not recover native launch
+
+Provider 15b5491fef90cbc337a1aabeae279d8664419cce24b4a89a13c00e68122aef66
+was installed through the owned provider path. Both new sessions served warm
+6,441,558-byte Android bundles and fixed health/diagnostic responses. Six consecutive
+private app-one health probes passed. The owner nevertheless reports the same
+remote-update failure from the new app-one QR, including after force-stopping Expo Go.
+That native result fails; healthy host probes are not treated as native acceptance.
+
+Aggregate diagnostics after the new QR attempts show seven additional accepted
+WebSocket requests per attempt, capacity rejections, and no additional manifest or
+bundle response beyond the agent's warmup. Reserving health capacity alone still
+lets reconnecting WebSockets monopolize all seven forwarded native slots. The
+correction now separately caps WebSockets at four, preserving three native HTTP
+slots and one health slot within the unchanged eight-slot total. Complete requests
+remain protected; diagnostics contain aggregate counts only. New regression keeps
+four WebSockets open while proving the current manifest and health return 200,
+with excess WebSockets rejected. Installed/native revalidation is still required.

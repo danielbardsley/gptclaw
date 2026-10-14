@@ -355,3 +355,9 @@ incomplete-header work under pressure. Complete SDK requests are preserved.
 `/_gptclaw/metro-transport` reports aggregate active/native/pending-header counts;
 these are connection/resource counts, not connected-phone counts. A failed native
 reload is not accepted as isolation simply because the other SDK process is up.
+
+
+The native pool also caps concurrent WebSockets at four, reserving three forwarded
+slots for native HTTP downloads. A successful health endpoint does not prove Go
+manifest/bundle delivery during a reconnect burst; test the actual current entry
+and native client, and retain failed outcomes.
