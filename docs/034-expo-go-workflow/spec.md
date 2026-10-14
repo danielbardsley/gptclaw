@@ -168,3 +168,16 @@ ships. [The release-triggered follow-up and decision](../034-expo-go-workflow/cl
 requires native HTTPS status/bundle/assets/reload checks and SDK/client compatibility
 before conversion. SDK-58 Go drops SDK-57 support; no automatic source upgrade or
 TLS restoration from a store release alone.
+
+
+## Approved supported matrix (October 14 UTC)
+
+The project owner selected **Deliver Android first; retain iOS follow-up**.
+The initial supported physical matrix is Android 11 / Expo Go 57.0.9 / the exact
+SDK-57 source and approved private-tailnet HTTP profile, subject to its finite
+certification expiry and input/client drift gates. iOS remains explicitly
+uncertified/unsupported; continue its software path without claiming device
+acceptance or acquiring credentials. Resolve physical iPhone availability and
+Go's CLI-login prerequisite, or separately scope MOB-004, before adding iOS support.
+This implements the permitted first-platform decision; final Android QR/recovery,
+owner acceptance, merge and retention/runbook records remain required.

@@ -11,10 +11,10 @@
 
 | Criterion | State | Evidence and remaining work |
 |---|---|---|
-| AC-001 | In progress | Android 11 / Go 57.0.9 / SDK 57 private HTTP is physically verified, with finite seven-day certification and input/client drift gates. iOS is uncertified/account prerequisite outside scope; final accepted matrix pending. |
+| AC-001 | Passed (Android-first) | Android 11 / Go 57.0.9 / SDK 57 private HTTP is physically verified, with finite seven-day certification and tested unsupported/input/client drift gates. Owner selected Android-first delivery; iOS is uncertified with its account prerequisite outside scope. |
 | AC-002 | In progress | Android path-bound manual payloads open both projects; generation/origin/expiry/secret rejection and local independent QR decode pass. Product QR device scan and native stale/restart checks remain. |
 | AC-003 | Passed | Read-only inspect/launch and minimum Open/copy/QR UI preserve existing links and fail closed on missing/stale capability. Portable browser tests and installed CLI/collector parity pass; launch performs no hidden runtime/route/account action. Physical product QR is separately pending under AC-002. |
-| AC-004 | In progress | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. iOS is not claimed as supported; final scope/matrix acceptance remains. |
+| AC-004 | Passed (Android-first) | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. Owner accepted the Android-first scope; iOS remains unsupported/follow-up. |
 | AC-005 | In progress | Owner confirms Android background/network/tailnet loss/rejoin and isolated compile-error recovery. Native Metro restart/crash/expiry and stale-link recovery remain. |
 | AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. Implementation CI passes at 92119fb; final merge/delivery is separately AC-007. |
 | AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback and implementation CI pass. Merge and owner matrix/retention acceptance remain. |
@@ -411,3 +411,22 @@ The [private renewal rehearsal](../033-private-metro-sessions/acceptance.md#posi
 passes actual HTTP transport retention, a fresh bounded generation, old entry
 rejection and automatic cleanup. This is host/protocol evidence; it does not
 replace the pending physical restart/crash/expiry and product QR checks.
+
+
+## Owner resumed device checks and selected Android-first delivery
+
+On October 14 the owner requested fresh sessions and inline QR codes after other
+work delayed the earlier prompts. The owner explicitly selected Android-first
+release with iOS retained as a follow-up. Prior expired QR prompts are not counted
+as physical evidence. Two fresh one-hour sessions are being prepared under the
+existing exact runtime/private-listener scope. The owner did not report execution
+of the listener-removal command; defer that operator step until device checks
+finish and independently read back its result. No Tailscale mutation or new
+permission is inferred from the reply.
+
+
+Both [fresh owner-requested QR sessions](../033-private-metro-sessions/acceptance.md#fresh-owner-requested-qr-sessions-october-14-2122-utc)
+are Ready with warm Android bundles and independently decoded local PNGs. Physical
+scan/intended-app restart confirmation is pending; no delivered or device result
+is inferred from PNG rendering. The owner-selected Android-first matrix is
+accepted, while iOS remains unsupported/follow-up.

@@ -145,3 +145,11 @@ actual installed parity plus Go-only rollback/roll-forward. Remaining review and
 delivery gates are retained. Current native restart/QR/isolation and platform
 selection are still pending; app two's earlier prompt is expired. See the current
 acceptance table rather than historical checkpoint descriptions for present status.
+
+
+The owner explicitly selected Android-first delivery on October 14, with iOS
+retained as an unsupported physical/client follow-up. The earlier two-platform
+planning default no longer blocks this selected slice. Existing Android native
+interaction/edit/reload evidence is accepted for that matrix. Fresh inline QR/
+restart/isolation/reconnect, operator listener-removal, final owner acceptance and
+review/merge/retention gates remain; no Delivered label is applied.

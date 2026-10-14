@@ -275,3 +275,11 @@ operator removal and final owner/review/merge/delivery. The latest credential CI
 failure and successful isolated/full local checks plus CI retry are recorded
 without erasing the initial failure. No additional broad test run is required
 absent a code change or new failure.
+
+
+The owner explicitly selected Android-first delivery on October 14, with iOS
+retained as an unsupported physical/client follow-up. The earlier two-platform
+planning default no longer blocks this selected slice. Existing Android native
+interaction/edit/reload evidence is accepted for that matrix. Fresh inline QR/
+restart/isolation/reconnect, operator listener-removal, final owner acceptance and
+review/merge/retention gates remain; no Delivered label is applied.

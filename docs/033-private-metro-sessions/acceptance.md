@@ -15,7 +15,7 @@
 |---|---|---|
 | AC-001 | Passed | Schema-6 opt-in, canonical/input denial, versioned capabilities/receipts and installed parity pass. Historical contracts and immutable releases are preserved. |
 | AC-002 | In progress | Real independent sessions, idempotence, SSM reconnect, crash restart, mutation/input drift denial and bounded expiry pass. Refreshed physical stop/restart isolation remains pending; the earlier owner report that both downloads failed is not an isolation pass. |
-| AC-003 | In progress | Private manifests, >2 MiB native bundles, assets/maps and both WebSocket paths pass. Owner verifies Android 11 / Go 57.0.9 native load, Fast Refresh and reload. iOS is unverified; explicit first-platform matrix decision is pending. |
+| AC-003 | Passed (Android-first) | Private manifests, >2 MiB native bundles, assets/maps and both WebSocket paths pass. Owner verifies Android 11 / Go 57.0.9 native load, local assets, Fast Refresh and reload. Owner selected Android-first delivery; iOS remains explicitly unsupported/follow-up. |
 | AC-004 | In progress | Approved HTTP conversion, exact route readback, preserved HTTPS handlers/Funnel off and owner-reported off-tailnet denial pass. All devices on this tailnet are owner-permitted. Exact operator-owned listener-removal readback remains pending. |
 | AC-005 | Passed | Installed CLI/collector distinguish readiness/expiry and withdraw launch targets; typed generation/origin/expiry, source parity and Go-only rollback/roll-forward pass. No device-online/backend-health claim is made. |
 | AC-006 | Passed | Exact runtime disposition, effective mounts/resource/environment predicates, bounded sanitized records, tested exception/version/expiry denials and live lock/environment-file admission shutdown pass. A separate allowed source-exclusion probe proves the synthetic private canary file is absent from the SDK view and native bundle; failed forbidden-dotenv probes remain recorded. |
@@ -1053,3 +1053,36 @@ job's rerun passed the complete workflow. No production credentials or remote
 repositories were used by these local fixtures. Development-host and federation
 runs 38637239492 / 38637237136 remain running at this checkpoint; no new full-pass
 claim or infrastructure apply is made.
+
+
+## Owner resumed device checks and selected Android-first delivery
+
+On October 14 the owner requested fresh sessions and inline QR codes after other
+work delayed the earlier prompts. The owner explicitly selected Android-first
+release with iOS retained as a follow-up. Prior expired QR prompts are not counted
+as physical evidence. Two fresh one-hour sessions are being prepared under the
+existing exact runtime/private-listener scope. The owner did not report execution
+of the listener-removal command; defer that operator step until device checks
+finish and independently read back its result. No Tailscale mutation or new
+permission is inferred from the reply.
+
+
+## Fresh owner-requested QR sessions (October 14, 21:22 UTC)
+
+The owner requested fresh sessions and direct QR images. Both canonical fixtures
+were explicitly started with the approved one-hour bound and private HTTP, after
+reconciling their prior exact generations. Each current Android bundle returned
+200 / 6,441,558 bytes before launch publication. The Go serializer independently
+validated current ownership/generation/origin/client/profile/freshness twice.
+
+| Project | Current generation | Expiry |
+|---|---|---|
+| mob001-accept-one | c5ad655350a04e11a5b478c45e0a9ceb | 22:17:52 UTC |
+| mob001-accept-two | dc40a59da6f1445e838fabf899c55b41 | 22:19:44 UTC |
+
+Each PNG was rendered offline from the same pinned `localQr` encoder used by the
+dashboard and independently decoded to the complete current payload with jsqr.
+No external QR service, credential or owner device data was used. Both source
+checkouts are clean; the existing HTTPS/Funnel baseline is unchanged. The owner
+receives the QR images directly; native QR/restart results remain pending.
+The prior inline/manual payloads are obsolete and not acceptance for these sessions.
