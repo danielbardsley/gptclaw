@@ -1,6 +1,6 @@
 # TASKS-033: Private Metro sessions
 
-- **Status:** Implementation authorized — scoped runtime disposition approved; spike passed; transport/lifecycle pending
+- **Status:** Implementation authorized — implementation and installed rollout verified; final owner/delivery gates pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md)
@@ -18,18 +18,18 @@
   pinned SDK URL/manifest/assets/large bundles and WebSocket behavior with an eligible
   native client; propose exact owned origins/listeners/access scope and measured bounds.
   Obtain owner/operator disposition for changes outside reviewed scope. (MET-003/004/006; AC-003/004/006)
-- [ ] T-003 (in progress): Recheck schema reservations; implement opt-in migration/validation,
+- [x] T-003: Recheck schema reservations; implement opt-in migration/validation,
   canonical-root guard, capability/receipt/descriptor versions and older-provider
   rejection, preserving schema-5 source and all frozen releases. (MET-001/005; AC-001/005)
 - [ ] T-004 (in progress): Implement owned user-unit lifecycle, atomic port/cache leases, mutation
   locks, resource/TTL/security-revocation supervision, sanitized logs and typed recovery.
   Test two independent sessions, drift, concurrency, disconnect, crash and expiry.
   (MET-002/006/007; AC-002/006/007)
-- [ ] T-005 (in progress): Implement the spike-reviewed streaming/private proxy and operator plan/
+- [x] T-005: Implement the spike-reviewed streaming/private proxy and operator plan/
   readback. Test large/slow requests, origins/TLS, native reload paths and unowned
   route conflicts. Do not change existing handlers or use a public fallback.
   (MET-003/004; AC-003/004)
-- [ ] T-006 (in progress): Add safe observation/CLI endpoint descriptor, minimum source/session
+- [x] T-006: Add safe observation/CLI endpoint descriptor, minimum source/session
   presentation and reviewed runbook; distinguish all readiness layers and leave
   full native/device/build telemetry to MOB-009. (MET-005; AC-005)
 - [ ] T-007 (in progress): Run relevant offline, real rootless protocol/lifecycle and legacy app/
@@ -251,3 +251,16 @@ protocol/privacy tests. Both approved one-hour HTTP backends are loopback health
 and Android bundles warm; exact plans are recorded. Operator replacement and
 private/native acceptance are still pending. All broader task gates remain open;
 no Delivered or physical-certification claim is made. See current acceptance.
+
+
+## Current task reconciliation (October 14 UTC)
+
+T-003/005/006 implementation is complete with source/CI/installed evidence.
+T-002/004/007 retain the remaining safety, private renewal/interruption and physical
+recovery evidence; completed subchecks are recorded in acceptance. Actual input
+drift shuts down the SDK; a forbidden root environment file also triggers owned
+shutdown/re-admission after removal. The failed marker/bundle probe is not a pass.
+T-008/009 retain the owner matrix, fresh device QR/restart/isolation, exact operator
+listener-removal, review/authorized merge and final delivery/retention gates.
+Historical checkpoints below/above retain their original observation context;
+the current criterion table in acceptance governs present status.

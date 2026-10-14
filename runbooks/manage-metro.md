@@ -1,19 +1,29 @@
 # Manage private Metro sessions
 
-- **Status:** Owned loopback lifecycle/proxy verified; private operator/installed/device acceptance pending
+- **Status:** Private HTTP lifecycle and installed rollout verified; final device/operator-removal/delivery gates pending
 - **Specification:** [SPEC-033](../docs/033-private-metro-sessions/spec.md)
 - **Acceptance:** [Current evidence](../docs/033-private-metro-sessions/acceptance.md)
 
 ## Current boundary
 
-Historical baseline: provider 1.10.1 supported Expo source creation/quality, with no Metro
-lifecycle. The development provider 1.12.0 adds explicit schema-6 source adoption;
-it still advertises no Metro session/runtime capability. The source controller has
-real bounded loopback unit/proxy evidence on the approved fixtures; private and
-installed lifecycle acceptance remain pending.
-The recovery/security commands below operate only owned state and create no Serve
-listener or native-client launch. Live start/private transport instructions remain
-pending the verified adapter. No public tunnel, Funnel, EAS or signing fallback.
+The installed combined provider 1.12.0 supports explicit schema-6 mobile adoption,
+owned Metro session schemas 1/2 and Go launch schema 1. Verify actual capabilities
+with `gptclawctl --version` before use. The current accepted transport amendment
+uses HTTP only on owned private Metro listeners 8443/8444 inside encrypted Tailscale;
+existing dashboard/project HTTPS routes remain intact. HTTPS receipts remain valid.
+
+Owned lifecycle, bounded expiry, private protocol, installed parity/rollback and
+Android native edit/reload have evidence. Final physical recovery/matrix, operator
+listener-removal and merge remain pending; see acceptance. Historical sections
+retain the state observed at their checkpoint. Go links/QR/client eligibility use
+[the Go runbook](manage-expo-go.md). No public tunnel, Funnel, EAS or signing fallback.
+
+A root `.env`, `.npmrc` or other forbidden private configuration blocks admission
+and invalidates a running session. The owned supervisor shuts down its SDK and
+may re-admit restored valid source within the original lifetime/restart bounds.
+Do not add such files for application configuration or bypass the guard. Recover
+using the recorded generation and reviewed lifecycle interface; obtain a current
+launch action after recovery.
 
 Run source checks in the prepared Python 3.12 manifest environment. Do not install
 host tools. Operate only a selected canonical owned project. Managed task worktrees

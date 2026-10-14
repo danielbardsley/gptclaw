@@ -1,6 +1,6 @@
 # Open a managed mobile project in Expo Go
 
-This is the source/acceptance workflow for MOB-003; final installed rollout and
+The combined provider and Go dashboard are installed; final owner acceptance and
 merge are tracked in [SPEC-034 acceptance](../docs/034-expo-go-workflow/acceptance.md).
 Use a capable provider whose `--version` reports `expo_go_launch_schemas: [1]` and
 `metro_session_schemas: [1,2]`. A missing capability makes launch unavailable.

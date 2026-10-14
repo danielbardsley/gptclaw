@@ -1,26 +1,26 @@
 # SPEC-033 acceptance tracking
 
-- **Status:** Pending — private TLS and reconnect evidence recorded; installed/device acceptance outstanding
+- **Status:** In progress — private HTTP, installed rollout and Android edit/recovery verified; final owner/delivery gates pending
 - **Owner:** Project owner
-- **Observed:** 2026-10-13 (America/New_York)
+- **Observed:** October 14, 2026 UTC
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md) · **Tasks:** [TASKS-033](tasks.md)
 - **Context:** Main fd6566426e0f18f16bc19150edcc113902da3e84;
   planning commit 66c19a26eb9fba81812165b6c7bda3d390e776ed / [PR #77](https://github.com/danielbardsley/gptclaw/pull/77).
-  Local runtime preparation is on codex/mobile-metro /
-  [draft PR #78](https://github.com/danielbardsley/gptclaw/pull/78); merge/CI/runtime are pending.
+  Installed implementation is on codex/mobile-metro /
+  [draft PR #78](https://github.com/danielbardsley/gptclaw/pull/78); implementation CI and runtime rollout pass; merge and final acceptance remain pending.
 
 ## Criterion mapping
 
 | Criterion | State | Current evidence and remaining action |
 |---|---|---|
-| AC-001 | Pending | Schema-6 opt-in/strict input validation, canonical guarded metadata migration and older-provider rejection have local evidence; session capability/descriptor and installed rollout remain pending. |
-| AC-002 | Pending | Real two-session start/idempotence/independent stop/restart and clean expiry recorded below; SSM disconnect/reconnect preserved both generations and expiries; remaining recovery and physical evidence still required. |
-| AC-003 | Pending | Two sequential SDK loopback spikes served iOS/Android manifests and >2 MiB bundles; Existing assets, source maps and WebSocket handshake/ping passed on both fixtures; Private default-trust TLS manifests/bundles/assets/maps and both WebSocket paths now pass on both fixtures; physical native reload and iOS/Android remain required. [Measured evidence](sdk-spike.md). |
-| AC-004 | Pending | Owner executed the exact approved two-listener plan; independent readback preserves the original baseline and Funnel off. Owner reports denial both off-tailnet and under a different identity. Owner explicitly accepts the supplied wildcard grant and all same-tailnet devices. Off-tailnet denial is owner-reported; permitted physical-client and owned removal/expiry evidence remain pending. |
-| AC-005 | Pending | Typed independent state/descriptor and source CLI controller are prepared; private route observations, collector and installed parity remain pending. |
-| AC-006 | Pending | Fresh audit, owner-approved exact runtime admission, bounded real SDK spikes and offline safety tests recorded in [security proposal](security-review.md); real managed-runtime revocation/secret checks remain; exact owner disposition is recorded. |
-| AC-007 | Pending | Offline absent/foreign ownership cleanup passes; actual crashes, leases, compatible provider refresh/rollback and app regression evidence remain. |
-| AC-008 | Pending | Local source/admission/protocol evidence and all four CI workflows passed at fb7f4b2. All four CI workflows also passed at 62603d4; new controller CI and actual Metro/installed operations, operator/device acceptance and merge remain required. |
+| AC-001 | Passed | Schema-6 opt-in, canonical/input denial, versioned capabilities/receipts and installed parity pass. Historical contracts and immutable releases are preserved. |
+| AC-002 | In progress | Real independent sessions, idempotence, SSM reconnect, crash restart, mutation/input drift denial and bounded expiry pass. Refreshed physical stop/restart isolation remains pending; the earlier owner report that both downloads failed is not an isolation pass. |
+| AC-003 | In progress | Private manifests, >2 MiB native bundles, assets/maps and both WebSocket paths pass. Owner verifies Android 11 / Go 57.0.9 native load, Fast Refresh and reload. iOS is unverified; explicit first-platform matrix decision is pending. |
+| AC-004 | In progress | Approved HTTP conversion, exact route readback, preserved HTTPS handlers/Funnel off and owner-reported off-tailnet denial pass. All devices on this tailnet are owner-permitted. Exact operator-owned listener-removal readback remains pending. |
+| AC-005 | Passed | Installed CLI/collector distinguish readiness/expiry and withdraw launch targets; typed generation/origin/expiry, source parity and Go-only rollback/roll-forward pass. No device-online/backend-health claim is made. |
+| AC-006 | In progress | Exact runtime disposition, effective mounts/resource/environment predicates and live lock/environment-file admission denials pass. The interrupted synthetic marker/bundle check is not counted as a marker-free bundle pass; complete remaining secret-evidence review. |
+| AC-007 | In progress | Real crash recovery, bounded expiry, owned cleanup/reconciliation, capable refresh/rollback and older-provider rejection pass. Complete remaining private renewal/interruption evidence and owner-native reconnect checks. Existing group degradation is preserved, not reported as healthy. |
+| AC-008 | In progress | Implementation CI passes at 92119fb; documentation CI passes at ca460b5. Installed rollout/parity/rollback and Android owner evidence are recorded separately. Final matrix, device recovery, owned listener removal, review/authorized merge and delivery remain pending. |
 
 ## Actual local verification
 
@@ -978,3 +978,31 @@ An Android-first matrix decision is also pending: iOS remains unverified with
 its CLI-login prerequisite outside this scope. Final owner acceptance, operator
 owned-listener removal evidence, review/merge and delivery records remain open.
 No catalogue entry is marked Delivered.
+
+
+## Admission drift and environment-file denial (October 14, 20:58 UTC)
+
+One explicit 300-second session on app two, generation
+`b95669116cdc47318e8e28211056971a`, became Ready. A task-owned comment changed
+only its locked graph hash. Within the bounded supervision check it became
+Failed / supervision / conflict, with its owned SDK/network/proxy absent.
+The exact original lockfile was restored in a guarded finally block; source Git
+status, app-one generation/expiry and the HTTPS/Funnel baseline were preserved.
+The unit later re-admitted the restored inputs within its original finite lifetime
+and ended Expired / passed. This proves input invalidation shutdown and bounded
+re-admission; it is not a global-policy revocation test. No approval/marker changed.
+
+The attempted synthetic private-input bundle check created only a task-owned
+root `.env` file on app one. The SDK source snapshot excluded it, but bundle
+requests returned 502. Inspection identified the intentional `private_apps.target`
+forbidden-file guard: both attempts caused Failed / supervision / invalid and an
+owned automatic restart after exact fixture removal. The same generation and
+21:25:12 UTC expiry were retained; two restarts were observed. Neither attempt is
+counted as a successful marker-free bundle check or uninterrupted availability.
+No policy was relaxed. The task-owned file is absent and both fixture checkouts
+are clean. A subsequent current private Android manifest probe passed; app one
+is Ready. App two is expired with launch unavailable.
+
+All four workflows also pass at documentation commit ca460b5. Final device QR/
+restart/isolation, platform matrix, operator removal, review/merge and delivery
+remain pending; no owner response is assumed.

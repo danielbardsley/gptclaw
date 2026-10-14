@@ -1,11 +1,11 @@
 # SPEC-034 acceptance tracking
 
-- **Status:** In progress — Android native edit/recovery verified; installed/delivery gates pending
+- **Status:** In progress — Android native edit/recovery and installed rollback verified; final owner/delivery gates pending
 - **Owner:** Project owner
 - **Observed:** October 14, 2026 UTC
 - **Specification:** [SPEC-034](spec.md) · **Design:** [TDD-034](technical-design.md) · **Tasks:** [TASKS-034](tasks.md)
 - **Implementation:** [draft PR #78](https://github.com/danielbardsley/gptclaw/pull/78),
-  changes following 9308e0b; not merged or installed as the stable provider.
+  changes following 9308e0b; installed as the combined provider; not merged.
 
 ## Criterion mapping
 
@@ -16,8 +16,8 @@
 | AC-003 | In progress | Read-only inspect/launch and minimum Open/copy/QR UI are implemented with no hidden runtime/route/account action. Portable browser checks pass; installed owner-browser acceptance remains. |
 | AC-004 | In progress | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. iOS is not claimed as supported; final scope/matrix acceptance remains. |
 | AC-005 | In progress | Owner confirms Android background/network/tailnet loss/rejoin and isolated compile-error recovery. Native Metro restart/crash/expiry and stale-link recovery remain. |
-| AC-006 | In progress | Focused profile/serializer/privacy/collector/package tests and portable QR/browser/type/build gate pass. Final broad CI and installed rollback remain. |
-| AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback, final CI, merge and owner matrix/retention acceptance remain. |
+| AC-006 | In progress | Focused profile/serializer/privacy/collector/package tests and portable QR/browser/type/build gate pass. All four implementation workflows pass at 92119fb; installed Go-only rollback/roll-forward pass. Final delivery review remains. |
+| AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback and implementation CI pass. Merge and owner matrix/retention acceptance remain. |
 
 ## Verification
 
@@ -394,3 +394,14 @@ An Android-first matrix decision is also pending: iOS remains unverified with
 its CLI-login prerequisite outside this scope. Final owner acceptance, operator
 owned-listener removal evidence, review/merge and delivery records remain open.
 No catalogue entry is marked Delivered.
+
+
+## Current recovery status (October 14, 20:58 UTC)
+
+See [the paired runtime admission evidence](../033-private-metro-sessions/acceptance.md#admission-drift-and-environment-file-denial-october-14-2058-utc).
+App one recovered after the source guard rejected a task-owned environment-file
+fixture; its current Ready generation/expiry remain unchanged. App two is expired,
+so its old manual/QR links cannot download. The report that neither app downloaded
+is retained as a failed/obsolete-link observation, not proof of physical isolation.
+Current dashboard QR/copy/native restart confirmation and the explicitly selected
+platform matrix are pending. No expired prompt is an acceptance result.

@@ -138,3 +138,10 @@ The updated real 120-second expiry passes with resources removed automatically.
 T-006 retains final review/delivery gate records; T-007/008 retain refreshed
 owner QR/restart and final Android-first matrix/retention/merge acceptance.
 No pending owner response or iOS evidence is treated as accepted.
+
+
+Current T-006 verification includes passing implementation CI at 92119fb and
+actual installed parity plus Go-only rollback/roll-forward. Remaining review and
+delivery gates are retained. Current native restart/QR/isolation and platform
+selection are still pending; app two's earlier prompt is expired. See the current
+acceptance table rather than historical checkpoint descriptions for present status.

@@ -1,6 +1,6 @@
 # TDD-033: Metro lifecycle and private transport
 
-- **Status:** Implementation authorized — not installed capability
+- **Status:** Implemented and installed — final acceptance/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Tasks:** [TASKS-033](tasks.md)
