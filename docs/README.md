@@ -8,6 +8,9 @@ Platform-level handover documents live together under `docs/platform/`. They
 describe direction and the candidate feature backlog, but they are not
 specifications and do not authorize implementation.
 
+For an explanation of repository directories and how their contents support the
+project, see the [directory guide](repository-layout/README.md).
+
 ## Folder convention
 
 Each initiative uses a numbered, descriptive folder:
