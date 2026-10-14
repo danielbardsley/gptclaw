@@ -160,3 +160,9 @@ released. The older recovery-required case remains recorded without an invented
 cause. Tests now cover expiry while the upstream is stalled before headers, and
 probes permit bounded cold compilation within their caller deadline. No private
 listener or stable installed-provider change was performed at this checkpoint.
+
+The exact-owned SDK crash rehearsal passed automatic recovery within the original
+session expiry, then successful inactive cleanup with source preserved. Both
+current fixture sessions are terminal. The full local offline repository gate
+passed; installed/private/device acceptance and remaining recovery controls stay
+separate. Do not infer a physical client or SSM-disconnect result from this test.

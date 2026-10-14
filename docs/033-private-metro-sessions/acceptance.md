@@ -329,3 +329,32 @@ evidence explicitly marks private-route and physical-client verification false.
 No Serve/access-policy operation occurred. The final process/protocol publication
 ordering adjustment was checked separately by all 30 controller cases; this live
 snapshot preceded that small ordering adjustment.
+
+## Full offline gate and real crash recovery (October 14 UTC)
+
+The existing repository gate completed with exit 0:
+PATH=/srv/forge/projects/gptclaw/.venv-manifest/bin:/usr/local/bin:/usr/bin:/bin ./scripts/check-repository.sh
+All registered offline suites passed, including historical web/API/group/database,
+source mobile, canonical worktrees, repository/credential ownership, dashboard,
+new route boundaries, templates and immutable release integrity. The final
+process/protocol-before-route publication ordering was separately verified by the
+complete 30-case controller suite. This is local source evidence, not installed,
+private-network, physical-device or deployment acceptance.
+
+A real 120-second loopback crash/recovery rehearsal then passed on fixture two,
+generation a1c4be043994442cb9dbe631783961f9. After proving the exact SDK/container
+and user-unit ownership, the test killed only that fixture's SDK. The owned unit
+automatically restarted once, using the same session generation and original
+expiry, repeated admission and returned to running. It then expired/passed with
+Result=success, ExecMainStatus=0, inactive/dead unit, absent SDK/audit/network and
+released proxy. The bounded source inventory before/after was identical.
+The terminal unit resets its NRestarts counter; the live observation recorded one
+restart before expiry. Owned evidence records the successful automatic recovery
+and explicitly false private-route/physical-client flags. Both fixtures are now
+terminal with resources absent; no operator route, ACL or installed pointer changed.
+
+Runtime/protocol/route source is published at 7f7e5a8ea0d1513a0fb823c9403237afa1c02f03.
+Dashboard CI passed at that revision; its other three workflows were still running
+at the last verified poll, so final CI remains pending. Exact private listener
+approval was requested against the published operator plan, separately from
+device/client prerequisite information. All remaining acceptance rows stay pending.

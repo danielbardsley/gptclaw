@@ -139,5 +139,13 @@ are pending owner input. No capability is advertised prematurely.
 The new route-observer supervisor also passed a real 120-second loopback rehearsal
 on fixture one: unavailable launch while route-pending, then successful inactive
 expiry and absent SDK/network/proxy. This remains distinct from private TLS/device
-acceptance. The full offline repository gate is still running; no result is inferred
-from its successful completed suites.
+acceptance. The full offline repository gate subsequently completed with exit 0; see the
+acceptance record for actual source verification and remaining separate gates.
+
+Actual exact-owned SDK crash recovery now passed on fixture two within its
+120-second original lifetime: one observed automatic restart, same generation,
+fresh admission, running recovery and clean successful expiry. Source was preserved
+and SDK/audit/network/proxy were absent at completion. Both fixture units are
+terminal. The full repository gate and final focused controller suite passed.
+Private/operator approval, installed/collector, device, renewal/cache, revocation/
+rollback and SSM-disconnect evidence remain open; MOB-003 is not yet implemented.
