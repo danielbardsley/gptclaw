@@ -59,13 +59,23 @@ class SessionTests(unittest.TestCase):
         with self.assertRaises(app.AppError):metro.load('fixture',self.projects/'other')
     def test_control_unknown_environment_and_source_path_are_rejected(self):
         metro.save(self.value)
-        data={'schema_version':1,'project':'fixture','root':str(self.root),'generation':'2'*32,
+        data={'schema_version':2,'project':'fixture','root':str(self.root),'generation':'2'*32,
               'inputs':{p:'0'*64 for p in metro.FILES},'source':str(metro.directory('fixture')/'sources'/('2'*32)),
-              'provider':str(app.REPO),'audit':None,'root_identity':[1,2]}
+              'provider':str(app.REPO),'audit':None,'root_identity':[1,2],'mount_identities':{'src':None,'assets':None,'node_modules':[1,2]}}
         app.save(metro.directory('fixture')/'control.json',data);self.assertEqual(metro.control(self.value),data)
         for field,value in [('environment',{'SECRET':'synthetic'}),('source','/home/forge')]:
             changed=copy.deepcopy(data);changed[field]=value;app.save(metro.directory('fixture')/'control.json',changed)
             with self.assertRaises(app.AppError):metro.control(self.value)
+    def test_replaced_bound_directory_is_detected_without_retargeting(self):
+        for name in ['src','assets','node_modules']:(self.root/name).mkdir()
+        before=metro.mount_identities(self.root)
+        (self.root/'src').rename(self.root/'src-retained')
+        (self.root/'src').mkdir()
+        after=metro.mount_identities(self.root)
+        self.assertNotEqual(before['src'],after['src'])
+        self.assertEqual(before['node_modules'],after['node_modules'])
+        self.assertTrue((self.root/'src-retained').is_dir())
+
     def test_unit_has_bounded_supervision_and_immutable_generation(self):
         text=metro.unit_text(self.value,app.STORE/'providers'/('9'*64))
         for fragment in ['StartLimitIntervalSec=300','StartLimitBurst=3','Restart=on-failure','TimeoutStopSec=30','MemoryMax=192M','CPUQuota=25%','NoNewPrivileges=true','--generation '+self.value['generation']]:self.assertIn(fragment,text)
@@ -102,7 +112,7 @@ class SessionTests(unittest.TestCase):
         self.patch(metro,'receipt_for_root',lambda *args:(self.root,metro.load('fixture',self.root)))
         self.patch(metro.worktrees,'canonical',lambda *args:{'key':'1'*64,'root_identity':[1,2]})
         self.patch(metro.worktrees,'owned',lambda *args:[1,2])
-        data={'inputs':{p:'0'*64 for p in metro.FILES},'source':str(self.projects/'view'),'audit':None,'root_identity':[1,2]}
+        data={'inputs':{p:'0'*64 for p in metro.FILES},'source':str(self.projects/'view'),'audit':None,'root_identity':[1,2],'mount_identities':{'src':None,'assets':None,'node_modules':[1,2]}}
         self.patch(metro,'control',lambda *args:data);self.patch(metro,'hashes',lambda *args:data['inputs'])
         self.patch(metro.spike,'source_inventory',lambda *args:{})
         count={'admission':0}
@@ -143,6 +153,9 @@ class SessionTests(unittest.TestCase):
         result,commands=self.simulate_supervisor(revoked=True);self.assertEqual(result['state'],'failed')
         self.assertTrue(any(c[:2]==['podman','stop'] for c in commands))
         self.assertEqual(metro.load('fixture',self.root)['observations']['process']['state'],'down')
+        failure=app.read_json(metro.directory('fixture')/('failure-'+self.value['generation']+'.json'))
+        self.assertEqual(failure,{'schema_version':1,'generation':self.value['generation'],'stage':'supervision','code':'conflict'})
+        self.assertNotIn(self.value['token'],json.dumps(failure))
     def test_partial_foreign_cleanup_still_closes_other_owned_handles(self):
         resources={'gptclaw-metro-fixture':'foreign','gptclaw-metro-fixture-audit':'owned','gptclaw-metro-fixture-net':'owned'}
         calls=[]

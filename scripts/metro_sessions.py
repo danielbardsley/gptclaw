@@ -37,6 +37,15 @@ def hashes(root):return {name:hashlib.sha256(deps.read_bytes(root/name)).hexdige
 def unit_path(value):return app.safe(UNITS/(value['name']+'.service'))
 def network(value):return value['name']+'-net'
 
+
+def mount_identities(root):
+    result={}
+    for name in ['src','assets','node_modules']:
+        path=root/name;app.safe(path)
+        result[name]=worktrees.owned(path) if path.exists() else None
+    app.need(result['node_modules'] is not None,'path')
+    return result
+
 def load(project,root=None):
     value=app.read_json(location(project))
     if value is None:return None
@@ -74,14 +83,19 @@ def save(value):
 
 def control(value):
     data=app.read_json(directory(value['project'])/'control.json')
-    app.need(isinstance(data,dict) and set(data)=={'schema_version','project','root','generation','inputs','source','provider','audit','root_identity'}
-             and type(data['schema_version']) is int and data['schema_version']==1 and data['project']==value['project']
+    app.need(isinstance(data,dict) and set(data)=={'schema_version','project','root','generation','inputs','source','provider','audit','root_identity','mount_identities'}
+             and type(data['schema_version']) is int and data['schema_version']==2 and data['project']==value['project']
              and data['root']==value['root'] and data['generation']==value['generation'],'conflict')
     app.need(isinstance(data['inputs'],dict) and set(data['inputs'])==set(FILES)
              and all(isinstance(v,str) and states.HEX64.fullmatch(v) for v in data['inputs'].values()),'conflict')
     app.need(data['source']==str(directory(value['project'])/'sources'/value['generation']) and data['provider']==str(app.REPO),'conflict')
     app.need(isinstance(data['root_identity'],list) and len(data['root_identity'])==2
              and all(type(n) is int and n>=0 for n in data['root_identity']),'conflict')
+    mounts=data['mount_identities']
+    app.need(isinstance(mounts,dict) and set(mounts)=={'src','assets','node_modules'} and mounts['node_modules'] is not None,'conflict')
+    for identity in mounts.values():
+        app.need(identity is None or isinstance(identity,list) and len(identity)==2
+                 and all(type(n) is int and n>=0 for n in identity),'conflict')
     return data
 
 def ownership(kind,name,token):return spike.ownership(kind,name,token,LABEL)
@@ -277,8 +291,8 @@ def start(root,no_route=False):
         try:
             view=directory(project)/'sources'/generation;view.parent.mkdir(parents=True,mode=0o700,exist_ok=True)
             inventory=spike.source_inventory(root);spike.prepare_view(root,view,inventory)
-            data={'schema_version':1,'project':project,'root':str(root),'generation':generation,'inputs':input_files,
-                  'source':str(view),'provider':str(snapshot),'audit':None,'root_identity':identity['root_identity']};app.save(directory(project)/'control.json',data)
+            data={'schema_version':2,'project':project,'root':str(root),'generation':generation,'inputs':input_files,
+                  'source':str(view),'provider':str(snapshot),'audit':None,'root_identity':identity['root_identity'],'mount_identities':mount_identities(root)};app.save(directory(project)/'control.json',data)
             path=unit_path(value);app.safe(UNITS);UNITS.mkdir(mode=0o700,parents=True,exist_ok=True)
             if path.exists():
                 app.need(old is not None and hashlib.sha256(deps.read_bytes(path,65536)).hexdigest()==old['unit_digest'],'conflict')
@@ -380,15 +394,16 @@ def supervise(root,generation):
     app.need(value is not None and value['generation']==generation and value['phase'] in {'starting','running','failed'},'conflict')
     stopping=threading.Event()
     signal.signal(signal.SIGTERM,lambda *_:stopping.set());signal.signal(signal.SIGINT,lambda *_:stopping.set())
-    runner=None;bridge=None;outcome='failed'
+    runner=None;bridge=None;outcome='failed';stage='admission';failure=None
     try:
         verify_unit(value);data=control(value);view=Path(data['source']);policy=admitted(value)
         _,source=app.target(root);identity=worktrees.canonical(root)
         app.need(source['schema_version']==6 and source['project']['id']==project
                  and identity['key']==value['canonical_key'] and identity['root_identity']==data['root_identity'],'conflict')
         value.update(phase='starting',operation_result='running');save(value)
-        app.need(hashes(root)==data['inputs'],'conflict')
+        app.need(hashes(root)==data['inputs'] and mount_identities(root)==data['mount_identities'],'conflict')
         app.need(ownership('container',value['name'],value['token'])=='absent' and ownership('container',value['name']+'-audit',value['token'])=='absent','conflict')
+        stage='audit'
         audit_name=value['name']+'-audit'
         audit_seconds=min(120,math.floor(value['expires_at']-time.time()));app.need(audit_seconds>0,'invalid')
         audit=app.command(['podman','run','--name',audit_name,'--label',LABEL+'='+value['token'],
@@ -396,17 +411,22 @@ def supervise(root,generation):
         app.need(audit.returncode in {0,1},'command');data['audit']=security.evaluate(json.loads(audit.stdout),policy,deps.read_bytes(root/'pnpm-lock.yaml'))
         app.save(directory(project)/'control.json',data);admitted(value);app.need(hashes(root)==data['inputs'],'conflict')
         app.need(ownership('network',network(value),value['token'])=='absent','conflict')
+        stage='network'
         app.command(['podman','network','create','--internal','--label',LABEL+'='+value['token'],network(value)],timeout=20)
         seconds=math.floor(value['expires_at']-time.time());app.need(seconds>0,'invalid')
         args=['podman','run','--name',value['name'],'--label',LABEL+'='+value['token'],'--network',network(value),
               '--publish','127.0.0.1:'+str(value['metro_port'])+':8081',*spike.container_options(view,root,seconds)]
+        live_mounts=mount_identities(root);app.need(live_mounts==data['mount_identities'],'conflict')
         for name in ['src','assets']:
-            if (root/name).is_dir():args+=['--volume',str(root/name)+':/workspace/'+name+':ro']
+            if live_mounts[name] is not None:args+=['--volume',str(root/name)+':/workspace/'+name+':ro']
         args+=['--env','EXPO_OFFLINE=1','--env','EXPO_PACKAGER_PROXY_URL='+value['origin'],value['image'],
                'node','node_modules/expo/bin/cli','start','--offline','--go','--port','8081']
+        stage='sdk'
         runner=spike.EphemeralOutput(args)
+        stage='proxy'
         bridge=proxy.Service(value,lambda:proxy_receipt(value));bridge.start()
         startup=time.monotonic()+min(300,seconds)
+        stage='supervision'
         while not stopping.is_set():
             current=load(project,root);app.need(current is not None and current['generation']==generation,'conflict')
             if current['phase']=='stopping':stopping.set();break
@@ -414,7 +434,7 @@ def supervise(root,generation):
             if time.time()>=value['expires_at']:outcome='expired';break
             admitted(value);app.need(hashes(root)==data['inputs'],'conflict')
             app.need(bridge.thread.is_alive() and not bridge.failure,'health')
-            app.need(worktrees.owned(root)==data['root_identity'],'conflict')
+            app.need(worktrees.owned(root)==data['root_identity'] and mount_identities(root)==data['mount_identities'],'conflict')
             app.target(root);spike.source_inventory(root)
             if runner.process.poll() is not None:raise app.AppError('health')
             up=ownership('container',value['name'],value['token'])=='owned'
@@ -429,14 +449,21 @@ def supervise(root,generation):
                     app.need(time.monotonic()<startup,'health')
             save(current);stopping.wait(2)
         if stopping.is_set():outcome='stopped'
-    except (app.AppError,security.AdmissionError,OSError,ValueError):outcome='failed'
+    except (app.AppError,security.AdmissionError,OSError,ValueError) as error:
+        outcome='failed'
+        failure={'stage':stage,'code':error.code if isinstance(error,app.AppError) and error.code in app.MESSAGES else 'security-or-source-admission'}
     finally:
         if bridge:
             try:bridge.stop()
-            except app.AppError:outcome='recovery-required'
+            except app.AppError:
+                outcome='recovery-required';failure={'stage':'proxy-shutdown','code':'timeout'}
         try:cleanup(value)
-        except app.AppError:outcome='recovery-required'
+        except app.AppError:
+            outcome='recovery-required';failure={'stage':'owned-cleanup','code':'conflict'}
         if runner:runner.finish()
+        if failure:
+            app.save(directory(project)/('failure-'+generation+'.json'),
+                     {'schema_version':1,'generation':generation,**failure})
         current=load(project,root)
         if current and current['generation']==generation:
             current.update(phase=outcome,operation_result='passed' if outcome in {'stopped','expired'} else 'failed')

@@ -9,7 +9,8 @@
 The installed provider 1.10.1 supports Expo source creation/quality, with no Metro
 lifecycle. The development provider 1.12.0 adds explicit schema-6 source adoption;
 it still advertises no Metro session/runtime capability. The source controller has
-offline lifecycle/recovery coverage but has not started a supervised live session.
+real bounded loopback unit/proxy evidence on the approved fixtures; private and
+installed lifecycle acceptance remain pending.
 The recovery/security commands below operate only owned state and create no Serve
 listener or native-client launch. Live start/private transport instructions remain
 pending the verified adapter. No public tunnel, Funnel, EAS or signing fallback.
@@ -127,3 +128,13 @@ by frozen running supervisors. Revocation does not grant a replacement exception
 reset another policy or remove an operator route. There is no automatic un-revoke;
 replacement runtime disposition requires review. Real shutdown/revocation evidence
 remains pending; isolated tests cover both pre-execution and running revocation.
+
+
+The current acceptance record includes real five-minute loopback and paired-session
+rehearsals. One expiry under a timed-out native probe required reconciliation;
+do not treat that as an accepted recovery baseline yet. Internal control schema 2
+records root and live source/assets/dependency directory identities. Replacing a
+bound directory requires controlled restart; it cannot silently retarget an active
+session. Failure records contain only generation and fixed stage/code values,
+never raw SDK errors, request headers or source bodies. See acceptance for the
+remaining reproduction and private/operator/device gates.

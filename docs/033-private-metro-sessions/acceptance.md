@@ -221,3 +221,54 @@ Read-only opt-in revalidation on both retained fixtures returned eligible
 No live supervised unit, private route, phone operation or installed pointer
 change has occurred. Actual SDK-through-proxy, two concurrent lifecycle/recovery,
 operator readback, private transport and iOS/Android remain pending.
+
+
+## Actual owned user-service and proxy rehearsals
+
+Both approved retained fixtures were explicitly adopted on separate
+codex/metro-session-contract branches, with lifetime 300 seconds. Their source
+verify commands passed format checking, lint, types, tests, SDK, existing source
+security and JS/assets build. Only tracked .gptclaw/project.yaml changed.
+Previous metadata remains in owned migration journals; bootstrap PRs are intact.
+Metadata PRs: [fixture one #2](https://github.com/danielbardsley/mob001-accept-one/pull/2)
+at 56ca4196a198eda7cca9b43fa6995962e6a4d2c1 and
+[fixture two #2](https://github.com/danielbardsley/mob001-accept-two/pull/2)
+at 294f26fb7a60b33fe2f68de1445dba244bdf36f9. Both are draft, not merged.
+
+The first real managed session (generation 7736c436c17a4752af7c06bd477426dd)
+started under its owned forge user unit and reported route-pending with unavailable
+origin. Through its odd-port loopback proxy, both manifests, iOS bundle 5,737,192 B,
+Android bundle 6,441,778 B, 99 B icon, 11,366,406/12,348,753 B maps and both /message
+plus /hot upgrades/ping-pong passed. Evidence contains hashes/counts, not bodies.
+Private route and physical client flags remain false. Actual controls were
+1,610,612,736 B memory, 100000 CPU quota, 256 PIDs, read-only root and only
+127.0.0.1:18600 publication. The supervisor unit had 192 MiB/25% CPU/64 tasks and
+NoNewPrivileges=yes. It survived the initiating CLI process exit; actual SSM
+disconnect still requires separate evidence. Automatic expiry passed: inactive/dead
+unit, absent SDK/network, process down and both loopback ports released.
+
+A paired rehearsal used independent 18600/18601 and 18602/18603 leases. Both real
+starts were idempotent with unchanged generations. Stopping one removed only its
+SDK/network/proxy; the other stayed owned/running. Restarting one produced a new
+generation without changing the other's identity. The second SDK-proxy sampler
+hit a socket/compile timeout rather than passing; that session subsequently expired
+to recovery-required. Exact inspection later found SDK, audit, network and proxy
+already absent; generation-bound recover-stop confirmed stopped/inactive state.
+The precise initial shutdown failure was not retained by that revision. Fixed
+sanitized stage/code records are now added for the next reproduction; this edge
+case is unresolved and is not reported as a clean expiry pass.
+
+The remaining first session was stopped by exact generation; SDK/network were
+absent and its proxy released. No temporary session remains running. Source mount
+identities are now recorded in internal control schema 2 and rechecked before
+publication/while running, preventing silent stale serving after directory
+replacement. Ordinary file edits remain a separate Fast Refresh check. Current
+controller/proxy tests pass; new mount/failure-record source still needs CI.
+
+Installed launcher remains 1.10.1. Tailscale 1.104.1 readback showed only TCP 443 and
+Funnel off. Help flags are on stderr as well as stdout; combined help confirms
+--https and --bg support. No Serve/access-policy change, private TLS, native phone
+load, signing, production, AWS mutation or existing app/data change occurred.
+All four workflows passed at source 5de817a before the current guarded-mount changes.
+Operator, sustained reload, native generation/URI, cache/renewal, crash/recovery/
+rollback, installed/collector and physical iOS/Android criteria remain pending.

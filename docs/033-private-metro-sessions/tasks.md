@@ -112,3 +112,14 @@ a ready-event race and active-client listener-release ordering; corrected tests
 pass without resource warnings. All four CI workflows passed at 8278e54 before
 this integration. Both retained roots remain clean/schema 5 with eligible read-only
 300-second plans; actual opt-in/SDK-proxy/unit/private/client evidence is pending.
+
+
+Actual loopback user-service rehearsal now passed on fixture one, including both
+native targets through the streaming proxy and automatic five-minute expiry with
+released listeners/resources. Paired starts/idempotence/independent stop/restart
+passed. Fixture two's sampler timed out and expiry required exact reconciliation;
+the initial cause remains unresolved, and sanitized failure-stage records are added
+for reproduction. Both temporary sessions are now stopped, with source preserved.
+Internal control schema 2 guards live mount identities. The two metadata PRs are
+draft; installed/private/operator/client/remaining recovery acceptance is pending.
+All four CI workflows passed at 5de817a before these latest source guards.
