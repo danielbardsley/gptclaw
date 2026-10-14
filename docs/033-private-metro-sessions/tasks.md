@@ -174,3 +174,10 @@ sampler separately passed all 20 protocol cases, including successful generation
 expiry binding and physical-acceptance separation. Both real pending-route probes
 denied without stopping their owned SDKs. Operator action and final-head CI remain
 pending; installed and physical acceptance are still open.
+
+Minimum native collector/frontend observation is implemented and locally verified:
+65 affected Python cases, nine frontend tests and the actual portable HTTP/browser
+gate passed. Source observations on both running fixtures are read-only and within
+budget, with separate route-pending/process/protocol state and no HTTP components
+or launch link. Installed/frozen-consumer rollout, private operator/device checks
+and final-head CI remain pending. T-006/T-007 remain in progress.

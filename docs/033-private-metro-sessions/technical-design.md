@@ -252,3 +252,16 @@ unresolved, modified and pre-marker copies remain. Known inactive metadata can
 retire after seven days, while protocol/acceptance evidence remains; batches cap
 at 32 copies and 64 records. A race or interrupted cleanup retains staging for
 review. Canonical application source and backend data are outside this scope.
+
+## Implemented minimum native observation
+
+Inventory marks a native observation binding only for schema 6 plus provider runtime
+schema 6 and Metro session schema 1. The shared bounded status worker/cache observes
+its existing session provider and projects a separate Metro facet. No component,
+web publication or app/docs destination is synthesized. Typed finite timestamps
+and generation/project identity are checked; arbitrary extras and origins are
+omitted. Each layer ages independently, collector loss retains visibly last-known
+values and expiry removes ready state. The frontend shows native source-only
+behavior for schema 5 and a read-only Metro summary/details for capable schema 6.
+Source quality and physical-client acceptance remain separate. Go launch/QR
+presentation belongs to SPEC-034 and is absent here.

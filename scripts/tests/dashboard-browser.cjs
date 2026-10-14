@@ -193,10 +193,30 @@ const { chromium } = require('playwright-core');
   await page.getByText(layout.rows[0].location,{exact:true}).waitFor();
   layout.rows = [{ ...structuredClone(layout.rows[0]), key:'mobile-source-fixture', id:'mobile-source', name:'Native source fixture', kind:'mobile', components:[], manifest_version:5, runtime_support:'unsupported', identity_state:'valid', location:'mobile-source' }];
   await page.setViewportSize({width:1440,height:900}); await page.reload();
-  await page.getByText('Mobile development runtime not yet supported',{exact:true}).waitFor();
+  await page.getByText('Native source · Metro not enabled',{exact:true}).waitFor();
   assert.equal(await page.getByText('Native source · v5',{exact:true}).count(),1);
   await page.getByRole('button',{name:'Service details for Native source fixture'}).click();
   assert.equal(await page.getByRole('heading',{name:'Component observations',exact:true}).count(),0);
+  layout.rows[0].manifest_version=6;layout.rows[0].runtime_support='supported';
+  layout.rows[0].inventory_freshness='current';layout.freshness='current';layout.complete=true;
+  const nativeNow=Date.now()/1000;layout.server_time=nativeNow;
+  layout.rows[0].status={...component,health:'not-applicable',observed_at:nativeNow,last_success_at:nativeNow,
+    components:{},provider_version:'1.12.0',publication:{state:'unavailable',origin:null},
+    metro:{schema_version:1,project:'mobile-source',generation:'1'.repeat(32),state:'route-pending',expires_at:nativeNow+3600,
+      native_client_acceptance:'unverified',source_quality:'separate-receipt',
+      observations:{process:{state:'up',observed_at:nativeNow},protocol:{state:'ready',observed_at:nativeNow},route:{state:'pending',observed_at:nativeNow}}}};
+  await page.reload();
+  await page.getByText('Metro: Route pending',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Service details for Native source fixture'}).click();
+  await page.getByRole('region',{name:'Metro session observations'}).waitFor();
+  await page.getByText('Private route',{exact:true}).waitFor();
+  await page.getByText('Native client acceptance',{exact:true}).waitFor();
+  assert.equal(await page.getByRole('heading',{name:'Component observations',exact:true}).count(),0);
+  assert.equal(await page.locator('a[href^="exp"],a[href^="exps"]').count(),0);
+  layout.rows[0].status.metro.project='foreign';
+  await page.reload();
+  await page.getByText('Metro observation unavailable',{exact:true}).waitFor();
+  assert.equal(await page.getByRole('region',{name:'Metro session observations'}).count(),0);
   assert.equal(await page.evaluate(()=>localStorage.length),0);
   assert.deepEqual(errors, []);
   console.log('PASS: reference density and responsive bounds, disclosure refresh/focus, safe compact links, readable contrast, reduced motion, long metadata and omitted unsupported controls');

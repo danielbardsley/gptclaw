@@ -447,3 +447,36 @@ each denied route-pending before native retrieval, retained its owned SDK and
 reported transport unavailable. No Serve or ACL change ran. Both one-hour sessions
 remain bounded to their original expiries (one 15:55:24 UTC, two 15:55:54 UTC).
 Latest-head CI is still running; no installed/private/device completion is inferred.
+
+## Minimal native collector and dashboard integration
+
+The source collector now schedules schema-6 native observations only when its
+provider declares runtime schema 6 and Metro session schema 1. Schema-5 and older/
+missing capability retain source-only behavior. Native observations have no fake
+web/API/DB component, app/docs publication or native launch target. Minimal details
+show separate process/protocol/private-route timestamps, finite expiry, independent
+source quality and unverified native-client acceptance. Freshness, clock anomalies,
+bad identity, malformed projection and expiry never preserve a fresh ready claim.
+
+Affected Python suites passed: native projection 8, inventory 13, observation 10,
+status cache 8, collector 5 and packaging 21 (65 cases). The first added inventory
+fixture lacked required static app.json and was corrected; the complete rerun
+passed. Nine frontend tests, typecheck and production build passed. The existing
+portable rootless check then passed frozen install, tests/types/build, actual socket/
+HTTP boundary and browser checks, including schema-5 source-only labels, native
+route-pending details, absence of native anchors/fake components and foreign native
+project rejection. Existing design/responsive/keyboard/status/link checks passed.
+Only task-owned browser containers/fixtures were removed.
+
+Actual read-only source observations of the two active fixture generations returned
+route-pending, process up/protocol ready, components empty, publication unavailable
+and source clean. Durations were 0.439 s and 0.341 s, within the collector budget.
+The first live test supplied an incomplete filesystem identity and was correctly
+denied; the corrected test used the existing dev/inode/uid identity contract.
+These are source observations, not installed collector or owner-browser acceptance.
+
+The provider bundle includes the native projection with byte-parity coverage.
+Installed launcher and live dashboard/collector are unchanged; their compatible
+rollout/parity and rollback remain pending. Runtime capability is still not
+advertised ahead of private-adapter verification. No Go profile/link/QR or device
+telemetry is implemented by this minimum observation slice.

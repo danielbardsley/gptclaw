@@ -192,3 +192,14 @@ If cleanup reports metro-prune-recovery, retain its prune-* staging and reconcil
 the recorded identity/content; do not recursively delete unknown state or source.
 Active status hides transport availability if security admission is unavailable,
 even before the supervisor's next check. Installed/private acceptance is separate.
+
+## Minimum native inventory observation
+
+A compatible collector can show schema-6 Metro summary and separate process,
+protocol/private-route observations, each with freshness, plus finite expiry.
+It requires both runtime schema 6 and Metro session schema 1 capability.
+Older providers and schema-5 projects retain native source-only presentation.
+No native session is represented as a web/API/DB component or Open app/API-doc
+target. Source checks and physical-client acceptance remain separate; Go launch
+links/QR require SPEC-034. Source implementation/browser checks do not install
+a collector release or prove a phone loaded. Current private rollout remains pending.

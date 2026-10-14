@@ -64,6 +64,29 @@ class InventoryTests(unittest.TestCase):
         self.registry.write_text(json.dumps({'schema_version': 1, 'projects': rows}))
         self.registry.chmod(0o600)
 
+
+    def test_mobile_native_observation_binding_requires_exact_capability(self):
+        import project_mobile as mobile
+        root=self.projects/'native';(root/'.gptclaw').mkdir(parents=True)
+        contract=mobile.contract('native')
+        (root/'app.json').write_text(json.dumps({'expo':{**mobile.identities('native'),'version':'1.0.0','platforms':['ios','android'],'orientation':'portrait'}}))
+        contract.update(schema_version=6,metro={'adapter':'metro-v1','mode':'expo-go','ttl_seconds':300})
+        (root/'.gptclaw/project.yaml').write_text(json.dumps(contract))
+        caps={'provider':'gptclawctl','project_manifest_schemas':[1,2,3,4,5,6],
+              'runtime_manifest_schemas':[1,2,3,4,6],'metro_session_schemas':[1]}
+        for schemas,enabled in [([],False),([True],False),([1],True),(None,False)]:
+            selected={**caps,'metro_session_schemas':schemas}
+            scanner=inventory.Scanner(self.projects,capabilities=selected)
+            result=scanner.scan()
+            self.assertTrue(result['complete'])
+            self.assertEqual(result['rows'][0]['components'],[])
+            binding=next(iter(scanner.bindings.values()))
+            self.assertEqual(binding.get('native_session')==1,enabled)
+        contract['schema_version']=5;contract.pop('metro')
+        (root/'.gptclaw/project.yaml').write_text(json.dumps(contract))
+        scanner=inventory.Scanner(self.projects,capabilities=caps);scanner.scan()
+        self.assertNotIn('native_session',next(iter(scanner.bindings.values())))
+
     def test_four_schemas_group_once_stopped_independent_of_runtime(self):
         roots = [self.project('d-db', 4), self.project('c-group', 3), self.project('b-api', 2), self.project('a-web')]
         for root in roots:

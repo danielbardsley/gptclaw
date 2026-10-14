@@ -171,6 +171,7 @@ class Tests(unittest.TestCase):
         self.assertEqual((bundle/'scripts/metro_sessions.py').read_bytes(),(app.REPO/'scripts/metro_sessions.py').read_bytes())
         self.assertEqual((bundle/'scripts/metro_routes.py').read_bytes(),(app.REPO/'scripts/metro_routes.py').read_bytes())
         self.assertEqual((bundle/'scripts/metro_retention.py').read_bytes(),(app.REPO/'scripts/metro_retention.py').read_bytes())
+        self.assertEqual((bundle/'scripts/dashboard_metro.py').read_bytes(),(app.REPO/'scripts/dashboard_metro.py').read_bytes())
         original=templates.discover()
         project=self.new()
         before={p.relative_to(project):p.read_bytes() for p in project.rglob('*') if p.is_file()}

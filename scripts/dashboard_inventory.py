@@ -205,6 +205,10 @@ class Scanner:
                    'documentation': {'readme': presence(fd, ['README.md']),
                                      'index': presence(fd, ['docs', 'README.md'])}}
             binding = {'root': root, 'id': project['id'], 'identity': identity(info), 'components': components}
+            if (contract['schema_version']==6 and row['runtime_support']=='supported'
+                    and isinstance((self.capabilities or {}).get('metro_session_schemas'),list)
+                    and any(type(n) is int and n==1 for n in self.capabilities['metro_session_schemas'])):
+                binding['native_session']=1
             return row, binding
         finally:
             os.close(fd)

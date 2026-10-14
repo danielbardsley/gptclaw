@@ -6,7 +6,7 @@ export type ServiceStatus = {
   uptime_seconds?: number | null; uptime_reason?: string | null;
   restart_count?: number | null; restart_reason?: string | null;
 };
-export type ProjectStatus = ServiceStatus & { components: Record<string, ServiceStatus>; publication: { state: string; origin: string | null }; provider_version: string | null };
+export type ProjectStatus = ServiceStatus & { components: Record<string, ServiceStatus>; publication: { state: string; origin: string | null }; provider_version: string | null; metro?: unknown };
 export function statusFreshness(status: ServiceStatus, serverTime: number | undefined, elapsed: number, forced = false): string {
   if (forced) return status.last_success_at == null ? 'unavailable' : 'stale';
   if (status.freshness !== 'current') return status.freshness;

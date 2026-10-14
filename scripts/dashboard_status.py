@@ -109,6 +109,15 @@ class StatusStore:
                 previous['publication']={'state':'unavailable','origin':None}
                 self.entries[key]=previous
                 return
+            native=None
+            if binding.get('native_session')==1:
+                from dashboard_metro import project as native_project
+                native=native_project(result.get('metro'),binding['id'])
+                if native is None:
+                    previous['overall']=self._failure(previous['overall'],'observation-invalid')
+                    previous['publication']={'state':'unavailable','origin':None}
+                    self.entries[key]=previous
+                    return
             observed=result['observed_at']
             current={'overall':self._success(previous['overall'],project_fields(result),observed),
                      'components':{},'publication':{'state':'unavailable','origin':None}}
@@ -129,13 +138,17 @@ class StatusStore:
                 current['routes']={'schema_version':1,'project':binding['id'],
                     'app_path':prefix if routes.get('app_path')==prefix else None,
                     'docs_path':routes['docs_path'] if routes.get('docs_path') in (prefix+'docs',prefix+'api/docs') else None}
+            if native is not None:
+                current['metro']=native
+                current['publication']={'state':'unavailable','origin':None}
+                current['routes']={'schema_version':1,'project':binding['id'],'app_path':None,'docs_path':None}
             self.entries[key]=current
 
     def round(self, bindings):
         if not self.round_lock.acquire(blocking=False):
             return False
         try:
-            keys=sorted(key for key,binding in bindings.items() if binding['components'])
+            keys=sorted(key for key,binding in bindings.items() if binding['components'] or binding.get('native_session')==1)
             with self.lock:
                 self.capacity={'limited':len(keys)>self.window,'projects':len(keys),'supported_projects':self.window}
             if not keys:return True
@@ -167,7 +180,7 @@ class StatusStore:
         return value
 
     def snapshot(self, key, binding):
-        if not binding['components']:
+        if not binding['components'] and binding.get('native_session')!=1:
             return {**self._public(self._failure(None,'unsupported')),'components':{},'publication':{'state':'unavailable','origin':None},'provider_version':None}
         with self.lock:
             entry=self.entries.get(key)
@@ -181,5 +194,9 @@ class StatusStore:
             publication=copy.deepcopy(entry['publication'])
             if overall['freshness']!='current' or any(c['freshness']!='current' for c in components.values()):
                 publication['state']='unavailable'
-            return {**overall,'components':components,'publication':publication,
+            native={}
+            if binding.get('native_session')==1:
+                from dashboard_metro import public
+                native={'metro':public(entry.get('metro'),overall['freshness'],self.clock())}
+            return {**overall,**native,'components':components,'publication':publication,
                     'provider_version':entry.get('provider_version'),'routes':copy.deepcopy(entry.get('routes'))}
