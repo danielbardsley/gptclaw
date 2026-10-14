@@ -428,7 +428,22 @@ The sampler now supports only this node's exact owned private origin/port with
 default-trust HTTPS and WebSocket TLS/SNI. A guarded private sample requires current
 generation/security/unit/container and verified route before and after streaming;
 bounded output contains hashes/counts rather than native bodies or identity. All
-19 protocol cases passed, including wrong host/port/mode, certificate denial,
+20 protocol cases passed, including wrong host/port/mode, certificate denial,
 default trust/SNI and route drift. Actual private TLS sampling is pending operator
 execution. This change followed the full-gate protocol checkpoint and has focused
 verification; CI remains a separate final-head gate.
+
+## Current verification checkpoint
+
+The complete offline repository gate for the renewal/retention integration finished
+with exit 0 using the prepared Python 3.12 environment. All registered suites passed,
+including controller 44, retention 21, route 20, proxy 20, packaging 21 and legacy
+web/API/database/dashboard/worktree/credential behavior. The later private TLS
+sampler was checked separately by the complete 20-case protocol suite; the broader
+run had already passed its earlier protocol checkpoint before that addition.
+
+A real guarded private sample was attempted on both active fixture generations:
+each denied route-pending before native retrieval, retained its owned SDK and
+reported transport unavailable. No Serve or ACL change ran. Both one-hour sessions
+remain bounded to their original expiries (one 15:55:24 UTC, two 15:55:54 UTC).
+Latest-head CI is still running; no installed/private/device completion is inferred.

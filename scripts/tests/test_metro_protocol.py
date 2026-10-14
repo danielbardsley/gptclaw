@@ -206,4 +206,22 @@ class ProtocolTests(unittest.TestCase):
                 side_effect=[{'state':'verified'},{'state':'pending'}]),patch.object(protocol,'sample',return_value={}),self.assertRaises(app.AppError):
             protocol.private_sample('/fixture',value['generation'])
 
+    def test_private_sample_binds_generation_expiry_and_physical_flag(self):
+        import metro_sessions as sessions,metro_routes as routes
+        value={'project':'fixture','generation':'1'*32,'phase':'running','operation_result':'passed',
+               'expires_at':time.time()+30,'name':'owned-fixture','token':'2'*32,'origin':ORIGIN}
+        with patch.object(sessions,'receipt_for_root',return_value=(Path('/fixture'),value)),patch.object(
+                sessions,'proxy_receipt',return_value=value),patch.object(sessions,'verify_unit'),patch.object(
+                sessions,'ownership',return_value='owned'),patch.object(routes,'observe',return_value={'state':'verified'}) as observe,patch.object(
+                protocol,'sample',return_value={'physical_client_verified':False,'private_route_verified':True}) as sample:
+            evidence=protocol.private_sample('/fixture',value['generation'],300)
+        self.assertEqual(observe.call_count,2)
+        args,kwargs=sample.call_args
+        self.assertEqual(args[:2],(8443,ORIGIN));self.assertEqual(args[3],value['generation'])
+        self.assertLessEqual(args[2]-time.monotonic(),30)
+        self.assertEqual(kwargs,{'via_private':True})
+        self.assertEqual(evidence['generation'],value['generation'])
+        self.assertFalse(evidence['physical_client_verified'])
+        self.assertTrue(evidence['private_route_verified'])
+
 if __name__=='__main__':unittest.main()

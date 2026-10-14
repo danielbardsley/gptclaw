@@ -168,3 +168,9 @@ Both approved one-hour backends are running with exact loopback health and
 route-pending observations. The SSM operator action has been requested. The
 fixed-owned-origin/default-trust TLS native sampler passes 19 protocol cases;
 actual private sampling follows operator readback. No Go launch is offered yet.
+
+The complete renewal/retention offline gate finished with exit 0. The later TLS
+sampler separately passed all 20 protocol cases, including successful generation/
+expiry binding and physical-acceptance separation. Both real pending-route probes
+denied without stopping their owned SDKs. Operator action and final-head CI remain
+pending; installed and physical acceptance are still open.
