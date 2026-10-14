@@ -280,7 +280,7 @@ class RetentionTests(unittest.TestCase):
         import contextlib, io, gptclawctl
         output = io.StringIO()
         self.view()
-        with patch.object(retention.worktrees, 'guard'), contextlib.redirect_stdout(output):
+        with patch.object(gptclawctl,'os',SimpleNamespace(getuid=lambda:1002,geteuid=lambda:1002)), patch.object(retention.worktrees, 'guard'), contextlib.redirect_stdout(output):
             self.assertEqual(gptclawctl.main(['metro', 'prune', '--project-root', str(self.root)]), 0)
         self.assertEqual(json.loads(output.getvalue())['state'], 'prune-planned')
 

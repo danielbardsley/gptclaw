@@ -104,3 +104,14 @@ at 982f38983fb5ccca6b01d157e563fd837a7a801d and
 at 53f7fc7875b91bc644dcc7ece54c4c27ca242f22. Validation passed for both;
 only the declared TTL changed. Actual backend health/expiry is checked separately
 before asking the operator to add the approved listeners.
+
+## Corrected bounded backends
+
+Runtime source watching and established-probe supervision were corrected and the
+paired fixtures were deliberately refreshed through their owner controller.
+Listener commands, sticky origins/ports and reviewed baseline are unchanged.
+The first generation is 5863c80222c346e18e49c0f4ea59ba21, expiring
+October 14 at 16:52:14 UTC; the second is cbe287fcd42e4cfbbb18d2981be4853f,
+expiring at 16:52:49 UTC. Loopback native rebuild/restoration passed on the first,
+with both sources/owned sessions preserved. Refresh current health/readback before
+operator action; do not infer that these backends are still live after expiry.

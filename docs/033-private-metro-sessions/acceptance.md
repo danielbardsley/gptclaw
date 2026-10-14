@@ -519,3 +519,36 @@ Runtime-only watch opt-in now uses CI=false with explicitly closed stdin/non-TTY
 piped output; audit/spike defaults remain CI=1. All existing offline/resource/
 readonly/privacy bounds remain. The 24 spike and 48 controller cases passed.
 Corrected actual rebuild proof remains pending; no physical result is inferred.
+
+## Corrected watch-enabled edit loop and CI portability
+
+The bounded watch-enabled paired refresh passed, preserving both canonical sources
+and exact approved listener bindings. Current first generation is
+5863c80222c346e18e49c0f4ea59ba21; second is
+cbe287fcd42e4cfbbb18d2981be4853f. They have original finite expiries
+16:52:14 / 16:52:49 UTC on October 14 and initially reported route-pending.
+
+The corrected first-fixture source rehearsal passed. Its baseline Android bundle
+was 6,441,560 B / SHA-256
+6c44f58dd8835cfb37f298db8acb14d1a7742ffbde70ecbcfbc871920cef9bc8.
+A guarded display-text edit produced 6,441,572 B / SHA-256
+5fce307db1f76a756740dfa9389bba92748ca2a6497d05d0bfe69c869884d329.
+The exact restoration returned the original bundle hash. Both Git/source inventories
+were clean, both owned generations/SDKs survived and the second source remained
+unchanged. This proves actual loopback source watching/rebuild, not native phone
+Fast Refresh or private TLS. The initial edit harness used the directory form of
+the file-identity helper and stopped before writes; that harness was corrected.
+The later cached-bundle failure was separately diagnosed as the pinned CI-mode
+watcher disablement and its finally block restored source.
+
+At 28f6fb006f854b0dd78de58ce1954e8d854e95b8,
+[dashboard CI](https://github.com/danielbardsley/gptclaw/actions/runs/38589057843)
+and [private app CI](https://github.com/danielbardsley/gptclaw/actions/runs/38589057905)
+passed. [Dev-host](https://github.com/danielbardsley/gptclaw/actions/runs/38589057806)
+and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38589058158)
+failed their repository checks. Log evidence identified simulated renewal/prune CLI
+tests reaching the real forge-UID guard on the runner (exit 2), not a production
+permission failure. Those two tests now substitute only the CLI identity adapter,
+preserving real filesystem ownership checks. New explicit root/foreign-UID denial
+coverage confirms no runtime dispatch. The 49 controller and 21 retention cases
+passed. Final-head CI and the updated full gate remain separate checks.

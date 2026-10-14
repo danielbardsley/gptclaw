@@ -51,7 +51,7 @@
   pass, and stop only owned temporary sessions/remove only approved owned routes.
   Preserve source/receipts/data and remaining M1/MOB features. (AC-008)
 
-## Handover
+## Historical implementation checkpoints
 
 T-000 and T-001 are complete. T-002 is in progress: fresh exact audit evidence,
 a separate approved scoped runtime policy, fail-closed admission tests and a bounded
@@ -124,7 +124,7 @@ Internal control schema 2 guards live mount identities. The two metadata PRs are
 draft; installed/private/operator/client/remaining recovery acceptance is pending.
 All four CI workflows passed at 5de817a before these latest source guards.
 
-## Current checkpoint
+## Earlier route/lifecycle checkpoint
 
 The full real fixture-two SDK/proxy sample now passed and expiry cleaned up both
 listeners/resources; the older unresolved recovery case is retained in acceptance.
@@ -150,7 +150,7 @@ terminal. The full repository gate and final focused controller suite passed.
 Private/operator approval, installed/collector, device, renewal/cache, revocation/
 rollback and SSM-disconnect evidence remain open; MOB-003 is not yet implemented.
 
-## Latest implementation checkpoint
+## Recent implementation checkpoints
 
 The exact two private listeners are owner-approved; operator execution and ACL/
 device evidence remain pending. Android is owner-reported Expo Go 57.0.9 / SDK 57
@@ -191,3 +191,20 @@ cases. Actual cold bundling on the corrected first fixture passed, but rebuild
 exposed the pinned CLI's CI-mode watcher disablement. Runtime watch opt-in and
 closed stdin/non-TTY output now pass 24 spike cases; corrected live rebuild and
 paired private sessions still require verification. Source was exactly restored.
+
+## Current checkpoint
+
+The private listener scope is approved; the owner requested the SSM connection
+command and was given the current verified instance target. Actual operator
+execution/readback and ACL/private/device evidence remain pending. Both corrected
+watch-enabled fixtures are running to their finite 16:52 UTC expiries.
+
+The real Android loopback edit/rebuild/restoration passed with unchanged second
+source/session and clean Git. Source/immutable provider byte/capability/status parity
+was verified without selecting the installed pointer. The source controller now
+has 49 passing cases and retention 21; watcher/noninteractive spike cases number
+24. The two UID-dependent CI fixtures are corrected, with explicit negative guard
+coverage. Final CI/full-gate, private renewal/recovery, installed collector/provider/
+rollback, SSM disconnect and physical iOS/Android acceptance remain open. MOB-003
+has no launch/profile/QR implementation yet. Historical checkpoints above describe
+their recorded stages rather than overriding this current status.

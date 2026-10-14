@@ -483,10 +483,24 @@ class SessionTests(unittest.TestCase):
         self.prepare_renewal()
         with self.assertRaises(app.AppError):metro.renew(self.root,'9'*32)
 
+
+    def test_cli_operator_guard_denies_foreign_and_root_before_runtime(self):
+        import contextlib,io,gptclawctl,metro_retention
+        for uid,euid in [(1001,1001),(0,0),(1002,0)]:
+            for action in ['renew','prune']:
+                output=io.StringIO()
+                args=['metro',action,'--project-root',str(self.root)]
+                if action=='renew':args+=['--generation','2'*32]
+                with patch.object(gptclawctl,'os',SimpleNamespace(getuid=lambda:uid,geteuid=lambda:euid)),patch.object(
+                        metro,'renew') as renew,patch.object(metro_retention,'prune') as prune,contextlib.redirect_stdout(output):
+                    self.assertEqual(gptclawctl.main(args),2)
+                renew.assert_not_called();prune.assert_not_called()
+                self.assertEqual(json.loads(output.getvalue())['error'],'setup')
+
     def test_renewal_cli_passes_exact_reviewed_inputs(self):
         import contextlib,io,gptclawctl
         output=io.StringIO()
-        with patch.object(metro,'renew',return_value={'state':'renewal-planned'}) as renew,patch.object(metro.worktrees,'guard'),contextlib.redirect_stdout(output):
+        with patch.object(gptclawctl,'os',SimpleNamespace(getuid=lambda:1002,geteuid=lambda:1002)),patch.object(metro,'renew',return_value={'state':'renewal-planned'}) as renew,patch.object(metro.worktrees,'guard'),contextlib.redirect_stdout(output):
             self.assertEqual(gptclawctl.main(['metro','renew','--project-root',str(self.root),'--generation','2'*32,'--ttl-seconds','90']),0)
         renew.assert_called_once_with(str(self.root),'2'*32,90,False,None)
         self.assertEqual(json.loads(output.getvalue())['state'],'renewal-planned')
