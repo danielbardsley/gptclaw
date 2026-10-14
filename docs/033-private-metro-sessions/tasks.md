@@ -21,7 +21,7 @@
 - [ ] T-003 (in progress): Recheck schema reservations; implement opt-in migration/validation,
   canonical-root guard, capability/receipt/descriptor versions and older-provider
   rejection, preserving schema-5 source and all frozen releases. (MET-001/005; AC-001/005)
-- [ ] T-004: Implement owned user-unit lifecycle, atomic port/cache leases, mutation
+- [ ] T-004 (in progress): Implement owned user-unit lifecycle, atomic port/cache leases, mutation
   locks, resource/TTL/security-revocation supervision, sanitized logs and typed recovery.
   Test two independent sessions, drift, concurrency, disconnect, crash and expiry.
   (MET-002/006/007; AC-002/006/007)
@@ -78,3 +78,25 @@ Owner-reported device prerequisites relayed with authorization: Android 11 on th
 development tailnet, with Expo Go reported up to date. Exact model/build/client
 version and actual loads/reloads remain unverified; no iPhone is confirmed. This
 does not remove iOS criteria or establish physical-device acceptance.
+
+The controller source now includes a bounded forge user-service, typed receipts,
+sticky paired leases/origins, fresh SDK audit at execution, frozen-provider
+launching, source watching with read-only mounts, input/expiry/revocation guards
+and exact owned shutdown. Twenty-eight isolated controller cases and fourteen state
+cases pass; schema-5 mobile regressions pass. No live supervised session was
+started yet. Streaming proxy/private route wiring and installed/lifecycle/device
+acceptance remain pending; session capability is still not advertised.
+
+Controller recovery now uses exact registry/generation/unit proof without loading
+invalid app metadata. Independent owned cleanup continues after a foreign-handle
+conflict; uncertain shutdown records unknown/recovery-required. Activating/restarting
+user units block source mutation. Sanitized lifecycle events are bounded and exact
+policy revocation has a read-only plan plus explicit apply. All four CI workflows
+passed at 62603d4; controller local/CI, live proxy/lifecycle and device work remain
+separate unfinished gates. The approved SDK probes do not establish those outcomes.
+
+The broader local gate passed current mobile and Metro suites. One template
+snapshot fixture missed the new bundled policy; its provider-input copy and
+controller/policy parity assertions were corrected, and all 21 template cases
+passed separately. A fresh frozen review snapshot matched source without changing
+the installed pointer. Remaining broad-suite results and new-head CI are pending.

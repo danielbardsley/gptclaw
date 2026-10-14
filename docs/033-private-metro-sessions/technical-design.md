@@ -173,3 +173,21 @@ It reports transport readiness separately from source quality and native-client
 acceptance; it emits no Go URI, web app link, credential or device-online claim.
 This boundary is bundled for the forthcoming controller. It is not yet connected
 to live lifecycle/collector observations and adds no installed session capability.
+
+## Controller source checkpoint
+
+Source lifecycle now freezes the provider in an exact forge user service, with
+sticky per-project Metro/proxy slots and independently observed protocol state.
+The unit definition/readback must match the receipt with no drop-ins. Mutating
+source jobs also require a confirmed inactive unit, preventing automatic restart
+races. A registry-bound `metro recover-stop` uses the exact generation and unit
+proof even if app metadata is invalid. Partial outcomes preserve owned receipts
+and prior generations; they do not kill foreign resources or claim shutdown.
+
+The source log interface exposes enumerated lifecycle events only, bounded to
+256 records/64 KiB/seven days, with no persistent raw SDK output. Exact policy
+revocation has a read-only plan and explicit marker publication; frozen supervisors
+check the shared marker. Fresh audit execution is bounded by remaining session
+lifetime. These are tested source mechanics, not completed installed/live evidence.
+Streaming private proxy, operator readback, persistent cache/renewal measurements,
+collector/native presentation and actual two-session/device acceptance remain open.

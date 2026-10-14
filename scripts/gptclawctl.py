@@ -18,11 +18,14 @@ def main(argv=None):
   if name in {'logs','test','build','format','lint','typecheck','security','verify'}:p.add_argument('--component',choices=['web','api','db'] if name=='logs' else ['web','api'])
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
- metro=sub.add_parser('metro',help='Explicit native Metro source opt-in; no session starts')
+ metro=sub.add_parser('metro',help='Native Metro opt-in, owned supervision and recovery')
  metro_actions=metro.add_subparsers(dest='metro_action',required=True)
  enable=metro_actions.add_parser('enable',allow_abbrev=False)
  enable.add_argument('--project-root',required=True);enable.add_argument('--ttl-seconds',type=int,default=7200)
  enable.add_argument('--apply',action='store_true');enable.add_argument('--confirm-plan')
+ supervise=metro_actions.add_parser('supervise',allow_abbrev=False);supervise.add_argument('--project-root',required=True);supervise.add_argument('--generation',required=True)
+ recover=metro_actions.add_parser('recover-stop',allow_abbrev=False);recover.add_argument('--project-root',required=True);recover.add_argument('--generation',required=True)
+ revoke=metro_actions.add_parser('revoke',allow_abbrev=False);revoke.add_argument('--policy-digest',required=True);revoke.add_argument('--apply',action='store_true')
  templates=sub.add_parser('templates',help='Discover bundled exact template releases')
  template_actions=templates.add_subparsers(dest='template_action',required=True)
  template_actions.add_parser('list',allow_abbrev=False)
@@ -123,6 +126,16 @@ def main(argv=None):
    from project_worktrees import guard
    guard(args.project_root)
   if args.action=='metro':
+   if args.metro_action=='revoke':
+    import metro_sessions
+    print(json.dumps(metro_sessions.revoke(args.policy_digest,args.apply),sort_keys=True));return 0
+   if args.metro_action=='recover-stop':
+    import metro_sessions
+    print(json.dumps(metro_sessions.recover_stop(args.project_root,args.generation),sort_keys=True));return 0
+   if args.metro_action=='supervise':
+    import metro_sessions
+    result=metro_sessions.supervise(args.project_root,args.generation)
+    return 1 if result['state'] in {'failed','recovery-required'} else 0
    import metro_contract
    result=metro_contract.public(metro_contract.enable(args.project_root,args.ttl_seconds,args.apply,args.confirm_plan))
    print(json.dumps(result,sort_keys=True))

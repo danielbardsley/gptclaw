@@ -15,12 +15,12 @@
 |---|---|---|
 | AC-001 | Pending | Schema-6 opt-in/strict input validation, canonical guarded metadata migration and older-provider rejection have local evidence; session capability/descriptor and installed rollout remain pending. |
 | AC-002 | Pending | Offline ownership/deadline/fixture guards pass; real two-session lifecycle/disconnect/expiry still required. |
-| AC-003 | Pending | Two sequential SDK loopback spikes served iOS/Android manifests and >2 MiB bundles; assets/WebSockets, actual private TLS transport and physical iOS/Android remain required. [Measured evidence](sdk-spike.md). |
+| AC-003 | Pending | Two sequential SDK loopback spikes served iOS/Android manifests and >2 MiB bundles; Existing assets, source maps and WebSocket handshake/ping passed on both fixtures; actual private TLS, sustained native reload and physical iOS/Android remain required. [Measured evidence](sdk-spike.md). |
 | AC-004 | Pending | No Serve changes performed; exact operator plan/readback and permitted/denied private access still required. |
-| AC-005 | Pending | Spike plan says approval-pending and unavailable start is blocked; production typed observation/descriptor/collector remain to implement. |
-| AC-006 | Pending | Fresh audit, owner-approved exact runtime admission, bounded real SDK spikes and offline safety tests recorded in [security proposal](security-review.md); owner disposition and real runtime revocation/secret checks remain. |
+| AC-005 | Pending | Typed independent state/descriptor and source CLI controller are prepared; private route observations, collector and installed parity remain pending. |
+| AC-006 | Pending | Fresh audit, owner-approved exact runtime admission, bounded real SDK spikes and offline safety tests recorded in [security proposal](security-review.md); real managed-runtime revocation/secret checks remain; exact owner disposition is recorded. |
 | AC-007 | Pending | Offline absent/foreign ownership cleanup passes; actual crashes, leases, compatible provider refresh/rollback and app regression evidence remain. |
-| AC-008 | Pending | Local source/admission/protocol evidence and all four CI workflows passed at fb7f4b2. Final source-job guard CI, actual Metro/installed operations, operator/device acceptance and merge remain required. |
+| AC-008 | Pending | Local source/admission/protocol evidence and all four CI workflows passed at fb7f4b2. All four CI workflows also passed at 62603d4; new controller CI and actual Metro/installed operations, operator/device acceptance and merge remain required. |
 
 ## Actual local verification
 
@@ -60,8 +60,8 @@ Expo Go described as up to date. Exact model, OS build and client version remain
 unknown; no actual native load/interaction/reload was reported for this initiative.
 No iPhone is confirmed. Both platform criteria remain pending.
 
-Use only proposed retained mob001-accept-one/two synthetic roots after exact scope
-approval, preserving their Git history/source. Shelfmark, Trailboard, existing app
+Use only the approved retained mob001-accept-one/two synthetic roots within the
+recorded runtime scope, preserving their Git history/source. Shelfmark, Trailboard, existing app
 routes/data and immutable starter releases have not been changed. Security approval,
 SDK spike, provider/transport, exact operator scope, physical evidence and merge
 remain distinct gates; the active goal stays open.
@@ -134,3 +134,52 @@ Source hashes and exact owned cleanup were verified again. These results do not
 establish sustained native reload/private TLS or phone acceptance. Fourteen pure
 state-boundary cases now verify independent readiness/freshness/expiry/ownership
 projection; live state wiring and installed capability remain pending. [Details](sdk-spike.md)
+
+Controller implementation checkpoint: fourteen offline cases cover separate sticky
+leases, wrong-root/registry/resource denial, owned cleanup, unknown source mutation
+guards, bounded user-unit configuration, simulated expiry and security withdrawal.
+Historical schema-5 mobile suite: 22 cases passed. The updated schema-6 contract
+case passes for early admission/no-runtime-write, no fabricated HTTP components
+and truthful not-started observation. Live user-service, concurrent sessions,
+restart/disconnect, proxy/private routing and device proof remain pending.
+
+## Controller recovery checkpoint
+
+The prepared source controller now freezes the provider for an exact forge user
+unit, checks unit file/FragmentPath/drop-in ownership and binds sticky paired slots.
+Read-only status separates process/protocol/private-route observations. Source
+mutation checks reject an activating/automatically restarting unit even if a receipt
+says failed and no container happens to exist at that instant.
+
+Twenty-eight isolated controller cases passed, including expiry/revocation,
+pre-execution revocation with orphan cleanup, invalid-metadata receipt recovery,
+stop timeouts, partial/foreign cleanup, foreign-unit preflight before writes,
+bounded secret-free event retention and exact read-only/idempotent revocation.
+An early test revision used future fixture timestamps with the real wall clock;
+its receipt failures were corrected by a deterministic fixture clock. No live user
+unit or policy revocation marker was created by these synthetic tests.
+
+Source `metro recover-stop` requires exact registry/root/canonical/generation and
+unit proof; it does not execute invalid app config. Unknown start/stop outcomes
+remain recovery-required rather than reporting a process down. Event logs retain
+only enumerated lifecycle metadata, up to 256 events/64 KiB/seven days. SDK output
+remains ephemeral. The admission audit timeout is capped by remaining session TTL.
+A read-only real user-manager query for the selected absent fixture unit returned
+LoadState=not-found, ActiveState=inactive and empty FragmentPath/DropInPaths.
+
+All four workflows passed at committed 62603d4 (before this controller checkpoint).
+The broader local gate passed the mobile/admission/spike/protocol/opt-in/state/
+controller suites. Its template snapshot fixture lacked the newly bundled reviewed
+Metro policy and failed one case; the fixture now copies that provider input and
+asserts controller/policy byte parity, and the complete 21-case template suite passed.
+Remaining broad-suite results and new-head CI must be recorded separately. No private listener, installed pointer,
+retained app metadata or phone acceptance changed. Live concurrent user units,
+streaming proxy, route readback, cache/renewal bounds, installed recovery and actual
+Android/iOS remain pending. Session/runtime capability remains unadvertised.
+
+A fresh frozen review snapshot `1e52db1e7ff3e72d9fe798051d4d98be88746db08995cc4c2648d4c32587128d`
+was prepared and its controller/state/protocol/worktree bytes matched source. Its
+CLI readback reports 1.12.0, source manifest schemas 1–6, worktree receipt schema 1,
+no Metro session schemas and runtime schemas 1–4. This did not select it as the
+installed launcher: the stable pointer still resolves to the original 1.10.1
+snapshot. Frozen byte/capability readback is distinct from installed lifecycle.

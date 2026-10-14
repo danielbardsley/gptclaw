@@ -19,6 +19,8 @@ import metro_contract as metro
 import project_dependencies as deps
 import project_templates as templates
 import gptclawctl as cli
+import metro_sessions as sessions
+import metro_security as security
 from dashboard_inventory import Scanner
 from project_manifest import load_schema,validate_project
 
@@ -158,19 +160,21 @@ class ContractTests(unittest.TestCase):
         self.assertEqual(validate_project(self.root)[2],0);self.assertEqual(app.target(self.root)[1]['schema_version'],5)
         value=app.target(self.root)[1];value['metro']={'adapter':'metro-v1','mode':'expo-go','ttl_seconds':7200}
         self.manifest.write_text(json.dumps(value));self.assertNotEqual(validate_project(self.root)[2],0)
-    def test_schema6_stays_non_http_and_lifecycle_remains_unavailable(self):
+    def test_schema6_stays_non_http_and_runtime_admission_precedes_execution(self):
         self.upgrade()
-        from types import SimpleNamespace
-        with patch.object(app,'command',side_effect=AssertionError('no runtime execution')):
-            for action in ['start','stop','restart','status','observe','logs','hooks','db']:
-                with self.assertRaises(app.AppError) as error:mobile.dispatch(SimpleNamespace(action=action,project_root=str(self.root)))
-                self.assertEqual(error.exception.code,'mobile-unsupported')
+        with patch.object(app,'command',side_effect=AssertionError('no runtime execution')),patch.object(sessions.spike,'require_operator',return_value=None):
+            for action in ['status','observe']:
+                result=mobile.dispatch(SimpleNamespace(action=action,project_root=str(self.root)))
+                self.assertEqual(result['state'],'not-started');self.assertFalse(result['transport_available'])
+            logged=mobile.dispatch(SimpleNamespace(action='logs',project_root=str(self.root),lines=80))
+            self.assertEqual(logged['events'],[]);self.assertEqual(logged['log_kind'],'lifecycle-events')
+            with patch.object(sessions,'admitted',side_effect=security.AdmissionError('unapproved')):
+                with self.assertRaises(security.AdmissionError):mobile.dispatch(SimpleNamespace(action='start',project_root=str(self.root)))
         with patch.object(app,'object_owned',return_value=False),patch.object(app,'reserve',side_effect=AssertionError('no HTTP lease')):
-            state=deps.stopped_state(self.root,app.target(self.root)[1])
-        self.assertNotIn('port',state);self.assertEqual(state['adapter'],'mobile')
+            value=deps.stopped_state(self.root,app.target(self.root)[1])
+        self.assertNotIn('port',value);self.assertEqual(value['adapter'],'mobile')
         caps={'provider':'gptclawctl','project_manifest_schemas':[1,2,3,4,5,6],'runtime_manifest_schemas':[1,2,3,4]}
-        snapshot=Scanner(self.projects,capabilities=caps).scan()
-        row=next(r for r in snapshot['rows'] if r['id']=='metro-one')
+        row=next(r for r in Scanner(self.projects,capabilities=caps).scan()['rows'] if r['id']=='metro-one')
         self.assertEqual(row['components'],[]);self.assertEqual(row['runtime_support'],'unsupported')
     def test_schema6_source_dependency_and_provenance_contracts_match_schema5(self):
         context=deps.context(self.root);release=(self.root/'.gptclaw/template-release.json').read_bytes()

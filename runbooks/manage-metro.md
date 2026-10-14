@@ -1,6 +1,6 @@
 # Manage private Metro sessions
 
-- **Status:** Source opt-in implemented on the MOB-002 branch; runtime/rollout pending
+- **Status:** Source opt-in and supervised controller prepared; live lifecycle/private rollout pending
 - **Specification:** [SPEC-033](../docs/033-private-metro-sessions/spec.md)
 - **Acceptance:** [Current evidence](../docs/033-private-metro-sessions/acceptance.md)
 
@@ -8,10 +8,11 @@
 
 The installed provider 1.10.1 supports Expo source creation/quality, with no Metro
 lifecycle. The development provider 1.12.0 adds explicit schema-6 source adoption;
-it still advertises no Metro session/runtime capability. No command below enables
-an advisory exception, creates a Serve listener, launches a phone or starts Metro.
-Lifecycle/private transport instructions will be added after the security-cleared
-SDK spike and verified adapter. No public tunnel, Funnel, EAS or signing fallback.
+it still advertises no Metro session/runtime capability. The source controller has
+offline lifecycle/recovery coverage but has not started a supervised live session.
+The recovery/security commands below operate only owned state and create no Serve
+listener or native-client launch. Live start/private transport instructions remain
+pending the verified adapter. No public tunnel, Funnel, EAS or signing fallback.
 
 Run source checks in the prepared Python 3.12 manifest environment. Do not install
 host tools. Operate only a selected canonical owned project. Managed task worktrees
@@ -65,8 +66,10 @@ restoration is implemented at this preparation stage.
 ## Gates before runtime and private acceptance
 
 The [runtime security disposition](../docs/033-private-metro-sessions/security-review.md)
-is disabled until the owner approves its exact scope. It is separate from MOB-001's
-source-only exceptions. The SDK spike is at most five minutes, uses only the exact
+was approved by the project owner for the exact two tooling findings, retained
+synthetic fixtures and bounded offline runtime scope. Approval provenance and expiry
+are recorded in that review; the two subsequent loopback SDK spikes passed. It is
+separate from MOB-001's source-only exceptions and grants no private route approval. The SDK spike is at most five minutes, uses only the exact
 approved retained fixtures, and exposes only loopback with no persistent SDK logs.
 Subsequent sessions need verified bounded supervision/proxy/expiry and fresh security
 admission; private listener/access changes use the exact reviewed operator path.
@@ -79,3 +82,48 @@ HTTP tests do not establish physical acceptance. Typed session observations and 
 availability must distinguish loopback operation, private transport and real client
 acceptance. [SPEC-034](../docs/034-expo-go-workflow/spec.md) owns Go launch/QR/client UX
 once this Metro provider is available. All full acceptance criteria remain pending.
+
+## Prepared controller recovery and logs
+
+These source commands require the prepared Python 3.12 environment. They are not
+claims about the current installed provider or a completed live lifecycle rehearsal.
+The controller freezes its provider before launching an owned forge user unit. A
+registry binds each project/root/canonical identity to a sticky paired loopback slot;
+stop never recycles an origin that an operator listener could still forward to.
+
+Ordinary dependency/toolchain/format/integration jobs require both an inactive exact
+user unit and absent owned containers/network. A failed receipt alone does not make
+an automatically restarting unit safe to mutate. Foreign units, drop-ins, containers,
+networks and listeners are preserved. Partial start/stop outcomes record recovery
+required and unknown process observation when shutdown cannot be proven.
+
+If source metadata becomes invalid, use the exact recorded generation and root to
+stop an existing owned session without loading the invalid app configuration:
+
+```sh
+python -B scripts/gptclawctl.py metro recover-stop --project-root /absolute/canonical/project --generation GENERATION
+```
+
+This requires a matching registry/receipt and exact unit-file/readback ownership.
+It does not retarget a moved checkout or stop an unknown unit. Retain the receipt,
+previous generation history and source view for review if proof fails; do not erase
+state or manually kill an unrelated process to retry.
+
+`logs --project-root ROOT --lines N` on opted-in source returns lifecycle events
+only. N is 1–256. Events contain timestamps, generation and enumerated operation/
+phase states; no raw SDK output, request headers, client identifiers, tokens or
+origins are retained. Retention is bounded to 256 events, at most 64 KiB, and seven
+days; repeated readiness observations do not append duplicate lifecycle events.
+
+To withdraw this exact runtime policy, inspect a read-only revocation plan:
+
+```sh
+python -B scripts/gptclawctl.py metro revoke --policy-digest POLICY_DIGEST
+```
+
+Only after deciding to revoke that concrete policy, add `--apply`. It records a
+persistent marker in the shared owned store, blocks new admission and is checked
+by frozen running supervisors. Revocation does not grant a replacement exception,
+reset another policy or remove an operator route. There is no automatic un-revoke;
+replacement runtime disposition requires review. Real shutdown/revocation evidence
+remains pending; isolated tests cover both pre-execution and running revocation.

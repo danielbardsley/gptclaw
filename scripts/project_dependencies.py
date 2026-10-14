@@ -348,6 +348,8 @@ def status(root, operation_id=None):
 
 def stopped_state(root, contract):
     a = app()
+    if contract['schema_version']==6:
+        __import__('metro_sessions').assert_stopped(root,contract['project']['id'])
     if contract['schema_version'] in (5,6):
         import project_mobile as mobile
         return mobile.job_state(root, contract)
