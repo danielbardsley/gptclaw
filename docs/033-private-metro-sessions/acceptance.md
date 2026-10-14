@@ -196,3 +196,28 @@ Terraform apply, infrastructure mutation, production use or host package setup
 ran. Whitespace, Python/shell syntax and changed relative-link checks passed.
 Private streaming transport is the next open implementation step; the pinned
 URL-builder limitation is recorded in [SDK evidence](sdk-spike.md).
+
+
+## Proxy integration checkpoint
+
+Nineteen real task-owned loopback tests passed: 3 MiB exact-byte delivery, streaming
+before upstream EOF, chunked/EOF framing, bounded/malformed/foreign/credential
+requests, generation/freshness/inactive denials, fixed header forwarding and
+discarded device/identity data, byte/header/connection/deadline limits, expiry,
+masked ping/fragmented reload frames, malformed/oversized WebSockets, receipt
+change, bind failure and release of an in-flight listener on stop. Initial tests
+exposed a bind-ready race and Python 3.12 wait_closed ordering with active clients;
+both were corrected and all 19 cases passed without resource warnings.
+
+The 28 controller cases passed with proxy start/stop wiring; 13 protocol and
+22 original spike cases passed, preserving strict direct-SDK port validation
+while adding explicit generation-bound odd-port proxy probing. Frozen packaging
+regressions passed all 21 template cases. Whitespace and syntax checks passed.
+All four CI workflows passed at 8278e54, before this proxy integration; the new
+integration revision still requires its own CI result.
+
+Read-only opt-in revalidation on both retained fixtures returned eligible
+300-second plans and clean Git status. Neither was applied at this checkpoint.
+No live supervised unit, private route, phone operation or installed pointer
+change has occurred. Actual SDK-through-proxy, two concurrent lifecycle/recovery,
+operator readback, private transport and iOS/Android remain pending.

@@ -127,6 +127,9 @@ class SessionTests(unittest.TestCase):
             if not revoked:clock['now']=1800000301
             return SimpleNamespace(process=SimpleNamespace(poll=lambda:None),finish=lambda:None)
         self.patch(metro.spike,'EphemeralOutput',runner)
+        service=SimpleNamespace(thread=SimpleNamespace(is_alive=lambda:True),failure=False,stop=lambda:commands.append(['proxy-stop']))
+        service.start=lambda:service
+        self.patch(metro.proxy,'Service',lambda value,loader:service)
         result=metro.supervise(self.root,self.value['generation'])
         self.assertEqual(resources,{})
         return result,commands
@@ -135,6 +138,7 @@ class SessionTests(unittest.TestCase):
         value=metro.load('fixture',self.root);self.assertEqual(value['phase'],'expired')
         sdk=next(c for c in commands if 'node_modules/expo/bin/cli' in c)
         self.assertIn('--timeout=300',sdk);self.assertIn('--offline',sdk);self.assertNotIn('--lan',sdk)
+        self.assertIn(['proxy-stop'],commands)
     def test_supervision_revokes_on_changed_or_withdrawn_admission(self):
         result,commands=self.simulate_supervisor(revoked=True);self.assertEqual(result['state'],'failed')
         self.assertTrue(any(c[:2]==['podman','stop'] for c in commands))

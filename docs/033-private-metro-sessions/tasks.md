@@ -25,7 +25,7 @@
   locks, resource/TTL/security-revocation supervision, sanitized logs and typed recovery.
   Test two independent sessions, drift, concurrency, disconnect, crash and expiry.
   (MET-002/006/007; AC-002/006/007)
-- [ ] T-005: Implement the spike-reviewed streaming/private proxy and operator plan/
+- [ ] T-005 (in progress): Implement the spike-reviewed streaming/private proxy and operator plan/
   readback. Test large/slow requests, origins/TLS, native reload paths and unowned
   route conflicts. Do not change existing handlers or use a public fallback.
   (MET-003/004; AC-003/004)
@@ -103,3 +103,12 @@ the installed pointer. The full local gate completed 36 suites / 672 cases, exit
 fixture error; all other suites passed and the corrected complete template suite
 passed separately. At 80e28eb dashboard CI passed; the other three workflows were
 still running. Final CI and all live lifecycle/private/device gates remain pending.
+
+
+Streaming proxy source is now wired to owned supervisor cleanup and frozen
+packaging. Nineteen real loopback proxy cases, 28 controller cases, 13 protocol
+cases, 22 spike cases and 21 packaging cases pass. The first failures identified
+a ready-event race and active-client listener-release ordering; corrected tests
+pass without resource warnings. All four CI workflows passed at 8278e54 before
+this integration. Both retained roots remain clean/schema 5 with eligible read-only
+300-second plans; actual opt-in/SDK-proxy/unit/private/client evidence is pending.

@@ -87,6 +87,16 @@ class ProtocolTests(unittest.TestCase):
             with self.assertRaises(app.AppError):protocol.request(port,ORIGIN,'/','android')
         for path in ['https://foreign/','//foreign/','/\r\nHost: foreign','/with space']:
             with self.assertRaises(app.AppError):protocol.request(self.port,ORIGIN,path,'android')
+    def test_proxy_probe_ports_are_explicit_and_never_broaden_direct_probes(self):
+        for flag,port in [(True,self.port),(False,self.port+1),(True,80),(1,self.port)]:
+            with self.assertRaises(app.AppError):protocol.request(port,ORIGIN,'/','android',via_proxy=flag)
+        connection=protocol.http.client.HTTPConnection
+        with patch.object(protocol.http.client,'HTTPConnection',side_effect=lambda host,port,**kwargs:connection(host,self.port,**kwargs)):
+            result=protocol.request(self.port+1,ORIGIN,'/bundle','android',via_proxy=True)
+        self.assertEqual(result['bytes'],2)
+        for generation in ['',True,'x'*32,'2'*31]:
+            with self.assertRaises(app.AppError):protocol.sample(self.port+1,ORIGIN,time.monotonic()+1,generation)
+
     def test_json_manifest_targets_and_secret_exclusion(self):
         value={'launchAsset':{'url':ORIGIN+'/entry.bundle?platform=android&dev=true'},'assets':[{'url':ORIGIN+'/assets/icon.png'}]}
         payload=json.dumps(value).encode();self.server.payload=payload;self.server.declared=len(payload)

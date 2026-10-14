@@ -191,3 +191,27 @@ check the shared marker. Fresh audit execution is bounded by remaining session
 lifetime. These are tested source mechanics, not completed installed/live evidence.
 Streaming private proxy, operator readback, persistent cache/renewal measurements,
 collector/native presentation and actual two-session/device acceptance remain open.
+
+
+## Streaming proxy source checkpoint
+
+The source supervisor now owns its paired loopback proxy in the same user-service
+process. The adapter binds only 127.0.0.1 and derives upstream/origin/generation
+from the typed receipt. Eight concurrent forwarded connections, 16 KiB headers,
+64 MiB response/WebSocket bounds, bounded symbolication input, fixed forwarded
+headers and deadlines protect each session. It streams Content-Length, chunked
+and EOF responses with drain/backpressure rather than buffering a full bundle.
+Manifest bodies and signing headers are preserved; no manifest/signature rewriting.
+
+Host/Origin/credential/traversal/framing/redirect inputs reject before forwarding.
+Device/identity headers are discarded. HTTP launch at the origin root currently
+requires the exact generation query; SDK bundle/assets/maps and /hot plus /message
+keep their verified root paths. This host-side stale-launch guard still requires
+actual native-client URI/query preservation evidence in SPEC-034; no launch/QR
+capability or working phone claim follows from the synthetic test.
+
+WebSocket handshake/accept, mask direction, opcodes, continuation/control framing,
+size and expiry are checked before bounded forwarding. Shutdown closes both
+transports and cancels in-flight work before waiting for the Python 3.12 listener
+to release. Exact policy revocation is checked through the live receipt loader.
+Private route readiness remains pending; no operator listener is created.

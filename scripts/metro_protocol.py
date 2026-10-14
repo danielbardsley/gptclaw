@@ -63,10 +63,11 @@ def manifest_targets(value,advertised):
     return {'bundle':bundle,'assets':paths}
 
 
-def request(port,advertised,path,platform,max_bytes=MAX_RESPONSE,deadline=None,manifest=False):
+def request(port,advertised,path,platform,max_bytes=MAX_RESPONSE,deadline=None,manifest=False,via_proxy=False):
     """Stream/hash one fixed owned-loopback response with time and byte ceilings."""
     advertised=origin(advertised)
-    app.need(type(port) is int and port in range(18600,18632,2) and isinstance(platform,str) and platform in {'ios','android'},'invalid')
+    app.need(type(via_proxy) is bool and type(port) is int and port in range(18601 if via_proxy else 18600,18632,2)
+             and isinstance(platform,str) and platform in {'ios','android'},'invalid')
     app.need(type(max_bytes) is int and 1<=max_bytes<=MAX_RESPONSE,'invalid')
     app.need(isinstance(path,str) and path.startswith('/') and not path.startswith('//')
              and len(path)<=8192 and all(32<ord(c)<127 for c in path),'invalid')
@@ -112,10 +113,11 @@ def request(port,advertised,path,platform,max_bytes=MAX_RESPONSE,deadline=None,m
 
 
 
-def websocket(port,advertised,path,deadline):
+def websocket(port,advertised,path,deadline,via_proxy=False):
     """Bounded RFC6455 handshake/ping only; never persist SDK message content."""
     advertised=origin(advertised)
-    app.need(type(port) is int and port in range(18600,18632,2) and path in {'/message','/hot'},'invalid')
+    app.need(type(via_proxy) is bool and type(port) is int and port in range(18601 if via_proxy else 18600,18632,2)
+             and path in {'/message','/hot'},'invalid')
     app.need(type(deadline) in {int,float} and math.isfinite(deadline) and time.monotonic()<deadline,'invalid')
     key=base64.b64encode(os.urandom(16)).decode()
     expected=base64.b64encode(hashlib.sha1((key+'258EAFA5-E914-47DA-95CA-C5AB0DC85B11').encode()).digest()).decode()
@@ -161,8 +163,11 @@ def websocket(port,advertised,path,deadline):
             raise ProbeError('websocket-frame-limit')
     except (OSError,UnicodeError,IndexError):raise ProbeError('websocket-transport') from None
 
-def sample(port,advertised,deadline):
+def sample(port,advertised,deadline,generation=None):
     """Collect sanitized SDK evidence for both native targets, without a phone claim."""
+    app.need(generation is None or isinstance(generation,str) and re.fullmatch('[0-9a-f]{32}',generation),'invalid')
+    via_proxy=generation is not None
+    manifest_path='/' if generation is None else '/?gptclawSession='+generation
     native={}
     for platform in ['ios','android']:
         startup=min(deadline,time.monotonic()+75)
@@ -170,25 +175,25 @@ def sample(port,advertised,deadline):
         while True:
             if time.monotonic()>=startup:raise ProbeError('manifest-startup-deadline',last_error=last_error)
             try:
-                manifest=request(port,advertised,'/',platform,max_bytes=MAX_MANIFEST,
-                                 deadline=min(startup,time.monotonic()+5),manifest=True)
+                manifest=request(port,advertised,manifest_path,platform,max_bytes=MAX_MANIFEST,
+                                 deadline=min(startup,time.monotonic()+5),manifest=True,via_proxy=via_proxy)
                 break
             except app.AppError as error:
                 if error.code!='health':raise
                 last_error=error.diagnostic if isinstance(error,ProbeError) else {'reason':error.code}
                 time.sleep(min(.25,max(0,startup-time.monotonic())))
         targets=manifest.pop('targets')
-        bundle=request(port,advertised,targets['bundle'],platform,deadline=deadline)
+        bundle=request(port,advertised,targets['bundle'],platform,deadline=deadline,via_proxy=via_proxy)
         assets=[]
         app.need(len(targets['assets'])<=8,'health')
         for target in targets['assets']:
-            assets.append(request(port,advertised,target,platform,deadline=deadline))
-        asset=request(port,advertised,'/assets/assets/icon.png?platform='+platform,platform,deadline=deadline)
+            assets.append(request(port,advertised,target,platform,deadline=deadline,via_proxy=via_proxy))
+        asset=request(port,advertised,'/assets/assets/icon.png?platform='+platform,platform,deadline=deadline,via_proxy=via_proxy)
         source_map_path=targets['bundle'].replace('.bundle?', '.map?',1)
         app.need(source_map_path!=targets['bundle'],'health')
-        source_map=request(port,advertised,source_map_path,platform,deadline=deadline)
+        source_map=request(port,advertised,source_map_path,platform,deadline=deadline,via_proxy=via_proxy)
         native[platform]={'starter_icon':asset,'source_map':source_map,'manifest':manifest,'bundle':bundle,'assets':assets,
                           'bundle_exceeds_two_mib':bundle['bytes']>2*1024*1024}
-    channels=[websocket(port,advertised,path,deadline) for path in ['/message','/hot']]
-    return {'protocol':'loopback-native-sdk','native':native,'websockets':channels,'physical_client_verified':False,
+    channels=[websocket(port,advertised,path,deadline,via_proxy=via_proxy) for path in ['/message','/hot']]
+    return {'protocol':'loopback-native-sdk','via_proxy':via_proxy,'native':native,'websockets':channels,'physical_client_verified':False,
             'private_route_verified':False}

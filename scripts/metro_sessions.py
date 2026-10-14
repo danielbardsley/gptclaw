@@ -12,6 +12,7 @@ import uuid
 import private_apps as app
 import metro_contract as contract
 import metro_protocol as protocol
+import metro_proxy as proxy
 import metro_security as security
 import metro_spike as spike
 import metro_state as states
@@ -367,12 +368,19 @@ def stop(root):
 def restart(root,no_route=False):stop(root);return start(root,no_route)
 
 
+def proxy_receipt(value):
+    admitted(value)
+    current=load(value['project'],Path(value['root']))
+    app.need(current is not None and current['generation']==value['generation'],'conflict')
+    return current
+
+
 def supervise(root,generation):
     spike.require_operator();root,value=receipt_for_root(root,generation);project=value['project']
     app.need(value is not None and value['generation']==generation and value['phase'] in {'starting','running','failed'},'conflict')
     stopping=threading.Event()
     signal.signal(signal.SIGTERM,lambda *_:stopping.set());signal.signal(signal.SIGINT,lambda *_:stopping.set())
-    runner=None;outcome='failed'
+    runner=None;bridge=None;outcome='failed'
     try:
         verify_unit(value);data=control(value);view=Path(data['source']);policy=admitted(value)
         _,source=app.target(root);identity=worktrees.canonical(root)
@@ -396,13 +404,16 @@ def supervise(root,generation):
             if (root/name).is_dir():args+=['--volume',str(root/name)+':/workspace/'+name+':ro']
         args+=['--env','EXPO_OFFLINE=1','--env','EXPO_PACKAGER_PROXY_URL='+value['origin'],value['image'],
                'node','node_modules/expo/bin/cli','start','--offline','--go','--port','8081']
-        runner=spike.EphemeralOutput(args);startup=time.monotonic()+min(300,seconds)
+        runner=spike.EphemeralOutput(args)
+        bridge=proxy.Service(value,lambda:proxy_receipt(value));bridge.start()
+        startup=time.monotonic()+min(300,seconds)
         while not stopping.is_set():
             current=load(project,root);app.need(current is not None and current['generation']==generation,'conflict')
             if current['phase']=='stopping':stopping.set();break
             app.need(time.time()>=value['started_at'],'conflict')
             if time.time()>=value['expires_at']:outcome='expired';break
             admitted(value);app.need(hashes(root)==data['inputs'],'conflict')
+            app.need(bridge.thread.is_alive() and not bridge.failure,'health')
             app.need(worktrees.owned(root)==data['root_identity'],'conflict')
             app.target(root);spike.source_inventory(root)
             if runner.process.poll() is not None:raise app.AppError('health')
@@ -420,6 +431,9 @@ def supervise(root,generation):
         if stopping.is_set():outcome='stopped'
     except (app.AppError,security.AdmissionError,OSError,ValueError):outcome='failed'
     finally:
+        if bridge:
+            try:bridge.stop()
+            except app.AppError:outcome='recovery-required'
         try:cleanup(value)
         except app.AppError:outcome='recovery-required'
         if runner:runner.finish()
