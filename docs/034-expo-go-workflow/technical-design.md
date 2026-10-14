@@ -170,3 +170,12 @@ The exact entry permits the current generation with or without one trailing slas
 Go’s Android kernel removes nonreserved queries and the final slash. Generate the
 slash-free path, retain the generation guard and leave manifest bodies/signatures
 unchanged. Native client verification is separate from host path tests.
+
+
+The owner-approved SDK-57 compatibility path is explicit private HTTP within the
+encrypted development tailnet on the same two owned Metro ports. It uses a new
+versioned transport/session/route binding, preserving legacy HTTPS behavior and
+rejecting unowned replacements. [HTTPS restoration](../034-expo-go-workflow/client-transport-decision.md#approved-decision-and-https-restoration-follow-up)
+is tied to a compatible released client and actual native verification. Source
+implementation and operator preparation precede conversion; physical iOS/Android
+criteria and source/SDK/account boundaries are unchanged.

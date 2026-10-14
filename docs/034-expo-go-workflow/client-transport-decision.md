@@ -1,6 +1,6 @@
 # SDK-57 native transport decision
 
-- **Status:** Proposed — no listener, transport, SDK or client-build change authorized by this document
+- **Status:** Private-HTTP Metro amendment approved by the project owner; implementation/operator execution pending
 - **Owner:** Project owner
 - **Observed:** October 14, 2026 UTC
 - **Scope:** Retained mob001-accept-one and mob001-accept-two development fixtures
@@ -79,3 +79,33 @@ HTTP Go links become unavailable after rollback; do not claim older clients work
 Choose the exact private-HTTP Go amendment, a separately specified MOB-004 client
 path, or retention of the present HTTPS boundary. No dependent conversion, native
 build, account setup or SDK upgrade occurs before that scope is selected.
+
+
+## Approved decision and HTTPS restoration follow-up
+
+On October 14, the project owner explicitly approved private HTTP over the encrypted
+development tailnet for only Metro listeners 8443/8444, preserving HTTPS on the
+dashboard/project routes. Implement and verify the operator plan before execution;
+this approval includes the exact conversion scope above, not an SDK upgrade or
+a native client build. Physical acceptance is still required.
+
+**Follow-up owner: project owner / platform maintainer.** Revisit this temporary
+compatibility transport when an official Go release includes the upstream scheme/
+origin fix. Expo's [SDK-58 beta notes](https://expo.dev/changelog/sdk-58-beta) list
+proxy/tunnel origin handling improvements and state that store Go moves to SDK 58
+after its stable release, dropping SDK-57 support. Do not assume a Go app update
+alone makes the retained SDK-57 projects compatible.
+
+Restore HTTPS when a shipped client compatible with the approved project SDK
+passes real native manifest, HTTPS packager-status, large bundle, assets, sustained
+WebSocket/Fast Refresh and reload checks. If the client only supports SDK 58, first
+review a new pinned starter/lock/security/client matrix and source migration; this
+HTTP amendment does not authorize it. Record exact client/OS/SDK versions and
+separate platform evidence. Then use the reviewed owner-controller/operator path
+to stop/reconcile only the two owned sessions, remove only their HTTP listeners,
+restore HTTPS on 8443/8444, verify preserved port-443 handlers/Funnel-off state, and
+update the versioned transport/profile and remove the HTTP compatibility path.
+Old HTTP launch payloads must become unavailable; retain source and receipts.
+
+This is a recorded release-triggered follow-up, not an automatic upgrade, policy
+change, scheduled monitor or claim that a particular release date is confirmed.

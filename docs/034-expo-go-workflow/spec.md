@@ -147,3 +147,24 @@ free success. Capture the final platform preference, real devices and fixture-re
 scope before live tests. Existing retained MOB-001 synthetic fixtures may be reused
 only through approved owner scope, with preserved source/private PRs and other apps.
 No application or store account setup is presumed necessary or authorized by planning.
+
+
+## Approved SDK-57 Go transport amendment (October 14 UTC)
+
+The project owner approved replacing only the two owned Metro listeners 8443/8444
+with private HTTP over the authenticated, encrypted development Tailscale network.
+For these Go sessions this supersedes application-layer TLS in MET-003; port-443
+dashboard/project and app/API routes retain HTTPS. No public/LAN exposure, account,
+SDK migration, native build or expanded dependency exception is authorized.
+Explicit versioned session/route/profile contracts must distinguish the transport;
+legacy HTTPS receipts remain valid and older providers reject unknown contracts.
+Exact owned replacement/readback/rollback goes through the SSM operator after
+source checks and healthy bounded backends. Preserve finite expiry, source/data,
+stale-generation guards, fixed origins and every unaffected handler. All physical
+acceptance and platform-matrix criteria remain required.
+
+The owner also requested restoration of HTTPS when a compatible official Go client
+ships. [The release-triggered follow-up and decision](../034-expo-go-workflow/client-transport-decision.md#approved-decision-and-https-restoration-follow-up)
+requires native HTTPS status/bundle/assets/reload checks and SDK/client compatibility
+before conversion. SDK-58 Go drops SDK-57 support; no automatic source upgrade or
+TLS restoration from a store release alone.

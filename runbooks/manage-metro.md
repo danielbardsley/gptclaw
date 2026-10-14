@@ -266,3 +266,11 @@ not that the owned Metro process stopped. Verify the HTTPS `/status` and aggrega
 stages separately. [The transport decision](../docs/034-expo-go-workflow/client-transport-decision.md)
 requires explicit scope selection before changing the approved HTTPS boundary or
 building a client. Do not repeat bundle warmups or present this client as supported.
+
+
+The owner approved private HTTP over Tailscale for the two Metro listeners as a
+SDK-57 Go compatibility measure. [Restore HTTPS after a compatible official client
+ships and passes native TLS/reload checks](../docs/034-expo-go-workflow/client-transport-decision.md#approved-decision-and-https-restoration-follow-up).
+SDK-58 Go drops SDK-57 support, so a store update alone is insufficient; any new
+SDK/source/security matrix needs its own review. No scheduled or automatic
+conversion is implied.
