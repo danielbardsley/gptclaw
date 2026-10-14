@@ -15,7 +15,7 @@
 | AC-002 | Passed (Android-first) | Owner confirms both fresh locally rendered QR images open the correct native apps after restart. Encoding, foreign origin, generation/expiry/port-reuse and privacy rejection plus independent PNG decode pass. Further runtime failure/reconnect remains AC-005. |
 | AC-003 | Passed | Read-only inspect/launch and minimum Open/copy/QR UI preserve existing links and fail closed on missing/stale capability. Portable browser tests and installed CLI/collector parity pass; launch performs no hidden runtime/route/account action. Physical product QR is separately pending under AC-002. |
 | AC-004 | Passed (Android-first) | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. Owner accepted the Android-first scope; iOS remains unsupported/follow-up. |
-| AC-005 | Failed / correction in progress | Prior network/tailnet/background/compile recovery passes. Current stop/reload isolation fails because app two also cannot reload; source capacity correction, installed verification and repeated native restart/crash/expiry recovery remain. |
+| AC-005 | Failed / correction in progress | Prior network/tailnet/background/compile recovery passes. Earlier stop/reload isolation failed because app two also could not reload. The installed capacity correction now has owner-confirmed loading for both fresh sessions; repeated Reload, stop/isolation and native crash/expiry recovery remain. |
 | AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. Implementation CI passes at 92119fb; final merge/delivery is separately AC-007. |
 | AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback and implementation CI pass. Merge and owner matrix/retention acceptance remain. |
 
@@ -489,3 +489,22 @@ independently decoded to their complete current launch payloads. Source checkout
 and the original HTTPS/Funnel baseline remain unchanged. Phone scan/reload,
 repeated isolation/recovery, owned listener removal and final CI/review/delivery
 remain pending; neither feature is marked Delivered.
+
+
+## Owner confirms fresh native loading after capacity correction
+
+On October 14 at approximately 6:42 p.m. Eastern, the project owner confirms
+“Both apps work again” for the exact app-one generation
+`06f4d67221ff4d26bf2d14d12b433d35` and app-two generation
+`00b5662918864f26829652ccb881412e`. This accepts native loading/operation
+with the revised installed proxy on the selected Android matrix. Aggregate
+transport observations independently show additional successful manifest and
+bundle responses for both sessions, with unchanged generations/expiry and no
+stale-launch, foreign-origin or credential-header rejection. Bounded connection
+rejections still occur; successful loading is not evidence that every reconnect
+request succeeds.
+
+The owner's statement does not separately confirm Expo Go Reload, stop/isolation,
+crash or expiry recovery. Those checks remain pending and the earlier failed
+isolation result remains recorded. No completion, merge or Delivered claim follows
+from this loading confirmation.

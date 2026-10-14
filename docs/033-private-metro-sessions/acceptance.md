@@ -1165,3 +1165,22 @@ independently decoded to their complete current launch payloads. Source checkout
 and the original HTTPS/Funnel baseline remain unchanged. Phone scan/reload,
 repeated isolation/recovery, owned listener removal and final CI/review/delivery
 remain pending; neither feature is marked Delivered.
+
+
+## Owner confirms fresh native loading after capacity correction
+
+On October 14 at approximately 6:42 p.m. Eastern, the project owner confirms
+“Both apps work again” for the exact app-one generation
+`06f4d67221ff4d26bf2d14d12b433d35` and app-two generation
+`00b5662918864f26829652ccb881412e`. This accepts native loading/operation
+with the revised installed proxy on the selected Android matrix. Aggregate
+transport observations independently show additional successful manifest and
+bundle responses for both sessions, with unchanged generations/expiry and no
+stale-launch, foreign-origin or credential-header rejection. Bounded connection
+rejections still occur; successful loading is not evidence that every reconnect
+request succeeds.
+
+The owner's statement does not separately confirm Expo Go Reload, stop/isolation,
+crash or expiry recovery. Those checks remain pending and the earlier failed
+isolation result remains recorded. No completion, merge or Delivered claim follows
+from this loading confirmation.
