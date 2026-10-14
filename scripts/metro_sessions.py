@@ -457,6 +457,22 @@ def proxy_receipt(value):
     return current
 
 
+def observe_protocol(value,current,startup,established):
+    """An observation failure is not evidence that a live owned SDK exited."""
+    try:
+        protocol.request(value['metro_port'],value['origin'],'/', 'android',
+                         max_bytes=protocol.MAX_MANIFEST,manifest=True)
+    except app.AppError:
+        current['observations']['protocol']={'state':'failed','observed_at':event_time(value)}
+        # Initial readiness remains bounded. Once established, preserve the same
+        # live process and lease while reporting unavailable protocol until recovery.
+        if not established:app.need(time.monotonic()<startup,'health')
+        return established
+    current['observations']['protocol']={'state':'ready','observed_at':event_time(value)}
+    current.update(phase='running',operation_result='passed')
+    return True
+
+
 def supervise(root,generation):
     spike.require_operator();root,value=receipt_for_root(root,generation);project=value['project']
     app.need(value is not None and value['generation']==generation and value['phase'] in {'starting','running','failed'},'conflict')
@@ -494,7 +510,7 @@ def supervise(root,generation):
         stage='proxy'
         bridge=proxy.Service(value,lambda:proxy_receipt(value));bridge.start()
         startup=time.monotonic()+min(300,seconds)
-        stage='supervision';next_route=0
+        stage='supervision';next_route=0;protocol_established=False
         while not stopping.is_set():
             current=load(project,root);app.need(current is not None and current['generation']==generation,'conflict')
             if current['phase']=='stopping':stopping.set();break
@@ -508,13 +524,7 @@ def supervise(root,generation):
             up=ownership('container',value['name'],value['token'])=='owned'
             current['observations']['process']={'state':'up' if up else 'unknown','observed_at':event_time(value)}
             if up:
-                try:
-                    protocol.request(value['metro_port'],value['origin'],'/', 'android',max_bytes=protocol.MAX_MANIFEST,manifest=True)
-                    current['observations']['protocol']={'state':'ready','observed_at':event_time(value)}
-                    current.update(phase='running',operation_result='passed')
-                except app.AppError:
-                    current['observations']['protocol']={'state':'failed','observed_at':event_time(value)}
-                    app.need(time.monotonic()<startup,'health')
+                protocol_established=observe_protocol(value,current,startup,protocol_established)
             if time.monotonic()>=next_route and current['phase']=='running':
                 # The proxy checks the durable process/protocol receipt independently.
                 save(current)

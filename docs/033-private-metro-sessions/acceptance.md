@@ -487,3 +487,21 @@ The active-session guard separately returned busy for both without writes. An
 initial live harness wrongly expected conflict; the corrected expectation passed.
 These are real mutation-conflict checks; private/operator/installed/device evidence
 remains pending.
+
+## Cold-bundle supervision investigation
+
+A new cold Android bundle request on the original first-fixture generation timed
+out before any source edit. Both sources remained clean. The first owned unit
+automatically restarted once in its original generation/lifetime; the second
+remained running with no restart. Typed failure was supervision/health, and bounded
+SDK events showed exit 0 during cleanup rather than evidence of a container OOM.
+The current process readback was running with OOM false; the original initial
+failure mechanism is not proven solely by those events.
+
+Source inspection identified a definite controller flaw consistent with this
+failure: after the initial startup deadline, every protocol probe error raised a
+fatal health failure even for an established live SDK. The source now records
+protocol failure/unavailable and retries in place, retaining the live process,
+generation and original expiry. Initial readiness still has a finite deadline.
+All 48 controller cases passed. A corrected live cold-load/edit rehearsal remains
+pending; this is not phone Fast Refresh acceptance.

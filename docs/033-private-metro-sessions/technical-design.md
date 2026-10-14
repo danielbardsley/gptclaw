@@ -265,3 +265,14 @@ values and expiry removes ready state. The frontend shows native source-only
 behavior for schema 5 and a read-only Metro summary/details for capable schema 6.
 Source quality and physical-client acceptance remain separate. Go launch/QR
 presentation belongs to SPEC-034 and is absent here.
+
+## Established protocol-observation failures
+
+The initial protocol-readiness deadline remains 300 seconds. After a process has
+established protocol readiness, a failed/timed-out manifest observation marks that
+layer failed and removes launch availability; it does not prove process exit or
+restart the owned SDK. Continue bounded observations in the same generation and
+original finite lifetime, recovering readiness in place. Actual SDK exit, proxy
+failure, security/input/mount drift and expiry retain their existing owned cleanup/
+recovery paths. Four focused cases distinguish first startup, established timeout,
+truthful unavailable state and in-place recovery.

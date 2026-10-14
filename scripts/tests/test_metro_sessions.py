@@ -36,6 +36,47 @@ class SessionTests(unittest.TestCase):
         p=patch.object(obj,name,value);p.start();self.addCleanup(p.stop)
     def identity(self,project='fixture'):
         return {'project':project,'key':'1'*64}
+
+    def test_established_protocol_timeout_preserves_owned_process_generation_and_lease(self):
+        current=copy.deepcopy(self.value)
+        with patch.object(metro.protocol,'request',side_effect=app.AppError('health')),patch.object(
+                metro.time,'monotonic',return_value=500):
+            self.assertTrue(metro.observe_protocol(self.value,current,300,True))
+        self.assertEqual(current['observations']['protocol']['state'],'failed')
+        self.assertEqual(current['observations']['process'],self.value['observations']['process'])
+        for field in ['phase','generation','expires_at','operation_result']:
+            self.assertEqual(current[field],self.value[field])
+        current['observations']['route']={'state':'verified','observed_at':1800000000}
+        with patch.object(metro_state.time,'time',return_value=1800000000):
+            result=metro_state.descriptor(current,project='fixture',root=self.root,
+                    canonical_key=current['canonical_key'],input_digest=current['input_digest'])
+        self.assertEqual(result['state'],'failed')
+        self.assertFalse(result['transport_available']);self.assertIsNone(result['origin'])
+
+    def test_first_protocol_startup_timeout_still_has_a_finite_gate(self):
+        current=copy.deepcopy(self.value);current.update(phase='starting',operation_result='running')
+        with patch.object(metro.protocol,'request',side_effect=app.AppError('health')),patch.object(
+                metro.time,'monotonic',return_value=500),self.assertRaises(app.AppError) as error:
+            metro.observe_protocol(self.value,current,300,False)
+        self.assertEqual(error.exception.code,'health')
+        self.assertEqual(current['observations']['protocol']['state'],'failed')
+
+    def test_initial_protocol_retry_does_not_publish_ready(self):
+        current=copy.deepcopy(self.value);current.update(phase='starting',operation_result='running')
+        with patch.object(metro.protocol,'request',side_effect=app.AppError('health')),patch.object(
+                metro.time,'monotonic',return_value=200):
+            self.assertFalse(metro.observe_protocol(self.value,current,300,False))
+        self.assertEqual(current['phase'],'starting')
+        self.assertEqual(current['operation_result'],'running')
+
+    def test_protocol_recovers_in_place_without_extending_expiry(self):
+        current=copy.deepcopy(self.value);current['observations']['protocol']['state']='failed'
+        with patch.object(metro.protocol,'request',return_value={}):
+            self.assertTrue(metro.observe_protocol(self.value,current,300,True))
+        self.assertEqual(current['observations']['protocol']['state'],'ready')
+        self.assertEqual(current['expires_at'],self.value['expires_at'])
+        self.assertEqual(current['generation'],self.value['generation'])
+
     def test_explicit_rehearsal_lifetime_only_shortens_declared_bound(self):
         source={'metro':{'ttl_seconds':300}}
         self.assertEqual(metro.lifetime(source),300)
