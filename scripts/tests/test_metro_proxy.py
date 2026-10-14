@@ -403,6 +403,10 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         await self.ws_behavior(reader, writer)
 
     async def test_websocket_reconnect_pressure_preserves_manifest_and_health_capacity(self):
+        release = asyncio.Event()
+        async def hold(reader, writer):
+            await release.wait()
+        self.ws_behavior = hold
         self.behavior = self.websocket_server
         clients = [await self.websocket_connect() for _ in range(module.MAX_WEBSOCKETS)]
         try:
@@ -419,6 +423,7 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
             self.assertTrue((await self.request('/_gptclaw/metro-health')).startswith(b'HTTP/1.1 200'))
             self.assertLessEqual(len(self.proxy.connections), module.MAX_CONNECTIONS)
         finally:
+            release.set()
             for _, writer, _ in clients:
                 await module.close(writer)
         for _ in range(100):
