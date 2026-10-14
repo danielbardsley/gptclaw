@@ -129,3 +129,12 @@ The seven-day profile records that evidence; iOS remains uncertified/outside the
 credential-free client prerequisites. T-002/006/007/008 retain the final matrix,
 product QR/stale/restart/expiry, broad CI, installed rollout/rollback, review/merge
 and owner acceptance gates. No feature is marked Delivered. See current acceptance.
+
+
+Final corrected source/CI and installed checkpoint: all four workflows pass at
+92119fb, the entrypoint and descriptor handoff are corrected, source/installed
+Go behavior agrees, and Go-only rollback/roll-forward preserves Metro/source.
+The updated real 120-second expiry passes with resources removed automatically.
+T-006 retains final review/delivery gate records; T-007/008 retain refreshed
+owner QR/restart and final Android-first matrix/retention/merge acceptance.
+No pending owner response or iOS evidence is treated as accepted.

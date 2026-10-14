@@ -6,7 +6,7 @@
 
 ## Current boundary
 
-The installed provider 1.10.1 supports Expo source creation/quality, with no Metro
+Historical baseline: provider 1.10.1 supported Expo source creation/quality, with no Metro
 lifecycle. The development provider 1.12.0 adds explicit schema-6 source adoption;
 it still advertises no Metro session/runtime capability. The source controller has
 real bounded loopback unit/proxy evidence on the approved fixtures; private and
@@ -324,3 +324,16 @@ read-only Go launch command and minimum dashboard Open/copy/local QR integration
 See the [Go workflow](manage-expo-go.md) and [current acceptance](../docs/034-expo-go-workflow/acceptance.md);
 installed rollout, final CI/merge and remaining device/session checks are separate
 gates. Earlier checkpoints above remain historical.
+
+
+## Current private acceptance installation
+
+The private acceptance host now selects the combined 1.12.0 provider with
+Metro schemas 1/2 and Go inspection/launch schema 1. The collector reads the
+bundled CLI capabilities, rather than a separately hard-coded list. Native
+observation hands the typed descriptor to the collector and its public projection
+removes transport origins; Go exposes a validated launch URI separately.
+All four CI workflows pass at 92119fb. Source/installed parity, actual Go-only
+rollback/roll-forward and an updated 120-second automatic expiry check pass.
+This is an acceptance installation, with final owner/matrix/operator cleanup/merge
+gates still open; it does not mark the features Delivered. See current acceptance.

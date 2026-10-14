@@ -362,3 +362,35 @@ Cold compilation briefly made the first protocol layer unavailable; subsequent
 process/protocol/route observations are Ready. Current dashboard QR/copy and
 intended native restart confirmation have been requested; no owner result is
 assumed. Stable Go installation at this checkpoint precedes the cleanup race fix.
+
+
+## Final corrected source verification checkpoint
+
+At 92119fb3f4a699e9c2c9a4b444e183f2d369ccf9 all four CI workflows pass:
+dashboard 38632684998, development host 38632685434, private applications
+38632685022 and federation 38632685026. Protected plan/apply did not run.
+The final source is installed as combined provider
+69061bff1ab378e044a4684090ead61f6a94cd87f4899b475beb61ede98cb473 with dashboard
+1ac5111f34b77a179a88ffe5ce014358a1a573d34a4f8e86e8779ea062fda2c4.
+Actual installed collector verifies the current first app Ready with its exact
+generation-bound Go action. Source and installed inspection are identical on
+both real fixtures excluding command duration: one Ready/launch available;
+two Expired/launch unavailable.
+
+After exact owned reconciliation of the prior second receipt, one explicit
+120-second updated-runtime rehearsal ran at generation
+9ece4e2f6a604fffbc354ad0d77b58f4. It became Ready, then automatically ended
+Expired / operation passed. SDK container, isolated network and both loopback
+listeners were independently absent. The original canonical source is clean;
+first-session generation/expiry and the original HTTPS/Funnel baseline are
+unchanged. This is a real successful updated-cleanup expiry case; the two
+earlier ambiguous cleanup outcomes remain recorded above.
+
+The project owner has been asked to confirm refreshed dashboard QR/copy and
+intended first-app native restart. The first session remains bounded until
+21:25:12 UTC; no response is assumed. The previous second-app QR prompt expired
+with its stated 20:32 UTC session; test only a current available dashboard action.
+An Android-first matrix decision is also pending: iOS remains unverified with
+its CLI-login prerequisite outside this scope. Final owner acceptance, operator
+owned-listener removal evidence, review/merge and delivery records remain open.
+No catalogue entry is marked Delivered.
