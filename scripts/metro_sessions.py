@@ -14,6 +14,7 @@ import metro_contract as contract
 import metro_protocol as protocol
 import metro_proxy as proxy
 import metro_routes as routes
+import metro_retention as retention
 import metro_security as security
 import metro_spike as spike
 import metro_state as states
@@ -82,14 +83,20 @@ def save(value):
         events.append(event);app.save(path/'events.json',{'schema_version':1,'events':events[-256:]})
     app.save(location(value['project']),value)
 
-def control(value):
+def control(value,allow_frozen=False):
     data=app.read_json(directory(value['project'])/'control.json')
     app.need(isinstance(data,dict) and set(data)=={'schema_version','project','root','generation','inputs','source','provider','audit','root_identity','mount_identities'}
              and type(data['schema_version']) is int and data['schema_version']==2 and data['project']==value['project']
              and data['root']==value['root'] and data['generation']==value['generation'],'conflict')
     app.need(isinstance(data['inputs'],dict) and set(data['inputs'])==set(FILES)
              and all(isinstance(v,str) and states.HEX64.fullmatch(v) for v in data['inputs'].values()),'conflict')
-    app.need(data['source']==str(directory(value['project'])/'sources'/value['generation']) and data['provider']==str(app.REPO),'conflict')
+    app.need(data['source']==str(directory(value['project'])/'sources'/value['generation'])
+             and isinstance(data['provider'],str),'conflict')
+    if allow_frozen:
+        provider=app.safe(Path(data['provider']))
+        app.need(provider.parent==app.STORE/'providers' and states.HEX64.fullmatch(provider.name)
+                 and hashlib.sha256(unit_text(value,provider).encode()).hexdigest()==value['unit_digest'],'conflict')
+    else:app.need(data['provider']==str(app.REPO),'conflict')
     app.need(isinstance(data['root_identity'],list) and len(data['root_identity'])==2
              and all(type(n) is int and n>=0 for n in data['root_identity']),'conflict')
     mounts=data['mount_identities']
@@ -208,7 +215,12 @@ def receipt_for_root(root,generation):
 def result(value,root,identity=None):
     identity=identity or worktrees.canonical(root)
     current=digest(hashes(root))
-    return states.descriptor(value,project=value['project'],root=root,canonical_key=identity['key'],input_digest=current)
+    descriptor=states.descriptor(value,project=value['project'],root=root,canonical_key=identity['key'],input_digest=current)
+    if value['phase'] not in states.INACTIVE:
+        try:admitted(value)
+        except (app.AppError,security.AdmissionError):
+            descriptor.update(state='security-unavailable',transport_available=False,origin=None)
+    return descriptor
 
 def status(root):
     root,source=app.target(root);app.need(source['schema_version']==6,'mobile-unsupported')
@@ -261,13 +273,16 @@ def lifetime(source,seconds=None):
     return maximum if seconds is None else seconds
 
 
-def start(root,no_route=False,ttl_seconds=None):
+def start(root,no_route=False,ttl_seconds=None,expected_generation=None):
     spike.require_operator();root,source=app.target(root);app.need(source['schema_version']==6,'mobile-unsupported')
     seconds=lifetime(source,ttl_seconds)
     policy=admitted();identity=worktrees.canonical(root);project=identity['project']
     with app.locked(project):
         require_idle(root,project);contract.inputs(root)
         old=load(project,root)
+        if expected_generation is not None:
+            app.need(isinstance(expected_generation,str) and states.HEX32.fullmatch(expected_generation)
+                     and old is not None and old['generation']==expected_generation,'conflict')
         if old and old['phase']=='running':
             verify_unit(old);admitted(old)
             app.need(ttl_seconds is None or old['expires_at']-old['started_at']<=seconds,'conflict')
@@ -283,6 +298,8 @@ def start(root,no_route=False,ttl_seconds=None):
         selected=tools.selection(root);observed=tools.observed(selected)
         app.need(observed['state']=='verified' and observed['image_present'],'toolchain-verification')
         spike.prepared_dependencies(root,project)
+        inventory=spike.source_inventory(root)
+        retention.admit(project,retention.source_bytes(root,inventory))
         input_files=hashes(root);image=observed['receipt']['image'];token=uuid.uuid4().hex;generation=uuid.uuid4().hex
         metro,proxy,tls=reserve(root,identity);origin='https://'+app.node_identity()+':'+str(tls)
         now=time.time();expiry=min(now+seconds,security.timestamp(policy['expires_at']))
@@ -299,7 +316,7 @@ def start(root,no_route=False,ttl_seconds=None):
         save(value)
         try:
             view=directory(project)/'sources'/generation;view.parent.mkdir(parents=True,mode=0o700,exist_ok=True)
-            inventory=spike.source_inventory(root);spike.prepare_view(root,view,inventory)
+            spike.prepare_view(root,view,inventory);retention.seal(value,inventory)
             data={'schema_version':2,'project':project,'root':str(root),'generation':generation,'inputs':input_files,
                   'source':str(view),'provider':str(snapshot),'audit':None,'root_identity':identity['root_identity'],'mount_identities':mount_identities(root)};app.save(directory(project)/'control.json',data)
             path=unit_path(value);app.safe(UNITS);UNITS.mkdir(mode=0o700,parents=True,exist_ok=True)
@@ -389,6 +406,48 @@ def stop(root):
 
 
 def restart(root,no_route=False):stop(root);return start(root,no_route)
+
+
+def renewal_plan(root,generation,ttl_seconds=None):
+    root,source=app.target(root);app.need(source['schema_version']==6,'mobile-unsupported')
+    app.need(isinstance(generation,str) and states.HEX32.fullmatch(generation),'invalid')
+    seconds=lifetime(source,ttl_seconds);identity=worktrees.canonical(root)
+    value=load(identity['project'],root);app.need(value is not None and value['generation']==generation,'conflict')
+    policy=admitted(value);verify_unit(value)
+    require_idle(root,value['project']);contract.inputs(root)
+    data=control(value,allow_frozen=True)
+    app.need(value['canonical_key']==identity['key'] and value['input_digest']==digest(hashes(root))
+             and identity['root_identity']==data['root_identity']
+             and mount_identities(root)==data['mount_identities'],'conflict')
+    app.need(value['phase']=='running' and value['operation_result']=='passed'
+             and time.time()<value['expires_at']
+             and ownership('container',value['name'],value['token'])=='owned'
+             and unit_fields(value['name'],['ActiveState']).get('ActiveState')=='active','conflict')
+    descriptor=result(value,root,identity)
+    app.need(descriptor['state']=='ready' and routes.observe(value)['state']=='verified','health')
+    app.need(security.timestamp(policy['expires_at'])-time.time()>=60,'invalid')
+    proposal={'schema_version':1,'project':value['project'],'generation':generation,
+              'canonical_key':identity['key'],'input_digest':value['input_digest'],
+              'policy_digest':value['policy_digest'],'unit_digest':value['unit_digest'],
+              'origin':value['origin'],'previous_expires_at':value['expires_at'],
+              'ttl_seconds':seconds,'renewal_kind':'new-generation'}
+    return root,value,{**proposal,'plan_digest':digest(proposal),'changed':False,'state':'renewal-planned'}
+
+
+def renew(root,generation,ttl_seconds=None,apply=False,confirm_plan=None):
+    # A container's independent timeout is immutable: renewal uses fresh admission,
+    # owned shutdown and a new generation. It never rewrites a running lease.
+    root,value,proposal=renewal_plan(root,generation,ttl_seconds)
+    if not apply:return proposal
+    spike.require_operator();app.need(confirm_plan==proposal['plan_digest'],'conflict')
+    with app.locked(value['project']):
+        root,value,current=renewal_plan(root,generation,ttl_seconds)
+        app.need(current['plan_digest']==confirm_plan,'conflict')
+        stop_owned(root,value)
+    # Guard the stop/start interval against another caller starting a new session.
+    started=start(root,ttl_seconds=proposal['ttl_seconds'],expected_generation=generation)
+    app.need(started['generation']!=generation,'conflict')
+    return {**started,'previous_generation':generation,'renewal_kind':'new-generation'}
 
 
 def proxy_receipt(value):

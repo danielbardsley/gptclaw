@@ -146,7 +146,8 @@ Its --apply --confirm-plan DIGEST records the exact unchanged plan outside sourc
 without executing operator commands. No occupied unrecorded listener is adopted.
 See the [two-fixture operator plan](../docs/033-private-metro-sessions/operator-plan.md)
 for concrete add/remove commands, baseline digest, access-policy prerequisites
-and rollback. Owner/operator approval remains pending.
+and rollback. The project owner approved both exact listeners; operator execution/readback and
+access-policy evidence remain pending.
 
 The supervisor compares exact Serve targets and preserved baseline handlers,
 then probes default-trust private HTTPS health for its current project/generation/
@@ -166,3 +167,28 @@ session expiry, then successful inactive cleanup with source preserved. Both
 current fixture sessions are terminal. The full local offline repository gate
 passed; installed/private/device acceptance and remaining recovery controls stay
 separate. Do not infer a physical client or SSM-disconnect result from this test.
+
+## Explicit renewal and bounded runtime retention
+
+The source controller supports metro renew --project-root ROOT --generation GEN
+and optional --ttl-seconds N. Default is a read-only plan. Review its digest before
+adding --apply --confirm-plan DIGEST. Renewal requires current owned running state,
+unchanged inputs, valid security admission and a verified private route. It stops
+the old generation and performs a fresh start/audit with a new generation and
+finite lifetime; old launch payloads expire. It never extends the existing
+container timeout. If stop/start proof fails, inspect recovery state before retrying.
+
+metro prune --project-root ROOT is also read-only by default. It requires an
+inactive owned session. Review selected copies/retained reasons/aged records and
+apply only with --apply --confirm-plan DIGEST. It removes only proven inactive
+generated copies, preserving current/unresolved/edited/unknown/pre-marker copies
+and canonical source. Batches are bounded to 32 copies and 64 metadata records.
+Known inactive receipts/markers/fixed diagnostics retire after seven days;
+protocol/acceptance evidence remains.
+
+Admission caps each project's runtime store at 1 GiB generated source, 10 MiB
+artifacts, 65,536 entries and 128 copies. No automatic cleanup bypasses ownership.
+If cleanup reports metro-prune-recovery, retain its prune-* staging and reconcile
+the recorded identity/content; do not recursively delete unknown state or source.
+Active status hides transport availability if security admission is unavailable,
+even before the supervisor's next check. Installed/private acceptance is separate.

@@ -232,3 +232,23 @@ readback alone cannot establish readiness; host TLS verification alone cannot
 establish phone access/native rendering. Existing process/protocol freshness remains
 separate. Operator commands/access selectors and rollback are documented in the
 [concrete plan](operator-plan.md); actual operator/device acceptance is pending.
+
+## Implemented renewal and runtime-retention bounds
+
+Renewal plans bind current generation, canonical/input/policy/unit identities,
+origin, prior expiry and requested finite TTL. Applying the unchanged digest
+requires actual verified private transport and owned active state, stops the old
+generation, then freshly admits a new generation. The stop/start interval guards
+the previous generation under the project lock; it cannot adopt an interleaving
+start. Running immutable container timeouts are never extended. Status also checks
+current admission and hides transport immediately on security unavailability.
+
+Runtime-store admission caps generated copies at 1 GiB, metadata/artifacts at
+10 MiB, entries at 65,536 and copies at 128. Each new filtered copy gets a typed
+generation/root/key/directory/content marker. Inactive prune is a read-only plan
+plus digest-confirmed apply under project lock: rename the exact selected copy,
+recheck its identity/hash, then remove only that generated tree. Current,
+unresolved, modified and pre-marker copies remain. Known inactive metadata can
+retire after seven days, while protocol/acceptance evidence remains; batches cap
+at 32 copies and 64 records. A race or interrupted cleanup retains staging for
+review. Canonical application source and backend data are outside this scope.

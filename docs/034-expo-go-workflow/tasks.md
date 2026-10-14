@@ -56,3 +56,11 @@ verified; no source upgrade, route, account, signing or phone operation was perf
 The active owner goal authorizes implementation after MOB-002. This records scope
 authorization only; no Go implementation or physical acceptance has occurred. Exact
 device/client versions and fixture use remain live-test prerequisites.
+
+## Owner client prerequisites (October 14 UTC)
+
+The owner reports Expo Go 57.0.9 supporting SDK 57 on the Android 11 development
+tailnet device. This is a prerequisite report, not native acceptance. No iPhone is
+currently available. Continue the iOS software path assuming a recent iPhone and
+Go 57.0.9 as requested; exact iOS version and all physical iOS checks remain pending.
+No platform certification or criteria waiver follows from these assumptions.

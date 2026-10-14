@@ -1,6 +1,6 @@
 # Private Metro operator plan
 
-- **Status:** Prepared and locally tested; exact operator approval/action pending
+- **Status:** Exact two listeners approved by project owner; operator execution/readback pending
 - **Owner:** Project owner / existing SSM operator
 - **Scope:** Retained mob001-accept-one and mob001-accept-two only
 - **Observed:** 2026-10-14 UTC
@@ -38,7 +38,9 @@ and a digest. --apply --confirm-plan DIGEST records the unchanged plan locally;
 it neither runs sudo nor changes Tailscale or access policy. An occupied unrecorded
 listener blocks, even if its target appears identical.
 
-After owner approval, the existing SSM operator adds only these absent listeners:
+The project owner approved these exact two private listeners in this session on
+October 14. The existing SSM operator adds only these absent listeners after the
+bounded backends are healthy:
 
 ~~~sh
 sudo tailscale serve --bg --https=8443 http://127.0.0.1:18601
@@ -86,3 +88,19 @@ Remove only the chosen owned listener(s); preserve port 443 and all unrelated
 entries. Roll back before selecting an older provider incapable of schema-6 recovery.
 Keep source, metadata journals, typed receipts and retained fixture PRs. If ownership
 or shutdown cannot be proved, report recovery required and preserve unknown state.
+
+## Approved preparation readback
+
+Both unchanged plans were recorded locally against the baseline above; no Serve
+mutation was performed. Plan digests:
+
+- mob001-accept-one: 8eee01ff184d09eae0fb5669287f68b7a4e1f8c56791b4c59b37987b47dad4c9
+- mob001-accept-two: a504772bb9c0d8d2d104be338ad7c6931eaed8c780292da5d8dbd5f90c089e15
+
+The retained fixture PRs now declare 3,600-second finite sessions:
+[one PR #2](https://github.com/danielbardsley/mob001-accept-one/pull/2)
+at 982f38983fb5ccca6b01d157e563fd837a7a801d and
+[two PR #2](https://github.com/danielbardsley/mob001-accept-two/pull/2)
+at 53f7fc7875b91bc644dcc7ece54c4c27ca242f22. Validation passed for both;
+only the declared TTL changed. Actual backend health/expiry is checked separately
+before asking the operator to add the approved listeners.

@@ -16,7 +16,7 @@
 | AC-001 | Pending | Schema-6 opt-in/strict input validation, canonical guarded metadata migration and older-provider rejection have local evidence; session capability/descriptor and installed rollout remain pending. |
 | AC-002 | Pending | Real two-session start/idempotence/independent stop/restart and clean expiry recorded below; actual SSM disconnect, remaining recovery and physical evidence still required. |
 | AC-003 | Pending | Two sequential SDK loopback spikes served iOS/Android manifests and >2 MiB bundles; Existing assets, source maps and WebSocket handshake/ping passed on both fixtures; actual private TLS, sustained native reload and physical iOS/Android remain required. [Measured evidence](sdk-spike.md). |
-| AC-004 | Pending | No Serve changes performed. Exact [operator plan](operator-plan.md) and tested planner/readback/TLS observer prepared; operator approval, actual readback and permitted/denied private access remain. |
+| AC-004 | Pending | No Serve changes performed. Exact [operator plan](operator-plan.md) and tested planner/readback/TLS observer prepared; exact listener scope is owner-approved; operator execution/readback and permitted/denied private access remain. |
 | AC-005 | Pending | Typed independent state/descriptor and source CLI controller are prepared; private route observations, collector and installed parity remain pending. |
 | AC-006 | Pending | Fresh audit, owner-approved exact runtime admission, bounded real SDK spikes and offline safety tests recorded in [security proposal](security-review.md); real managed-runtime revocation/secret checks remain; exact owner disposition is recorded. |
 | AC-007 | Pending | Offline absent/foreign ownership cleanup passes; actual crashes, leases, compatible provider refresh/rollback and app regression evidence remain. |
@@ -56,8 +56,9 @@ applicable to this source preparation.
 ## Owner reports and remaining work
 
 An authorized owner relay reports Android 11 on the development tailnet, with
-Expo Go described as up to date. Exact model, OS build and client version remain
-unknown; no actual native load/interaction/reload was reported for this initiative.
+Expo Go described as up to date. Exact model and OS build remain unknown; the owner subsequently reported Expo
+Go 57.0.9 supporting SDK 57. No actual native load/interaction/reload was
+reported for this initiative.
 No iPhone is confirmed. Both platform criteria remain pending.
 
 Use only the approved retained mob001-accept-one/two synthetic roots within the
@@ -358,3 +359,52 @@ Dashboard CI passed at that revision; its other three workflows were still runni
 at the last verified poll, so final CI remains pending. Exact private listener
 approval was requested against the published operator plan, separately from
 device/client prerequisite information. All remaining acceptance rows stay pending.
+
+## Renewal, bounded retention and owner prerequisites (October 14 UTC)
+
+The owner reports Android 11 with Expo Go 57.0.9 supporting SDK 57. No physical
+native result is inferred. No iPhone is currently available; the owner authorized
+continuing the iOS development path assuming a recent iPhone and the same Expo
+version. Actual iOS OS/client acquisition and physical acceptance remain pending.
+
+The owner approved exactly 8443→127.0.0.1:18601 and
+8444→127.0.0.1:18603 through the existing SSM operator path. No ACL change is
+included. Operator execution/readback, permitted/denied access and private TLS
+remain pending. The two source fixtures may use a reviewed one-hour finite
+lifetime within the previously approved bounded private-session disposition.
+
+Source renewal is read-only by default and digest-confirmed on apply. It requires
+current exact generation, valid inputs/security, owned active process/unit and a
+verified private route. It stops the old owned generation and starts a freshly
+admitted new generation; no running timeout is extended. Active status now removes
+transport availability immediately when security admission is unavailable.
+
+Runtime retention admits at most 1 GiB generated source copies, 10 MiB artifacts,
+65,536 entries and 128 copies per project. Pruning requires an inactive current
+session and digest confirmation, and selects only marker/hash/inode-proven inactive
+generated copies. Current, unresolved, edited, unknown and older pre-marker copies
+are preserved. Known inactive metadata retires after seven days; protocol/acceptance
+evidence remains. A batch is limited to 32 copies and 64 metadata records. Interrupted
+or racing cleanup retains staging for reconciliation rather than deleting unknown
+content. This is runtime-store cleanup, not project source/data deletion.
+
+Focused suites passed: controller 44, retention 21, packaging 21, route 20 and
+source mobile 22 (128 cases). Real 90-second generation
+577139d24fc74400a0ad3a6de6e8be5b sealed its 449,737 B source copy, denied renewal
+while route-pending without stopping it, then expired successfully. A second
+60-second generation 80c127edecd94529bcdb8b8ac25e5a66 expired successfully and its
+confirmed inactive prune removed only that older proven 449,737 B duplicate.
+Four pre-marker copies and the current copy remained; canonical source inventory
+was identical. Both runs ended with inactive/success units, SDK/audit/network absent
+and proxy released. Private-route and physical-client flags were false. Positive
+private renewal and full interruption/recovery acceptance remain pending.
+
+All four CI workflows passed at published head
+7fa418cdd539544d44e5c085f5904222d571d2c2:
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38574054530),
+[Tailscale federation](https://github.com/danielbardsley/gptclaw/actions/runs/38574054247),
+[dev-host](https://github.com/danielbardsley/gptclaw/actions/runs/38574054079) and
+[private apps](https://github.com/danielbardsley/gptclaw/actions/runs/38574054153).
+These precede the renewal/retention changes; their full local gate and new-head CI
+are separate checks. Installed provider remains 1.10.1. No Serve/ACL mutation,
+physical acceptance or feature completion is claimed.

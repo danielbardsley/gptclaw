@@ -276,8 +276,179 @@ class SessionTests(unittest.TestCase):
         self.assertFalse(metro.revoke_path('f'*64).exists())
 
     def test_private_route_is_not_inferred_from_running_status(self):
+        self.patch(metro,'admitted',lambda *args:None)
         self.patch(metro,'hashes',lambda root:{'a':'b'});self.value['input_digest']=metro.digest({'a':'b'})
         with patch.object(metro_state.time,'time',return_value=1800000000):result=metro.result(self.value,self.root,{'key':'1'*64})
         self.assertEqual(result['state'],'route-pending');self.assertIsNone(result['origin']);self.assertFalse(result['transport_available'])
+
+    def test_renewal_can_inspect_its_exact_frozen_unit_from_source_provider(self):
+        provider=app.STORE/'providers'/('9'*64)
+        self.value['unit_digest']=hashlib.sha256(metro.unit_text(self.value,provider).encode()).hexdigest()
+        metro.save(self.value)
+        data={'schema_version':2,'project':'fixture','root':str(self.root),'generation':'2'*32,
+              'inputs':{p:'0'*64 for p in metro.FILES},
+              'source':str(metro.directory('fixture')/'sources'/('2'*32)),
+              'provider':str(provider),'audit':None,'root_identity':[1,2],
+              'mount_identities':{'src':None,'assets':None,'node_modules':[1,2]}}
+        app.save(metro.directory('fixture')/'control.json',data)
+        self.assertEqual(metro.control(self.value,allow_frozen=True),data)
+        with self.assertRaises(app.AppError):metro.control(self.value)
+        data['provider']=str(app.STORE/'providers'/('8'*64))
+        app.save(metro.directory('fixture')/'control.json',data)
+        with self.assertRaises(app.AppError):metro.control(self.value,allow_frozen=True)
+
+    def test_stop_start_race_cannot_reuse_a_different_generation(self):
+        self.patch(metro.spike,'require_operator',lambda:None)
+        self.patch(app,'target',lambda root:(self.root,{'schema_version':6,'metro':{'ttl_seconds':300}}))
+        self.patch(metro,'admitted',lambda:{})
+        self.patch(metro.worktrees,'canonical',lambda root:self.identity())
+        self.patch(metro,'require_idle',lambda *args:None)
+        self.patch(metro.contract,'inputs',lambda *args:None)
+        self.patch(metro,'load',lambda *args:self.value)
+        with patch.object(metro,'verify_unit') as verify,patch.object(app,'command') as command,self.assertRaises(app.AppError):
+            metro.start(self.root,expected_generation='9'*32)
+        verify.assert_not_called();command.assert_not_called()
+
+    def test_capacity_denial_precedes_new_lease_provider_or_session_publication(self):
+        self.patch(metro.spike,'require_operator',lambda:None)
+        self.patch(app,'target',lambda root:(self.root,{'schema_version':6,'metro':{'ttl_seconds':300}}))
+        self.patch(metro,'admitted',lambda:{})
+        self.patch(metro.worktrees,'canonical',lambda root:self.identity())
+        self.patch(metro,'require_idle',lambda *args:None)
+        self.patch(metro.contract,'inputs',lambda *args:None)
+        self.patch(metro,'preflight_unit',lambda *args:None)
+        self.patch(metro,'load',lambda *args:None)
+        self.patch(metro.tools,'selection',lambda *args:{})
+        self.patch(metro.tools,'observed',lambda *args:{'state':'verified','image_present':True})
+        self.patch(metro.spike,'prepared_dependencies',lambda *args:None)
+        content=b'{"expo":{}}'
+        (self.root/'app.json').write_bytes(content)
+        self.patch(metro.spike,'source_inventory',lambda root:{'app.json':hashlib.sha256(content).hexdigest()})
+        cache=metro.directory('fixture')/'sources'/('9'*32)
+        cache.mkdir(parents=True)
+        (cache/'owned-unknown').write_bytes(b'x'*100)
+        with patch.object(metro.retention,'MAX_SOURCES',100),patch.object(metro,'reserve') as reserve,patch.object(app,'provider_bundle') as bundle,self.assertRaises(app.AppError) as error:
+            metro.start(self.root)
+        self.assertEqual(error.exception.code,'metro-capacity')
+        reserve.assert_not_called();bundle.assert_not_called()
+        self.assertFalse(metro.location('fixture').exists())
+        self.assertEqual((cache/'owned-unknown').read_bytes(),b'x'*100)
+
+    def test_status_immediately_disables_transport_on_policy_withdrawal(self):
+        self.patch(metro,'hashes',lambda *args:{})
+        self.value['input_digest']=metro.digest({})
+        self.value['observations']['route']={'state':'verified','observed_at':1800000000}
+        with patch.object(metro_state.time,'time',return_value=1800000000),patch.object(metro,'admitted',side_effect=app.AppError('conflict')):
+            result=metro.result(self.value,self.root,{'key':'1'*64})
+        self.assertEqual(result['state'],'security-unavailable')
+        self.assertIsNone(result['origin']);self.assertFalse(result['transport_available'])
+        self.assertEqual(result['observations']['process']['state'],'up')
+
+    def test_stopped_state_remains_inspectable_after_policy_expiry(self):
+        self.patch(metro,'hashes',lambda *args:{})
+        self.value['phase']='stopped'
+        with patch.object(metro,'admitted',side_effect=AssertionError('inactive observation needs no new admission')):
+            result=metro.result(self.value,self.root,{'key':'1'*64})
+        self.assertEqual(result['state'],'stopped')
+        self.assertFalse(result['transport_available'])
+
+    def prepare_renewal(self):
+        self.value['observations']['route']={'state':'verified','observed_at':1800000000}
+        self.patch(metro.time,'time',lambda:1800000000)
+        self.patch(metro,'load',lambda *args:copy.deepcopy(self.value))
+        self.patch(app,'target',lambda root:(self.root,{'schema_version':6,'metro':{'ttl_seconds':300}}))
+        self.patch(metro.worktrees,'canonical',lambda root:{'project':'fixture','key':'1'*64,'root_identity':[1,2]})
+        self.patch(metro,'admitted',lambda *args:{'expires_at':'2027-02-01T00:00:00Z'})
+        self.patch(metro,'verify_unit',lambda *args:None)
+        self.patch(metro,'require_idle',lambda *args:None)
+        self.patch(metro.contract,'inputs',lambda *args:None)
+        self.patch(metro,'control',lambda *args,**kwargs:{'root_identity':[1,2],'mount_identities':{}})
+        self.patch(metro,'mount_identities',lambda *args:{})
+        self.patch(metro,'hashes',lambda *args:{})
+        self.value['input_digest']=metro.digest({})
+        self.patch(metro,'ownership',lambda *args:'owned')
+        self.patch(metro,'unit_fields',lambda *args:{'ActiveState':'active'})
+        self.patch(metro.routes,'observe',lambda *args:{'state':'verified'})
+        self.patch(metro.spike,'require_operator',lambda:None)
+        self.patch(metro_state.time,'time',lambda:1800000000)
+
+    def test_renewal_plan_is_read_only_and_never_extends_current_receipt(self):
+        self.prepare_renewal()
+        before=copy.deepcopy(self.value)
+        with patch.object(metro,'stop_owned') as stop,patch.object(metro,'start') as start:
+            result=metro.renew(self.root,'2'*32,90)
+        self.assertEqual(result['renewal_kind'],'new-generation')
+        self.assertEqual(result['ttl_seconds'],90)
+        self.assertEqual(self.value,before)
+        self.assertFalse(app.STORE.exists())
+        stop.assert_not_called();start.assert_not_called()
+
+    def test_explicit_renewal_stops_then_starts_fresh_generation(self):
+        self.prepare_renewal()
+        plan=metro.renew(self.root,'2'*32)
+        calls=[]
+        with patch.object(metro,'stop_owned',side_effect=lambda *args:calls.append('stop')),patch.object(metro,'start',side_effect=lambda *args,**kw:(calls.append(kw) or {'generation':'9'*32,'state':'route-pending','changed':True})):
+            result=metro.renew(self.root,'2'*32,apply=True,confirm_plan=plan['plan_digest'])
+        self.assertEqual(calls,['stop',{'ttl_seconds':300,'expected_generation':'2'*32}])
+        self.assertEqual(result['previous_generation'],'2'*32)
+        self.assertEqual(result['generation'],'9'*32)
+
+    def test_unconfirmed_or_expired_renewal_preserves_live_session(self):
+        self.prepare_renewal()
+        with patch.object(metro,'stop_owned') as stop,patch.object(metro,'start') as start:
+            with self.assertRaises(app.AppError):metro.renew(self.root,'2'*32,apply=True,confirm_plan='0'*64)
+            self.value['expires_at']=1800000000
+            with self.assertRaises(app.AppError):metro.renew(self.root,'2'*32)
+        stop.assert_not_called();start.assert_not_called()
+
+    def test_renewal_requires_current_private_route_and_source_inputs(self):
+        self.prepare_renewal()
+        with patch.object(metro,'stop_owned') as stop:
+            for state in ['pending','failed']:
+                with patch.object(metro.routes,'observe',return_value={'state':state}),self.assertRaises(app.AppError):
+                    metro.renew(self.root,'2'*32)
+            self.value['input_digest']='0'*64
+            with self.assertRaises(app.AppError):metro.renew(self.root,'2'*32)
+        stop.assert_not_called()
+
+    def test_renewal_rechecks_plan_before_shutdown(self):
+        self.prepare_renewal()
+        plan=metro.renew(self.root,'2'*32)
+        original=metro.renewal_plan
+        count={'calls':0}
+        def race(*args):
+            count['calls']+=1
+            if count['calls']==2:self.value['unit_digest']='0'*64
+            return original(*args)
+        with patch.object(metro,'renewal_plan',side_effect=race),patch.object(metro,'stop_owned') as stop,self.assertRaises(app.AppError):
+            metro.renew(self.root,'2'*32,apply=True,confirm_plan=plan['plan_digest'])
+        stop.assert_not_called()
+
+    def test_failed_renewal_shutdown_cannot_start_another_sdk(self):
+        self.prepare_renewal()
+        plan=metro.renew(self.root,'2'*32)
+        with patch.object(metro,'stop_owned',side_effect=app.AppError('timeout')),patch.object(metro,'start') as start,self.assertRaises(app.AppError):
+            metro.renew(self.root,'2'*32,apply=True,confirm_plan=plan['plan_digest'])
+        start.assert_not_called()
+
+    def test_renewal_respects_policy_expiry_and_declared_lifetime(self):
+        self.prepare_renewal()
+        for seconds in [59,301,True]:
+            with self.assertRaises(app.AppError):metro.renew(self.root,'2'*32,seconds)
+        with patch.object(metro.security,'timestamp',return_value=1800000059),self.assertRaises(app.AppError):
+            metro.renew(self.root,'2'*32)
+
+    def test_changed_generation_cannot_be_renewed(self):
+        self.prepare_renewal()
+        with self.assertRaises(app.AppError):metro.renew(self.root,'9'*32)
+
+    def test_renewal_cli_passes_exact_reviewed_inputs(self):
+        import contextlib,io,gptclawctl
+        output=io.StringIO()
+        with patch.object(metro,'renew',return_value={'state':'renewal-planned'}) as renew,patch.object(metro.worktrees,'guard'),contextlib.redirect_stdout(output):
+            self.assertEqual(gptclawctl.main(['metro','renew','--project-root',str(self.root),'--generation','2'*32,'--ttl-seconds','90']),0)
+        renew.assert_called_once_with(str(self.root),'2'*32,90,False,None)
+        self.assertEqual(json.loads(output.getvalue())['state'],'renewal-planned')
+
 
 if __name__=='__main__':unittest.main()

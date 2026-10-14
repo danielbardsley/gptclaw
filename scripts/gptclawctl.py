@@ -25,6 +25,8 @@ def main(argv=None):
  enable.add_argument('--apply',action='store_true');enable.add_argument('--confirm-plan')
  supervise=metro_actions.add_parser('supervise',allow_abbrev=False);supervise.add_argument('--project-root',required=True);supervise.add_argument('--generation',required=True)
  recover=metro_actions.add_parser('recover-stop',allow_abbrev=False);recover.add_argument('--project-root',required=True);recover.add_argument('--generation',required=True)
+ renew=metro_actions.add_parser('renew',allow_abbrev=False);renew.add_argument('--project-root',required=True);renew.add_argument('--generation',required=True);renew.add_argument('--ttl-seconds',type=int);renew.add_argument('--apply',action='store_true');renew.add_argument('--confirm-plan')
+ prune=metro_actions.add_parser('prune',allow_abbrev=False);prune.add_argument('--project-root',required=True);prune.add_argument('--apply',action='store_true');prune.add_argument('--confirm-plan')
  route=metro_actions.add_parser('route-plan',allow_abbrev=False);route.add_argument('--project-root',required=True);route.add_argument('--apply',action='store_true');route.add_argument('--confirm-plan')
  revoke=metro_actions.add_parser('revoke',allow_abbrev=False);revoke.add_argument('--policy-digest',required=True);revoke.add_argument('--apply',action='store_true')
  templates=sub.add_parser('templates',help='Discover bundled exact template releases')
@@ -127,6 +129,12 @@ def main(argv=None):
    from project_worktrees import guard
    guard(args.project_root)
   if args.action=='metro':
+   if args.metro_action=='prune':
+    import metro_retention
+    print(json.dumps(metro_retention.prune(args.project_root,args.apply,args.confirm_plan),sort_keys=True));return 0
+   if args.metro_action=='renew':
+    import metro_sessions
+    print(json.dumps(metro_sessions.renew(args.project_root,args.generation,args.ttl_seconds,args.apply,args.confirm_plan),sort_keys=True));return 0
    if args.metro_action=='route-plan':
     import metro_routes
     print(json.dumps(metro_routes.plan(args.project_root,args.apply,args.confirm_plan),sort_keys=True));return 0

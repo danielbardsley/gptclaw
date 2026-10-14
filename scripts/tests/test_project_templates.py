@@ -170,6 +170,7 @@ class Tests(unittest.TestCase):
         self.assertEqual((bundle/'config/metro/runtime-security-v1.json').read_bytes(),(app.REPO/'config/metro/runtime-security-v1.json').read_bytes())
         self.assertEqual((bundle/'scripts/metro_sessions.py').read_bytes(),(app.REPO/'scripts/metro_sessions.py').read_bytes())
         self.assertEqual((bundle/'scripts/metro_routes.py').read_bytes(),(app.REPO/'scripts/metro_routes.py').read_bytes())
+        self.assertEqual((bundle/'scripts/metro_retention.py').read_bytes(),(app.REPO/'scripts/metro_retention.py').read_bytes())
         original=templates.discover()
         project=self.new()
         before={p.relative_to(project):p.read_bytes() for p in project.rglob('*') if p.is_file()}

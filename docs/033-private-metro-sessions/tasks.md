@@ -149,3 +149,17 @@ and SDK/audit/network/proxy were absent at completion. Both fixture units are
 terminal. The full repository gate and final focused controller suite passed.
 Private/operator approval, installed/collector, device, renewal/cache, revocation/
 rollback and SSM-disconnect evidence remain open; MOB-003 is not yet implemented.
+
+## Latest implementation checkpoint
+
+The exact two private listeners are owner-approved; operator execution and ACL/
+device evidence remain pending. Android is owner-reported Expo Go 57.0.9 / SDK 57
+on Android 11. Continue iOS development assuming a recent iPhone and the same Go
+version, while keeping physical iOS acceptance pending.
+
+Explicit new-generation renewal, security-unavailable status and bounded exact-owned
+inactive-copy pruning are implemented. The 128 focused cases and two real expiry/
+retention rehearsals passed; see the acceptance record for revisions and limits.
+Positive private renewal, installed/collector parity, SSM disconnect, full recovery/
+revocation/rollback, physical checks and merge remain open. The latest published
+7fa418c CI is green; current renewal/retention checks are recorded separately.

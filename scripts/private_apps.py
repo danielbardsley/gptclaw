@@ -34,6 +34,8 @@ CPU = '1'
 PIDS = 256
 DEADLINE = 120
 MESSAGES = {
+ 'metro-capacity': 'Owned Metro runtime retention reached its bounded capacity; inspect metro prune and remove only confirmed inactive generated copies. Source and unknown files are preserved.',
+ 'metro-prune-recovery': 'An owned Metro copy changed during cleanup; retain the prune-GENERATION staging directory and reconcile its identity before retrying. Canonical source is unchanged.',
  'metro-metadata-recovery': 'A Metro opt-in publication needs scoped reconciliation; inspect its owned metadata record and retained previous file before retrying.',
  'mobile-unsupported': 'Mobile source creation and quality checks are supported; Metro, device and native release operations are not available.',
  'mobile-policy': 'Mobile identity, SDK packages or source configuration do not match the reviewed Expo profile.',
@@ -704,7 +706,7 @@ WantedBy=default.target
 def provider_bundle():
  paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','project_dependencies.py','project_toolchains.py','gptclawctl.py','gptclawctl','project_repositories.py','repository_askpass.py','repository_credentials.py','repository_credential_helper.py','repository-credential-helper']]
  paths += [Path('scripts/project_worktrees.py')]
- paths += [Path('scripts/project_mobile.py'), Path('scripts/metro_contract.py'), Path('scripts/metro_state.py'), Path('scripts/metro_protocol.py'), Path('scripts/metro_proxy.py'), Path('scripts/metro_routes.py'), Path('scripts/metro_sessions.py'), Path('scripts/metro_spike.py'), Path('scripts/metro_security.py'), Path('config/metro/runtime-security-v1.json'), Path('config/mobile/v1.json'), Path('schemas/project/v5.schema.json'), Path('schemas/project/v6.schema.json')]
+ paths += [Path('scripts/project_mobile.py'), Path('scripts/metro_contract.py'), Path('scripts/metro_state.py'), Path('scripts/metro_protocol.py'), Path('scripts/metro_proxy.py'), Path('scripts/metro_routes.py'), Path('scripts/metro_retention.py'), Path('scripts/metro_sessions.py'), Path('scripts/metro_spike.py'), Path('scripts/metro_security.py'), Path('config/metro/runtime-security-v1.json'), Path('config/mobile/v1.json'), Path('schemas/project/v5.schema.json'), Path('schemas/project/v6.schema.json')]
  paths += [Path('scripts/dashboard_inventory.py'), Path('scripts/dashboard_collector.py'), Path('scripts/dashboard_observation.py'), Path('scripts/dashboard_status.py'), Path('scripts/dashboard_links.py')]
  paths += [Path('config/project-dependencies/v1.json'),Path('schemas/project-dependencies/v1.schema.json')]
  paths += [Path('config/toolchains/v1.json'),Path('schemas/toolchains/v1.schema.json'),Path('templates/apps/node-toolchain/install-pnpm.cjs')]
