@@ -234,3 +234,12 @@ Metro. A guarded session-path entry is implemented and tested; its new physical
 launch check remains pending. Runtime/security/route scope is unchanged. No task
 or platform is marked accepted from host-only checks. See the latest acceptance
 record for exact evidence and limitations.
+
+
+The slash-normalized path subsequently reached the native manifest, but the owner
+received a packager error at an HTTP address on the HTTPS listener. The SDK-57
+Android branch confirms a hardcoded HTTP development probe. Exact Go eligibility
+now reports this HTTPS incompatibility; physical UI/edit/reload remains unaccepted.
+The [transport decision](../034-expo-go-workflow/client-transport-decision.md) is a
+reviewable proposal. No transport amendment, listener conversion or MOB-004 build
+is authorized by creating it. Independent platform work remains in progress.

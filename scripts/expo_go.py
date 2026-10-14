@@ -27,15 +27,18 @@ def profile():
         app.need(isinstance(value[field],str) and states.HEX64.fullmatch(value[field]), 'mobile-policy')
     app.need(value['source_profile_sha256']==hashlib.sha256(
         deps.read_bytes(app.REPO/'config/mobile/v1.json',65536)).hexdigest(), 'mobile-policy')
-    app.need(value['references']==['https://expo.dev/go','https://docs.expo.dev/linking/into-your-app/','https://expo.dev/changelog/expo-go-57-login'], 'mobile-policy')
+    app.need(value['references']==['https://expo.dev/go','https://docs.expo.dev/linking/into-your-app/','https://expo.dev/changelog/expo-go-57-login',
+        'https://github.com/expo/expo/blob/0607af7a70d0ea3e58a6d55824aac5cfd3e78613/apps/expo-go/android/expoview/src/main/java/host/exp/expoview/Exponent.kt#L286',
+        'https://github.com/expo/expo/pull/48275'], 'mobile-policy')
     targets=value['targets']
     app.need(isinstance(targets,dict) and set(targets)=={'ios','android'}, 'mobile-policy')
     for platform,target in targets.items():
         app.need(isinstance(target,dict) and set(target)=={'client_version','reported_os_versions',
-                 'status','physical_verified_at','launch_rule_verified','acquisition_source','requires_cli_login'}, 'mobile-policy')
+                 'status','physical_verified_at','launch_rule_verified','acquisition_source','requires_cli_login','requires_http_devserver'}, 'mobile-policy')
         app.need(target['acquisition_source']=='https://expo.dev/go'
-                 and target['requires_cli_login'] is (platform=='ios'), 'mobile-policy')
-        app.need(target['client_version']=='57.0.9' and target['status']=='candidate'
+                 and target['requires_cli_login'] is (platform=='ios')
+                 and target['requires_http_devserver'] is (platform=='android'), 'mobile-policy')
+        app.need(target['client_version']=='57.0.9' and target['status']==('unsupported' if platform=='android' else 'candidate')
                  and target['physical_verified_at'] is None and target['launch_rule_verified'] is False,
                  'mobile-policy')
         app.need(isinstance(target['reported_os_versions'],list) and len(target['reported_os_versions'])<=8
@@ -70,6 +73,8 @@ def inspect(root,platform,client_version=None,os_version=None):
         reason='report-installed-client-and-os'
     elif client_version!=target['client_version']:
         state='unsupported';reason='client-version-not-in-go-profile'
+    elif target['requires_http_devserver']:
+        state='unsupported';reason='expo-go-android-http-devserver-outside-scope'
     elif target['requires_cli_login']:
         state='unsupported';reason='expo-go-cli-login-outside-scope'
     elif os_version not in target['reported_os_versions']:
@@ -81,6 +86,7 @@ def inspect(root,platform,client_version=None,os_version=None):
             'platform':platform,'sdk':policy['sdk'],'source_eligible':source_match,'source_inputs':source_inputs,
             'client_version':client_version,'os_version':os_version,'client_evidence':'caller-reported',
             'acquisition_source':target['acquisition_source'],'requires_cli_login':target['requires_cli_login'],
+            'requires_http_devserver':target['requires_http_devserver'],
             'state':state,'reason':reason,'metro_state':metro['state'],
             'transport_available':metro['transport_available'],
             'physical_client_acceptance':'unverified','launch_available':False,

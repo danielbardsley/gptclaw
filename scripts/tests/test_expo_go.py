@@ -42,7 +42,10 @@ class Tests(unittest.TestCase):
     def test_ready_metro_and_reported_matching_client_never_certify_phone(self):
         result=self.inspect()
         self.assertTrue(result['source_eligible']);self.assertTrue(result['transport_available'])
-        self.assertEqual(result['state'],'check-required');self.assertFalse(result['launch_available'])
+        self.assertEqual(result['state'],'unsupported');self.assertFalse(result['launch_available'])
+        self.assertEqual(result['reason'],'expo-go-android-http-devserver-outside-scope')
+        self.assertTrue(result['requires_http_devserver'])
+        self.assertEqual(result['follow_up'],'MOB-004')
         self.assertEqual(result['physical_client_acceptance'],'unverified')
         self.assertNotIn('origin',result);self.assertNotIn('generation',result)
     def test_unknown_client_or_os_requires_owner_check(self):
@@ -85,6 +88,15 @@ class Tests(unittest.TestCase):
                 return json.dumps(candidate).encode() if Path(path).name=='expo-go-v1.json' else original(path,*args)
             with patch.object(go.deps,'read_bytes',side_effect=read):
                 with self.assertRaises(app.AppError):go.profile()
+    def test_known_android_http_requirement_cannot_be_silently_bypassed(self):
+        original = go.deps.read_bytes
+        for field, value in [('requires_http_devserver', False), ('status', 'candidate')]:
+            candidate = go.profile(); candidate['targets']['android'][field] = value
+            def read(path, *args):
+                return json.dumps(candidate).encode() if Path(path).name == 'expo-go-v1.json' else original(path, *args)
+            with patch.object(go.deps, 'read_bytes', side_effect=read):
+                with self.assertRaises(app.AppError): go.profile()
+
     def test_wrong_toolchain_is_not_eligible(self):
         self.selection.return_value={'declaration':{'schema_version':1,'profile':'foreign'}}
         with self.assertRaises(app.AppError):self.inspect()

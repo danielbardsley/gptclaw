@@ -14,11 +14,12 @@
       "reported_os_versions": [
         "11"
       ],
-      "status": "candidate",
+      "status": "unsupported",
       "physical_verified_at": null,
       "launch_rule_verified": false,
       "acquisition_source": "https://expo.dev/go",
-      "requires_cli_login": false
+      "requires_cli_login": false,
+      "requires_http_devserver": true
     },
     "ios": {
       "client_version": "57.0.9",
@@ -27,12 +28,15 @@
       "physical_verified_at": null,
       "launch_rule_verified": false,
       "acquisition_source": "https://expo.dev/go",
-      "requires_cli_login": true
+      "requires_cli_login": true,
+      "requires_http_devserver": false
     }
   },
   "references": [
     "https://expo.dev/go",
     "https://docs.expo.dev/linking/into-your-app/",
-    "https://expo.dev/changelog/expo-go-57-login"
+    "https://expo.dev/changelog/expo-go-57-login",
+    "https://github.com/expo/expo/blob/0607af7a70d0ea3e58a6d55824aac5cfd3e78613/apps/expo-go/android/expoview/src/main/java/host/exp/expoview/Exponent.kt#L286",
+    "https://github.com/expo/expo/pull/48275"
   ]
 }

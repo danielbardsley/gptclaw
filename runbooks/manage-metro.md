@@ -258,3 +258,11 @@ The exact entry permits the current generation with or without one trailing slas
 Go’s Android kernel removes nonreserved queries and the final slash. Generate the
 slash-free path, retain the generation guard and leave manifest bodies/signatures
 unchanged. Native client verification is separate from host path tests.
+
+
+A native “Packager is not running” message at `http://…:8443` after a successful
+HTTPS manifest indicates the known SDK-57 Android client development-probe mismatch,
+not that the owned Metro process stopped. Verify the HTTPS `/status` and aggregate
+stages separately. [The transport decision](../docs/034-expo-go-workflow/client-transport-decision.md)
+requires explicit scope selection before changing the approved HTTPS boundary or
+building a client. Do not repeat bundle warmups or present this client as supported.
