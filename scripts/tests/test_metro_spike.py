@@ -32,6 +32,14 @@ class SpikeTests(unittest.TestCase):
     def prepare_plan(self):
         self.patch(spike,'TARGETS',{self.root})
         self.patch(app,'target',lambda root:(self.root,{'schema_version':5,'project':{'id':'synthetic'}}))
+    def test_ephemeral_output_is_bounded_and_evidence_cannot_contain_source_text(self):
+        runner=spike.EphemeralOutput([sys.executable,'-c',"import sys; sys.stdout.write('secret-canary ' * 20000 + ' EACCES'); sys.exit(1)"])
+        runner.finish()
+        self.assertEqual(len(runner.output),65536)
+        result=runner.diagnostic()
+        self.assertEqual(result['exit_code'],1);self.assertEqual(result['captured_bytes'],65536)
+        self.assertNotIn('secret-canary',json.dumps(result));self.assertNotIn('output',result)
+        self.assertEqual(runner.category(),'sdk-startup-or-protocol-failure')
     def test_real_operator_guard_denies_foreign_uid_and_root(self):
         for uid,euid in [(1001,1001),(0,0),(1002,0)]:
             with patch.object(os,'getuid',return_value=uid),patch.object(os,'geteuid',return_value=euid),self.assertRaises(app.AppError) as failure:spike.require_operator()
@@ -152,6 +160,10 @@ class SpikeTests(unittest.TestCase):
             if argv[:3]==['podman','network','rm']:resources.pop(argv[-1],None)
             return SimpleNamespace(returncode=0,stdout='')
         self.patch(app,'command',command)
+        def runner(argv):
+            command(argv)
+            return SimpleNamespace(process=SimpleNamespace(poll=lambda:None),finish=lambda:None,category=lambda:'sdk-startup-or-protocol-failure',diagnostic=lambda:{'exit_code':1,'terms':['error']})
+        self.patch(spike,'EphemeralOutput',runner)
         self.patch(spike,'ownership',lambda kind,name,token,**kw:resources.get(name,'absent'))
         def sample(*args):
             self.assertFalse(registry)
@@ -171,6 +183,9 @@ class SpikeTests(unittest.TestCase):
         self.assertTrue(result['source_unchanged']);self.assertEqual(record['phase'],'complete')
         self.assertFalse(result['protocol']['physical_client_verified'])
         self.assertFalse(result['protocol']['private_route_verified'])
+        sdk=next(c for c in calls if 'node_modules/expo/bin/cli' in c)
+        self.assertIn('--offline',sdk);self.assertIn('--go',sdk)
+        self.assertFalse(any(flag in sdk for flag in ['--lan','--host','--localhost','--tunnel','--https','--dev-client']))
     def test_unknown_start_outcome_cleans_proven_owned_handles(self):
         result,record,calls=self.simulate_run('start-timeout')
         self.assertEqual(record['phase'],'failed')

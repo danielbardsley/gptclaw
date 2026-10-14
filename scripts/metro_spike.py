@@ -10,6 +10,8 @@ import stat
 import math
 import time
 import threading
+import subprocess
+import re
 from urllib.parse import urlsplit
 import uuid
 
@@ -168,6 +170,39 @@ def container_options(view,root,seconds):
             '--env','EXPO_NO_TELEMETRY=1','--env','EXPO_NO_DOTENV=1']
 
 
+
+class EphemeralOutput:
+    """Owned Podman CLI output held only in bounded memory, never raw evidence."""
+    def __init__(self,argv):
+        env={'HOME':'/home/forge','PATH':'/usr/local/bin:/usr/bin:/bin',
+             'XDG_RUNTIME_DIR':'/run/user/1002','DBUS_SESSION_BUS_ADDRESS':'unix:path=/run/user/1002/bus'}
+        self.process=subprocess.Popen(argv,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,env=env)
+        self.output=bytearray()
+        def drain():
+            while True:
+                chunk=self.process.stdout.read(4096)
+                if not chunk:break
+                remaining=65536-len(self.output)
+                if remaining>0:self.output.extend(chunk[:remaining])
+        self.worker=threading.Thread(target=drain,daemon=True);self.worker.start()
+    def category(self):
+        for value in ['EROFS','EACCES','ENOENT','EADDRINUSE','ENOSPC','MODULE_NOT_FOUND']:
+            if value.encode() in self.output:return value
+        return 'sdk-startup-or-protocol-failure'
+    def diagnostic(self):
+        allowed={'network','internal','port','rootless','permission','denied','readonly','filesystem','memory','pids','exec','command','invalid','option','unrecognized','failed','not','found','workspace','expo','metro','configuration','pnpm','image','container','operation','permitted','mount','lsetxattr','timeout','creating','cgroup','sysctl','unsupported','cannot','error','busy','connect','address','available','limit','log','driver','namespace','bridge','commanderror','offline','host','tunnel','lan','localhost','specify'}
+        text=bytes(self.output).decode('utf-8','replace').lower()
+        words=[word for word in re.findall('[a-z]+',text) if word in allowed]
+        return {'exit_code':self.process.poll(),'captured_bytes':len(self.output),'terms':list(dict.fromkeys(words))[:32]}
+    def finish(self):
+        try:self.process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            self.process.terminate()
+            try:self.process.wait(timeout=2)
+            except subprocess.TimeoutExpired:self.process.kill();self.process.wait(timeout=2)
+        self.worker.join(timeout=2)
+        self.process.stdout.close()
+
 def prepared_dependencies(root,slug):
     # Reuse exact dependency receipts without installing packages or reading a
     # full container inspect/environment. Unknown source jobs require recovery.
@@ -210,6 +245,7 @@ def run(root,advertised,duration):
         stage.mkdir(parents=True,mode=0o700);prepare_view(root,view,value['source'])
         receipt={'schema_version':1,'name':name,'token':token,'network':network,'project':value['project'],'phase':'preparing'}
         app.save(stage/'spike.json',receipt)
+        runner=None
         try:
             audit=app.command(['podman','run','--name',audit_name,'--label',LABEL+'='+token,
                                *container_options(view,root,120),image,'pnpm','audit','--json','--registry=https://registry.npmjs.org/'],timeout=140,optional=True)
@@ -224,17 +260,25 @@ def run(root,advertised,duration):
                 app.need(port is not None,'ports')
                 receipt.update(port=port,phase='starting');app.save(stage/'spike.json',receipt)
                 app.command(['podman','network','create','--internal','--label',LABEL+'='+token,network],timeout=20)
-                argv=['podman','run','--detach','--name',name,'--label',LABEL+'='+token,'--network',network,
+                argv=['podman','run','--name',name,'--label',LABEL+'='+token,'--network',network,
                       '--publish','127.0.0.1:'+str(port)+':8081',*container_options(view,root,remaining_seconds(policy,duration)),
                       '--env','EXPO_OFFLINE=1','--env','EXPO_PACKAGER_PROXY_URL='+value['advertised_origin'],
-                      image,'node','node_modules/expo/bin/cli','start','--lan','--offline','--go','--port','8081']
+                      image,'node','node_modules/expo/bin/cli','start','--offline','--go','--port','8081']
                 deadline=time.monotonic()+remaining_seconds(policy,duration)
-                app.command(argv,timeout=20)
-            receipt.update(phase='running',expires_at=time.time()+duration);app.save(stage/'spike.json',receipt)
+                receipt['probe_phase']='container-bind';app.save(stage/'spike.json',receipt)
+                runner=EphemeralOutput(argv)
+                bind_deadline=min(deadline,time.monotonic()+20)
+                while ownership('container',name,token)!='owned':
+                    app.need(runner.process.poll() is None,'health')
+                    app.need(time.monotonic()<bind_deadline,'timeout')
+                    time.sleep(.1)
+            receipt.update(phase='running',probe_phase='native-protocol',expires_at=time.time()+duration);app.save(stage/'spike.json',receipt)
             evidence={};finished=threading.Event()
             def observe():
                 try:evidence['protocol']=protocol.sample(port,value['advertised_origin'],deadline)
-                except (app.AppError,OSError,ValueError):evidence['failed']=True
+                except (app.AppError,OSError,ValueError) as error:
+                    evidence['failed']=True;evidence['failure_code']=error.code if isinstance(error,app.AppError) else 'system'
+                    if isinstance(error,protocol.ProbeError):evidence['diagnostic']=error.diagnostic
                 finally:finished.set()
             observer=threading.Thread(target=observe,daemon=True);observer.start()
             while time.monotonic()<deadline:
@@ -243,17 +287,25 @@ def run(root,advertised,duration):
                 app.need(ownership('container',name,token)=='owned','health')
                 if finished.is_set():break
                 time.sleep(min(1,max(0,deadline-time.monotonic())))
+            if evidence.get('failure_code'):receipt['protocol_failure_code']=evidence['failure_code']
+            if evidence.get('diagnostic'):receipt['protocol_diagnostic']=evidence['diagnostic']
             app.need(finished.is_set() and not evidence.get('failed'),'health')
             app.need(value['source']==source_inventory(root),'conflict')
             receipt.update(phase='complete',protocol=evidence['protocol'])
             return {'project':value['project'],'state':'spike-complete','port':port,'audit':result,'source_unchanged':True,'protocol':evidence['protocol']}
-        except (app.AppError,security.AdmissionError,OSError,ValueError):
-            receipt.update(phase='failed');raise
+        except (app.AppError,security.AdmissionError,OSError,ValueError) as error:
+            receipt.update(phase='failed',failure_code=error.code if isinstance(error,app.AppError) else 'admission-or-system')
+            if runner:receipt['failure_category']=runner.category()
+            raise
         finally:
             failures=[]
             for container in [name,audit_name]:
                 try:cleanup(container,network,token)
                 except app.AppError as error:failures.append(error)
+            if runner:
+                runner.finish()
+                if receipt['phase']=='failed':
+                    receipt['failure_category']=runner.category();receipt['failure_diagnostic']=runner.diagnostic()
             if failures:receipt.update(phase='recovery-required')
             app.save(stage/'spike.json',receipt)
             if failures:raise failures[0]

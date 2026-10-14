@@ -48,7 +48,7 @@
 
 ## Handover
 
-Only T-000 is complete. Proposed default is physical iOS and Android; a requested
+T-000 and T-001 are complete. Proposed default is physical iOS and Android; a requested
 first-platform slice must be labeled. Metro/private transport and runtime security
 are SPEC-033 prerequisites. Device/client eligibility and launch rules are not yet
 verified; no source upgrade, route, account, signing or phone operation was performed.

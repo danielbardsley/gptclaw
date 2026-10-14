@@ -14,6 +14,12 @@ MAX_MANIFEST=1024*1024
 MAX_HEADERS=16384
 
 
+
+class ProbeError(app.AppError):
+    def __init__(self,reason,**fields):
+        super().__init__('health')
+        self.diagnostic={'reason':reason,**fields}
+
 def origin(value):
     app.need(isinstance(value,str) and 1<=len(value)<=255,'invalid')
     try:parsed=urlsplit(value);port=parsed.port
@@ -78,7 +84,7 @@ def request(port,advertised,path,platform,max_bytes=MAX_RESPONSE,deadline=None,m
         app.need(sum(len(k)+len(v)+4 for k,v in headers)<=MAX_HEADERS,'health')
         app.need(response.getheader('Content-Encoding') in {None,'identity'},'health')
         # Do not follow an SDK redirect even when it looks plausible.
-        app.need(response.status==200,'health')
+        if response.status!=200:raise ProbeError('http-status',status=response.status)
         lengths=[v for k,v in headers if k.lower()=='content-length']
         app.need(len(lengths)<=1 and (not lengths or re.fullmatch(r'[0-9]{1,9}',lengths[0]) is not None),'health')
         expected=int(lengths[0]) if lengths else None
@@ -97,7 +103,8 @@ def request(port,advertised,path,platform,max_bytes=MAX_RESPONSE,deadline=None,m
             except (ValueError,UnicodeError):raise app.AppError('health') from None
             result['targets']=manifest_targets(value,advertised)
         return result
-    except (OSError,http.client.HTTPException):raise app.AppError('health') from None
+    except OSError as error:raise ProbeError('socket',errno=error.errno,timeout=isinstance(error,TimeoutError)) from None
+    except http.client.HTTPException:raise ProbeError('http-framing') from None
     finally:connection.close()
 
 
@@ -106,14 +113,16 @@ def sample(port,advertised,deadline):
     native={}
     for platform in ['ios','android']:
         startup=min(deadline,time.monotonic()+75)
+        last_error=None
         while True:
-            app.need(time.monotonic()<startup,'health')
+            if time.monotonic()>=startup:raise ProbeError('manifest-startup-deadline',last_error=last_error)
             try:
                 manifest=request(port,advertised,'/',platform,max_bytes=MAX_MANIFEST,
                                  deadline=min(startup,time.monotonic()+5),manifest=True)
                 break
             except app.AppError as error:
                 if error.code!='health':raise
+                last_error=error.diagnostic if isinstance(error,ProbeError) else {'reason':error.code}
                 time.sleep(min(.25,max(0,startup-time.monotonic())))
         targets=manifest.pop('targets')
         bundle=request(port,advertised,targets['bundle'],platform,deadline=deadline)

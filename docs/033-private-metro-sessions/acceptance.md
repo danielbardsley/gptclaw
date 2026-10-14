@@ -15,10 +15,10 @@
 |---|---|---|
 | AC-001 | Pending | Schema-6 opt-in/strict input validation, canonical guarded metadata migration and older-provider rejection have local evidence; session capability/descriptor and installed rollout remain pending. |
 | AC-002 | Pending | Offline ownership/deadline/fixture guards pass; real two-session lifecycle/disconnect/expiry still required. |
-| AC-003 | Pending | No Metro SDK or physical transport test run. Streaming/private protocol and separate native iOS/Android proof remain required. |
+| AC-003 | Pending | Two sequential SDK loopback spikes served iOS/Android manifests and >2 MiB bundles; assets/WebSockets, actual private TLS transport and physical iOS/Android remain required. [Measured evidence](sdk-spike.md). |
 | AC-004 | Pending | No Serve changes performed; exact operator plan/readback and permitted/denied private access still required. |
 | AC-005 | Pending | Spike plan says approval-pending and unavailable start is blocked; production typed observation/descriptor/collector remain to implement. |
-| AC-006 | Pending | Fresh audit, disabled exact runtime admission and offline safety tests recorded in [security proposal](security-review.md); owner disposition and real runtime revocation/secret checks remain. |
+| AC-006 | Pending | Fresh audit, owner-approved exact runtime admission, bounded real SDK spikes and offline safety tests recorded in [security proposal](security-review.md); owner disposition and real runtime revocation/secret checks remain. |
 | AC-007 | Pending | Offline absent/foreign ownership cleanup passes; actual crashes, leases, compatible provider refresh/rollback and app regression evidence remain. |
 | AC-008 | Pending | Local source/admission/protocol evidence and all four CI workflows passed at fb7f4b2. Final source-job guard CI, actual Metro/installed operations, operator/device acceptance and merge remain required. |
 
@@ -47,8 +47,9 @@
   assumptions described below. Every other suite passed. The corrected complete
   28-case manifest suite passed separately, and CI then passed at fb7f4b2.
 
-No actual Metro/container startup, private route, phone client, or rollout was
-executed. Source-check audit containers are covered by the existing source-only
+The initial preparation had no Metro startup. Subsequent owner approval enabled
+two bounded loopback SDK spikes; see [SDK evidence](sdk-spike.md). No private
+route, phone client or installed rollout was executed. Source-check audit containers are covered by the existing source-only
 scope and do not prove runtime acceptance. Terraform/deployment checks are not
 applicable to this source preparation.
 
@@ -119,3 +120,9 @@ publication. The two added cases and the existing normal-upgrade case passed
 and both metadata copies were preserved. The 18 prior opt-in cases plus these two
 new cases, 21 preflight cases, eight admission cases and ten protocol cases cover
 59 focused scenarios. Final CI for this small additional guard remains pending.
+
+The pinned SDK flag conflict was corrected after bounded terminal failures, preserving
+all source and unrelated services. Both approved fixtures now passed actual loopback
+native manifest/bundle delivery and owned cleanup. Full lifecycle/private/native
+acceptance remains pending. Twenty-two preflight and ten protocol cases passed after
+nonpersistent diagnostic/argv corrections; final CI for those changes is pending.

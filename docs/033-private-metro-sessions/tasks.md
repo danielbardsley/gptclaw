@@ -1,6 +1,6 @@
 # TASKS-033: Private Metro sessions
 
-- **Status:** Implementation authorized — scoped runtime disposition approved; spike pending
+- **Status:** Implementation authorized — scoped runtime disposition approved; spike passed; transport/lifecycle pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md)
@@ -61,7 +61,9 @@ suites cover 59 cases (18 opt-in cases plus two source-job guards). CI passed
 at fb7f4b2; the final source-job guard revision still needs its CI result. Schema-6 source opt-in, canonical guarded migration, non-HTTP source consumers
 and older installed-provider rejection now have evidence; typed session receipts
 and descriptors remain pending. The exact runtime exceptions/retained fixtures are now approved and recorded.
-Actual SDK execution,
+Two authorized exact-SDK loopback spikes passed on the retained fixtures; both
+native manifests and bundles over 2 MiB were served with verified source/cleanup.
+See [measured SDK evidence](sdk-spike.md). Asset/WebSocket, supervision,
 private operator scope and physical evidence remain pending. No Metro service or
 route/account change has been made. See [security proposal](security-review.md) and
 [acceptance tracking](acceptance.md). Other implementation tasks remain open.
