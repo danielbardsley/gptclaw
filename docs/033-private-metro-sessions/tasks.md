@@ -163,3 +163,8 @@ retention rehearsals passed; see the acceptance record for revisions and limits.
 Positive private renewal, installed/collector parity, SSM disconnect, full recovery/
 revocation/rollback, physical checks and merge remain open. The latest published
 7fa418c CI is green; current renewal/retention checks are recorded separately.
+
+Both approved one-hour backends are running with exact loopback health and
+route-pending observations. The SSM operator action has been requested. The
+fixed-owned-origin/default-trust TLS native sampler passes 19 protocol cases;
+actual private sampling follows operator readback. No Go launch is offered yet.

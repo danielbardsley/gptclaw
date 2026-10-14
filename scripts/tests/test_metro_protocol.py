@@ -10,7 +10,7 @@ import sys
 import threading
 import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch,Mock
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import metro_protocol as protocol
@@ -147,5 +147,63 @@ class ProtocolTests(unittest.TestCase):
         self.server.payload=b'not json';self.server.declared=len(self.server.payload)
         with self.assertRaises(app.AppError):protocol.request(self.port,ORIGIN,'/','ios',max_bytes=1024,manifest=True)
         with self.assertRaises(app.AppError):protocol.request(self.port,ORIGIN,'/','ios',max_bytes=protocol.MAX_MANIFEST+1,manifest=True)
+
+    def test_private_tls_destination_is_exact_node_origin_and_explicit(self):
+        with patch.object(app,'node_identity',return_value=HOST):
+            self.assertEqual(protocol.destination(8443,ORIGIN,True,True),(HOST,8443))
+            for port,origin,proxy,private in [(8444,ORIGIN,True,True),(8443,ORIGIN,False,True),
+                    (8443,'https://foreign.ts.net:8443',True,True),(True,ORIGIN,True,True),
+                    (8443,ORIGIN,True,1)]:
+                with self.subTest(port=port,origin=origin),self.assertRaises(app.AppError):
+                    protocol.destination(port,origin,proxy,private)
+            with self.assertRaises(app.AppError):
+                protocol.sample(8443,ORIGIN,time.monotonic()+1,via_private=True)
+
+    def test_private_https_stream_uses_default_trust_and_hashes_response(self):
+        connection=protocol.http.client.HTTPConnection
+        self.server.payload=b'native';self.server.declared=6
+        with patch.object(app,'node_identity',return_value=HOST),patch.object(
+                protocol.http.client,'HTTPSConnection',
+                side_effect=lambda host,port,**kwargs:connection('127.0.0.1',self.port,**kwargs)) as tls:
+            result=protocol.request(8443,ORIGIN,'/bundle','android',via_proxy=True,via_private=True)
+        self.assertEqual(result['sha256'],hashlib.sha256(b'native').hexdigest())
+        args,kwargs=tls.call_args
+        self.assertEqual(args,(HOST,8443));self.assertEqual(set(kwargs),{'timeout'})
+
+    def test_private_https_certificate_failure_is_unavailable(self):
+        tls=Mock();tls.request.side_effect=protocol.ssl.SSLCertVerificationError('synthetic')
+        with patch.object(app,'node_identity',return_value=HOST),patch.object(
+                protocol.http.client,'HTTPSConnection',return_value=tls),self.assertRaises(protocol.ProbeError):
+            protocol.request(8443,ORIGIN,'/bundle','ios',via_proxy=True,via_private=True)
+        tls.close.assert_called_once()
+
+    def test_private_websocket_uses_default_trust_and_exact_sni(self):
+        connect=socket.create_connection
+        context=Mock();context.wrap_socket.side_effect=protocol.ssl.SSLCertVerificationError('synthetic')
+        with patch.object(app,'node_identity',return_value=HOST),patch.object(
+                protocol.socket,'create_connection',
+                side_effect=lambda target,**kwargs:connect(('127.0.0.1',self.port),**kwargs)) as dial,patch.object(
+                protocol.ssl,'create_default_context',return_value=context) as trust,self.assertRaises(protocol.ProbeError):
+            protocol.websocket(8443,ORIGIN,'/hot',time.monotonic()+1,via_proxy=True,via_private=True)
+        self.assertEqual(dial.call_args.args[0],(HOST,8443))
+        trust.assert_called_once_with()
+        self.assertEqual(context.wrap_socket.call_args.kwargs,{'server_hostname':HOST})
+
+    def test_private_sample_requires_owned_current_route_before_and_after(self):
+        import metro_sessions as sessions,metro_routes as routes
+        value={'project':'fixture','generation':'1'*32,'phase':'running','operation_result':'passed',
+               'expires_at':time.time()+60,'name':'owned-fixture','token':'2'*32,'origin':ORIGIN}
+        for observed,owned in [('pending','owned'),('verified','foreign')]:
+            with patch.object(sessions,'receipt_for_root',return_value=(Path('/fixture'),value)),patch.object(
+                    sessions,'proxy_receipt',return_value=value),patch.object(sessions,'verify_unit'),patch.object(
+                    sessions,'ownership',return_value=owned),patch.object(routes,'observe',return_value={'state':observed}),patch.object(
+                    protocol,'sample') as sample,self.assertRaises(app.AppError):
+                protocol.private_sample('/fixture',value['generation'])
+            sample.assert_not_called()
+        with patch.object(sessions,'receipt_for_root',return_value=(Path('/fixture'),value)),patch.object(
+                sessions,'proxy_receipt',return_value=value),patch.object(sessions,'verify_unit'),patch.object(
+                sessions,'ownership',return_value='owned'),patch.object(routes,'observe',
+                side_effect=[{'state':'verified'},{'state':'pending'}]),patch.object(protocol,'sample',return_value={}),self.assertRaises(app.AppError):
+            protocol.private_sample('/fixture',value['generation'])
 
 if __name__=='__main__':unittest.main()

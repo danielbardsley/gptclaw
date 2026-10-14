@@ -408,3 +408,27 @@ All four CI workflows passed at published head
 These precede the renewal/retention changes; their full local gate and new-head CI
 are separate checks. Installed provider remains 1.10.1. No Serve/ACL mutation,
 physical acceptance or feature completion is claimed.
+
+## Approved private-backend preparation
+
+The recorded route plans were applied locally without changing Serve. Retained
+fixture metadata now declares 3,600 seconds through each existing draft PR #2,
+with validation, clean status and publication verified. Both source-managed
+backends started with fresh audit, exact unit/container ownership and generation/
+expiry loopback health. Source inventory was preserved. Their generations are:
+
+- one: 0f8032ae4b374f13af583145c6a4b75d
+- two: a462a926bcea436a8c1cfa178d3b8210
+
+Both initially reported route-pending with no available launch origin. Exact
+operator commands were sent for the already approved listeners; operator readback,
+ACL/device/private-protocol acceptance remains pending.
+
+The sampler now supports only this node's exact owned private origin/port with
+default-trust HTTPS and WebSocket TLS/SNI. A guarded private sample requires current
+generation/security/unit/container and verified route before and after streaming;
+bounded output contains hashes/counts rather than native bodies or identity. All
+19 protocol cases passed, including wrong host/port/mode, certificate denial,
+default trust/SNI and route drift. Actual private TLS sampling is pending operator
+execution. This change followed the full-gate protocol checkpoint and has focused
+verification; CI remains a separate final-head gate.
