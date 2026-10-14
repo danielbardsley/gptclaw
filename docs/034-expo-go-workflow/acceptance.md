@@ -15,7 +15,7 @@
 | AC-002 | Passed (Android-first) | Owner confirms both fresh locally rendered QR images open the correct native apps after restart. Encoding, foreign origin, generation/expiry/port-reuse and privacy rejection plus independent PNG decode pass. Further runtime failure/reconnect remains AC-005. |
 | AC-003 | Passed | Read-only inspect/launch and minimum Open/copy/QR UI preserve existing links and fail closed on missing/stale capability. Portable browser tests and installed CLI/collector parity pass; launch performs no hidden runtime/route/account action. Physical product QR is separately pending under AC-002. |
 | AC-004 | Passed (Android-first) | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. Owner accepted the Android-first scope; iOS remains unsupported/follow-up. |
-| AC-005 | Failed / correction in progress | Prior network/tailnet/background/compile recovery passes. Earlier stop/reload isolation failed because app two also could not reload. The installed capacity correction now has owner-confirmed loading for both fresh sessions; repeated Reload, stop/isolation and native crash/expiry recovery remain. |
+| AC-005 | In progress | Prior network/tailnet/background/compile recovery passes. Earlier stop/reload isolation failed because app two also could not reload. The installed capacity correction now has owner-confirmed loading for both fresh sessions; the owner reports Reload still works and the repeated physical stop/isolation check passes. Native restart/crash/expiry recovery remains. |
 | AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. Implementation CI passes at 92119fb; final merge/delivery is separately AC-007. |
 | AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback and implementation CI pass. Merge and owner matrix/retention acceptance remain. |
 
@@ -508,3 +508,47 @@ The owner's statement does not separately confirm Expo Go Reload, stop/isolation
 crash or expiry recovery. Those checks remain pending and the earlier failed
 isolation result remains recorded. No completion, merge or Delivered claim follows
 from this loading confirmation.
+
+
+## Owner responds to the corrected-session Reload check
+
+At approximately 6:47 p.m. Eastern on October 14, the project owner responds to
+the explicit request to use Expo Go Reload in each current app: “Both apps still
+appear to work.” This is the owner's reported Reload result for generations
+`06f4d67221ff4d26bf2d14d12b433d35` and
+`00b5662918864f26829652ccb881412e`; it does not independently report a
+specific counter value or establish stop/isolation, crash or expiry recovery.
+The app-one-only stop check proceeds separately, with app two's existing
+session retained.
+
+
+The repeated app-one-only stop completed at 6:47 p.m. Eastern with phase stopped,
+operation_result passed and the owned SDK, network and both loopback listeners
+absent. App two retains generation `00b5662918864f26829652ccb881412e`,
+expiry, input digest and unit digest; its transport remains available and three
+private Android manifest probes pass. The original HTTPS/Funnel baseline is
+preserved. This is host evidence only; the corresponding device isolation result
+remains pending.
+
+
+## Owner confirms stopped-project isolation after the correction
+
+On October 14 at approximately 6:50 p.m. Eastern, in response to the explicit
+Reload check for stopped app one and unchanged app two, the project owner reports:
+“Ok app one no longer works, app two still does.” This accepts the intended
+physical isolation result: stopped generation
+`06f4d67221ff4d26bf2d14d12b433d35` is unavailable, while running generation
+`00b5662918864f26829652ccb881412e` remains usable. No additional counter
+value or interaction detail is inferred. This successful repeat supersedes the
+current isolation failure state without erasing the earlier failures.
+A new app-one-only finite restart/reconnect and subsequent expiry check remain;
+app two's existing session and expiry are retained.
+
+
+App one was restarted separately into generation
+`8989c4bc00f749c6b3712439415aae76`, with a 15-minute lifetime expiring at
+7:06 p.m. Eastern. Its private Android manifest and 6,441,558-byte bundle pass;
+the former generation entry returns 503. App two retains its existing generation,
+expiry, input/unit digests and available private transport. Existing HTTPS/Funnel
+handlers remain unchanged. The new physical reconnect and expiry checks are
+pending; host payload rejection alone is not native evidence.

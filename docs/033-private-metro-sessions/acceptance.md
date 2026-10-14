@@ -14,7 +14,7 @@
 | Criterion | State | Current evidence and remaining action |
 |---|---|---|
 | AC-001 | Passed | Schema-6 opt-in, canonical/input denial, versioned capabilities/receipts and installed parity pass. Historical contracts and immutable releases are preserved. |
-| AC-002 | In progress | Real independent sessions, idempotence, SSM reconnect, crash restart, mutation/input drift denial and bounded expiry pass. Refreshed physical stop/restart isolation remains pending; the earlier owner report that both downloads failed is not an isolation pass. |
+| AC-002 | In progress | Real independent sessions, idempotence, SSM reconnect, crash restart, mutation/input drift denial and bounded expiry pass. The repeated physical stop/isolation check now passes: app one is unavailable while unchanged app two remains usable. The earlier both-failed result remains recorded; intended-session restart/crash/expiry checks remain pending. |
 | AC-003 | Passed (Android-first) | Private manifests, >2 MiB native bundles, assets/maps and both WebSocket paths pass. Owner verifies Android 11 / Go 57.0.9 native load, local assets, Fast Refresh and reload. Owner selected Android-first delivery; iOS remains explicitly unsupported/follow-up. |
 | AC-004 | In progress | Approved HTTP conversion, exact route readback, preserved HTTPS handlers/Funnel off and owner-reported off-tailnet denial pass. All devices on this tailnet are owner-permitted. Exact operator-owned listener-removal readback remains pending. |
 | AC-005 | Passed | Installed CLI/collector distinguish readiness/expiry and withdraw launch targets; typed generation/origin/expiry, source parity and Go-only rollback/roll-forward pass. No device-online/backend-health claim is made. |
@@ -1184,3 +1184,47 @@ The owner's statement does not separately confirm Expo Go Reload, stop/isolation
 crash or expiry recovery. Those checks remain pending and the earlier failed
 isolation result remains recorded. No completion, merge or Delivered claim follows
 from this loading confirmation.
+
+
+## Owner responds to the corrected-session Reload check
+
+At approximately 6:47 p.m. Eastern on October 14, the project owner responds to
+the explicit request to use Expo Go Reload in each current app: “Both apps still
+appear to work.” This is the owner's reported Reload result for generations
+`06f4d67221ff4d26bf2d14d12b433d35` and
+`00b5662918864f26829652ccb881412e`; it does not independently report a
+specific counter value or establish stop/isolation, crash or expiry recovery.
+The app-one-only stop check proceeds separately, with app two's existing
+session retained.
+
+
+The repeated app-one-only stop completed at 6:47 p.m. Eastern with phase stopped,
+operation_result passed and the owned SDK, network and both loopback listeners
+absent. App two retains generation `00b5662918864f26829652ccb881412e`,
+expiry, input digest and unit digest; its transport remains available and three
+private Android manifest probes pass. The original HTTPS/Funnel baseline is
+preserved. This is host evidence only; the corresponding device isolation result
+remains pending.
+
+
+## Owner confirms stopped-project isolation after the correction
+
+On October 14 at approximately 6:50 p.m. Eastern, in response to the explicit
+Reload check for stopped app one and unchanged app two, the project owner reports:
+“Ok app one no longer works, app two still does.” This accepts the intended
+physical isolation result: stopped generation
+`06f4d67221ff4d26bf2d14d12b433d35` is unavailable, while running generation
+`00b5662918864f26829652ccb881412e` remains usable. No additional counter
+value or interaction detail is inferred. This successful repeat supersedes the
+current isolation failure state without erasing the earlier failures.
+A new app-one-only finite restart/reconnect and subsequent expiry check remain;
+app two's existing session and expiry are retained.
+
+
+App one was restarted separately into generation
+`8989c4bc00f749c6b3712439415aae76`, with a 15-minute lifetime expiring at
+7:06 p.m. Eastern. Its private Android manifest and 6,441,558-byte bundle pass;
+the former generation entry returns 503. App two retains its existing generation,
+expiry, input/unit digests and available private transport. Existing HTTPS/Funnel
+handlers remain unchanged. The new physical reconnect and expiry checks are
+pending; host payload rejection alone is not native evidence.
