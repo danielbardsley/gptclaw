@@ -13,6 +13,7 @@ import private_apps as app
 import metro_contract as contract
 import metro_protocol as protocol
 import metro_proxy as proxy
+import metro_routes as routes
 import metro_security as security
 import metro_spike as spike
 import metro_state as states
@@ -254,14 +255,22 @@ def assert_stopped(root,project):
         preflight_unit(project,value)
 
 
-def start(root,no_route=False):
+def lifetime(source,seconds=None):
+    maximum=source['metro']['ttl_seconds']
+    app.need(seconds is None or type(seconds) is int and 60<=seconds<=maximum,'invalid')
+    return maximum if seconds is None else seconds
+
+
+def start(root,no_route=False,ttl_seconds=None):
     spike.require_operator();root,source=app.target(root);app.need(source['schema_version']==6,'mobile-unsupported')
+    seconds=lifetime(source,ttl_seconds)
     policy=admitted();identity=worktrees.canonical(root);project=identity['project']
     with app.locked(project):
         require_idle(root,project);contract.inputs(root)
         old=load(project,root)
         if old and old['phase']=='running':
             verify_unit(old);admitted(old)
+            app.need(ttl_seconds is None or old['expires_at']-old['started_at']<=seconds,'conflict')
             app.need(unit_fields(old['name'],['ActiveState']).get('ActiveState')=='active','conflict')
             app.need(old['canonical_key']==identity['key'] and time.time()<old['expires_at']
                      and old['input_digest']==digest(hashes(root)) and ownership('container',old['name'],old['token'])=='owned','conflict')
@@ -276,7 +285,7 @@ def start(root,no_route=False):
         spike.prepared_dependencies(root,project)
         input_files=hashes(root);image=observed['receipt']['image'];token=uuid.uuid4().hex;generation=uuid.uuid4().hex
         metro,proxy,tls=reserve(root,identity);origin='https://'+app.node_identity()+':'+str(tls)
-        now=time.time();expiry=min(now+source['metro']['ttl_seconds'],security.timestamp(policy['expires_at']))
+        now=time.time();expiry=min(now+seconds,security.timestamp(policy['expires_at']))
         value={'schema_version':1,'adapter':'metro-v1','project':project,'root':str(root),'canonical_key':identity['key'],
                'name':'gptclaw-metro-'+project,'generation':generation,'token':token,'image':image,'input_digest':digest(input_files),
                'policy_digest':digest(policy),'unit_digest':'0'*64,'metro_port':metro,'proxy_port':proxy,'origin':origin,
@@ -426,7 +435,7 @@ def supervise(root,generation):
         stage='proxy'
         bridge=proxy.Service(value,lambda:proxy_receipt(value));bridge.start()
         startup=time.monotonic()+min(300,seconds)
-        stage='supervision'
+        stage='supervision';next_route=0
         while not stopping.is_set():
             current=load(project,root);app.need(current is not None and current['generation']==generation,'conflict')
             if current['phase']=='stopping':stopping.set();break
@@ -447,6 +456,11 @@ def supervise(root,generation):
                 except app.AppError:
                     current['observations']['protocol']={'state':'failed','observed_at':event_time(value)}
                     app.need(time.monotonic()<startup,'health')
+            if time.monotonic()>=next_route and current['phase']=='running':
+                # The proxy checks the durable process/protocol receipt independently.
+                save(current)
+                current['observations']['route']=routes.observe(current)
+                next_route=time.monotonic()+10
             save(current);stopping.wait(2)
         if stopping.is_set():outcome='stopped'
     except (app.AppError,security.AdmissionError,OSError,ValueError) as error:

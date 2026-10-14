@@ -1,6 +1,6 @@
 # SPEC-033 acceptance tracking
 
-- **Status:** Pending — implementation in progress; no Metro/device acceptance
+- **Status:** Pending — owned loopback evidence recorded; private/installed/device acceptance outstanding
 - **Owner:** Project owner
 - **Observed:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md) · **Tasks:** [TASKS-033](tasks.md)
@@ -14,9 +14,9 @@
 | Criterion | State | Current evidence and remaining action |
 |---|---|---|
 | AC-001 | Pending | Schema-6 opt-in/strict input validation, canonical guarded metadata migration and older-provider rejection have local evidence; session capability/descriptor and installed rollout remain pending. |
-| AC-002 | Pending | Offline ownership/deadline/fixture guards pass; real two-session lifecycle/disconnect/expiry still required. |
+| AC-002 | Pending | Real two-session start/idempotence/independent stop/restart and clean expiry recorded below; actual SSM disconnect, remaining recovery and physical evidence still required. |
 | AC-003 | Pending | Two sequential SDK loopback spikes served iOS/Android manifests and >2 MiB bundles; Existing assets, source maps and WebSocket handshake/ping passed on both fixtures; actual private TLS, sustained native reload and physical iOS/Android remain required. [Measured evidence](sdk-spike.md). |
-| AC-004 | Pending | No Serve changes performed; exact operator plan/readback and permitted/denied private access still required. |
+| AC-004 | Pending | No Serve changes performed. Exact [operator plan](operator-plan.md) and tested planner/readback/TLS observer prepared; operator approval, actual readback and permitted/denied private access remain. |
 | AC-005 | Pending | Typed independent state/descriptor and source CLI controller are prepared; private route observations, collector and installed parity remain pending. |
 | AC-006 | Pending | Fresh audit, owner-approved exact runtime admission, bounded real SDK spikes and offline safety tests recorded in [security proposal](security-review.md); real managed-runtime revocation/secret checks remain; exact owner disposition is recorded. |
 | AC-007 | Pending | Offline absent/foreign ownership cleanup passes; actual crashes, leases, compatible provider refresh/rollback and app regression evidence remain. |
@@ -272,3 +272,60 @@ load, signing, production, AWS mutation or existing app/data change occurred.
 All four workflows passed at source 5de817a before the current guarded-mount changes.
 Operator, sustained reload, native generation/URI, cache/renewal, crash/recovery/
 rollback, installed/collector and physical iOS/Android criteria remain pending.
+
+## Corrected proxy deadline and private-route preparation (October 14 UTC)
+
+Current-state readback confirms fixture one stopped and fixture two cleanly expired.
+The latter generation 5824188a7675496db3da5dbc06d700e2 passed the full real SDK
+sample through its owned loopback proxy: iOS bundle 5,737,192 B, Android 6,441,778 B,
+source maps 11,366,406 / 12,348,753 B, the 99 B retained icon and both /message
+and /hot upgrade/ping-pong checks. Its evidence explicitly records private-route
+and physical-client flags false. Automatic expiry returned passed, with no failure
+record, SDK/network absent and proxy released. Earlier 90/120-second bounded
+rehearsals also expired cleanly; the 120-second cold sampler timed out.
+
+The probe previously allowed only two seconds between body reads and capped the
+response-header wait at 60 seconds despite a longer bounded cold-transform deadline.
+It now respects the caller's finite header deadline and permits at most 30 seconds
+between streamed reads, using read1 so a slow body cannot hide deadline checks
+inside a multi-read call. This fixes observed probing behavior, not a proven cause
+of the older recovery-required case; that historical initial failure remains unknown.
+
+Local focused results at this checkpoint: 14 protocol, 20 proxy, 30 controller,
+20 private-route and 21 packaging cases passed (105 cases). The first new proxy
+expiry test incorrectly changed an immutable fixture expiry after constructing the
+proxy; corrected fixture setup passed the full suite. A real stalled-upstream test
+now proves expiry cancellation before headers. Route fixtures cover absent/unowned/
+changed listeners, digest races, preserved dashboard/projects handlers, coexisting
+owned origins, default TLS trust, stale/wrong session and expired/stopped denial.
+
+Both actual read-only route plans succeeded against Tailscale 1.104.1, with current
+baseline digest d0c41e928966c5d085e704d5826120b76ae4b4af854eb0aa570e447d52db5539.
+The [exact operator plan](operator-plan.md) proposes only 8443→18601 and 8444→18603.
+No Serve or access-policy mutation ran. The supervisor's route observer is separate
+from process/protocol readiness; actual HTTPS and phone ACL access remain unverified.
+
+All four GitHub workflows passed at da9cdd8bc9561b9fa86d84a494c695a8038efba1:
+[private apps](https://github.com/danielbardsley/gptclaw/actions/runs/38502791680),
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38502791684),
+[dev-host](https://github.com/danielbardsley/gptclaw/actions/runs/38502791727) and
+[Tailscale federation](https://github.com/danielbardsley/gptclaw/actions/runs/38502791798).
+These precede the route/deadline changes; new-head CI remains separate.
+Exact Android Go and iOS/device prerequisites were requested again, with no
+physical outcome inferred. Stable provider remains 1.10.1; no existing app/data,
+production, signing, infrastructure or host security change occurred.
+
+Readback of the old first-fixture unit was terminal failed (exit status 1), despite
+the reconciled stopped/passed receipt; all SDK/audit/network handles were absent
+and the proxy released. This is not reported as an inactive-success unit. The
+new-controller bounded rehearsal and its own expiry result are recorded separately.
+
+The subsequent new-supervisor 120-second loopback rehearsal passed on fixture one,
+generation 7f82a86bd5b84698964eafd13abd36ca. It returned route-pending with no launch
+origin, independently recorded a pending route timestamp, then expired/passed.
+The exact unit was inactive/dead with Result=success, ExecMainStatus=0 and no
+automatic restarts; SDK/network were absent and proxy released. The saved owned
+evidence explicitly marks private-route and physical-client verification false.
+No Serve/access-policy operation occurred. The final process/protocol publication
+ordering adjustment was checked separately by all 30 controller cases; this live
+snapshot preceded that small ordering adjustment.

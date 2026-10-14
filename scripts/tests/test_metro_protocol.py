@@ -38,6 +38,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         self.server.received=(self.headers.get('Host'),self.headers.get('Expo-Platform'),self.headers.get('X-Forwarded-Proto'))
         payload=self.server.payload
+        if self.server.header_delay:time.sleep(self.server.header_delay)
         self.send_response(self.server.status)
         if self.server.declared:self.send_header('Content-Length',str(self.server.declared))
         if self.server.extra_header:self.send_header('Synthetic',self.server.extra_header)
@@ -56,7 +57,7 @@ class ProtocolTests(unittest.TestCase):
             except OSError:continue
         if self.server is None:self.fail('task test range unavailable; no foreign listener changed')
         self.server.daemon_threads=True;self.server.payload=b'ok';self.server.status=200
-        self.server.declared=2;self.server.extra_header=None;self.server.delay=0;self.server.bad_accept=False
+        self.server.declared=2;self.server.extra_header=None;self.server.delay=0;self.server.header_delay=0;self.server.bad_accept=False
         worker=threading.Thread(target=self.server.serve_forever,daemon=True);worker.start()
         def cleanup():self.server.shutdown();self.server.server_close();worker.join(2)
         self.addCleanup(cleanup)
@@ -129,6 +130,14 @@ class ProtocolTests(unittest.TestCase):
         self.server.bad_accept=True
         with self.assertRaises(app.AppError):protocol.websocket(self.port,ORIGIN,'/hot',time.monotonic()+2)
         with self.assertRaises(app.AppError):protocol.websocket(self.port,ORIGIN,'/debugger',time.monotonic()+2)
+    def test_cold_transform_header_wait_uses_callers_bounded_deadline(self):
+        self.server.header_delay=.15
+        self.assertEqual(self.get(deadline=time.monotonic()+1)['bytes'],2)
+        self.server.header_delay=.4
+        started=time.monotonic()
+        with self.assertRaises(app.AppError):self.get(deadline=started+.1)
+        self.assertLess(time.monotonic()-started,.3)
+
     def test_stalled_body_cannot_extend_deadline(self):
         self.server.delay=.6
         started=time.monotonic()

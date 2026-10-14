@@ -25,6 +25,7 @@ def main(argv=None):
  enable.add_argument('--apply',action='store_true');enable.add_argument('--confirm-plan')
  supervise=metro_actions.add_parser('supervise',allow_abbrev=False);supervise.add_argument('--project-root',required=True);supervise.add_argument('--generation',required=True)
  recover=metro_actions.add_parser('recover-stop',allow_abbrev=False);recover.add_argument('--project-root',required=True);recover.add_argument('--generation',required=True)
+ route=metro_actions.add_parser('route-plan',allow_abbrev=False);route.add_argument('--project-root',required=True);route.add_argument('--apply',action='store_true');route.add_argument('--confirm-plan')
  revoke=metro_actions.add_parser('revoke',allow_abbrev=False);revoke.add_argument('--policy-digest',required=True);revoke.add_argument('--apply',action='store_true')
  templates=sub.add_parser('templates',help='Discover bundled exact template releases')
  template_actions=templates.add_subparsers(dest='template_action',required=True)
@@ -126,6 +127,9 @@ def main(argv=None):
    from project_worktrees import guard
    guard(args.project_root)
   if args.action=='metro':
+   if args.metro_action=='route-plan':
+    import metro_routes
+    print(json.dumps(metro_routes.plan(args.project_root,args.apply,args.confirm_plan),sort_keys=True));return 0
    if args.metro_action=='revoke':
     import metro_sessions
     print(json.dumps(metro_sessions.revoke(args.policy_digest,args.apply),sort_keys=True));return 0

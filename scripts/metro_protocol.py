@@ -82,8 +82,9 @@ def request(port,advertised,path,platform,max_bytes=MAX_RESPONSE,deadline=None,m
                                              'Accept':'application/expo+json' if manifest else '*/*','Connection':'close',
                                              'X-Forwarded-Proto':'https','Accept-Encoding':'identity'})
         transport=connection.sock
-        transport.settimeout(max(.01,min(60,deadline-time.monotonic())))
+        transport.settimeout(max(.01,deadline-time.monotonic()))
         response=connection.getresponse()
+        app.need(time.monotonic()<deadline,'timeout')
         headers=response.getheaders()
         app.need(sum(len(k)+len(v)+4 for k,v in headers)<=MAX_HEADERS,'health')
         app.need(response.getheader('Content-Encoding') in {None,'identity'},'health')
@@ -95,8 +96,8 @@ def request(port,advertised,path,platform,max_bytes=MAX_RESPONSE,deadline=None,m
         app.need(expected is None or expected<=max_bytes,'health')
         while not response.isclosed():
             app.need(time.monotonic()<deadline,'timeout')
-            transport.settimeout(max(.01,min(2,deadline-time.monotonic())))
-            chunk=response.read(min(65536,max_bytes-count+1))
+            transport.settimeout(max(.01,min(30,deadline-time.monotonic())))
+            chunk=response.read1(min(65536,max_bytes-count+1))
             if not chunk:break
             count+=len(chunk);app.need(count<=max_bytes,'health');digest.update(chunk)
             if manifest:collected.extend(chunk)

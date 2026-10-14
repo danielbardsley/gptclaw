@@ -162,6 +162,10 @@ if ! python3 -B scripts/tests/test_metro_sessions.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_metro_routes.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/tests/test_metro_proxy.py; then
   status=1
 fi

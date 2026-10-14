@@ -354,6 +354,23 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         finally:
             await module.close(writer)
 
+    async def test_expiry_cancels_stalled_upstream_before_headers(self):
+        entered = asyncio.Event()
+        async def behavior(reader, writer, first, headers):
+            entered.set()
+            await reader.read()
+        self.behavior = behavior
+        self.value['expires_at'] = time.time()+.5
+        self.proxy.receipt['expires_at'] = self.value['expires_at']
+        reader, writer = await self.connect()
+        try:
+            await asyncio.wait_for(entered.wait(), 1)
+            response = await asyncio.wait_for(reader.read(), 1)
+            self.assertNotIn(b'200 OK', response)
+            self.assertEqual(self.proxy.counters['upstream_bytes'], 0)
+        finally:
+            await module.close(writer)
+
     async def test_service_bind_failure_is_terminal_without_fallback_or_route(self):
         service = module.Service(self.value, lambda: self.value)
         with patch.object(module.asyncio, 'start_server', side_effect=OSError('synthetic collision')) as bind:

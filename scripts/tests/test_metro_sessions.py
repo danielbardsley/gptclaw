@@ -36,6 +36,13 @@ class SessionTests(unittest.TestCase):
         p=patch.object(obj,name,value);p.start();self.addCleanup(p.stop)
     def identity(self,project='fixture'):
         return {'project':project,'key':'1'*64}
+    def test_explicit_rehearsal_lifetime_only_shortens_declared_bound(self):
+        source={'metro':{'ttl_seconds':300}}
+        self.assertEqual(metro.lifetime(source),300)
+        self.assertEqual(metro.lifetime(source,90),90)
+        for value in [59,301,True,90.0,'90']:
+            with self.assertRaises(app.AppError):metro.lifetime(source,value)
+
     def test_independent_sticky_ports_and_origins(self):
         with patch.object(app,'available',return_value=True):
             one=metro.reserve(self.root,self.identity());two=metro.reserve(self.projects/'other',self.identity('other'))
@@ -173,7 +180,7 @@ class SessionTests(unittest.TestCase):
 
     def test_unowned_loaded_unit_blocks_start_before_writes(self):
         self.patch(metro.spike,'require_operator',lambda:None)
-        self.patch(app,'target',lambda root:(self.root,{'schema_version':6}))
+        self.patch(app,'target',lambda root:(self.root,{'schema_version':6,'metro':{'ttl_seconds':300}}))
         self.patch(metro,'admitted',lambda:{})
         self.patch(metro.worktrees,'canonical',lambda root:self.identity())
         self.patch(metro,'require_idle',lambda *args:None);self.patch(metro.contract,'inputs',lambda *args:None)

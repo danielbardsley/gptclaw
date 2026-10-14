@@ -123,3 +123,21 @@ for reproduction. Both temporary sessions are now stopped, with source preserved
 Internal control schema 2 guards live mount identities. The two metadata PRs are
 draft; installed/private/operator/client/remaining recovery acceptance is pending.
 All four CI workflows passed at 5de817a before these latest source guards.
+
+## Current checkpoint
+
+The full real fixture-two SDK/proxy sample now passed and expiry cleaned up both
+listeners/resources; the older unresolved recovery case is retained in acceptance.
+Route planning and exact preserved-config/TLS observation are implemented and
+packaged, with 20 isolated cases. Both real read-only plans succeeded; see the
+[concrete operator handoff](operator-plan.md). Operator approval/action, ACL/device
+proof, installed/collector parity, renewal/cache bounds and remaining lifecycle
+recovery remain pending. Current focused suites pass 105 cases; all four CI jobs
+passed at da9cdd8 before this checkpoint. Android Go version and iOS availability
+are pending owner input. No capability is advertised prematurely.
+
+The new route-observer supervisor also passed a real 120-second loopback rehearsal
+on fixture one: unavailable launch while route-pending, then successful inactive
+expiry and absent SDK/network/proxy. This remains distinct from private TLS/device
+acceptance. The full offline repository gate is still running; no result is inferred
+from its successful completed suites.

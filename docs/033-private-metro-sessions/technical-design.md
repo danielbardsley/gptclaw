@@ -215,3 +215,20 @@ size and expiry are checked before bounded forwarding. Shutdown closes both
 transports and cancels in-flight work before waiting for the Python 3.12 listener
 to release. Exact policy revocation is checked through the live receipt loader.
 Private route readiness remains pending; no operator listener is created.
+
+## Implemented private route boundary
+
+metro_routes.py produces read-only plans bound to the canonical registry,
+sticky HTTPS origin and exact odd-port loopback target. Digest-confirmed local
+recording rechecks current configuration under the registry lock and runs no
+Tailscale mutation. Occupied unrecorded listeners block; only previously recorded
+exact targets can be subtracted when comparing preserved baseline handlers across
+two sessions. Wrong targets, extra handlers, Funnel, unknown configuration or
+baseline drift fail closed.
+
+The owned supervisor independently observes Serve readback plus default-trust
+HTTPS health matching project/generation/expiry every ten seconds. Config
+readback alone cannot establish readiness; host TLS verification alone cannot
+establish phone access/native rendering. Existing process/protocol freshness remains
+separate. Operator commands/access selectors and rollback are documented in the
+[concrete plan](operator-plan.md); actual operator/device acceptance is pending.

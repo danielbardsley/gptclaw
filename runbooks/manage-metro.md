@@ -1,6 +1,6 @@
 # Manage private Metro sessions
 
-- **Status:** Source opt-in and supervised controller prepared; live lifecycle/private rollout pending
+- **Status:** Owned loopback lifecycle/proxy verified; private operator/installed/device acceptance pending
 - **Specification:** [SPEC-033](../docs/033-private-metro-sessions/spec.md)
 - **Acceptance:** [Current evidence](../docs/033-private-metro-sessions/acceptance.md)
 
@@ -138,3 +138,25 @@ bound directory requires controlled restart; it cannot silently retarget an acti
 session. Failure records contain only generation and fixed stage/code values,
 never raw SDK errors, request headers or source bodies. See acceptance for the
 remaining reproduction and private/operator/device gates.
+
+## Private route preparation and observation
+
+The source provider implements read-only metro route-plan --project-root ROOT.
+Its --apply --confirm-plan DIGEST records the exact unchanged plan outside source,
+without executing operator commands. No occupied unrecorded listener is adopted.
+See the [two-fixture operator plan](../docs/033-private-metro-sessions/operator-plan.md)
+for concrete add/remove commands, baseline digest, access-policy prerequisites
+and rollback. Owner/operator approval remains pending.
+
+The supervisor compares exact Serve targets and preserved baseline handlers,
+then probes default-trust private HTTPS health for its current project/generation/
+expiry every ten seconds. A ready process is independent of a pending/failed route;
+a host TLS result is independent of phone ACL access/native acceptance. Both
+reviewed listeners can coexist; removal of one cannot redirect it to the other.
+
+The corrected full fixture-two proxy probe passed both native bundles, source maps,
+icon and WebSocket ping-pong, then cleanly expired with SDK/network absent and proxy
+released. The older recovery-required case remains recorded without an invented
+cause. Tests now cover expiry while the upstream is stalled before headers, and
+probes permit bounded cold compilation within their caller deadline. No private
+listener or stable installed-provider change was performed at this checkpoint.
