@@ -18,7 +18,7 @@
 | AC-003 | In progress | Private manifests, >2 MiB native bundles, assets/maps and both WebSocket paths pass. Owner verifies Android 11 / Go 57.0.9 native load, Fast Refresh and reload. iOS is unverified; explicit first-platform matrix decision is pending. |
 | AC-004 | In progress | Approved HTTP conversion, exact route readback, preserved HTTPS handlers/Funnel off and owner-reported off-tailnet denial pass. All devices on this tailnet are owner-permitted. Exact operator-owned listener-removal readback remains pending. |
 | AC-005 | Passed | Installed CLI/collector distinguish readiness/expiry and withdraw launch targets; typed generation/origin/expiry, source parity and Go-only rollback/roll-forward pass. No device-online/backend-health claim is made. |
-| AC-006 | In progress | Exact runtime disposition, effective mounts/resource/environment predicates and live lock/environment-file admission denials pass. The interrupted synthetic marker/bundle check is not counted as a marker-free bundle pass; complete remaining secret-evidence review. |
+| AC-006 | Passed | Exact runtime disposition, effective mounts/resource/environment predicates, bounded sanitized records, tested exception/version/expiry denials and live lock/environment-file admission shutdown pass. A separate allowed source-exclusion probe proves the synthetic private canary file is absent from the SDK view and native bundle; failed forbidden-dotenv probes remain recorded. |
 | AC-007 | In progress | Real crash recovery, bounded expiry, owned cleanup/reconciliation, capable refresh/rollback and older-provider rejection pass. Complete remaining private renewal/interruption evidence and owner-native reconnect checks. Existing group degradation is preserved, not reported as healthy. |
 | AC-008 | In progress | Implementation CI passes at 92119fb; documentation CI passes at ca460b5. Installed rollout/parity/rollback and Android owner evidence are recorded separately. Final matrix, device recovery, owned listener removal, review/authorized merge and delivery remain pending. |
 
@@ -1006,3 +1006,19 @@ is Ready. App two is expired with launch unavailable.
 All four workflows also pass at documentation commit ca460b5. Final device QR/
 restart/isolation, platform matrix, operator removal, review/merge and delivery
 remain pending; no owner response is assumed.
+
+
+## Private source-exclusion canary (October 14, 21:05 UTC)
+
+A separate task-owned `.gptclaw-private-acceptance.env` file tested private source
+exclusion without adding a forbidden root `.env` or relaxing policy. Its random
+synthetic marker was not printed or persisted as evidence. The reviewed root-file
+allowlist omitted the file from the existing SDK snapshot. The current private
+Android bundle returned HTTP 200, identity encoding, 6,441,558 bytes, SHA-256
+`207c54fa52af4c5734b680baca48d932e1ab6f646095d6558c53ecc8253e95c8`;
+bounded streaming proved the marker absent across chunk boundaries. Only that
+exact owner/content-checked task file was removed in finally; canonical Git
+status is clean. Generation/expiry remain unchanged and NRestarts remains 2,
+with active unit / ExecMainStatus 0. This is a successful source/bundle exclusion
+check, distinct from the failed forbidden-dotenv attempts above. SDK output and
+environment were not dumped; persistent SDK logs remain disabled.

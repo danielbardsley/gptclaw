@@ -256,10 +256,11 @@ no Delivered or physical-certification claim is made. See current acceptance.
 ## Current task reconciliation (October 14 UTC)
 
 T-003/005/006 implementation is complete with source/CI/installed evidence.
-T-002/004/007 retain the remaining safety, private renewal/interruption and physical
+T-002/004/007 retain the remaining private renewal/interruption and physical
 recovery evidence; completed subchecks are recorded in acceptance. Actual input
 drift shuts down the SDK; a forbidden root environment file also triggers owned
-shutdown/re-admission after removal. The failed marker/bundle probe is not a pass.
+shutdown/re-admission after removal. The failed forbidden-dotenv probe is not a pass. A separate allowed private-file
+exclusion probe passes with its marker absent from SDK view and downloaded bundle.
 T-008/009 retain the owner matrix, fresh device QR/restart/isolation, exact operator
 listener-removal, review/authorized merge and final delivery/retention gates.
 Historical checkpoints below/above retain their original observation context;
