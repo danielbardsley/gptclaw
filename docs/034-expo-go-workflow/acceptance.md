@@ -12,10 +12,10 @@
 | Criterion | State | Evidence and remaining work |
 |---|---|---|
 | AC-001 | Passed (Android-first) | Android 11 / Go 57.0.9 / SDK 57 private HTTP is physically verified, with finite seven-day certification and tested unsupported/input/client drift gates. Owner selected Android-first delivery; iOS is uncertified with its account prerequisite outside scope. |
-| AC-002 | In progress | Android path-bound manual payloads open both projects; generation/origin/expiry/secret rejection and local independent QR decode pass. Product QR device scan and native stale/restart checks remain. |
+| AC-002 | Passed (Android-first) | Owner confirms both fresh locally rendered QR images open the correct native apps after restart. Encoding, foreign origin, generation/expiry/port-reuse and privacy rejection plus independent PNG decode pass. Further runtime failure/reconnect remains AC-005. |
 | AC-003 | Passed | Read-only inspect/launch and minimum Open/copy/QR UI preserve existing links and fail closed on missing/stale capability. Portable browser tests and installed CLI/collector parity pass; launch performs no hidden runtime/route/account action. Physical product QR is separately pending under AC-002. |
 | AC-004 | Passed (Android-first) | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. Owner accepted the Android-first scope; iOS remains unsupported/follow-up. |
-| AC-005 | In progress | Owner confirms Android background/network/tailnet loss/rejoin and isolated compile-error recovery. Native Metro restart/crash/expiry and stale-link recovery remain. |
+| AC-005 | Failed / correction in progress | Prior network/tailnet/background/compile recovery passes. Current stop/reload isolation fails because app two also cannot reload; source capacity correction, installed verification and repeated native restart/crash/expiry recovery remain. |
 | AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. Implementation CI passes at 92119fb; final merge/delivery is separately AC-007. |
 | AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback and implementation CI pass. Merge and owner matrix/retention acceptance remain. |
 
@@ -430,3 +430,35 @@ are Ready with warm Android bundles and independently decoded local PNGs. Physic
 scan/intended-app restart confirmation is pending; no delivered or device result
 is inferred from PNG rendering. The owner-selected Android-first matrix is
 accepted, while iOS remains unsupported/follow-up.
+
+
+## Owner QR acceptance and failed reload isolation (October 14, 5:57–6:08 p.m. Eastern)
+
+The project owner confirms both fresh QR images open the correct native home,
+local icon, navigation and working counter after restart on the selected Android
+matrix. This is physical QR/restart evidence for generations c5ad655350a04e11a5b478c45e0a9ceb
+and dc40a59da6f1445e838fabf899c55b41, separate from local PNG decode.
+
+Before the isolation mutation, both host route observations intermittently failed
+while their owned SDKs remained up with zero restarts. Aggregate diagnostics showed
+connection-bound rejections and established proxy socket counts 7/8, without
+recording peer/device identities or request data. Only app one was then stopped:
+its SDK/network/proxy were absent, while app two's generation, expiry, input/unit
+identity and original HTTPS/Funnel baseline were unchanged. App-two private manifest
+probes failed. The owner confirms both native reloads failed with “Failed to download
+remote update.” App one's failure is expected; app two's failure means this physical
+isolation check fails and is not accepted as other-app availability.
+
+A capacity correction keeps eight total active slots, limits forwarded native
+requests to seven and reserves a slot for fixed health/diagnostic work. Under
+pressure it reclaims only proxy-owned incomplete-header connections older than one
+second, before any SDK request is forwarded, and rechecks the shared bound after
+cancellation. Complete requests are preserved. Diagnostics expose bounded aggregate
+capacity counts only. Twenty-eight proxy tests pass, including native saturation,
+idle-header reclamation, resource bounds and privacy; 51 controller and 22 protocol
+cases pass. This fix is prepared, not yet counted as installed/native acceptance.
+
+All four CI workflows pass at prior documentation head e67ce44: dashboard
+38639886338, private applications 38639886322, development host 38639886301 and
+federation 38639886350. Protected infrastructure actions were skipped. The capacity
+fix needs new-head CI, installed verification and repeated device isolation/recovery.

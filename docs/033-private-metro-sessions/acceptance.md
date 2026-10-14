@@ -1086,3 +1086,35 @@ No external QR service, credential or owner device data was used. Both source
 checkouts are clean; the existing HTTPS/Funnel baseline is unchanged. The owner
 receives the QR images directly; native QR/restart results remain pending.
 The prior inline/manual payloads are obsolete and not acceptance for these sessions.
+
+
+## Owner QR acceptance and failed reload isolation (October 14, 5:57–6:08 p.m. Eastern)
+
+The project owner confirms both fresh QR images open the correct native home,
+local icon, navigation and working counter after restart on the selected Android
+matrix. This is physical QR/restart evidence for generations c5ad655350a04e11a5b478c45e0a9ceb
+and dc40a59da6f1445e838fabf899c55b41, separate from local PNG decode.
+
+Before the isolation mutation, both host route observations intermittently failed
+while their owned SDKs remained up with zero restarts. Aggregate diagnostics showed
+connection-bound rejections and established proxy socket counts 7/8, without
+recording peer/device identities or request data. Only app one was then stopped:
+its SDK/network/proxy were absent, while app two's generation, expiry, input/unit
+identity and original HTTPS/Funnel baseline were unchanged. App-two private manifest
+probes failed. The owner confirms both native reloads failed with “Failed to download
+remote update.” App one's failure is expected; app two's failure means this physical
+isolation check fails and is not accepted as other-app availability.
+
+A capacity correction keeps eight total active slots, limits forwarded native
+requests to seven and reserves a slot for fixed health/diagnostic work. Under
+pressure it reclaims only proxy-owned incomplete-header connections older than one
+second, before any SDK request is forwarded, and rechecks the shared bound after
+cancellation. Complete requests are preserved. Diagnostics expose bounded aggregate
+capacity counts only. Twenty-eight proxy tests pass, including native saturation,
+idle-header reclamation, resource bounds and privacy; 51 controller and 22 protocol
+cases pass. This fix is prepared, not yet counted as installed/native acceptance.
+
+All four CI workflows pass at prior documentation head e67ce44: dashboard
+38639886338, private applications 38639886322, development host 38639886301 and
+federation 38639886350. Protected infrastructure actions were skipped. The capacity
+fix needs new-head CI, installed verification and repeated device isolation/recovery.

@@ -302,3 +302,16 @@ rejecting unowned replacements. [HTTPS restoration](../034-expo-go-workflow/clie
 is tied to a compatible released client and actual native verification. Source
 implementation and operator preparation precede conversion; physical iOS/Android
 criteria and source/SDK/account boundaries are unchanged.
+
+
+## Bounded capacity correction from native acceptance
+
+Keep the eight-slot total ceiling. At most seven forwarded SDK/native requests may
+run, leaving capacity for fixed health/diagnostic requests. When the total pool is
+full, reclaim only a proxy-owned connection still waiting for complete headers for
+at least one second; no SDK request has been forwarded. Cancel/reconcile that exact
+handler, then recheck capacity before admitting a concurrent arrival. Never evict
+complete HTTP/WebSocket work or increase the resource ceiling. Capacity diagnostics
+contain counts only, with no peer/path/header/device data. Native saturation and
+idle-header tests accompany installed/device revalidation; prior failed reload
+isolation remains recorded until the repeated physical check passes.

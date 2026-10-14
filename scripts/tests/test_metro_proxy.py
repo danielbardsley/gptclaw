@@ -214,6 +214,8 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payload['rejections']['stale-launch'],1)
         self.assertEqual(payload['rejections']['credential-header'],1)
         self.assertEqual(payload['native_client_acceptance'],'unverified')
+        self.assertEqual(set(payload['capacity']),{'active','native','pending_headers','limit'})
+        self.assertEqual(payload['capacity']['limit'],8)
         self.assertNotIn('synthetic-private-canary',response.decode())
         self.assertNotIn('authorization',response.decode().lower())
         self.assertEqual(set(payload['rejections']),module.REJECTION_CODES)
@@ -335,6 +337,55 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         finally:
             for _, writer in clients:
                 await module.close(writer)
+
+    async def test_idle_header_sockets_cannot_starve_current_health(self):
+        clients = [await asyncio.open_connection('127.0.0.1', self.port)
+                   for _ in range(module.MAX_CONNECTIONS)]
+        await asyncio.sleep(.03)
+        self.assertEqual(len(self.proxy.header_tasks), module.MAX_CONNECTIONS)
+        try:
+            with patch.object(module, 'HEADER_RECLAIM_SECONDS', 0):
+                response = await self.request('/_gptclaw/metro-health')
+            self.assertTrue(response.startswith(b'HTTP/1.1 200'))
+            self.assertLessEqual(len(self.proxy.connections), module.MAX_CONNECTIONS)
+            self.assertEqual(self.seen, [])
+            closed = sum(reader.at_eof() for reader, _ in clients)
+            self.assertGreaterEqual(closed, 1)
+        finally:
+            for _, writer in clients:
+                await module.close(writer)
+
+    async def test_native_saturation_keeps_health_within_eight_total_slots(self):
+        release = asyncio.Event()
+        async def behavior(reader, writer, first, headers):
+            await release.wait()
+            writer.write(self.response)
+            await writer.drain()
+        self.behavior = behavior
+        clients = [await self.connect('/status')
+                   for _ in range(module.MAX_NATIVE_CONNECTIONS)]
+        try:
+            for _ in range(100):
+                if len(self.proxy.native_connections) == module.MAX_NATIVE_CONNECTIONS:
+                    break
+                await asyncio.sleep(.01)
+            self.assertEqual(len(self.proxy.native_connections), 7)
+            response = await self.request('/_gptclaw/metro-health')
+            self.assertTrue(response.startswith(b'HTTP/1.1 200'))
+            self.assertEqual(json.loads(response.split(b'\r\n\r\n', 1)[1])['generation'],
+                             self.value['generation'])
+            self.assertLessEqual(len(self.proxy.connections), module.MAX_CONNECTIONS)
+            self.assertTrue((await self.request('/status')).startswith(b'HTTP/1.1 503'))
+            self.assertEqual(len(self.seen), module.MAX_NATIVE_CONNECTIONS)
+        finally:
+            release.set()
+            for _, writer in clients:
+                await module.close(writer)
+        for _ in range(100):
+            if not self.proxy.native_connections:
+                break
+            await asyncio.sleep(.01)
+        self.assertEqual(self.proxy.native_connections, set())
 
     async def websocket_connect(self):
         key = base64.b64encode(b'0123456789abcdef').decode()

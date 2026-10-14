@@ -347,3 +347,11 @@ All four CI workflows pass at 92119fb. Source/installed parity, actual Go-only
 rollback/roll-forward and an updated 120-second automatic expiry check pass.
 This is an acceptance installation, with final owner/matrix/operator cleanup/merge
 gates still open; it does not mark the features Delivered. See current acceptance.
+
+
+Native traffic shares an eight-slot proxy ceiling. The current capacity correction
+reserves one slot for fixed health/diagnostic traffic and reclaims only idle
+incomplete-header work under pressure. Complete SDK requests are preserved.
+`/_gptclaw/metro-transport` reports aggregate active/native/pending-header counts;
+these are connection/resource counts, not connected-phone counts. A failed native
+reload is not accepted as isolation simply because the other SDK process is up.
