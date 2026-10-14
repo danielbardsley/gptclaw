@@ -19,7 +19,7 @@
 | AC-004 | In progress | Approved HTTP conversion, exact route readback, preserved HTTPS handlers/Funnel off and owner-reported off-tailnet denial pass. All devices on this tailnet are owner-permitted. Exact operator-owned listener-removal readback remains pending. |
 | AC-005 | Passed | Installed CLI/collector distinguish readiness/expiry and withdraw launch targets; typed generation/origin/expiry, source parity and Go-only rollback/roll-forward pass. No device-online/backend-health claim is made. |
 | AC-006 | Passed | Exact runtime disposition, effective mounts/resource/environment predicates, bounded sanitized records, tested exception/version/expiry denials and live lock/environment-file admission shutdown pass. A separate allowed source-exclusion probe proves the synthetic private canary file is absent from the SDK view and native bundle; failed forbidden-dotenv probes remain recorded. |
-| AC-007 | In progress | Real crash recovery, bounded expiry, owned cleanup/reconciliation, capable refresh/rollback and older-provider rejection pass. Complete remaining private renewal/interruption evidence and owner-native reconnect checks. Existing group degradation is preserved, not reported as healthy. |
+| AC-007 | Passed | Offline bind/route/health/interruption/foreign-lease boundaries, real owned crash recovery, bounded expiry/reconciliation, actual private renewal, capable refresh/rollback and older-provider rejection pass. Source/data and the existing app baseline are preserved; preexisting group degradation is not reported as healthy. Physical reconnect remains tracked in AC-002/003 and SPEC-034 AC-005. |
 | AC-008 | In progress | Implementation CI passes at 92119fb; documentation CI passes at ca460b5. Installed rollout/parity/rollback and Android owner evidence are recorded separately. Final matrix, device recovery, owned listener removal, review/authorized merge and delivery remain pending. |
 
 ## Actual local verification
@@ -1022,3 +1022,34 @@ status is clean. Generation/expiry remain unchanged and NRestarts remains 2,
 with active unit / ExecMainStatus 0. This is a successful source/bundle exclusion
 check, distinct from the failed forbidden-dotenv attempts above. SDK output and
 environment were not dumped; persistent SDK logs remain disabled.
+
+
+## Positive private renewal and finite replacement (October 14, 21:14 UTC)
+
+A read-only 300-second renewal plan on current app one passed, preserving its
+lifecycle/ownership/input fields and pending device-test link. An initial harness
+incorrectly compared the whole receipt while supervision independently updated
+observation timestamps; the corrected comparison permits only those observations
+to change. No renewal was applied to app one.
+
+The approved app-two HTTP listener was independently still present before an
+explicit 300-second rehearsal, generation `c285dba54490414290227ca2003ccdf9`.
+Actual digest-confirmed renewal used fresh admission and replaced it with
+`9ed1f8bfa9e843a78386d158d3ea5613`, keeping schema 2 / private-tailnet-http and the
+same owned origin. The new generation had an explicit 120-second bound, expiry
+21:14:07 UTC. Its native private Android manifest passed; the old generation's
+entry returned 503. This verifies renewal preserves the approved transport and
+invalidates the earlier copied payload rather than extending its running timeout.
+
+The renewed session then ended Expired / passed. SDK/network and both loopback
+listeners were independently absent. Canonical source is clean, app-one generation/
+expiry/input/unit identity are unchanged, and the original HTTPS/Funnel baseline
+is preserved. No Tailscale route operation or device acceptance occurred.
+
+At documentation head 3c0b0f4 dashboard CI passed (38637236845). Private-application
+CI (38637236901) initially failed one synthetic credential-recovery case; that
+individual case and the complete 58-case suite passed locally, and the failed
+job's rerun passed the complete workflow. No production credentials or remote
+repositories were used by these local fixtures. Development-host and federation
+runs 38637239492 / 38637237136 remain running at this checkpoint; no new full-pass
+claim or infrastructure apply is made.

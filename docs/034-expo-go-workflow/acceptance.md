@@ -13,10 +13,10 @@
 |---|---|---|
 | AC-001 | In progress | Android 11 / Go 57.0.9 / SDK 57 private HTTP is physically verified, with finite seven-day certification and input/client drift gates. iOS is uncertified/account prerequisite outside scope; final accepted matrix pending. |
 | AC-002 | In progress | Android path-bound manual payloads open both projects; generation/origin/expiry/secret rejection and local independent QR decode pass. Product QR device scan and native stale/restart checks remain. |
-| AC-003 | In progress | Read-only inspect/launch and minimum Open/copy/QR UI are implemented with no hidden runtime/route/account action. Portable browser checks pass; installed owner-browser acceptance remains. |
+| AC-003 | Passed | Read-only inspect/launch and minimum Open/copy/QR UI preserve existing links and fail closed on missing/stale capability. Portable browser tests and installed CLI/collector parity pass; launch performs no hidden runtime/route/account action. Physical product QR is separately pending under AC-002. |
 | AC-004 | In progress | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. iOS is not claimed as supported; final scope/matrix acceptance remains. |
 | AC-005 | In progress | Owner confirms Android background/network/tailnet loss/rejoin and isolated compile-error recovery. Native Metro restart/crash/expiry and stale-link recovery remain. |
-| AC-006 | In progress | Focused profile/serializer/privacy/collector/package tests and portable QR/browser/type/build gate pass. All four implementation workflows pass at 92119fb; installed Go-only rollback/roll-forward pass. Final delivery review remains. |
+| AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. Implementation CI passes at 92119fb; final merge/delivery is separately AC-007. |
 | AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback and implementation CI pass. Merge and owner matrix/retention acceptance remain. |
 
 ## Verification
@@ -405,3 +405,9 @@ so its old manual/QR links cannot download. The report that neither app download
 is retained as a failed/obsolete-link observation, not proof of physical isolation.
 Current dashboard QR/copy/native restart confirmation and the explicitly selected
 platform matrix are pending. No expired prompt is an acceptance result.
+
+
+The [private renewal rehearsal](../033-private-metro-sessions/acceptance.md#positive-private-renewal-and-finite-replacement-october-14-2114-utc)
+passes actual HTTP transport retention, a fresh bounded generation, old entry
+rejection and automatic cleanup. This is host/protocol evidence; it does not
+replace the pending physical restart/crash/expiry and product QR checks.

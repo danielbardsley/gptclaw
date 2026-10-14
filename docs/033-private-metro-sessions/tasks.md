@@ -265,3 +265,13 @@ T-008/009 retain the owner matrix, fresh device QR/restart/isolation, exact oper
 listener-removal, review/authorized merge and final delivery/retention gates.
 Historical checkpoints below/above retain their original observation context;
 the current criterion table in acceptance governs present status.
+
+
+Actual private renewal now passes fresh admission/new generation, unchanged HTTP
+origin, stale-entry rejection and 120-second expiry/owned resource removal. The
+first app's pending device link was preserved. AC-007 host recovery/rollout evidence
+is complete; T-008/009 still retain physical isolation/reconnect, matrix, exact
+operator removal and final owner/review/merge/delivery. The latest credential CI
+failure and successful isolated/full local checks plus CI retry are recorded
+without erasing the initial failure. No additional broad test run is required
+absent a code change or new failure.
