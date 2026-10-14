@@ -797,8 +797,8 @@ started. Fresh admitted one-hour HTTP loopback sessions are:
 
 | Project | Generation | Expiry UTC | Android bundle bytes | Bundle SHA-256 |
 |---|---|---|---:|---|
-| mob001-accept-one | 788e407115ff4ad3802c475453062cd3 | 19:44:04 | 6441558 | 207c54fa52af4c5734b680baca48d932e1ab6f646095d6558c53ecc8253e95c8 |
-| mob001-accept-two | 9d717649f4c64a56b7b3a96fa9575e97 | 19:45:42 | 6441558 | 5a452b481fa7a893548e9851bc7c5f1806e36270c254e19f2a820f0932b6c4c1 |
+| mob001-accept-one | 788e407115ff4ad3802c475453062cd3 | 20:04:04 | 6441558 | 207c54fa52af4c5734b680baca48d932e1ab6f646095d6558c53ecc8253e95c8 |
+| mob001-accept-two | 9d717649f4c64a56b7b3a96fa9575e97 | 20:05:42 | 6441558 | 5a452b481fa7a893548e9851bc7c5f1806e36270c254e19f2a820f0932b6c4c1 |
 
 Both session-path manifests are 200 / 1,299 bytes over the owned loopback proxies,
 with advertised HTTP bundle targets. Both Android bundles are warm. Exact conversion
