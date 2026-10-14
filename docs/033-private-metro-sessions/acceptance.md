@@ -480,3 +480,10 @@ Installed launcher and live dashboard/collector are unchanged; their compatible
 rollout/parity and rollback remain pending. Runtime capability is still not
 advertised ahead of private-adapter verification. No Go profile/link/QR or device
 telemetry is implemented by this minimum observation slice.
+
+The actual format command returned exit 1 for each active fixture. Their canonical
+source inventories/Git status and exact owned generations/SDKs remained unchanged.
+The active-session guard separately returned busy for both without writes. An
+initial live harness wrongly expected conflict; the corrected expectation passed.
+These are real mutation-conflict checks; private/operator/installed/device evidence
+remains pending.

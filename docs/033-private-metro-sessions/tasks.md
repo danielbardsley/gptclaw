@@ -181,3 +181,7 @@ gate passed. Source observations on both running fixtures are read-only and with
 budget, with separate route-pending/process/protocol state and no HTTP components
 or launch link. Installed/frozen-consumer rollout, private operator/device checks
 and final-head CI remain pending. T-006/T-007 remain in progress.
+
+Real format-job attempts are blocked on both active fixtures (exit 1), with clean
+source and unchanged owned generation/SDK. The underlying active-session guard
+independently returns busy without writes.
