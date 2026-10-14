@@ -91,7 +91,10 @@ origin, never host/container loopback, an unapproved LAN address or a public rel
 Handle large responses by bounded streaming, backpressure and cancellation; isolate
 per-session capacity so development traffic cannot starve web/API/dashboard services.
 Devices use the approved tailnet access policy. Explicitly verify permitted-device
-access and denied external/unpermitted access. No automatic tunnel, Funnel, LAN
+access and denied external/unpermitted access. The owner explicitly selected all
+devices on the development tailnet as permitted on October 14; there is no
+per-device or per-user restriction within that tailnet. Test denied access from
+outside this tailnet, without changing the existing wildcard grant. No automatic tunnel, Funnel, LAN
 listener, certificate bypass or arbitrary proxy target/Host rewriting.
 
 ### MET-004 — Operator route ownership

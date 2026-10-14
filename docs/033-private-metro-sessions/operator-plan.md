@@ -1,13 +1,13 @@
 # Private Metro operator plan
 
-- **Status:** Exact two listeners approved by project owner; operator execution/readback pending
+- **Status:** Approved operator execution and independent exact readback complete; whole-tailnet access approved; physical-device/removal acceptance pending
 - **Owner:** Project owner / existing SSM operator
 - **Scope:** Retained mob001-accept-one and mob001-accept-two only
 - **Observed:** 2026-10-14 UTC
 - **Specification:** [SPEC-033 MET-004](spec.md)
 - **Runbook:** [Manage Metro](../../runbooks/manage-metro.md)
 
-## Observed baseline
+## Original observed baseline
 
 Read-only Tailscale 1.104.1 Serve readback has only TCP 443 with:
 
@@ -115,3 +115,47 @@ October 14 at 16:52:14 UTC; the second is cbe287fcd42e4cfbbb18d2981be4853f,
 expiring at 16:52:49 UTC. Loopback native rebuild/restoration passed on the first,
 with both sources/owned sessions preserved. Refresh current health/readback before
 operator action; do not infer that these backends are still live after expiry.
+
+
+## Executed operator plan and current verification
+
+The owner ran the two approved commands and supplied Serve JSON with exact 8443
+and 8444 root handlers. Independent readback verifies the recorded plan, preserved
+443 handlers/baseline digest above and Funnel off. Both private TLS native protocol
+samples passed; both owned sessions also survived owner-reported SSM disconnect and
+reconnect with unchanged generation/expiry and zero restarts.
+
+The owner reports denial from a laptop off-tailnet and under a different connected
+identity on both health URLs. This is attributed owner evidence. Relevant policy
+source/destination selectors and port grants have not been supplied. Preserve that
+remaining policy-review item; do not broaden grants or infer permitted-phone access
+from host health. Detailed protocol and reconnect evidence is in
+[acceptance](acceptance.md). Finite session expiry still applies.
+
+
+## Owner-supplied current policy
+
+The console policy supplied by the owner grants wildcard source, destination and
+IP traffic. It includes these listener ports but does not restrict them to selected
+development devices. Admin ownership of `tag:gptclaw-dev` is tag-assignment authority,
+not an access restriction. The earlier different-identity failure is not accepted as
+proof of same-tailnet ACL denial. The independent off-tailnet test remains attributed
+owner evidence. No policy mutation is performed; a restriction needs separately
+reviewed selectors and replacement/splitting of the wildcard allowance, preserving
+other intended access. See the corrected [acceptance record](acceptance.md).
+
+
+## Owner-confirmed whole-tailnet scope
+
+After reviewing the wildcard policy, the owner explicitly confirmed: all devices
+on this tailnet should have access to the host. The current grant is therefore the
+accepted access scope. No restrictive policy proposal/change is required. Denied
+access means outside this tailnet; the owner-reported off-tailnet failure applies.
+This supersedes the earlier selective-access assumption while preserving physical
+client, route-removal and endpoint-expiry checks.
+
+The positive private renewal rehearsal subsequently replaced only the first session
+with generation aba2b3b0b860477bbfd1d1f3da0f0bc3, expiring at 17:30:08 UTC. Its
+old generation's root entry returns HTTP 503 over default-trust HTTPS. The second
+session retains generation cbe287fcd42e4cfbbb18d2981be4853f and 16:52:49 expiry.
+Serve commands/handlers/baseline are unchanged; no further operator action is needed.

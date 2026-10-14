@@ -120,3 +120,10 @@ are the extension for native requirements outside Go.
 [Expo's May 2026 notice](https://expo.dev/changelog/expo-go-and-app-store-may-2026)
 records historical store constraints and personal signed Go/account requirements;
 it is not evidence of today's client availability.
+
+
+The owner confirmed whole-tailnet host access on October 14. Go eligibility requires
+membership in that development tailnet, with no additional per-device ACL selector.
+Private host protocol evidence and session-bound root entry/old-generation denial
+now exist for both fixture origins. Exact Go-client nonce preservation, physical
+reload/interaction and local QR proof remain required before supported launch claims.

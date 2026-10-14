@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "adapter": "expo-go-v1",
+  "owner": "project owner",
+  "source_profile_sha256": "23ac7cf5a66067164d3fabb6b80659094ffdabd427bb2d24689668721849e248",
+  "sdk": 57,
+  "lock_sha256": "8e89525975b4a0e9bfd55523a61901e33e1a3aac59fc85174d142cbf6b2eeeac",
+  "config_contract": "static-public-json-v1",
+  "transport": "private-tailnet-https",
+  "certification_max_age_seconds": 604800,
+  "targets": {
+    "android": {
+      "client_version": "57.0.9",
+      "reported_os_versions": [
+        "11"
+      ],
+      "status": "candidate",
+      "physical_verified_at": null,
+      "launch_rule_verified": false
+    },
+    "ios": {
+      "client_version": "57.0.9",
+      "reported_os_versions": [],
+      "status": "candidate",
+      "physical_verified_at": null,
+      "launch_rule_verified": false
+    }
+  },
+  "references": [
+    "https://expo.dev/go",
+    "https://docs.expo.dev/linking/into-your-app/"
+  ]
+}

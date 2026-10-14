@@ -1,6 +1,6 @@
 # TASKS-034: Expo Go workflow
 
-- **Status:** Implementation authorized — awaiting Metro provider
+- **Status:** Implementation in progress — source/client inspection prepared
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-034](spec.md) · **Design:** [TDD-034](technical-design.md)
@@ -64,3 +64,22 @@ tailnet device. This is a prerequisite report, not native acceptance. No iPhone 
 currently available. Continue the iOS software path assuming a recent iPhone and
 Go 57.0.9 as requested; exact iOS version and all physical iOS checks remain pending.
 No platform certification or criteria waiver follows from these assumptions.
+
+
+## Current implementation checkpoint
+
+Following paired private host protocol verification, T-003/T-004 are in progress.
+An exact candidate Go profile binds SDK 57, the locked graph, source policy and static
+config/toolchain contract. Read-only `go inspect` reports exact public source input
+hashes, caller-reported client/OS, source eligibility and Metro state separately.
+Android 57.0.9 / Android 11 remains a reported candidate; iOS has no verified OS or
+physical evidence. Neither profile certifies a phone, advertises a launch rule or
+returns a launch URL. Native/config/toolchain/lock/client drift is rejected or
+reported unsupported/check-required without mutation or account operations.
+
+Fourteen focused eligibility/CLI cases pass. Source and immutable-provider inspection
+agree on both actual approved fixtures (0.767 / 1.173 seconds excluding interpreter
+startup), with Ready Metro but client check-required/launch unavailable. Stable
+installed pointer remains unchanged. T-002's actual Go nonce/manifest behavior,
+local QR, launch/frontend, profile certification, installed rollout and physical
+acceptance remain open. See [acceptance](acceptance.md).

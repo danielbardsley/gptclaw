@@ -1,6 +1,6 @@
 # SPEC-033 acceptance tracking
 
-- **Status:** Pending — owned loopback evidence recorded; private/installed/device acceptance outstanding
+- **Status:** Pending — private TLS and reconnect evidence recorded; installed/device acceptance outstanding
 - **Owner:** Project owner
 - **Observed:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md) · **Tasks:** [TASKS-033](tasks.md)
@@ -14,9 +14,9 @@
 | Criterion | State | Current evidence and remaining action |
 |---|---|---|
 | AC-001 | Pending | Schema-6 opt-in/strict input validation, canonical guarded metadata migration and older-provider rejection have local evidence; session capability/descriptor and installed rollout remain pending. |
-| AC-002 | Pending | Real two-session start/idempotence/independent stop/restart and clean expiry recorded below; actual SSM disconnect, remaining recovery and physical evidence still required. |
-| AC-003 | Pending | Two sequential SDK loopback spikes served iOS/Android manifests and >2 MiB bundles; Existing assets, source maps and WebSocket handshake/ping passed on both fixtures; actual private TLS, sustained native reload and physical iOS/Android remain required. [Measured evidence](sdk-spike.md). |
-| AC-004 | Pending | No Serve changes performed. Exact [operator plan](operator-plan.md) and tested planner/readback/TLS observer prepared; exact listener scope is owner-approved; operator execution/readback and permitted/denied private access remain. |
+| AC-002 | Pending | Real two-session start/idempotence/independent stop/restart and clean expiry recorded below; SSM disconnect/reconnect preserved both generations and expiries; remaining recovery and physical evidence still required. |
+| AC-003 | Pending | Two sequential SDK loopback spikes served iOS/Android manifests and >2 MiB bundles; Existing assets, source maps and WebSocket handshake/ping passed on both fixtures; Private default-trust TLS manifests/bundles/assets/maps and both WebSocket paths now pass on both fixtures; physical native reload and iOS/Android remain required. [Measured evidence](sdk-spike.md). |
+| AC-004 | Pending | Owner executed the exact approved two-listener plan; independent readback preserves the original baseline and Funnel off. Owner reports denial both off-tailnet and under a different identity. Owner explicitly accepts the supplied wildcard grant and all same-tailnet devices. Off-tailnet denial is owner-reported; permitted physical-client and owned removal/expiry evidence remain pending. |
 | AC-005 | Pending | Typed independent state/descriptor and source CLI controller are prepared; private route observations, collector and installed parity remain pending. |
 | AC-006 | Pending | Fresh audit, owner-approved exact runtime admission, bounded real SDK spikes and offline safety tests recorded in [security proposal](security-review.md); real managed-runtime revocation/secret checks remain; exact owner disposition is recorded. |
 | AC-007 | Pending | Offline absent/foreign ownership cleanup passes; actual crashes, leases, compatible provider refresh/rollback and app regression evidence remain. |
@@ -552,3 +552,96 @@ permission failure. Those two tests now substitute only the CLI identity adapter
 preserving real filesystem ownership checks. New explicit root/foreign-UID denial
 coverage confirms no runtime dispatch. The 49 controller and 21 retention cases
 passed. Final-head CI and the updated full gate remain separate checks.
+
+
+## October 14 private access and SSM reconnect evidence
+
+The owner executed the approved 8443/8444 Serve commands and supplied the exact
+JSON readback. Independent inspection confirms both reviewed root handlers and
+preserves the original 443 dashboard/projects baseline digest
+`d0c41e928966c5d085e704d5826120b76ae4b4af854eb0aa570e447d52db5539`.
+Funnel remains off. The agent did not administer Tailscale or change policy.
+
+Both current generations passed the full default-trust private TLS sample:
+
+| Project | Generation | iOS bundle / map bytes | Android bundle / map bytes |
+|---|---|---|---|
+| mob001-accept-one | 5863c80222c346e18e49c0f4ea59ba21 | 5,737,500 / 11,366,453 | 6,441,560 / 12,348,959 |
+| mob001-accept-two | cbe287fcd42e4cfbbb18d2981be4853f | 5,737,192 / 11,366,406 | 6,441,778 / 12,348,753 |
+
+Both retained icons match SHA-256
+`41c5028d232c20672121818fc63796242b6da381a985716b0a357e2eaff459bb`.
+Both `/message` and `/hot` upgraded with HTTP 101 and passed masked ping/pong.
+The second fixture's initial cold iOS HTTP probe failed without stopping/restarting
+its SDK; a subsequent 200 response and the complete repeated sample passed in the
+same generation. The initial response status/cause was not captured and is unknown.
+These probes validate host transport, not a physical Expo Go client.
+
+After the owner reported exiting and reconnecting SSM, independent inspection at
+16:25 UTC confirmed the original generations above, unchanged expiry (16:52:14 /
+16:52:49 UTC), exact owned unit/container, active/running state, zero restarts and
+verified private health. No lifetime extension occurred.
+
+The owner reports that neither health URL can be reached with Tailscale disconnected
+or connected under a different identity. Record this as owner-reported off-tailnet
+and different-identity denial; the agent did not run the laptop tests. Authoritative
+relevant ACL/grant selectors were not supplied and remain pending. No policy change
+is requested or performed. Physical permitted-client checks remain pending.
+
+At source 9308e0b, dashboard, development-host and federation CI passed. Private-app
+CI passed its mobile-source/database/Python/group jobs but the template job failed
+one existing repository-credential fixture during synthetic repository bootstrap.
+Its failed job is being retried; no success is inferred from other jobs. The local
+complete gate returned exit 1 despite all reported test suites passing; its nonzero
+result remains unresolved and is not recorded as a pass.
+
+
+## Supplied access policy supersedes the denial interpretation
+
+The owner supplied the active console policy containing the grant
+`{"src":["*"],"dst":["*"],"ip":["*"]}` and tag ownership
+`{"tag:gptclaw-dev":["autogroup:admin"]}`. This permits all same-tailnet
+sources/destinations/ports, including TCP 8443/8444; tag ownership controls tag
+assignment and is not a traffic restriction. The supplied policy is owner-provided
+readback, not an independently authenticated console/API read by the agent.
+
+The earlier different-identity failure therefore cannot establish an ACL-enforced
+unpermitted same-tailnet-device denial. It may be a different-tailnet/non-routable
+identity; that membership remains unknown. Off-tailnet denial remains owner-reported.
+AC-004's scoped permitted/unpermitted-device evidence is not complete. No ACL/grant
+change is authorized or performed. A selective policy would need a separately
+reviewed concrete source selector and preservation of other intended traffic; adding
+a narrower grant alone cannot override the existing wildcard allow.
+
+
+## Accepted whole-tailnet scope and positive private renewal
+
+The owner explicitly confirmed that all devices on this development tailnet should
+have host access. This resolves the access-policy decision: the supplied wildcard
+grant is accepted unchanged. No same-tailnet device is designated unpermitted.
+Denied-access evidence is the owner-reported off-tailnet failure. This supersedes
+the earlier selective-policy requirement; it does not establish physical Go success.
+The specification/design/operator plan reflect the confirmed boundary.
+
+An actual digest-confirmed renewal of mob001-accept-one passed through the owner
+controller: generation 5863c80222c346e18e49c0f4ea59ba21 was stopped and replaced by
+aba2b3b0b860477bbfd1d1f3da0f0bc3 after fresh admission. TTL is exactly 3,600 seconds,
+expiry 17:30:08 UTC. The new session became Ready with verified private route; the
+old-generation entry returned HTTP 503 through default-trust private HTTPS. The
+second generation/expiry and exact owned SDK remain unchanged, and both source Git
+checkouts remain clean. This is host renewal/stale-entry evidence, not proof that
+Expo Go preserves the nonce or reloads correctly on a physical device.
+
+The source provider now advertises schema-6 runtime and session descriptor schema 1,
+following paired private protocol verification. Schema 5 remains source-only, and
+no Expo Go launch capability or physical certification is advertised. The stable
+installed provider remains unchanged until reviewed parity/rollout verification.
+
+
+The failed private-app template job at 9308e0b passed on its scoped retry; all four
+workflows are now successful at that revision. No production source was changed
+to mask the synthetic credential-bootstrap failure. Later capability/Go inspection
+changes require their own CI. The traced local diagnostic retry was interrupted by
+editing its shell script while Bash was still reading it (exit 2); this is a harness
+interruption, not a passing complete gate. Subsequent full checks use a frozen copy
+of the completed checker to prevent that concurrent-read failure.

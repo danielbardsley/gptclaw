@@ -211,3 +211,25 @@ proxy failure, security/input/mount drift and expiry retain their cleanup paths.
 Supervised development enables the pinned CLI's source watching with CI=false,
 closed stdin and non-TTY output; audit/spike jobs retain CI=1. Do not enable a TTY,
 public tunnel or credential prompt to obtain Fast Refresh.
+
+
+## Expo Go inspection during consumer implementation
+
+The development provider supports read-only candidate inspection:
+
+~~~sh
+gptclawctl go inspect --project-root /srv/forge/projects/mob001-accept-one --platform android --client-version 57.0.9 --os-version 11
+~~~
+
+This command describes the development candidate; the stable installed provider
+must advertise `expo_go_inspection_schemas: [1]` before using it. An older provider
+must report unsupported rather than silently run another tool. Inspection validates
+canonical ownership and the fixed public SDK/graph/config/toolchain profile. Client
+and OS arguments are caller reports, not host discovery or certification. Ready Metro
+and eligible source still return client check-required and launch unavailable until
+Go launch/device evidence is implemented. There is no hidden server start, route
+change, account operation, external QR service or native development build.
+
+The owner permits all devices on the development tailnet to access the host. Preserve
+the accepted existing access grant and private Serve listeners; off-tailnet access
+remains denied. Do not add narrower rules expecting them to override a wildcard allow.

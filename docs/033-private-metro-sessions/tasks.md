@@ -194,17 +194,25 @@ paired private sessions still require verification. Source was exactly restored.
 
 ## Current checkpoint
 
-The private listener scope is approved; the owner requested the SSM connection
-command and was given the current verified instance target. Actual operator
-execution/readback and ACL/private/device evidence remain pending. Both corrected
-watch-enabled fixtures are running to their finite 16:52 UTC expiries.
+The exact two approved private listeners were added by the SSM operator and
+independently verified, preserving the original 443 baseline and Funnel off. Both
+fixtures passed native private TLS manifests/bundles/assets/maps and WebSocket
+ping/pong. Owner-reported SSM reconnect independently preserved original generation,
+expiry and zero restarts. Owner reports denial off-tailnet and under a different
+identity; the subsequently supplied wildcard policy allows all same-tailnet traffic,
+so the latter test does not establish same-tailnet ACL denial. The owner explicitly
+permits all same-tailnet devices; the wildcard policy is accepted unchanged and
+off-tailnet denial is the required access boundary. Permitted-phone evidence remains
+pending. Positive private renewal passed with a new generation, old entry HTTP 503,
+second session/expiry unchanged and both source checkouts clean.
 
-The real Android loopback edit/rebuild/restoration passed with unchanged second
-source/session and clean Git. Source/immutable provider byte/capability/status parity
-was verified without selecting the installed pointer. The source controller now
-has 49 passing cases and retention 21; watcher/noninteractive spike cases number
-24. The two UID-dependent CI fixtures are corrected, with explicit negative guard
-coverage. Final CI/full-gate, private renewal/recovery, installed collector/provider/
-rollback, SSM disconnect and physical iOS/Android acceptance remain open. MOB-003
-has no launch/profile/QR implementation yet. Historical checkpoints above describe
-their recorded stages rather than overriding this current status.
+The real Android loopback edit/rebuild/restoration passed, with clean restored source
+and the other fixture unchanged. Controller 49, retention 21 and watch/noninteractive
+spike 24 focused cases pass. At 9308e0b all four CI workflows passed after a scoped retry of the synthetic
+repository-bootstrap failure. New capability/consumer changes require their own CI.
+The earlier complete local gate returned nonzero despite all reported suites passing;
+a traced retry was interrupted by editing its checker during execution. A complete
+frozen-checker gate is still required.
+Remaining recovery, installed collector/provider/rollback, physical iOS/Android
+acceptance and merge remain open. MOB-003 launch/profile/QR work follows the now-proven
+private host protocol foundation. Historical checkpoints remain stage-specific.

@@ -276,3 +276,13 @@ original finite lifetime, recovering readiness in place. Actual SDK exit, proxy
 failure, security/input/mount drift and expiry retain their existing owned cleanup/
 recovery paths. Four focused cases distinguish first startup, established timeout,
 truthful unavailable state and in-place recovery.
+
+
+## Confirmed private access boundary (October 14)
+
+The owner explicitly permits every device on the existing development tailnet to
+reach the host. The supplied wildcard source/destination/IP grant matches this
+scope. No narrower ACL, new tag, group or network-policy mutation is needed.
+Denied-access acceptance targets off-tailnet/non-member devices; it does not expect
+a different permitted same-tailnet identity to be denied. Keep Serve/Funnel readback,
+route generation ownership and permitted physical-client proof as separate checks.
