@@ -304,3 +304,9 @@ owner separately confirms expired app one fails while unchanged app two remains
 usable. The earlier failed isolation attempts remain historical evidence. T-009
 retains exact owned-listener cleanup, final revision/CI, review/authorized merge
 and delivery records; neither feature is marked Delivered yet.
+
+
+Current cleanup handoff: the owner lacks SSM access now and will remove the owned
+HTTP listeners later. Both temporary runtimes are absent; source/history and
+handlers are retained. Operator removal/readback and final CI/merge remain pending;
+no bypass or Delivered claim is made.

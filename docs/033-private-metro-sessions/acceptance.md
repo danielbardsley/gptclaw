@@ -1,6 +1,6 @@
 # SPEC-033 acceptance tracking
 
-- **Status:** In progress — private HTTP, installed rollout and Android edit/recovery verified; final owner/delivery gates pending
+- **Status:** Android physical acceptance passed; operator cleanup and final CI/merge remain pending
 - **Owner:** Project owner
 - **Observed:** October 14, 2026 UTC
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md) · **Tasks:** [TASKS-033](tasks.md)
@@ -14,15 +14,15 @@
 | Criterion | State | Current evidence and remaining action |
 |---|---|---|
 | AC-001 | Passed | Schema-6 opt-in, canonical/input denial, versioned capabilities/receipts and installed parity pass. Historical contracts and immutable releases are preserved. |
-| AC-002 | Passed (Android-first) | Real independent sessions, idempotence, SSM reconnect, crash restart, mutation/input drift denial and bounded expiry pass. The repeated physical stop/isolation check now passes: app one is unavailable while unchanged app two remains usable. The earlier both-failed result remains recorded; Owner confirms intended-session restart, post-crash Reload and physical expiry isolation; app-two identity/expiry and source are preserved. |
+| AC-002 | Passed (Android-first) | Real independent sessions, idempotence, SSM reconnect, crash restart, mutation/input drift denial and bounded expiry pass. The repeated physical stop/isolation check now passes: app one is unavailable while unchanged app two remains usable. The earlier both-failed result remains recorded. Owner confirms intended-session restart, post-crash Reload and physical expiry isolation; app-two identity/expiry and source are preserved. |
 | AC-003 | Passed (Android-first) | Private manifests, >2 MiB native bundles, assets/maps and both WebSocket paths pass. Owner verifies Android 11 / Go 57.0.9 native load, local assets, Fast Refresh and reload. Owner selected Android-first delivery; iOS remains explicitly unsupported/follow-up. |
 | AC-004 | In progress | Approved HTTP conversion, exact route readback, preserved HTTPS handlers/Funnel off and owner-reported off-tailnet denial pass. All devices on this tailnet are owner-permitted. Exact operator-owned listener-removal readback remains pending. |
 | AC-005 | Passed | Installed CLI/collector distinguish readiness/expiry and withdraw launch targets; typed generation/origin/expiry, source parity and Go-only rollback/roll-forward pass. No device-online/backend-health claim is made. |
 | AC-006 | Passed | Exact runtime disposition, effective mounts/resource/environment predicates, bounded sanitized records, tested exception/version/expiry denials and live lock/environment-file admission shutdown pass. A separate allowed source-exclusion probe proves the synthetic private canary file is absent from the SDK view and native bundle; failed forbidden-dotenv probes remain recorded. |
-| AC-007 | Passed | Offline bind/route/health/interruption/foreign-lease boundaries, real owned crash recovery, bounded expiry/reconciliation, actual private renewal, capable refresh/rollback and older-provider rejection pass. Source/data and the existing app baseline are preserved; preexisting group degradation is not reported as healthy. Physical reconnect remains tracked in AC-002/003 and SPEC-034 AC-005. |
-| AC-008 | In progress | Implementation CI passes at 92119fb; documentation CI passes at ca460b5. Installed rollout/parity/rollback and Android owner evidence are recorded separately. Final matrix, device recovery, owned listener removal, review/authorized merge and delivery remain pending. |
+| AC-007 | Passed | Offline bind/route/health/interruption/foreign-lease boundaries, real owned crash recovery, bounded expiry/reconciliation, actual private renewal, capable refresh/rollback and older-provider rejection pass. Source/data and the existing app baseline are preserved; preexisting group degradation is not reported as healthy. Physical reconnect and expiry isolation also pass under AC-002/003 and SPEC-034 AC-005. |
+| AC-008 | In progress | All four revised-proxy CI workflows pass at 4ceb99b. Installed rollout/parity/rollback and the complete Android owner matrix pass separately. Final published evidence-head CI, owned listener removal and review/authorized merge remain; source, receipts/history and both synthetic repositories are retained. |
 
-## Actual local verification
+## Historical local verification
 
 - Eight cases in `python3 -B scripts/tests/test_metro_security.py` passed.
 - Twenty-one cases in `python -B scripts/tests/test_metro_spike.py` passed using the
@@ -1330,3 +1330,24 @@ SDK/audit containers, networks and loopback listeners are absent. Source checkou
 metadata/history and exact HTTP Serve handlers are retained; no source or data was
 deleted. App-two listener removal is requested through the reviewed SSM operator
 path; execution/readback remains pending. Forge performs no Tailscale mutation.
+
+
+## Operator cleanup deferred by the owner
+
+On October 14 the project owner reports no current SSM access and will execute
+listener removal later. No removal is inferred. Both exact HTTP handlers on 8443
+and 8444 remain configured, while both temporary SDK/audit/network/proxy runtimes
+are absent. Port-443 HTTPS dashboard/project routes and Funnel-off state are
+preserved. Keep AC-004/008 (SPEC-033) and final delivery (SPEC-034 AC-007) pending.
+Forge does not bypass the operator path, restart/renew the fixtures or repeat the
+request until operator access is available or circumstances change.
+
+
+All four evidence-head workflows also pass at
+`b2580c7746e7ff885155c7e62b8f88d2ef07c09f`:
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38652259284),
+[private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38652259078),
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38652259280)
+and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38652259286).
+Later evidence summaries retain their own final published-head checks. No CI
+success substitutes for pending operator removal or authorizes merge.

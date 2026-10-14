@@ -170,3 +170,9 @@ unsupported/follow-up. See the current acceptance tables for present state.
 The owner separately confirms expired app one is unavailable and app two still
 works. T-007 physical acceptance is complete for the Android-first matrix;
 operator cleanup and final delivery gates remain. iOS is not certified.
+
+
+Current cleanup handoff: the owner lacks SSM access now and will remove the owned
+HTTP listeners later. Both temporary runtimes are absent; source/history and
+handlers are retained. Operator removal/readback and final CI/merge remain pending;
+no bypass or Delivered claim is made.

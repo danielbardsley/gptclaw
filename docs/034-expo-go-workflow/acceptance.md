@@ -1,6 +1,6 @@
 # SPEC-034 acceptance tracking
 
-- **Status:** In progress — Android native edit/recovery and installed rollback verified; final owner/delivery gates pending
+- **Status:** Android physical acceptance passed; operator cleanup and final CI/merge remain pending
 - **Owner:** Project owner
 - **Observed:** October 14, 2026 UTC
 - **Specification:** [SPEC-034](spec.md) · **Design:** [TDD-034](technical-design.md) · **Tasks:** [TASKS-034](tasks.md)
@@ -13,13 +13,13 @@
 |---|---|---|
 | AC-001 | Passed (Android-first) | Android 11 / Go 57.0.9 / SDK 57 private HTTP is physically verified, with finite seven-day certification and tested unsupported/input/client drift gates. Owner selected Android-first delivery; iOS is uncertified with its account prerequisite outside scope. |
 | AC-002 | Passed (Android-first) | Owner confirms both fresh locally rendered QR images open the correct native apps after restart. Encoding, foreign origin, generation/expiry/port-reuse and privacy rejection plus independent PNG decode pass. Further runtime failure/reconnect remains AC-005. |
-| AC-003 | Passed | Read-only inspect/launch and minimum Open/copy/QR UI preserve existing links and fail closed on missing/stale capability. Portable browser tests and installed CLI/collector parity pass; launch performs no hidden runtime/route/account action. Physical product QR is separately pending under AC-002. |
+| AC-003 | Passed | Read-only inspect/launch and minimum Open/copy/QR UI preserve existing links and fail closed on missing/stale capability. Portable browser tests and installed CLI/collector parity pass; launch performs no hidden runtime/route/account action. Owner confirms physical QR launch under AC-002. |
 | AC-004 | Passed (Android-first) | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. Owner accepted the Android-first scope; iOS remains unsupported/follow-up. |
 | AC-005 | Passed (Android-first) | Prior network/tailnet/background/compile recovery passes. Earlier stop/reload isolation failed because app two also could not reload. The installed capacity correction now has owner-confirmed loading for both fresh sessions; the owner reports Reload still works and the repeated physical stop/isolation check passes. The owner confirms native reconnection after app-one restart and post-crash Reload of both apps. Owner separately confirms expired app one is unavailable while app two remains usable; the physical expiry check passes. |
-| AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. Implementation CI passes at 92119fb; final merge/delivery is separately AC-007. |
-| AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback and implementation CI pass. Merge and owner matrix/retention acceptance remain. |
+| AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. All four revised-proxy CI workflows pass at 4ceb99b; final published evidence-head CI and merge/delivery remain AC-007. |
+| AC-007 | In progress | Source/frozen launch parity, rollout, capable rollback and implementation CI pass. Owner-selected Android-first matrix and physical recovery/expiry pass; both synthetic repositories and source/history are retained. Exact operator cleanup, final published evidence-head CI and authorized merge remain. |
 
-## Verification
+## Historical verification
 
 `python -B scripts/tests/test_expo_go.py` in the prepared Python 3.12 environment
 passes fourteen focused cases. The candidate policy reports every platform as
@@ -48,12 +48,13 @@ client membership/access still requires the real device checks.
 
 ## Remaining work
 
-Prove exact Go-client launch rules and stale-session binding; implement/verify local
-QR and minimum dashboard launch UX; acquire exact iOS physical evidence when a device
-is available; complete Android interaction and both-platform recovery checks. Then
-verify installed provider/consumer parity and rollback, CI, reviewed merge and owner
-acceptance. Retain synthetic counter/navigation/assets for this deliberately scoped
-starter/client test; this is not a product or backend CRUD acceptance claim.
+Remove only the two exact owned HTTP Metro listeners through the reviewed SSM
+operator path, preserving port-443 HTTPS handlers and Funnel off. Record independent
+readback, final published-head CI and reviewed/authorized merge. The Android physical
+matrix is accepted; iOS remains explicitly unsupported/follow-up. Both retained
+synthetic project repositories, metadata/history and published starter releases
+are preserved. This is a development-client workflow, not product/backend CRUD,
+signed build or store-release acceptance.
 
 
 ## Local QR and current iOS prerequisite checkpoint
@@ -654,3 +655,24 @@ SDK/audit containers, networks and loopback listeners are absent. Source checkou
 metadata/history and exact HTTP Serve handlers are retained; no source or data was
 deleted. App-two listener removal is requested through the reviewed SSM operator
 path; execution/readback remains pending. Forge performs no Tailscale mutation.
+
+
+## Operator cleanup deferred by the owner
+
+On October 14 the project owner reports no current SSM access and will execute
+listener removal later. No removal is inferred. Both exact HTTP handlers on 8443
+and 8444 remain configured, while both temporary SDK/audit/network/proxy runtimes
+are absent. Port-443 HTTPS dashboard/project routes and Funnel-off state are
+preserved. Keep AC-004/008 (SPEC-033) and final delivery (SPEC-034 AC-007) pending.
+Forge does not bypass the operator path, restart/renew the fixtures or repeat the
+request until operator access is available or circumstances change.
+
+
+All four evidence-head workflows also pass at
+`b2580c7746e7ff885155c7e62b8f88d2ef07c09f`:
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38652259284),
+[private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38652259078),
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38652259280)
+and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38652259286).
+Later evidence summaries retain their own final published-head checks. No CI
+success substitutes for pending operator removal or authorizes merge.
