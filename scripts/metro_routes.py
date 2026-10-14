@@ -1,4 +1,4 @@
-"""Exact private Serve plans and TLS observations; never administer Tailscale."""
+"""Exact private Serve plans and transport observations; never administer Tailscale."""
 from copy import deepcopy
 import hashlib
 import http.client
@@ -58,8 +58,10 @@ def record_path(project):
 def validate_record(record):
     keys = {'schema_version', 'project', 'root', 'canonical_key', 'origin',
             'metro_port', 'proxy_port', 'baseline', 'plan_digest', 'recorded_at'}
-    app.need(isinstance(record, dict) and set(record) == keys
-             and type(record['schema_version']) is int and record['schema_version'] == 1
+    app.need(isinstance(record,dict) and type(record.get('schema_version')) is int
+             and record['schema_version'] in {1,2},'conflict')
+    if record['schema_version']==2:keys.add('previous')
+    app.need(set(record) == keys
              and states.number(record['recorded_at'])
              and isinstance(record['plan_digest'], str)
              and states.HEX64.fullmatch(record['plan_digest']), 'conflict')
@@ -77,6 +79,17 @@ def validate_record(record):
     app.need(origin(record['origin']) == record['origin']
              and urlsplit(record['origin']).port == 8443+item['slot'], 'conflict')
     validate_config(record['baseline'])
+    parsed=urlsplit(record['origin'])
+    if record['schema_version']==1:
+        app.need(parsed.scheme=='https','conflict')
+    else:
+        app.need(parsed.scheme=='http','conflict')
+        previous=record['previous']
+        if previous is not None:
+            app.need(isinstance(previous,dict) and previous.get('schema_version')==1,'conflict')
+            validate_record(previous)
+            app.need(all(previous[k]==record[k] for k in ['project','root','canonical_key','metro_port','proxy_port','baseline'])
+                     and urlsplit(previous['origin']).netloc==parsed.netloc,'conflict')
     payload = {k: record[k] for k in keys-{'plan_digest', 'recorded_at'}}
     app.need(digest(payload) == record['plan_digest'], 'conflict')
     return record
@@ -102,16 +115,21 @@ def subtract_owned(value, approvals):
         expected = {'Handlers': {'/': {'Proxy': 'http://127.0.0.1:'+str(record['proxy_port'])}}}
         tcp = result.get('TCP', {}).get(port)
         web = result.get('Web', {}).get(authority)
+        allowed={'HTTP'} if record['schema_version']==2 else {'HTTPS'}
+        if record.get('previous') is not None:allowed.add('HTTPS')
         app.need((tcp is None and web is None)
-                 or (isinstance(tcp, dict) and set(tcp) == {'HTTPS'} and tcp['HTTPS'] is True and web == expected), 'conflict')
+                 or (isinstance(tcp,dict) and len(tcp)==1 and set(tcp)<=allowed
+                     and next(iter(tcp.values())) is True and web==expected),'conflict')
         if tcp is not None:
             del result['TCP'][port]
             del result['Web'][authority]
     return {key: item for key, item in result.items() if item or key == 'AllowFunnel'}
 
 
-def payload(value, baseline):
-    return {'schema_version': 1, 'project': value['project'], 'root': value['root'],
+def payload(value, baseline, previous=None):
+    return {'schema_version': value['schema_version'],
+            **({'previous':previous} if value['schema_version']==2 else {}),
+            'project': value['project'], 'root': value['root'],
             'canonical_key': value['canonical_key'], 'origin': value['origin'],
             'metro_port': value['metro_port'], 'proxy_port': value['proxy_port'],
             'baseline': baseline}
@@ -125,7 +143,8 @@ def plan(root, apply=False, confirm_plan=None):
     identity = worktrees.canonical(root)
     value = metro_sessions.load(identity['project'], root)
     app.need(value is not None and value['canonical_key'] == identity['key'], 'conflict')
-    app.need(value['origin'] == 'https://'+app.node_identity()+':'+str(8443+(value['metro_port']-18600)//2),
+    parsed=urlsplit(value['origin'])
+    app.need(value['origin'] == parsed.scheme+'://'+app.node_identity()+':'+str(8443+(value['metro_port']-18600)//2),
              'conflict')
     port, authority, web = binding(value)
     current = config()
@@ -136,21 +155,31 @@ def plan(root, apply=False, confirm_plan=None):
                  'conflict')
         baseline = current
     else:
-        app.need(all(old[k] == value[k] for k in ['root', 'canonical_key', 'origin', 'metro_port', 'proxy_port']),
+        app.need(all(old[k] == value[k] for k in ['root', 'canonical_key', 'metro_port', 'proxy_port'])
+                 and urlsplit(old['origin']).netloc==authority,
                  'conflict')
         baseline = old['baseline']
         app.need(digest(subtract_owned(current, approved)) == digest(subtract_owned(baseline, approved)), 'conflict')
-    proposal = payload(value, baseline)
+    previous=old if old is not None and old['schema_version']==1 else old.get('previous') if old else None
+    proposal = payload(value, baseline, previous)
     key = digest(proposal)
     validate_record({**proposal, 'plan_digest': key, 'recorded_at': time.time()})
     target = 'http://127.0.0.1:'+str(value['proxy_port'])
-    result = {'schema_version': 1, 'project': value['project'], 'plan_digest': key,
+    flag='--http=' if parsed.scheme=='http' else '--https='
+    result = {'schema_version': 2 if value['schema_version']==2 or old and old['schema_version']==2 else 1, 'project': value['project'], 'plan_digest': key,
               'existing_config_digest': digest(current),
               'origin': value['origin'], 'state': 'planned', 'changed': False,
-              'operator_add': ['sudo', 'tailscale', 'serve', '--bg', '--https='+port, target],
-              'operator_remove': ['sudo', 'tailscale', 'serve', '--bg', '--https='+port, 'off'],
+              'operator_add': ['sudo', 'tailscale', 'serve', '--bg', flag+port, target],
+              'operator_remove': ['sudo', 'tailscale', 'serve', '--bg', flag+port, 'off'],
               'access_policy': 'operator-confirmation-required',
               'physical_client_acceptance': 'unverified'}
+    changing=old is not None and old['origin']!=value['origin']
+    if changing:
+        old_flag='--http=' if urlsplit(old['origin']).scheme=='http' else '--https='
+        result['operator_replace']=[['sudo','tailscale','serve',old_flag+port,'off'],result['operator_add']]
+        result['operator_rollback']=[['sudo','tailscale','serve',flag+port,'off'],
+                                     ['sudo','tailscale','serve','--bg',old_flag+port,target]]
+        result['record_after_replacement']=value['schema_version']==1
     if apply:
         import metro_spike
         metro_spike.require_operator()
@@ -162,8 +191,18 @@ def plan(root, apply=False, confirm_plan=None):
             path = record_path(value['project'])
             existing = app.read_json(path)
             app.need(existing is None or existing == old, 'conflict')
-            if old is None:
+            if old is None or old['plan_digest']!=key:
+                # HTTP conversion retains the exact original HTTPS record in schema 2.
+                # Restoring schema 1 waits until the owned HTTP listener is removed/replaced.
+                if changing and value['schema_version']==1:
+                    tcp=current.get('TCP',{}).get(port)
+                    app.need(tcp is None or isinstance(tcp,dict) and set(tcp)=={'HTTPS'} and tcp['HTTPS'] is True,'conflict')
                 path.parent.mkdir(parents=True, mode=0o700, exist_ok=True)
+                if old is not None:
+                    history=app.safe(path.parent/('route-history-'+old['plan_digest']+'.json'))
+                    stored=app.read_json(history)
+                    app.need(stored is None or stored==old,'conflict')
+                    if stored is None:app.save(history,old)
                 app.save(path, {**proposal, 'plan_digest': key, 'recorded_at': time.time()})
                 result['changed'] = True
         result['state'] = 'operator-required'
@@ -171,9 +210,11 @@ def plan(root, apply=False, confirm_plan=None):
 
 
 def health(value):
-    """TLS trust is mandatory; fixed owned origin, no redirects, no device claims."""
+    """Fixed node/origin; HTTPS uses default trust, HTTP stays on the owned tailnet route."""
     parsed = urlsplit(value['origin'])
-    connection = http.client.HTTPSConnection(parsed.hostname, parsed.port, timeout=3)
+    app.need(parsed.hostname==app.node_identity(),'conflict')
+    connection_type=http.client.HTTPSConnection if parsed.scheme=='https' else http.client.HTTPConnection
+    connection = connection_type(parsed.hostname, parsed.port, timeout=3)
     try:
         connection.request('GET', HEALTH_PATH, headers={'Accept': 'application/json',
                                                       'Connection': 'close'})
@@ -210,7 +251,9 @@ def observe(value):
         port, authority, web = binding(value)
         if port not in current.get('TCP', {}) and authority not in current.get('Web', {}):
             return {'state': 'pending', 'observed_at': stamp}
-        app.need(current.get('TCP', {}).get(port) == {'HTTPS': True}
+        protocol='HTTP' if urlsplit(value['origin']).scheme=='http' else 'HTTPS'
+        tcp=current.get('TCP',{}).get(port)
+        app.need(isinstance(tcp,dict) and set(tcp)=={protocol} and tcp[protocol] is True
                  and current.get('Web', {}).get(authority) == web, 'conflict')
         app.need(value['phase'] == 'running' and time.time() < value['expires_at'], 'health')
         health(value)

@@ -41,6 +41,17 @@ class Tests(unittest.TestCase):
         self.assertEqual(result['publication'],{'state':'unavailable','origin':None})
         self.assertIsNone(result['routes']['app_path'])
 
+    def test_http_descriptor_version_is_supported_without_publishing_transport_origin(self):
+        self.value.update(schema_version=2, transport='private-tailnet-http',
+                          origin='http://fixture.tail123.ts.net:8443')
+        result = native.project(self.value, 'fixture')
+        self.assertIsNotNone(result)
+        self.assertEqual(result['state'], 'ready')
+        self.assertNotIn('origin', result)
+        self.assertEqual(result['native_client_acceptance'], 'unverified')
+        self.value['transport'] = 'public-http'
+        self.assertIsNone(native.project(self.value, 'fixture'))
+
     def test_each_layer_ages_and_expiry_does_not_remain_ready(self):
         self.update();self.now=131.
         result=self.store.snapshot('key',self.binding)

@@ -41,7 +41,7 @@ RESPONSE_HEADERS = {
     'expo-protocol-version', 'expo-sfv-version', 'expo-signature',
 }
 BINDING = (
-    'project', 'root', 'canonical_key', 'generation', 'token', 'image',
+    'schema_version', 'project', 'root', 'canonical_key', 'generation', 'token', 'image',
     'input_digest', 'policy_digest', 'unit_digest', 'metro_port',
     'proxy_port', 'origin', 'started_at', 'expires_at',
 )
@@ -254,7 +254,7 @@ class Proxy:
             resource['requests']=min(MAX_COUNTER,resource['requests']+1)
             upstream_reader, upstream_writer = await self.upstream()
             forwarded = {k: v for k, v in headers.items() if k in REQUEST_HEADERS}
-            forwarded.update({'host': self.authority, 'x-forwarded-proto': 'https',
+            forwarded.update({'host': self.authority, 'x-forwarded-proto': urlsplit(self.receipt['origin']).scheme,
                               'accept-encoding': 'identity', 'connection': 'close'})
             if body_size:
                 forwarded['content-length'] = str(body_size)

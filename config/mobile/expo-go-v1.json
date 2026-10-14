@@ -6,7 +6,7 @@
   "sdk": 57,
   "lock_sha256": "8e89525975b4a0e9bfd55523a61901e33e1a3aac59fc85174d142cbf6b2eeeac",
   "config_contract": "static-public-json-v1",
-  "transport": "private-tailnet-https",
+  "transport": "private-tailnet-http",
   "certification_max_age_seconds": 604800,
   "targets": {
     "android": {
@@ -14,7 +14,7 @@
       "reported_os_versions": [
         "11"
       ],
-      "status": "unsupported",
+      "status": "candidate",
       "physical_verified_at": null,
       "launch_rule_verified": false,
       "acquisition_source": "https://expo.dev/go",

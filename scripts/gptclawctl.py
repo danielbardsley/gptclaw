@@ -16,6 +16,7 @@ def main(argv=None):
  for name in ['validate','start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','hooks']:
   p=sub.add_parser(name);p.add_argument('--project-root',required=True)
   if name in {'logs','test','build','format','lint','typecheck','security','verify'}:p.add_argument('--component',choices=['web','api','db'] if name=='logs' else ['web','api'])
+  if name in {'start','restart'}:p.add_argument('--metro-transport',choices=['https','tailnet-http'],help='Explicit native Metro transport; HTTP remains inside the development tailnet.')
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
  go=sub.add_parser('go',help='Read-only Expo Go compatibility inspection')
@@ -110,7 +111,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['metro','worktrees','db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6],'metro_session_schemas':[1],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[],'project_manifest_schemas':[1,2,3,4,5,6],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6],'toolchain_schemas':[1,2],'template_catalogue_schema':5,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':4,'credential_profile_schemas':[1,2,3,4],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['metro','worktrees','db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6],'metro_session_schemas':[1,2],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[],'project_manifest_schemas':[1,2,3,4,5,6],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6],'toolchain_schemas':[1,2],'template_catalogue_schema':5,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':4,'credential_profile_schemas':[1,2,3,4],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -176,6 +177,8 @@ def main(argv=None):
   elif args.action in {'start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','deps','toolchain','db','hooks'} and app.target(args.project_root)[1]['schema_version'] in (5,6):
    import project_mobile as mobile
    result=mobile.dispatch(args)
+  elif getattr(args,'metro_transport',None) is not None:
+   raise app.AppError('mobile-unsupported')
   elif args.action=='db':
    import project_database as database
    result=database.dispatch(args.project_root,args.database_action,getattr(args,'selected',None),getattr(args,'operation_id',None),getattr(args,'confirm',None))

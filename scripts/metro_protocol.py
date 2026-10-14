@@ -28,11 +28,11 @@ def origin(value):
     app.need(isinstance(value,str) and 1<=len(value)<=255,'invalid')
     try:parsed=urlsplit(value);port=parsed.port
     except ValueError:raise app.AppError('invalid') from None
-    app.need(isinstance(value,str) and parsed.scheme=='https' and parsed.hostname is not None
+    app.need(isinstance(value,str) and parsed.scheme in {'https','http'} and parsed.hostname is not None
              and re.fullmatch(r'[a-z0-9][a-z0-9.-]*\.ts\.net',parsed.hostname) is not None
              and type(port) is int and port in range(8443,8451) and not parsed.username and not parsed.password
              and parsed.path in {'','/'} and not parsed.query and not parsed.fragment,'invalid')
-    return 'https://'+parsed.hostname+':'+str(port)
+    return parsed.scheme+'://'+parsed.hostname+':'+str(port)
 
 
 def relative_url(value,advertised):
@@ -42,7 +42,7 @@ def relative_url(value,advertised):
     try:parsed=urlsplit(value);port=parsed.port
     except ValueError:raise app.AppError('invalid') from None
     expected=urlsplit(advertised)
-    app.need(parsed.scheme=='https' and parsed.hostname==expected.hostname and port==expected.port
+    app.need(parsed.scheme==expected.scheme and parsed.hostname==expected.hostname and port==expected.port
              and not parsed.username and not parsed.password and not parsed.fragment
              and parsed.path.startswith('/') and not parsed.path.startswith('//')
              and len(parsed.query)<=4096,'invalid')
@@ -85,14 +85,14 @@ def request(port,advertised,path,platform,max_bytes=MAX_RESPONSE,deadline=None,m
     deadline=time.monotonic()+10 if deadline is None else deadline
     app.need(type(deadline) in {int,float} and math.isfinite(deadline),'invalid')
     if manifest:app.need(max_bytes<=MAX_MANIFEST,'invalid')
-    connection_class=http.client.HTTPSConnection if via_private else http.client.HTTPConnection
+    connection_class=http.client.HTTPSConnection if via_private and urlsplit(advertised).scheme=='https' else http.client.HTTPConnection
     connection=connection_class(host,port,timeout=max(.01,min(2,deadline-time.monotonic())))
     collected=bytearray() if manifest else None;digest=hashlib.sha256();count=0
     try:
         app.need(time.monotonic()<deadline,'timeout')
         connection.request('GET',path,headers={'Host':urlsplit(advertised).netloc,'Expo-Platform':platform,
                                              'Accept':'application/expo+json' if manifest else '*/*','Connection':'close',
-                                             'X-Forwarded-Proto':'https','Accept-Encoding':'identity'})
+                                             'X-Forwarded-Proto':urlsplit(advertised).scheme,'Accept-Encoding':'identity'})
         transport=connection.sock
         transport.settimeout(max(.01,deadline-time.monotonic()))
         response=connection.getresponse()
@@ -139,7 +139,7 @@ def websocket(port,advertised,path,deadline,via_proxy=False,via_private=False):
     try:
         with socket.create_connection((host,port),timeout=max(.01,min(2,limit-time.monotonic()))) as raw:
             raw.settimeout(max(.01,limit-time.monotonic()))
-            peer=ssl.create_default_context().wrap_socket(raw,server_hostname=host) if via_private else raw
+            peer=ssl.create_default_context().wrap_socket(raw,server_hostname=host) if via_private and urlsplit(advertised).scheme=='https' else raw
             with peer:
                 return websocket_exchange(peer,path,advertised,key,expected,nonce,mask,limit)
     except (OSError,UnicodeError,IndexError):raise ProbeError('websocket-transport') from None

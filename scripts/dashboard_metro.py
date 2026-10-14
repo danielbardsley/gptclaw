@@ -24,7 +24,7 @@ def project(value,project_id):
                 'expires_at':None,'observations':{k:{'state':'unknown' if k!='route' else 'pending',
                 'observed_at':None} for k in LAYERS},'native_client_acceptance':'unverified',
                 'source_quality':'separate-receipt'}
-    if (type(value.get('schema_version')) is not int or value['schema_version']!=1
+    if (type(value.get('schema_version')) is not int or value['schema_version'] not in {1,2}
             or value.get('adapter')!='metro-v1'
             or not isinstance(value.get('generation'),str)
             or not re.fullmatch('[0-9a-f]{32}',value['generation'])
@@ -33,6 +33,8 @@ def project(value,project_id):
             or value['transport_available']!=(state=='ready')
             or value.get('native_client_acceptance')!='unverified'
             or value.get('source_quality')!='separate-receipt'):
+        return None
+    if value['schema_version']==2 and value.get('transport')!='private-tailnet-http':
         return None
     observations=value.get('observations')
     if not isinstance(observations,dict) or set(observations)!=set(LAYERS):

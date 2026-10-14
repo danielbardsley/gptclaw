@@ -274,3 +274,41 @@ ships and passes native TLS/reload checks](../docs/034-expo-go-workflow/client-t
 SDK-58 Go drops SDK-57 support, so a store update alone is insufficient; any new
 SDK/source/security matrix needs its own review. No scheduled or automatic
 conversion is implied.
+
+
+## Approved SDK-57 private HTTP operator conversion
+
+The owner approved conversion of only the already owned Metro listeners. The
+current source accepts `start`/`restart --metro-transport tailnet-http`; default
+HTTPS remains for new sessions, and existing HTTP sessions retain their transport
+on idempotent start/renew/restart. HTTP receipts/descriptors and route approvals
+use schema 2; legacy HTTPS uses schema 1. Old providers reject the HTTP contract.
+
+`metro route-plan` retains the exact prior HTTPS approval and emits bounded
+replacement/rollback commands. Applying the digest records ownership only. Route
+readiness remains unavailable until actual config has HTTP and matching health;
+a healthy backend behind an unchanged HTTPS listener cannot report ready.
+
+After verifying the two current healthy loopback backends and exact existing
+Serve config, the existing SSM operator executes only:
+
+~~~sh
+sudo tailscale serve --https=8443 off
+sudo tailscale serve --bg --http=8443 http://127.0.0.1:18601
+sudo tailscale serve --https=8444 off
+sudo tailscale serve --bg --http=8444 http://127.0.0.1:18603
+tailscale serve status --json
+~~~
+
+Preserve port 443, `/dashboard/`, `/projects/`, every unrelated handler and Funnel
+off. This uses the already approved whole-tailnet policy, with no ACL change.
+Forge runs no privileged command. The private transport is HTTP inside encrypted
+Tailscale; Go uses `exp` and the exact current slash-free session path. Links remain
+acceptance candidates until native checks pass. No hidden restart or renewal.
+
+Rollback stops/reconciles only the owned HTTP sessions with a schema-2-capable
+provider, then the operator removes only their `--http=PORT` listeners and restores
+`--bg --https=PORT` to the same loopback proxies. Record a new HTTPS plan only after
+the HTTP listener is removed/replaced; retain route-history records and source.
+Older snapshots cannot operate HTTP receipts. Perform the release-triggered HTTPS
+restoration only after compatible SDK/client and actual native TLS checks.

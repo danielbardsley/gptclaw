@@ -29,6 +29,24 @@ class StateTests(unittest.TestCase):
         result=self.project();self.assertTrue(result['transport_available']);self.assertEqual(result['state'],'ready')
         self.assertEqual(result['native_client_acceptance'],'unverified');self.assertNotIn('launch_uri',result)
         self.assertNotIn('token',result);self.assertNotIn('image',result);self.assertNotIn('device',result)
+    def test_http_requires_new_explicit_receipt_version_and_private_origin(self):
+        original = copy.deepcopy(self.value)
+        self.value.update(schema_version=2, transport='private-tailnet-http',
+                          origin='http://fixture.tail123.ts.net:8443')
+        result = self.project()
+        self.assertEqual(result['schema_version'], 2)
+        self.assertEqual(result['transport'], 'private-tailnet-http')
+        self.assertTrue(result['transport_available'])
+        self.assertEqual(result['native_client_acceptance'], 'unverified')
+        for changes in [{'schema_version': 1}, {'origin': original['origin']},
+                        {'transport': 'public-http'}, {'origin': 'http://127.0.0.1:8443'}]:
+            invalid = copy.deepcopy(self.value); invalid.update(changes)
+            with self.subTest(changes=changes), self.assertRaises(app.AppError): state.validate(invalid)
+        del self.value['transport']
+        with self.assertRaises(app.AppError): state.validate(self.value)
+        original['origin'] = 'http://fixture.tail123.ts.net:8443'
+        with self.assertRaises(app.AppError): state.validate(original)
+
     def test_process_up_without_protocol_and_route_is_loopback_only(self):
         self.value['observations']['protocol']={'state':'unknown','observed_at':None}
         self.value['observations']['route']={'state':'pending','observed_at':None}

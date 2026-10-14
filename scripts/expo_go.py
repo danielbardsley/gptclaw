@@ -20,7 +20,7 @@ def profile():
              and value['adapter']=='expo-go-v1' and value['owner']=='project owner'
              and type(value['sdk']) is int and value['sdk']==57
              and value['config_contract']=='static-public-json-v1'
-             and value['transport']=='private-tailnet-https'
+             and value['transport']=='private-tailnet-http'
              and type(value['certification_max_age_seconds']) is int
              and value['certification_max_age_seconds']==604800, 'mobile-policy')
     for field in ['source_profile_sha256','lock_sha256']:
@@ -38,7 +38,7 @@ def profile():
         app.need(target['acquisition_source']=='https://expo.dev/go'
                  and target['requires_cli_login'] is (platform=='ios')
                  and target['requires_http_devserver'] is (platform=='android'), 'mobile-policy')
-        app.need(target['client_version']=='57.0.9' and target['status']==('unsupported' if platform=='android' else 'candidate')
+        app.need(target['client_version']=='57.0.9' and target['status']=='candidate'
                  and target['physical_verified_at'] is None and target['launch_rule_verified'] is False,
                  'mobile-policy')
         app.need(isinstance(target['reported_os_versions'],list) and len(target['reported_os_versions'])<=8
@@ -73,8 +73,9 @@ def inspect(root,platform,client_version=None,os_version=None):
         reason='report-installed-client-and-os'
     elif client_version!=target['client_version']:
         state='unsupported';reason='client-version-not-in-go-profile'
-    elif target['requires_http_devserver']:
-        state='unsupported';reason='expo-go-android-http-devserver-outside-scope'
+    elif target['requires_http_devserver'] and metro.get('schema_version')!=2:
+        state='unsupported' if metro['transport_available'] else 'check-required'
+        reason='expo-go-android-requires-private-http-session'
     elif target['requires_cli_login']:
         state='unsupported';reason='expo-go-cli-login-outside-scope'
     elif os_version not in target['reported_os_versions']:

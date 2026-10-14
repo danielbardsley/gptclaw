@@ -243,3 +243,11 @@ now reports this HTTPS incompatibility; physical UI/edit/reload remains unaccept
 The [transport decision](../034-expo-go-workflow/client-transport-decision.md) is a
 reviewable proposal. No transport amendment, listener conversion or MOB-004 build
 is authorized by creating it. Independent platform work remains in progress.
+
+
+The approved HTTP transport amendment is implemented locally with explicit
+selection, typed schema 2, retained prior HTTPS ownership and isolated rollback/
+protocol/privacy tests. Both approved one-hour HTTP backends are loopback healthy
+and Android bundles warm; exact plans are recorded. Operator replacement and
+private/native acceptance are still pending. All broader task gates remain open;
+no Delivered or physical-certification claim is made. See current acceptance.

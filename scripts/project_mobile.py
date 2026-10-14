@@ -174,7 +174,8 @@ def dispatch(args):
         if args.action in {'status','observe'}:return metro.status(root)
         if args.action=='logs':return metro.logs(root,getattr(args,'lines',80))
         if args.action=='stop':return metro.stop(root)
-        return metro.restart(root,getattr(args,'local_only',False)) if args.action=='restart' else metro.start(root,getattr(args,'local_only',False))
+        options={} if getattr(args,'metro_transport',None) is None else {'transport':args.metro_transport}
+        return metro.restart(root,getattr(args,'local_only',False),**options) if args.action=='restart' else metro.start(root,getattr(args,'local_only',False),**options)
     if args.action=='deps':
         import project_dependencies as deps
         if args.dependency_action=='status':return deps.status(root,getattr(args,'operation_id',None))

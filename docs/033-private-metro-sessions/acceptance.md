@@ -771,3 +771,40 @@ both actual approved fixtures at provider
 CI is not inferred from c8d03a1. Source and snapshot both report Android unsupported
 for the current HTTPS boundary, with launch unavailable; one remains Ready and two
 Expired. Active dashboard and stable launcher remain unchanged.
+
+
+## Approved HTTP implementation and loopback preparation
+
+The owner explicitly approved Metro-only private HTTP over encrypted Tailscale.
+Source now has an explicit `--metro-transport tailnet-http` lifecycle selection,
+schema-2 HTTP receipts/descriptors/route approvals, strict same-node/scheme resource
+validation, HTTP-aware health/WebSocket probes and native collector projection.
+Legacy HTTPS stays schema 1; old providers reject schema 2. Exact conversion retains
+the original HTTPS approval and history, rejects unowned bindings, keeps private
+readiness false before operator execution and gates rollback recording until HTTP
+is removed/replaced. No native launch certification follows from host tests.
+
+Focused checks pass: 26 proxy, 22 protocol, 49 controller, 15 state, 24 route, 17 Go
+inspection, 9 native collector and 22 mobile-source cases. The first new collector
+case used the wrong function name; correcting the test to the existing `project`
+function gives all nine passes. This is local verification; latest HTTP CI remains
+pending. The previous normalization revision's four CI workflows passed separately.
+
+An actual attempt to change the running first session's transport in place was
+rejected with conflict and preserved its generation. Through the owner lifecycle,
+only that SDK was stopped and replaced; the expired second SDK was independently
+started. Fresh admitted one-hour HTTP loopback sessions are:
+
+| Project | Generation | Expiry UTC | Android bundle bytes | Bundle SHA-256 |
+|---|---|---|---:|---|
+| mob001-accept-one | 788e407115ff4ad3802c475453062cd3 | 19:44:04 | 6441558 | 207c54fa52af4c5734b680baca48d932e1ab6f646095d6558c53ecc8253e95c8 |
+| mob001-accept-two | 9d717649f4c64a56b7b3a96fa9575e97 | 19:45:42 | 6441558 | 5a452b481fa7a893548e9851bc7c5f1806e36270c254e19f2a820f0932b6c4c1 |
+
+Both session-path manifests are 200 / 1,299 bytes over the owned loopback proxies,
+with advertised HTTP bundle targets. Both Android bundles are warm. Exact conversion
+plans are recorded (one 9aa9584e17457e51775ca5332b17b1cb00cc6a195625c994cb63213714f774c6;
+two 3db774203ca5f7f48a35f04938ccded8c534f8364f8274563a4eafd7e3914cb1).
+Current Serve remains HTTPS; private HTTP route state is therefore unavailable as
+expected. Baseline handlers and Funnel-off state are independently verified.
+Operator conversion, private HTTP/device checks, source/frozen final parity,
+installed rollout/rollback, full Go consumer implementation and delivery remain open.

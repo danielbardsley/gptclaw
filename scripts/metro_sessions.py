@@ -273,17 +273,20 @@ def lifetime(source,seconds=None):
     return maximum if seconds is None else seconds
 
 
-def start(root,no_route=False,ttl_seconds=None,expected_generation=None):
+def start(root,no_route=False,ttl_seconds=None,expected_generation=None,transport=None):
     spike.require_operator();root,source=app.target(root);app.need(source['schema_version']==6,'mobile-unsupported')
+    app.need(transport in {None,'https','tailnet-http'},'invalid')
     seconds=lifetime(source,ttl_seconds)
     policy=admitted();identity=worktrees.canonical(root);project=identity['project']
     with app.locked(project):
         require_idle(root,project);contract.inputs(root)
         old=load(project,root)
+        selected_transport=transport or ('tailnet-http' if old and old['origin'].startswith('http://') else 'https')
         if expected_generation is not None:
             app.need(isinstance(expected_generation,str) and states.HEX32.fullmatch(expected_generation)
                      and old is not None and old['generation']==expected_generation,'conflict')
         if old and old['phase']=='running':
+            app.need((old['origin'].startswith('http://'))==(selected_transport=='tailnet-http'),'conflict')
             verify_unit(old);admitted(old)
             app.need(ttl_seconds is None or old['expires_at']-old['started_at']<=seconds,'conflict')
             app.need(unit_fields(old['name'],['ActiveState']).get('ActiveState')=='active','conflict')
@@ -301,9 +304,12 @@ def start(root,no_route=False,ttl_seconds=None,expected_generation=None):
         inventory=spike.source_inventory(root)
         retention.admit(project,retention.source_bytes(root,inventory))
         input_files=hashes(root);image=observed['receipt']['image'];token=uuid.uuid4().hex;generation=uuid.uuid4().hex
-        metro,proxy,tls=reserve(root,identity);origin='https://'+app.node_identity()+':'+str(tls)
+        metro,proxy,tls=reserve(root,identity)
+        origin=('http' if selected_transport=='tailnet-http' else 'https')+'://'+app.node_identity()+':'+str(tls)
         now=time.time();expiry=min(now+seconds,security.timestamp(policy['expires_at']))
-        value={'schema_version':1,'adapter':'metro-v1','project':project,'root':str(root),'canonical_key':identity['key'],
+        value={'schema_version':2 if selected_transport=='tailnet-http' else 1,
+               **({'transport':'private-tailnet-http'} if selected_transport=='tailnet-http' else {}),
+               'adapter':'metro-v1','project':project,'root':str(root),'canonical_key':identity['key'],
                'name':'gptclaw-metro-'+project,'generation':generation,'token':token,'image':image,'input_digest':digest(input_files),
                'policy_digest':digest(policy),'unit_digest':'0'*64,'metro_port':metro,'proxy_port':proxy,'origin':origin,
                'phase':'preparing','started_at':now,'expires_at':expiry,'operation_id':uuid.uuid4().hex,'operation_result':'running',
@@ -405,7 +411,7 @@ def stop(root):
         return stop_owned(root,value)
 
 
-def restart(root,no_route=False):stop(root);return start(root,no_route)
+def restart(root,no_route=False,transport=None):stop(root);return start(root,no_route,transport=transport)
 
 
 def renewal_plan(root,generation,ttl_seconds=None):

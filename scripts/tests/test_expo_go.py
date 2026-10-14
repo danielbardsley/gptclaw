@@ -43,11 +43,20 @@ class Tests(unittest.TestCase):
         result=self.inspect()
         self.assertTrue(result['source_eligible']);self.assertTrue(result['transport_available'])
         self.assertEqual(result['state'],'unsupported');self.assertFalse(result['launch_available'])
-        self.assertEqual(result['reason'],'expo-go-android-http-devserver-outside-scope')
+        self.assertEqual(result['reason'],'expo-go-android-requires-private-http-session')
         self.assertTrue(result['requires_http_devserver'])
         self.assertEqual(result['follow_up'],'MOB-004')
         self.assertEqual(result['physical_client_acceptance'],'unverified')
         self.assertNotIn('origin',result);self.assertNotIn('generation',result)
+    def test_approved_http_session_still_does_not_certify_phone_or_launch(self):
+        self.session.return_value = {'schema_version': 2, 'transport': 'private-tailnet-http',
+                                     'state': 'ready', 'transport_available': True}
+        result = self.inspect()
+        self.assertEqual(result['state'], 'check-required')
+        self.assertEqual(result['reason'], 'physical-client-and-launch-rule-unverified')
+        self.assertFalse(result['launch_available'])
+        self.assertEqual(result['physical_client_acceptance'], 'unverified')
+
     def test_unknown_client_or_os_requires_owner_check(self):
         for client,os in [(None,None),('57.0.9',None),(None,'11')]:
             self.assertEqual(go.inspect(self.root,'android',client,os)['reason'],'report-installed-client-and-os')
@@ -90,7 +99,7 @@ class Tests(unittest.TestCase):
                 with self.assertRaises(app.AppError):go.profile()
     def test_known_android_http_requirement_cannot_be_silently_bypassed(self):
         original = go.deps.read_bytes
-        for field, value in [('requires_http_devserver', False), ('status', 'candidate')]:
+        for field, value in [('requires_http_devserver', False), ('status', 'unsupported')]:
             candidate = go.profile(); candidate['targets']['android'][field] = value
             def read(path, *args):
                 return json.dumps(candidate).encode() if Path(path).name == 'expo-go-v1.json' else original(path, *args)

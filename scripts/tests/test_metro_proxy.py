@@ -145,6 +145,16 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(await reader.readexactly(2), b'\r\n')
             self.assertEqual(decoded, b'abcd')
 
+    async def test_http_receipt_forces_owned_http_advertisement_and_keeps_entry_guard(self):
+        self.value.update(schema_version=2, transport='private-tailnet-http',
+                          origin='http://fixture.tail123.ts.net:8443')
+        self.proxy.receipt = deepcopy(self.value)
+        entry = module.SESSION_PREFIX+self.value['generation']
+        response = await self.request(entry, 'X-Forwarded-Proto: https\r\n')
+        self.assertTrue(response.startswith(b'HTTP/1.1 200'))
+        self.assertEqual(self.seen[-1][1]['x-forwarded-proto'], 'http')
+        self.assertTrue((await self.request(module.SESSION_PREFIX+'9'*32)).startswith(b'HTTP/1.1 503'))
+
     async def test_manifest_requires_exact_current_generation(self):
         for target in ['/', '/?gptclawSession='+'9'*32,
                        '/?gptclawSession='+'2'*32+'&gptclawSession='+'2'*32]:

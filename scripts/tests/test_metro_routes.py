@@ -95,6 +95,75 @@ class RouteTests(unittest.TestCase):
         self.assertEqual(self.current, self.baseline)
         self.assertFalse(routes.plan(self.root, True, plan['plan_digest'])['changed'])
 
+    def test_owned_https_to_http_plan_retains_previous_approval_and_waits_for_operator(self):
+        self.record(); self.configure()
+        old = deepcopy(routes.records()[0]); baseline = deepcopy(self.current)
+        self.value.update(schema_version=2, transport='private-tailnet-http',
+                          origin='http://fixture.tail123.ts.net:8443')
+        plan = routes.plan(self.root)
+        self.assertEqual(plan['operator_replace'], [
+            ['sudo', 'tailscale', 'serve', '--https=8443', 'off'],
+            ['sudo', 'tailscale', 'serve', '--bg', '--http=8443', 'http://127.0.0.1:18601']])
+        self.assertEqual(plan['operator_rollback'][1][4], '--https=8443')
+        routes.plan(self.root, True, plan['plan_digest'])
+        self.assertEqual(routes.records()[0]['previous'], old)
+        self.assertEqual(self.current, baseline)
+        with patch.object(routes, 'health', return_value=True) as health:
+            self.assertEqual(routes.observe(self.value)['state'], 'failed')
+            health.assert_not_called()
+            self.current['TCP']['8443'] = {'HTTP': True}
+            self.assertEqual(routes.observe(self.value)['state'], 'verified')
+        self.assertEqual(self.current['Web']['fixture.tail123.ts.net:443'], self.baseline['Web']['fixture.tail123.ts.net:443'])
+        self.assertFalse(routes.plan(self.root, True, routes.plan(self.root)['plan_digest'])['changed'])
+
+    def test_http_plan_cannot_adopt_an_unowned_https_or_http_listener(self):
+        self.value.update(schema_version=2, transport='private-tailnet-http',
+                          origin='http://fixture.tail123.ts.net:8443')
+        self.configure()
+        for protocol in ['HTTPS', 'HTTP']:
+            self.current['TCP']['8443'] = {protocol: True}
+            with self.subTest(protocol=protocol), self.assertRaises(app.AppError): routes.plan(self.root)
+        self.assertFalse(routes.record_path('fixture').exists())
+
+    def test_restore_https_cannot_drop_http_ownership_before_operator_replacement(self):
+        self.record(); self.configure()
+        self.value.update(schema_version=2, transport='private-tailnet-http',
+                          origin='http://fixture.tail123.ts.net:8443')
+        routes.plan(self.root, True, routes.plan(self.root)['plan_digest'])
+        self.current['TCP']['8443'] = {'HTTP': True}
+        http_record = deepcopy(routes.records()[0])
+        self.value.update(schema_version=1, origin='https://fixture.tail123.ts.net:8443')
+        del self.value['transport']
+        plan = routes.plan(self.root)
+        self.assertTrue(plan['record_after_replacement'])
+        with self.assertRaises(app.AppError): routes.plan(self.root, True, plan['plan_digest'])
+        self.assertEqual(routes.records()[0], http_record)
+        self.current['TCP']['8443'] = {'HTTPS': True}
+        plan = routes.plan(self.root)
+        routes.plan(self.root, True, plan['plan_digest'])
+        self.assertEqual(routes.records()[0]['schema_version'], 1)
+        archive = routes.record_path('fixture').parent/('route-history-'+http_record['plan_digest']+'.json')
+        self.assertEqual(app.read_json(archive), http_record)
+        with patch.object(routes, 'health', return_value=True):
+            self.assertEqual(routes.observe(self.value)['state'], 'verified')
+
+    def test_http_health_uses_only_exact_owned_node_and_keeps_receipt_binding(self):
+        self.value.update(schema_version=2, transport='private-tailnet-http',
+                          origin='http://fixture.tail123.ts.net:8443')
+        response = Mock(status=200)
+        response.getheaders.return_value = []
+        response.getheader.return_value = None
+        response.read.return_value = json.dumps({'adapter': 'metro-v1', 'project': 'fixture',
+            'generation': self.value['generation'], 'expires_at': self.value['expires_at']}).encode()
+        connection = Mock(); connection.getresponse.return_value = response
+        with patch.object(routes.http.client, 'HTTPConnection', return_value=connection) as http, patch.object(
+                routes.http.client, 'HTTPSConnection', side_effect=AssertionError('unexpected transport change')):
+            self.assertTrue(routes.health(self.value))
+        http.assert_called_once_with('fixture.tail123.ts.net', 8443, timeout=3)
+        self.assertEqual(connection.request.call_args.args, ('GET', routes.HEALTH_PATH))
+        self.value['origin'] = 'http://foreign.ts.net:8443'
+        with self.assertRaises(app.AppError): routes.health(self.value)
+
     def test_stale_baseline_is_rejected_before_record(self):
         plan = routes.plan(self.root)
         self.current['Web']['fixture.tail123.ts.net:443']['Handlers']['/other/'] = {'Proxy': 'http://127.0.0.1:19999'}

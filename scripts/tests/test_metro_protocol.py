@@ -184,6 +184,25 @@ class ProtocolTests(unittest.TestCase):
         args,kwargs=tls.call_args
         self.assertEqual(args,(HOST,8443));self.assertEqual(set(kwargs),{'timeout'})
 
+    def test_private_http_is_exact_tailnet_origin_with_matching_resource_scheme(self):
+        advertised = ORIGIN.replace('https://', 'http://')
+        self.assertEqual(protocol.relative_url(advertised+'/entry.bundle', advertised), '/entry.bundle')
+        for target in [ORIGIN+'/entry.bundle', 'http://public.example:8443/entry.bundle',
+                       advertised+'/entry.bundle?token=synthetic']:
+            with self.assertRaises(app.AppError): protocol.relative_url(target, advertised)
+        connection = protocol.http.client.HTTPConnection
+        self.server.payload = b'native'; self.server.declared = 6
+        with patch.object(app, 'node_identity', return_value=HOST), patch.object(
+                protocol.http.client, 'HTTPConnection',
+                side_effect=lambda host, port, **kwargs: connection('127.0.0.1', self.port, **kwargs)) as http, patch.object(
+                protocol.http.client, 'HTTPSConnection', side_effect=AssertionError('unexpected scheme change')):
+            result = protocol.request(8443, advertised, '/bundle', 'android', via_proxy=True, via_private=True)
+        self.assertEqual(result['sha256'], hashlib.sha256(b'native').hexdigest())
+        self.assertEqual(http.call_args.args, (HOST, 8443))
+        self.assertEqual(self.server.received, (HOST+':8443', 'android', 'http'))
+        with patch.object(app, 'node_identity', return_value=HOST), self.assertRaises(app.AppError):
+            protocol.destination(8443, 'http://foreign.ts.net:8443', True, True)
+
     def test_private_https_certificate_failure_is_unavailable(self):
         tls=Mock();tls.request.side_effect=protocol.ssl.SSLCertVerificationError('synthetic')
         with patch.object(app,'node_identity',return_value=HOST),patch.object(

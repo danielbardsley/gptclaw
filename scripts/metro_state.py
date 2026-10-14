@@ -21,8 +21,10 @@ def validate(value):
     fields={'schema_version','adapter','project','root','canonical_key','name','generation','token','image',
             'input_digest','policy_digest','unit_digest','metro_port','proxy_port','origin','phase',
             'started_at','expires_at','operation_id','operation_result','observations'}
-    need(isinstance(value,dict) and set(value)==fields)
-    need(type(value['schema_version']) is int and value['schema_version']==1 and value['adapter']=='metro-v1')
+    need(isinstance(value,dict) and type(value.get('schema_version')) is int
+         and value['schema_version'] in {1,2})
+    if value['schema_version']==2:fields.add('transport')
+    need(set(value)==fields and value['adapter']=='metro-v1')
     project=value['project'];need(isinstance(project,str) and len(project)<=48 and re.fullmatch('[a-z][a-z0-9]*(?:-[a-z0-9]+)*',project) is not None)
     root=value['root'];need(isinstance(root,str) and len(root)<=4096 and re.fullmatch('[A-Za-z0-9/._-]+',root) is not None)
     path=Path(root)
@@ -37,6 +39,10 @@ def validate(value):
     need(type(value['metro_port']) is int and value['metro_port'] in range(18600,18632,2))
     need(type(value['proxy_port']) is int and value['proxy_port']==value['metro_port']+1)
     need(private_origin(value['origin'])==value['origin'])
+    if value['schema_version']==1:
+        need(value['origin'].startswith('https://'))
+    else:
+        need(value['transport']=='private-tailnet-http' and value['origin'].startswith('http://'))
     need(isinstance(value['phase'],str) and value['phase'] in PHASES)
     need(isinstance(value['operation_result'],str) and value['operation_result'] in {'running','passed','failed','unknown'})
     need(number(value['started_at']) and number(value['expires_at']) and 0<value['expires_at']-value['started_at']<=28800)
@@ -75,7 +81,8 @@ def descriptor(value,*,project,root,canonical_key,input_digest,now=None):
         elif value['phase']=='running' and value['operation_result']=='passed':state='ready'
         else:state=value['phase']
     ready=state=='ready'
-    return {'schema_version':1,'adapter':'metro-v1','project':project,'generation':value['generation'],
+    return {'schema_version':value['schema_version'],'adapter':'metro-v1','project':project,'generation':value['generation'],
+            **({'transport':'private-tailnet-http'} if value['schema_version']==2 else {}),
             'state':state,'transport_available':ready,'origin':value['origin'] if ready else None,
             'expires_at':value['expires_at'],'observations':{k:dict(v) for k,v in observations.items()},
             'requested_mode':'expo-go','transport_targets':['ios','android'],

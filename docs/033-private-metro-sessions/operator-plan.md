@@ -159,3 +159,15 @@ with generation aba2b3b0b860477bbfd1d1f3da0f0bc3, expiring at 17:30:08 UTC. Its
 old generation's root entry returns HTTP 503 over default-trust HTTPS. The second
 session retains generation cbe287fcd42e4cfbbb18d2981be4853f and 16:52:49 expiry.
 Serve commands/handlers/baseline are unchanged; no further operator action is needed.
+
+
+## Approved HTTP compatibility conversion (October 14 UTC)
+
+The owner approved replacing the two existing HTTPS Metro listeners with private
+HTTP on the same ports/proxies; port 443 and all unrelated routes are unchanged.
+Installed Tailscale 1.104.1 help and pinned source confirm HTTP listener support.
+Current schema-2 plans retain the exact original HTTPS approvals, preserve baseline
+d0c41e928966c5d085e704d5826120b76ae4b4af854eb0aa570e447d52db5539,
+and emit the exact conversion/rollback commands in the
+[HTTP runbook](../../runbooks/manage-metro.md#approved-sdk-57-private-http-operator-conversion).
+No listener has been changed by forge. Native/iOS acceptance remains pending.
