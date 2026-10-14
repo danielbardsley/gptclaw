@@ -19,6 +19,18 @@ MAX_CONNECTIONS = 8
 CHUNK = 65536
 IDLE_SECONDS = 60
 HTTP_SECONDS = 120
+MAX_COUNTER = 2**53 - 1
+SESSION_PREFIX = '/_gptclaw/metro-session/'
+MANIFEST_PATHS = {'/', '/manifest', '/index.exp'}
+REJECTION_CODES = {
+    'invalid-request', 'stale-launch', 'foreign-host', 'foreign-origin',
+    'credential-header', 'header-bound', 'duplicate-header', 'request-framing',
+    'request-method', 'websocket-handshake', 'websocket-frame', 'body-bound',
+    'upstream-redirect', 'upstream-encoding', 'upstream-framing',
+    'upstream-truncated', 'response-timeout', 'reserved-path',
+    'session-changed', 'session-expired', 'session-inactive', 'session-stale',
+    'connection-bound', 'source-or-security', 'deadline', 'other',
+}
 REQUEST_HEADERS = {
     'accept', 'content-type', 'user-agent', 'if-none-match', 'if-modified-since',
     'expo-platform', 'expo-protocol-version', 'expo-runtime-version',
@@ -67,7 +79,10 @@ def path(value, generation):
         'token', 'access_token', 'auth', 'authorization', 'password', 'secret', 'key'
     } for k, _ in query))
     launches = [v for k, v in query if k == 'gptclawSession']
-    if parsed.path == '/':
+    if parsed.path.startswith(SESSION_PREFIX):
+        require(parsed.path in {SESSION_PREFIX + generation, SESSION_PREFIX + generation + '/'}, 'stale-launch')
+        require(not launches or launches == [generation], 'stale-launch')
+    elif parsed.path in MANIFEST_PATHS:
         require(launches == [generation], 'stale-launch')
     elif launches:
         require(launches == [generation], 'stale-launch')
@@ -127,7 +142,26 @@ class Proxy:
         self.tasks = set()
         self.server = None
         self.counters = {'accepted': 0, 'rejected': 0, 'upstream_bytes': 0}
+        self.rejections = {code:0 for code in sorted(REJECTION_CODES)}
+        self.resources = {kind:{'requests':0,'responses':{code:0 for code in ['2xx','4xx','5xx','other']}}
+                          for kind in ['manifest','bundle','asset','map','reload','other']}
         self.stop_event = None
+
+    def count(self,key,amount=1):
+        self.counters[key]=min(MAX_COUNTER,self.counters[key]+amount)
+
+    def reject(self,code):
+        self.count('rejected')
+        selected=code if code in REJECTION_CODES else 'other'
+        self.rejections[selected]=min(MAX_COUNTER,self.rejections[selected]+1)
+
+    def diagnostics(self):
+        # Aggregate fixed enums only. Never retain request paths/headers/IPs/device data.
+        return {'schema_version':1,'project':self.receipt['project'],
+                'generation':self.receipt['generation'],'expires_at':self.receipt['expires_at'],
+                'counters':dict(self.counters),'rejections':dict(self.rejections),
+                'resources':deepcopy(self.resources),
+                'native_client_acceptance':'unverified'}
 
     def active(self):
         current = states.validate(self.loader())
@@ -159,7 +193,7 @@ class Proxy:
 
     async def accept(self, reader, writer):
         if len(self.connections) >= MAX_CONNECTIONS:
-            self.counters['rejected'] += 1
+            self.reject('connection-bound')
             try:
                 await self.error(writer, 503)
             finally:
@@ -197,19 +231,27 @@ class Proxy:
                 except ValueError:
                     raise TransportError('websocket-handshake') from None
                 require(len(key) == 16 and 'sec-websocket-protocol' not in headers, 'websocket-handshake')
-            self.counters['accepted'] += 1
-            if parsed.path == '/_gptclaw/metro-health':
+            self.count('accepted')
+            if parsed.path in {'/_gptclaw/metro-health','/_gptclaw/metro-transport'}:
                 require(method == 'GET' and not websocket)
-                payload = json.dumps({'adapter': 'metro-v1', 'project': self.receipt['project'],
-                                      'generation': self.receipt['generation'],
-                                      'expires_at': self.receipt['expires_at']},
+                value = {'adapter': 'metro-v1', 'project': self.receipt['project'],
+                         'generation': self.receipt['generation'],'expires_at': self.receipt['expires_at']}
+                if parsed.path == '/_gptclaw/metro-transport':value=self.diagnostics()
+                payload = json.dumps(value,
                                      sort_keys=True, separators=(',', ':')).encode()
                 await write(writer, b'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n'
                             b'Cache-Control: no-store\r\nConnection: close\r\nContent-Length: '
                             +str(len(payload)).encode()+b'\r\n\r\n'+payload, self.timeout(5))
                 sent = True
                 return
-            require(not parsed.path.startswith('/_gptclaw/'), 'reserved-path')
+            session_entry = parsed.path in {SESSION_PREFIX + self.receipt['generation'],
+                                            SESSION_PREFIX + self.receipt['generation'] + '/'}
+            require(session_entry or not parsed.path.startswith('/_gptclaw/'), 'reserved-path')
+            kind='manifest' if session_entry or parsed.path in MANIFEST_PATHS else 'reload' if websocket \
+                else 'bundle' if parsed.path.endswith('.bundle') else 'map' if parsed.path.endswith('.map') \
+                else 'asset' if parsed.path.startswith('/assets/') else 'other'
+            resource=self.resources[kind]
+            resource['requests']=min(MAX_COUNTER,resource['requests']+1)
             upstream_reader, upstream_writer = await self.upstream()
             forwarded = {k: v for k, v in headers.items() if k in REQUEST_HEADERS}
             forwarded.update({'host': self.authority, 'x-forwarded-proto': 'https',
@@ -220,7 +262,10 @@ class Proxy:
                 forwarded.update({'connection': 'Upgrade', 'upgrade': 'websocket',
                                   'sec-websocket-version': '13',
                                   'sec-websocket-key': headers['sec-websocket-key']})
-            request = first+'\r\n'+''.join(k+': '+v+'\r\n' for k, v in forwarded.items())+'\r\n'
+            # Only the exact session-bound entry maps to the SDK manifest root.
+            # Leave SDK response bodies, signatures and origin-root resource URLs intact.
+            upstream_target = '/' + ('?' + parsed.query if parsed.query else '') if session_entry else target
+            request = method+' '+upstream_target+' HTTP/1.1\r\n'+''.join(k+': '+v+'\r\n' for k, v in forwarded.items())+'\r\n'
             await write(upstream_writer, request.encode('ascii'), self.timeout(10))
             if body_size:
                 body = await asyncio.wait_for(reader.readexactly(body_size), self.timeout(10))
@@ -229,6 +274,8 @@ class Proxy:
             status = re.fullmatch(r'HTTP/1\.[01] ([0-9]{3})(?: [ -~]*)?', response)
             require(status is not None, 'upstream-framing')
             code = int(status[1])
+            category=str(code//100)+'xx' if code//100 in {2,4,5} else 'other'
+            resource['responses'][category]=min(MAX_COUNTER,resource['responses'][category]+1)
             require(100 <= code <= 599 and code not in range(300, 304) and code not in range(305, 400)
                     and 'location' not in received, 'upstream-redirect')
             require(received.get('content-encoding') in {None, 'identity'}, 'upstream-encoding')
@@ -262,8 +309,10 @@ class Proxy:
             elif method != 'HEAD' and code not in {204, 304}:
                 await self.body(upstream_reader, writer, received)
         except (TransportError, app.AppError, ValueError, UnicodeError, OSError,
-                asyncio.IncompleteReadError, asyncio.LimitOverrunError, asyncio.TimeoutError):
-            self.counters['rejected'] += 1
+                asyncio.IncompleteReadError, asyncio.LimitOverrunError, asyncio.TimeoutError) as error:
+            self.reject(error.code if isinstance(error,TransportError) else 'source-or-security'
+                        if isinstance(error,app.AppError) else 'deadline'
+                        if isinstance(error,asyncio.TimeoutError) else 'other')
             if not sent:
                 await self.error(writer, 503)
         finally:
@@ -299,7 +348,7 @@ class Proxy:
                     await write(writer, data, bound())
                 else:
                     await write(writer, f'{len(data):x}\r\n'.encode()+data+b'\r\n', bound())
-                self.counters['upstream_bytes'] += len(data)
+                self.count('upstream_bytes',len(data))
                 number -= len(data)
         if 'content-length' in headers:
             await part(length(headers['content-length'], MAX_BODY))
@@ -326,7 +375,7 @@ class Proxy:
                 count += len(data)
                 require(count <= MAX_BODY, 'body-bound')
                 await write(writer, f'{len(data):x}\r\n'.encode()+data+b'\r\n', bound())
-                self.counters['upstream_bytes'] += len(data)
+                self.count('upstream_bytes',len(data))
 
     async def frames(self, reader, writer, masked):
         count, fragmented = 0, False

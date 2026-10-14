@@ -121,6 +121,20 @@ class ProtocolTests(unittest.TestCase):
         self.assertFalse(result['physical_client_verified']);self.assertFalse(result['private_route_verified'])
         self.assertEqual(set(result['native']),{'ios','android'})
         self.assertNotIn('entry.bundle',json.dumps(result));self.assertNotIn('targets',json.dumps(result))
+    def test_owned_protocol_probe_uses_session_path_without_query(self):
+        generation = 'a'*32
+        manifest_paths = []
+        def fake(port, advertised, path, platform, **kwargs):
+            result = {'status': 200, 'bytes': 3*1024*1024, 'sha256': '1'*64, 'platform': platform}
+            if kwargs.get('manifest'):
+                manifest_paths.append(path)
+                result['targets'] = {'bundle': '/entry.bundle?platform='+platform, 'assets': []}
+            return result
+        with patch.object(protocol, 'request', side_effect=fake), patch.object(protocol, 'websocket', return_value={'status': 101, 'ping_pong': True}):
+            result = protocol.sample(18601, ORIGIN, time.monotonic()+10, generation=generation)
+        self.assertEqual(manifest_paths, ['/_gptclaw/metro-session/'+generation]*2)
+        self.assertFalse(result['physical_client_verified'])
+
     def test_real_bounded_websocket_upgrade_and_masked_ping(self):
         for path in ['/message','/hot']:
             result=protocol.websocket(self.port,ORIGIN,path,time.monotonic()+3)

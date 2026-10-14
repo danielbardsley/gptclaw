@@ -204,10 +204,11 @@ and EOF responses with drain/backpressure rather than buffering a full bundle.
 Manifest bodies and signing headers are preserved; no manifest/signature rewriting.
 
 Host/Origin/credential/traversal/framing/redirect inputs reject before forwarding.
-Device/identity headers are discarded. HTTP launch at the origin root currently
-requires the exact generation query; SDK bundle/assets/maps and /hot plus /message
+Device/identity headers are discarded. HTTP launch at the origin root
+historically required the exact generation query; the native-compatible entry now
+uses `/_gptclaw/metro-session/GENERATION`. SDK bundle/assets/maps and /hot plus /message
 keep their verified root paths. This host-side stale-launch guard still requires
-actual native-client URI/query preservation evidence in SPEC-034; no launch/QR
+actual native-client entry-path preservation evidence in SPEC-034; no launch/QR
 capability or working phone claim follows from the synthetic test.
 
 WebSocket handshake/accept, mask direction, opcodes, continuation/control framing,
@@ -286,3 +287,9 @@ scope. No narrower ACL, new tag, group or network-policy mutation is needed.
 Denied-access acceptance targets off-tailnet/non-member devices; it does not expect
 a different permitted same-tailnet identity to be denied. Keep Serve/Funnel readback,
 route generation ownership and permitted physical-client proof as separate checks.
+
+
+The exact entry permits the current generation with or without one trailing slash;
+Go’s Android kernel removes nonreserved queries and the final slash. Generate the
+slash-free path, retain the generation guard and leave manifest bodies/signatures
+unchanged. Native client verification is separate from host path tests.

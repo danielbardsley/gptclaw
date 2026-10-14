@@ -188,7 +188,7 @@ def sample(port,advertised,deadline,generation=None,via_private=False):
     via_proxy=generation is not None
     app.need(type(via_private) is bool and (not via_private or via_proxy),'invalid')
     destination(port,advertised,via_proxy,via_private)
-    manifest_path='/' if generation is None else '/?gptclawSession='+generation
+    manifest_path='/' if generation is None else '/_gptclaw/metro-session/'+generation
     native={}
     for platform in ['ios','android']:
         startup=min(deadline,time.monotonic()+75)

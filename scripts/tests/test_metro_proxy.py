@@ -4,6 +4,7 @@ import asyncio
 import base64
 from copy import deepcopy
 import hashlib
+import json
 from pathlib import Path
 import struct
 import sys
@@ -152,6 +153,34 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue((await self.request('/?gptclawSession='+'2'*32,
                                            'Expo-Platform: android\r\n')).startswith(b'HTTP/1.1 200'))
 
+    async def test_session_path_survives_missing_query_and_preserves_sdk_response(self):
+        body = b'unchanged-synthetic-signed-manifest'
+        self.response = (b'HTTP/1.1 200 OK\r\nContent-Type: multipart/mixed; boundary=fixture\r\n'
+                         b'Expo-Signature: synthetic-signature\r\nContent-Length: '
+                         + str(len(body)).encode() + b'\r\n\r\n' + body)
+        entry = module.SESSION_PREFIX + self.value['generation']
+        for ending in ['', '/']:
+            for query in ['', '?platform=android']:
+                response = await self.request(entry + ending + query, 'Expo-Platform: android\r\n')
+                self.assertEqual(response.split(b'\r\n\r\n', 1)[1], body)
+                self.assertIn(b'expo-signature: synthetic-signature', response)
+                self.assertEqual(self.seen[-1][0], 'GET /' + query + ' HTTP/1.1')
+        self.assertEqual(self.proxy.resources['manifest']['responses']['2xx'], 4)
+
+    async def test_old_or_malformed_session_paths_and_unbound_manifest_aliases_reject(self):
+        prefix = module.SESSION_PREFIX
+        for target in [prefix + '9'*32 + '/', prefix + self.value['generation'] + '//',
+                       prefix + self.value['generation'] + '/index.exp',
+                       prefix + self.value['generation'] + '/?gptclawSession='+'9'*32,
+                       prefix + self.value['generation'] + '/?gptclawSession='+'2'*32+'&gptclawSession='+'2'*32,
+                       '/manifest', '/index.exp']:
+            with self.subTest(target=target):
+                self.assertTrue((await self.request(target)).startswith(b'HTTP/1.1 503'))
+        self.assertEqual(self.seen, [])
+        self.value['generation'] = '9'*32
+        self.assertTrue((await self.request(prefix+'2'*32+'/')).startswith(b'HTTP/1.1 503'))
+        self.assertEqual(self.seen, [])
+
     async def test_foreign_host_origin_credentials_and_absolute_targets_reject(self):
         for extra in ['Host: foreign.ts.net:8443\r\n', 'Origin: https://foreign.example\r\n',
                       'Authorization: synthetic-canary\r\n', 'Cookie: synthetic-canary\r\n']:
@@ -163,6 +192,48 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
                        '/assets/.env', '/assets/%252eenv', '/x?%74oken=canary']:
             self.assertTrue((await self.request(target)).startswith(b'HTTP/1.1 503'))
         self.assertEqual(self.seen, [])
+
+    async def test_transport_diagnostics_preserve_health_and_expose_no_request_identity(self):
+        await self.request('/?gptclawSession='+'9'*32)
+        await self.request('/?gptclawSession='+self.value['generation'],
+                           'Authorization: Bearer synthetic-private-canary\r\n')
+        response=await self.request('/_gptclaw/metro-transport')
+        self.assertTrue(response.startswith(b'HTTP/1.1 200'))
+        payload=json.loads(response.split(b'\r\n\r\n',1)[1])
+        self.assertEqual(payload['generation'],self.value['generation'])
+        self.assertEqual(payload['rejections']['stale-launch'],1)
+        self.assertEqual(payload['rejections']['credential-header'],1)
+        self.assertEqual(payload['native_client_acceptance'],'unverified')
+        self.assertNotIn('synthetic-private-canary',response.decode())
+        self.assertNotIn('authorization',response.decode().lower())
+        self.assertEqual(set(payload['rejections']),module.REJECTION_CODES)
+        self.assertEqual(self.seen,[])
+        health=await self.request('/_gptclaw/metro-health')
+        actual=json.loads(health.split(b'\r\n\r\n',1)[1])
+        self.assertEqual(actual,{'adapter':'metro-v1','project':'fixture',
+            'generation':self.value['generation'],'expires_at':self.value['expires_at']})
+
+    async def test_transport_resource_counts_distinguish_backend_status_without_paths(self):
+        self.response=b'HTTP/1.1 500 Internal Error\r\nContent-Length: 0\r\n\r\n'
+        await self.request('/?gptclawSession='+self.value['generation'])
+        self.response=b'HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok'
+        await self.request('/src/private-synthetic-canary.bundle?platform=android')
+        value=self.proxy.diagnostics()
+        self.assertEqual(value['resources']['manifest']['responses']['5xx'],1)
+        self.assertEqual(value['resources']['bundle']['responses']['2xx'],1)
+        self.assertEqual(value['resources']['bundle']['requests'],1)
+        self.assertNotIn('private-synthetic-canary',json.dumps(value))
+        self.assertNotIn('platform=android',json.dumps(value))
+
+    async def test_diagnostic_counters_saturate_and_unknown_reasons_cannot_add_fields(self):
+        self.proxy.counters['upstream_bytes']=module.MAX_COUNTER-1
+        self.proxy.count('upstream_bytes',65536)
+        self.proxy.reject('untrusted-request-canary')
+        self.assertEqual(self.proxy.counters['upstream_bytes'],module.MAX_COUNTER)
+        self.assertEqual(self.proxy.rejections['other'],1)
+        self.assertNotIn('untrusted-request-canary',json.dumps(self.proxy.diagnostics()))
+        self.value['phase']='stopping'
+        self.assertTrue((await self.request('/_gptclaw/metro-transport')).startswith(b'HTTP/1.1 503'))
 
     async def test_forwarded_headers_are_fixed_and_identity_headers_are_discarded(self):
         await self.request(extra='X-Forwarded-Proto: http\r\nX-Forwarded-Host: foreign.example\r\n'

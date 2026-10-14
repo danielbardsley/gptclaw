@@ -225,3 +225,12 @@ with exact cleanup, prior receipt/source and first generation preserved. Frozen
 installed/candidate existing group observations agree (API/DB healthy; pre-existing
 web observation-inconsistent). Compatible installed collector/provider rollout and
 rollback, remaining recovery/revocation and physical checks remain pending.
+
+
+Current native checkpoint: the owner’s manual and locally decoded QR query-based
+launches failed on Android 11 / Go 57.0.9, including after bundle warmup. Aggregate
+diagnostics isolated three generation-guard rejections before any manifest reached
+Metro. A guarded session-path entry is implemented and tested; its new physical
+launch check remains pending. Runtime/security/route scope is unchanged. No task
+or platform is marked accepted from host-only checks. See the latest acceptance
+record for exact evidence and limitations.

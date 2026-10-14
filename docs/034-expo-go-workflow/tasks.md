@@ -92,3 +92,12 @@ remain open. Fifteen inspection cases and thirteen frontend cases pass; type/bui
 and full portable browser gate pass. The iOS candidate explicitly reports the current
 CLI-login prerequisite outside this credential-free scope; no account fallback or
 certification is performed. The Android launch-rule owner check remains pending.
+
+
+Current native checkpoint: the owner’s manual and locally decoded QR query-based
+launches failed on Android 11 / Go 57.0.9, including after bundle warmup. Aggregate
+diagnostics isolated three generation-guard rejections before any manifest reached
+Metro. A guarded session-path entry is implemented and tested; its new physical
+launch check remains pending. Runtime/security/route scope is unchanged. No task
+or platform is marked accepted from host-only checks. See the latest acceptance
+record for exact evidence and limitations.

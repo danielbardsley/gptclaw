@@ -233,3 +233,28 @@ change, account operation, external QR service or native development build.
 The owner permits all devices on the development tailnet to access the host. Preserve
 the accepted existing access grant and private Serve listeners; off-tailnet access
 remains denied. Do not add narrower rules expecting them to override a wildcard allow.
+
+
+## Bounded transport diagnostics and native launch troubleshooting
+
+With a current owned session, read `/_gptclaw/metro-transport` on its approved
+private HTTPS origin to compare fixed aggregate resource/status and rejection
+counters before and after a deliberate launch attempt. Counters are transient,
+saturating and non-identifying; health/diagnostic probes do not increment upstream
+resource categories. Do not collect request headers, URLs, device lists or logs.
+A healthy phone-browser endpoint does not prove that Expo Go loaded a manifest.
+
+The tested host entry is `/_gptclaw/metro-session/GENERATION`, using the current
+owned generation. It maps only to the SDK manifest root without rewriting its
+body/signature or resource URLs. Old entries and unbound manifest aliases return
+503. The previous query-based candidate failed in Android Go despite warm bundles;
+do not present it as supported or remove generation guards to work around failure.
+Actual native launch remains an acceptance gate; use only current unexpired
+candidates during the owner check. No automatic restart, renewal or account setup
+is part of reading diagnostics or producing a QR.
+
+
+The exact entry permits the current generation with or without one trailing slash;
+Go’s Android kernel removes nonreserved queries and the final slash. Generate the
+slash-free path, retain the generation guard and leave manifest bodies/signatures
+unchanged. Native client verification is separate from host path tests.

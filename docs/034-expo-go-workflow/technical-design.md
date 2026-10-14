@@ -151,3 +151,22 @@ The candidate iOS profile therefore reports the CLI-login prerequisite as outsid
 this spec's credential-free scope and points to MOB-004. Keep the iOS native software
 path and protocol evidence, without claiming a usable credential-free Go client or
 changing SDK/signing/accounts. Android 57.0.9 is still an unverified reported candidate.
+
+
+## Measured Android query incompatibility
+
+The owner’s Android 11 / Go 57.0.9 query-based manual and independently decoded QR
+launches failed before Metro, with three aggregate `stale-launch` rejections and
+zero forwarded resources on the fresh diagnostic session. Cold bundle warmup did
+not fix the failure. The next candidate binds the generation in the exact path
+`/_gptclaw/metro-session/GENERATION`, mapped only to the unchanged SDK manifest
+root. SDK signatures and resource URLs are preserved; stale paths and unbound
+manifest aliases are rejected. Physical verification must establish the actual
+client behavior before this candidate becomes an available launch capability.
+No account, SDK, TLS or access-policy change follows from the generic error.
+
+
+The exact entry permits the current generation with or without one trailing slash;
+Go’s Android kernel removes nonreserved queries and the final slash. Generate the
+slash-free path, retain the generation guard and leave manifest bodies/signatures
+unchanged. Native client verification is separate from host path tests.

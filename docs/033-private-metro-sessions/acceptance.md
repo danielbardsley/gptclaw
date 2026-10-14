@@ -673,3 +673,59 @@ process later terminated with SIGTERM/exit 143 during the worktree suite, after 
 reported suites passed; cause is unknown and no complete local pass is claimed.
 CI's complete repository gates at the exact revision remain separate successful
 checks. Subsequent QR/profile changes need their own relevant gates/CI.
+
+
+## Android launch failure and transport correction (October 14 UTC)
+
+The owner’s Android 11 / Expo Go 57.0.9 launch of the exact 8443 query-based URL
+failed with `java.io.IOException: Failed to download remote update`. The phone
+browser could reach the private health endpoint. Warming the unchanged generation’s
+6,441,560-byte Android bundle reduced the host download to 2.398 seconds, but the
+owner’s retry still failed; cold compilation alone is not an explanation or fix.
+
+A fresh bounded diagnostic generation, 4778c48ab0fc418eb19c6c0dc034797e, then used
+a locally rendered QR, independently decoded before presentation. The owner
+reported the same error. Before that attempt, no resources or rejections were
+counted. Afterwards, there were exactly three `stale-launch` rejections and zero
+forwarded manifest/bundle/asset requests. All other fixed rejection counts were
+zero. The failure reaches the proxy and fails the generation guard before Metro;
+this does not establish an SDK, account, TLS or bundle failure. No request URL,
+query, header, token, IP or device identifier was captured.
+
+The adapter now accepts only the exact current session-bound path
+`/_gptclaw/metro-session/GENERATION/` and maps that entry to the SDK’s `/` manifest
+route. SDK bodies, MIME boundaries, signatures and origin-root resource URLs are
+unchanged. Old/wrong/malformed paths, conflicting generation queries and unbound
+`/manifest` or `/index.exp` aliases fail closed. The previous exact query entry
+remains available for historical host probes; it is not a verified Go launch rule.
+Twenty-five real loopback proxy tests and twenty protocol tests pass at this
+checkpoint. Native success, two-project interaction and reload acceptance remain
+pending until the corrected path is actually tested on the owner’s device.
+
+Diagnostics are bounded in-memory aggregate counters, exposed only through the
+existing private origin at `/_gptclaw/metro-transport`. Keys are fixed rejection
+enums, resource categories and HTTP status classes; counters saturate at 2^53−1.
+Health response shape is unchanged. Nothing is persisted and no per-request
+identity or raw payload is logged. Reading counters is not device-online evidence.
+The first diagnostic session was replaced through its reviewed owner controller
+with fresh security admission; the second project and shared routes were preserved.
+
+
+### Normalized path follow-up
+
+The owner also reported the same download error for the slash-terminated session
+path on generation 99e19c05970a41e69a8ce781adc6cef7 (expiry 18:47:43 UTC). Before
+that attempt, agent probes had one successful manifest and four deliberately
+rejected stale/alias entries. Afterwards, stale-launch rose from four to eight,
+with no additional forwarded resource. This candidate did not pass native launch.
+
+Targeted inspection of Expo’s public Android
+[Kernel.getManifestUrlFromFullUri](https://github.com/expo/expo/blob/11342ecad05c78851da27ca0ea587f3f214af361/apps/expo-go/android/expoview/src/main/java/host/exp/exponent/kernel/Kernel.kt#L506)
+found explicit removal of nonreserved query parameters and the final trailing
+slash. This explains both rejected candidate forms; it is source evidence, not
+an exact binary fingerprint of the owner’s app. The adapter now accepts the exact
+current generation path with or without one trailing slash. New candidates/probes
+use the form without a trailing slash. Both map only to the SDK root; old/wrong
+generations, extra segments or duplicate/conflicting generation queries remain
+rejected. Twenty-five proxy cases pass, including both normalized forms with
+unchanged multipart body and signing header. Native retry remains pending.
