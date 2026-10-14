@@ -312,3 +312,15 @@ provider, then the operator removes only their `--http=PORT` listeners and resto
 the HTTP listener is removed/replaced; retain route-history records and source.
 Older snapshots cannot operate HTTP receipts. Perform the release-triggered HTTPS
 restoration only after compatible SDK/client and actual native TLS checks.
+
+
+## Verified Android Go consumer checkpoint
+
+The approved two-port HTTP conversion has been executed and independently read
+back with the existing HTTPS-443 handlers and Funnel-off state intact. Android
+11 / Go 57.0.9 now passes actual two-project native load, interaction, restored
+Fast Refresh/full reload and network/compile recovery. Source has a generation-bound
+read-only Go launch command and minimum dashboard Open/copy/local QR integration.
+See the [Go workflow](manage-expo-go.md) and [current acceptance](../docs/034-expo-go-workflow/acceptance.md);
+installed rollout, final CI/merge and remaining device/session checks are separate
+gates. Earlier checkpoints above remain historical.

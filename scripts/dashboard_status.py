@@ -140,6 +140,9 @@ class StatusStore:
                     'docs_path':routes['docs_path'] if routes.get('docs_path') in (prefix+'docs',prefix+'api/docs') else None}
             if native is not None:
                 current['metro']=native
+                if binding.get('expo_go')==1:
+                    from dashboard_go import project as go_project
+                    current['expo_go']=go_project(result.get('expo_go'),binding['id'],native)
                 current['publication']={'state':'unavailable','origin':None}
                 current['routes']={'schema_version':1,'project':binding['id'],'app_path':None,'docs_path':None}
             self.entries[key]=current
@@ -198,5 +201,8 @@ class StatusStore:
             if binding.get('native_session')==1:
                 from dashboard_metro import public
                 native={'metro':public(entry.get('metro'),overall['freshness'],self.clock())}
+                if binding.get('expo_go')==1:
+                    from dashboard_go import public as go_public
+                    native['expo_go']=go_public(entry.get('expo_go'),native['metro'],overall['freshness'],self.clock())
             return {**overall,**native,'components':components,'publication':publication,
                     'provider_version':entry.get('provider_version'),'routes':copy.deepcopy(entry.get('routes'))}

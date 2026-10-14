@@ -1,6 +1,6 @@
 # SPEC-034 acceptance tracking
 
-- **Status:** Pending — read-only eligibility implemented; Go launch/device proof outstanding
+- **Status:** In progress — Android native edit/recovery verified; installed/delivery gates pending
 - **Owner:** Project owner
 - **Observed:** October 14, 2026 UTC
 - **Specification:** [SPEC-034](spec.md) · **Design:** [TDD-034](technical-design.md) · **Tasks:** [TASKS-034](tasks.md)
@@ -11,13 +11,13 @@
 
 | Criterion | State | Evidence and remaining work |
 |---|---|---|
-| AC-001 | Pending | Exact candidate SDK/lock/source-policy and public config/toolchain binding; client/OS drift and unknowns fail certification. Actual supported device matrix and finite certification still pending. |
-| AC-002 | Failed launch attempt; correction pending | Paired private host protocol and old-generation entry denial exist in SPEC-033. Exact Go launch/nonce handling, URI and local QR/decode remain pending. |
-| AC-003 | Pending | Read-only CLI eligibility inspection separates source/client/Metro states with no hidden start/route. Launch/dashboard actions pending. |
-| AC-004 | Pending | No physical native interaction, Fast Refresh or full reload accepted yet. |
-| AC-005 | Pending | Host stop/expiry/renewal evidence exists separately; physical network/background/compile/reload matrix pending. |
-| AC-006 | Pending | Fourteen focused eligibility/CLI drift, privacy and no-mutation cases pass; source/frozen inspection parity on both actual fixtures passes. QR/browser/legacy and complete consumer checks pending. |
-| AC-007 | Pending | Immutable candidate packaged; stable installed pointer unchanged. Consumer CI, rollout/rollback, merge and owner supported-matrix acceptance pending. |
+| AC-001 | In progress | Android 11 / Go 57.0.9 / SDK 57 private HTTP is physically verified, with finite seven-day certification and input/client drift gates. iOS is uncertified/account prerequisite outside scope; final accepted matrix pending. |
+| AC-002 | In progress | Android path-bound manual payloads open both projects; generation/origin/expiry/secret rejection and local independent QR decode pass. Product QR device scan and native stale/restart checks remain. |
+| AC-003 | In progress | Read-only inspect/launch and minimum Open/copy/QR UI are implemented with no hidden runtime/route/account action. Portable browser checks pass; installed owner-browser acceptance remains. |
+| AC-004 | In progress | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. iOS is not claimed as supported; final scope/matrix acceptance remains. |
+| AC-005 | In progress | Owner confirms Android background/network/tailnet loss/rejoin and isolated compile-error recovery. Native Metro restart/crash/expiry and stale-link recovery remain. |
+| AC-006 | In progress | Focused profile/serializer/privacy/collector/package tests and portable QR/browser/type/build gate pass. Final broad CI and installed rollback remain. |
+| AC-007 | In progress | Source/frozen launch parity verified. Stable rollout, capable rollback, final CI, merge and owner matrix/retention acceptance remain. |
 
 ## Verification
 
@@ -224,3 +224,79 @@ Current Serve remains HTTPS; private HTTP route state is therefore unavailable a
 expected. Baseline handlers and Funnel-off state are independently verified.
 Operator conversion, private HTTP/device checks, source/frozen final parity,
 installed rollout/rollback, full Go consumer implementation and delivery remain open.
+
+
+## Operator HTTP conversion and independent private readback
+
+On October 14 the project owner reported execution of the exact approved two-port
+SSM conversion. Independent readback verifies HTTP on TCP 8443/8444, their exact
+owned loopback proxies, unchanged original dashboard/project baseline digest
+`d0c41e928966c5d085e704d5826120b76ae4b4af854eb0aa570e447d52db5539`, and Funnel off.
+Both current generations retain their original expiry and report Ready. Private
+HTTP native manifests return 200 / 1,299 bytes for each project. Fresh `exp://`
+path-bound candidates were sent for physical Android acceptance; that owner check
+is pending. This establishes private transport readback, not native UI acceptance.
+
+
+## Android native acceptance and bounded Go consumer (October 14 UTC)
+
+The project owner confirms both current private HTTP candidates opened correctly
+in Expo Go 57.0.9 on Android 11, including the requested native counter, navigation
+and local icon checks. On each app, the agent changed only the heading in
+`src/app/index.tsx`; the owner confirmed automatic Fast Refresh while count 3
+was retained. Exact hash-guarded originals were restored and each checkout is
+clean. The owner confirmed full reload restored the normal heading and count 0.
+An owner-supplied screenshot corroborates the restored native starter screen;
+it is not a binary fingerprint or additional platform certification.
+
+On app two the owner confirms background/foreground, Wi-Fi/mobile-data transition
+with Tailscale connected, failed reload while disconnected, and successful intended
+app reload after reconnect. A brief task-owned syntax error in app one produced
+the native compile error while app two remained usable; exact source restoration
+and native reload/counter recovery were confirmed. These are owner reports,
+separate from agent protocol checks. Physical restart/stale QR/expiry checks,
+installed rollout/rollback and final delivery remain pending.
+
+Both sessions also pass agent private HTTP probes for iOS/Android manifests,
+bundles over 2 MiB, local icon, source maps, and `/message` and `/hot` WebSocket
+upgrade/ping-pong. Android bundles are 6,441,558 bytes; iOS bundles 5,737,498 bytes;
+source maps are 12,348,959 / 11,366,453 bytes. iOS host-protocol checks do not
+establish physical iOS support. The sampler's prior fixed label said private TLS
+for these HTTP probes; transport was independently verified HTTP and the label
+is corrected in source.
+
+The reviewed Android profile now records actual physical validation at `2026-10-14T19:33:39.053597+00:00`,
+expiring `2026-10-21T19:33:39.053597+00:00` (seven days). It binds the unchanged exact SDK/source policy,
+locked graph, static public config/toolchain contract, Android 11, Go 57.0.9 and
+approved private HTTP. New source/client/config/transport or stale/future evidence
+withdraws launch eligibility. iOS remains uncertified and reports its CLI-login
+prerequisite outside this credential-free scope; no device/version assumption
+is treated as acceptance. No automatic recertification or SDK migration occurs.
+
+Source implements explicit read-only `go launch --generation`, exact owned-origin/
+generation/expiry serialization, finite profile freshness and minimum dashboard
+Open/copy/local-QR controls. No launch operation starts Metro, provisions a route,
+logs into Expo or collects phone identifiers. Stale collector/layer/session/profile
+states withdraw links and QR. Existing app/API/repository links remain covered.
+
+Local checks pass 26 Go, 6 Go collector, 9 native collector, 10 observation and
+21 provider-packaging cases. The dashboard portable gate passes 17 frontend tests,
+typecheck, production build, independent rendered SVG decode and browser UI checks
+including native Go controls and stale/hostile payload withdrawal. The first decode
+check failed because its expected payload retained the old query form; both the
+producer and independent assertion now use the proven session path and pass.
+The full local repository gate was attempted but terminated with SIGTERM/143
+after its completed suites passed; it is not recorded as a full pass. CI at
+885a4d9 passes dashboard 38622460470 and private applications 38622460506.
+Development-host 38622460480 and federation 38622460457 failed solely because
+the Metro capability assertion still expected `[1]` instead of `[1,2]`; that
+assertion is corrected. Latest consumer CI remains pending. No protected apply ran.
+
+Source/frozen Go behavior matches on both real approved roots at provider
+`9f574ef13547d7b83cd0370719a4cd076765c2514feb5316c18d06984deeda6e` (before
+the subsequent consistent-reason validation). App one is compatible/stopped with
+launch unavailable; app two is compatible/Ready and its exact generation-bound
+payload matches. Elapsed command duration is excluded from behavioral equality.
+The retained HTTP-capable, Go-disabled rollback provider is
+`a99e4012c3b0232ddf0dffc3ef7161e34f2eed20976ac9a6bcf9bd11a812963c`.
+Stable launcher/dashboard remain unchanged at this checkpoint.

@@ -190,12 +190,13 @@ class ContractTests(unittest.TestCase):
         snapshot=app.provider_bundle()
         self.assertTrue((snapshot/'scripts/metro_contract.py').is_file());self.assertTrue((snapshot/'schemas/project/v6.schema.json').is_file())
         for name,digest in before.items():self.assertEqual(hashlib.sha256((snapshot/'schemas/project'/name).read_bytes()).hexdigest(),digest)
-    def test_cli_reports_verified_metro_session_contract_without_go_certification(self):
+    def test_cli_reports_versioned_contracts_without_device_discovery(self):
         from contextlib import redirect_stdout
         output=io.StringIO()
         with redirect_stdout(output):self.assertEqual(cli.main(['--version']),0)
         caps=json.loads(output.getvalue());self.assertIn(6,caps['project_manifest_schemas']);self.assertIn(6,caps['runtime_manifest_schemas']);self.assertNotIn(5,caps['runtime_manifest_schemas'])
-        self.assertEqual(caps['metro_actions'],['enable','renew','prune','route-plan','recover-stop','revoke']);self.assertEqual(caps['metro_session_schemas'],[1])
-        self.assertNotIn('expo-go',caps['capabilities'])
+        self.assertEqual(caps['metro_actions'],['enable','renew','prune','route-plan','recover-stop','revoke']);self.assertEqual(caps['metro_session_schemas'],[1,2])
+        self.assertEqual(caps['expo_go_inspection_schemas'],[1]);self.assertEqual(caps['expo_go_launch_schemas'],[1])
+        self.assertNotIn('devices',caps);self.assertNotIn('expo-go',caps['capabilities'])
 
 if __name__=='__main__':unittest.main()

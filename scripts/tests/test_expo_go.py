@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Eligibility drift, ownership, client and no-hidden-operation boundaries."""
 import hashlib
+import copy
+import time
 import io
 import json
 from pathlib import Path
@@ -23,6 +25,11 @@ class Tests(unittest.TestCase):
     def setUp(self):
         temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)
         self.projects=Path(temporary.name);self.root=self.projects/'one';self.root.mkdir()
+        candidate=go.profile();candidate['targets']['android'].update(status='candidate',physical_verified_at=None,launch_rule_verified=False)
+        original_read=go.deps.read_bytes
+        def candidate_read(path,*args):
+            return json.dumps(candidate).encode() if Path(path).name=='expo-go-v1.json' else original_read(path,*args)
+        mocked=patch.object(go.deps,'read_bytes',side_effect=candidate_read);mocked.start();self.addCleanup(mocked.stop)
         self.document=mobile.contract('one');self.document['schema_version']=6
         (self.root/'.gptclaw').mkdir();(self.root/'.gptclaw/toolchain.json').write_text(json.dumps(mobile.profile()['toolchain']))
         matrix=mobile.profile()
@@ -106,6 +113,24 @@ class Tests(unittest.TestCase):
             with patch.object(go.deps, 'read_bytes', side_effect=read):
                 with self.assertRaises(app.AppError): go.profile()
 
+    def test_verified_profile_has_finite_freshness_and_remains_distinct_from_session(self):
+        candidate=go.profile();candidate['targets']['android'].update(status='verified',
+            physical_verified_at=1000.,launch_rule_verified=True)
+        self.session.return_value={'schema_version':2,'transport':'private-tailnet-http',
+                                   'state':'ready','transport_available':True}
+        with patch.object(go,'profile',return_value=candidate),patch.object(go.time,'time',return_value=1001.):
+            result=self.inspect()
+        self.assertEqual(result['state'],'compatible');self.assertTrue(result['launch_available'])
+        for now in [999.,605800.]:
+            with patch.object(go,'profile',return_value=candidate),patch.object(go.time,'time',return_value=now):
+                result=self.inspect()
+            self.assertEqual(result['reason'],'physical-client-certification-expired')
+            self.assertFalse(result['launch_available'])
+        self.session.return_value['transport_available']=False;self.session.return_value['state']='stopped'
+        with patch.object(go,'profile',return_value=candidate),patch.object(go.time,'time',return_value=1001.):
+            result=self.inspect()
+        self.assertEqual(result['state'],'compatible');self.assertFalse(result['launch_available'])
+
     def test_wrong_toolchain_is_not_eligible(self):
         self.selection.return_value={'declaration':{'schema_version':1,'profile':'foreign'}}
         with self.assertRaises(app.AppError):self.inspect()
@@ -142,6 +167,78 @@ class Tests(unittest.TestCase):
             result=cli.main(['go','inspect','--project-root',str(self.root),'--platform','android',
                              '--client-version','57.0.9','--os-version','11'])
         self.assertEqual(result,0);inspect.assert_called_once_with(str(self.root),'android','57.0.9','11')
+
+
+class LaunchTests(unittest.TestCase):
+    def setUp(self):
+        self.now=1000.
+        self.origin='http://synthetic.tail123.ts.net:8443'
+        self.generation='1'*32
+        self.descriptor={'schema_version':2,'adapter':'metro-v1','project':'fixture',
+            'generation':self.generation,'state':'ready','transport_available':True,
+            'transport':'private-tailnet-http','requested_mode':'expo-go',
+            'transport_targets':['ios','android'],'origin':self.origin,'expires_at':2000.,
+            'observations':{k:{'state':v,'observed_at':1000.} for k,v in
+                            [('process','up'),('protocol','ready'),('route','verified')]}}
+        self.eligibility={'schema_version':1,'adapter':'expo-go-v1','project':'fixture','sdk':57,
+            'client_version':'57.0.9','os_version':'11','source_eligible':True,
+            'platform':'android','state':'compatible','launch_available':True,
+            'physical_client_acceptance':'profile-verified','physical_verified_at':900.,
+            'certification_expires_at':1900.}
+    def payload(self,**kwargs):
+        return go.payload(self.descriptor,self.eligibility,owned_origin=self.origin,
+                          owned_generation=self.generation,now=self.now,**kwargs)
+    def test_exact_slash_free_session_payload_and_earliest_expiry(self):
+        result=self.payload()
+        self.assertEqual(result,{'schema_version':1,'project':'fixture','platform':'android',
+            'generation':self.generation,'uri':'exp://synthetic.tail123.ts.net:8443/_gptclaw/metro-session/'+self.generation,
+            'expires_at':1900.})
+        self.assertNotIn('token',str(result));self.assertNotIn('?',result['uri'])
+    def test_wrong_generation_project_mode_target_schema_and_state_fail_closed(self):
+        for field,value in [('generation','2'*32),('project','other'),('requested_mode','development-client'),
+                            ('schema_version',True),('schema_version',1),('transport','public-http'),
+                            ('transport_targets',['android']),('state','stopped'),('transport_available',1)]:
+            original=copy.deepcopy(self.descriptor);self.descriptor[field]=value
+            with self.subTest(field=field,value=value),self.assertRaises(app.AppError):self.payload()
+            self.descriptor=original
+    def test_foreign_and_secret_bearing_origins_never_become_launch_payload(self):
+        for origin in ['http://other.tail123.ts.net:8443','https://synthetic.tail123.ts.net:8443',
+                       'http://127.0.0.1:8443','http://synthetic.tail123.ts.net:8443?token=secret',
+                       'http://secret@synthetic.tail123.ts.net:8443','http://synthetic.tail123.ts.net:8444']:
+            self.descriptor['origin']=origin
+            with self.subTest(origin=origin),self.assertRaises(app.AppError):self.payload()
+    def test_expired_future_or_unknown_physical_certification_denies_launch(self):
+        for field,value in [('schema_version',True),('sdk',58),('client_version','58.0.0'),('os_version','12'),
+                            ('source_eligible',False),('state','check-required'),('launch_available',False),
+                            ('physical_client_acceptance','caller-reported'),('platform','ios'),
+                            ('physical_verified_at',1001.),('certification_expires_at',1000.),
+                            ('certification_expires_at',float('nan'))]:
+            original=copy.deepcopy(self.eligibility);self.eligibility[field]=value
+            with self.subTest(field=field),self.assertRaises(app.AppError):self.payload()
+            self.eligibility=original
+    def test_expiry_and_each_unready_stale_future_layer_denies_launch(self):
+        self.descriptor['expires_at']=self.now
+        with self.assertRaises(app.AppError):self.payload()
+        self.descriptor['expires_at']=2000.
+        for layer in ['process','protocol','route']:
+            for field,value in [('state','unknown'),('observed_at',969.),('observed_at',1001.),('observed_at',True)]:
+                original=copy.deepcopy(self.descriptor);self.descriptor['observations'][layer][field]=value
+                with self.subTest(layer=layer,field=field),self.assertRaises(app.AppError):self.payload()
+                self.descriptor=original
+    def test_launch_uses_owned_receipt_and_rechecks_before_publication_without_mutation(self):
+        with patch.object(sessions,'receipt_for_root',return_value=(Path('/synthetic'),{'origin':self.origin})),             patch.object(sessions,'status',return_value=self.descriptor),             patch.object(go,'inspect',return_value=self.eligibility),             patch.object(go.time,'time',return_value=self.now),             patch.object(sessions,'start',side_effect=AssertionError('hidden start')),             patch.object(sessions.routes,'plan',side_effect=AssertionError('hidden route')):
+            result=go.launch('/synthetic','android','57.0.9','11',self.generation)
+        self.assertEqual(result['launch'],self.payload())
+    def test_concurrent_generation_change_blocks_publication(self):
+        changed={**self.descriptor,'generation':'2'*32}
+        with patch.object(sessions,'receipt_for_root',return_value=(Path('/synthetic'),{'origin':self.origin})),             patch.object(sessions,'status',side_effect=[self.descriptor,changed]),             patch.object(go,'inspect',return_value=self.eligibility),             patch.object(go.time,'time',return_value=self.now):
+            with self.assertRaises(app.AppError):go.launch('/synthetic','android','57.0.9','11',self.generation)
+    def test_cli_launch_dispatches_exact_identity_only(self):
+        with patch.object(cli,'os',SimpleNamespace(getuid=lambda:1002,geteuid=lambda:1002)),             patch.object(go.worktrees,'guard'),patch.object(go,'launch',return_value={'launch':None}) as launch,             redirect_stdout(io.StringIO()):
+            code=cli.main(['go','launch','--project-root','/synthetic','--platform','android',
+                          '--client-version','57.0.9','--os-version','11','--generation',self.generation])
+        self.assertEqual(code,0)
+        launch.assert_called_once_with('/synthetic','android','57.0.9','11',self.generation)
 
 
 if __name__=='__main__':unittest.main()

@@ -216,12 +216,12 @@ def sample(port,advertised,deadline,generation=None,via_private=False):
         native[platform]={'starter_icon':asset,'source_map':source_map,'manifest':manifest,'bundle':bundle,'assets':assets,
                           'bundle_exceeds_two_mib':bundle['bytes']>2*1024*1024}
     channels=[websocket(port,advertised,path,deadline,via_proxy=via_proxy,via_private=via_private) for path in ['/message','/hot']]
-    return {'protocol':'private-tls-native-sdk' if via_private else 'loopback-native-sdk','via_proxy':via_proxy,'native':native,'websockets':channels,'physical_client_verified':False,
+    return {'protocol':('private-http-native-sdk' if advertised.startswith('http://') else 'private-tls-native-sdk') if via_private else 'loopback-native-sdk','via_proxy':via_proxy,'native':native,'websockets':channels,'physical_client_verified':False,
             'private_route_verified':via_private}
 
 
 def private_sample(root,generation,seconds=240):
-    """Require current exact route ownership before/after sanitized TLS probes."""
+    """Require current exact route ownership before/after sanitized private probes."""
     import metro_sessions as sessions
     import metro_routes as routes
     app.need(type(seconds) is int and 1<=seconds<=300,'invalid')

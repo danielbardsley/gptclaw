@@ -18,7 +18,7 @@ const jsQR=require('/dashboard-modules/jsqr');
   },svg.toString('base64'));
   assert.equal(pixels.width,320);assert.equal(pixels.height,320);
   const decoded=jsQR(new Uint8ClampedArray(pixels.data),pixels.width,pixels.height);
-  assert.equal(decoded?.data,'exps://forge-dev.example.ts.net:8443/?gptclawSession='+'a'.repeat(32));
+  assert.equal(decoded?.data,'exp://forge-dev.example.ts.net:8443/_gptclaw/metro-session/'+'a'.repeat(32));
   console.log('PASS: actual locally rendered SVG decodes to the complete synthetic payload; no phone or external service used');
  } finally {await browser.close();}
 })().catch(()=>{console.error('QR SVG browser/decode check failed');process.exit(1);});

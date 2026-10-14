@@ -57,7 +57,7 @@ def main():
              "if(require('playwright-core/package.json').version !== '1.64.0')process.exit(1)"])
         # Decode the final SVG rasterization, not just the encoder's internal matrix.
         qr_dir=work/'qr';qr_dir.mkdir(mode=0o700)
-        generate_qr="import fs from 'node:fs'; import {localQr} from '/workspace/lib/local-qr.ts'; const payload='exps://forge-dev.example.ts.net:8443/?gptclawSession='+'a'.repeat(32); fs.writeFileSync('/qr/code.svg',localQr(payload).svg,{flag:'wx'});"
+        generate_qr="import fs from 'node:fs'; import {localQr} from '/workspace/lib/local-qr.ts'; const payload='exp://forge-dev.example.ts.net:8443/_gptclaw/metro-session/'+'a'.repeat(32); fs.writeFileSync('/qr/code.svg',localQr(payload).svg,{flag:'wx'});"
         run(['run','--rm',*common,'--network=none',
              '--volume',str(ROOT/'platform/dashboard')+':/workspace:ro',
              '--volume',str(qr_dir)+':/qr:rw','--workdir','/workspace',image,

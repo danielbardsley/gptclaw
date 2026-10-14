@@ -14,9 +14,9 @@
       "reported_os_versions": [
         "11"
       ],
-      "status": "candidate",
-      "physical_verified_at": null,
-      "launch_rule_verified": false,
+      "status": "verified",
+      "physical_verified_at": 1792006419.0535975,
+      "launch_rule_verified": true,
       "acquisition_source": "https://expo.dev/go",
       "requires_cli_login": false,
       "requires_http_devserver": true

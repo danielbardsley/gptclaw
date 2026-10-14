@@ -172,6 +172,9 @@ class Tests(unittest.TestCase):
         self.assertEqual((bundle/'scripts/metro_routes.py').read_bytes(),(app.REPO/'scripts/metro_routes.py').read_bytes())
         self.assertEqual((bundle/'scripts/metro_retention.py').read_bytes(),(app.REPO/'scripts/metro_retention.py').read_bytes())
         self.assertEqual((bundle/'scripts/dashboard_metro.py').read_bytes(),(app.REPO/'scripts/dashboard_metro.py').read_bytes())
+        self.assertEqual((bundle/'scripts/dashboard_go.py').read_bytes(),(app.REPO/'scripts/dashboard_go.py').read_bytes())
+        self.assertEqual((bundle/'scripts/expo_go.py').read_bytes(),(app.REPO/'scripts/expo_go.py').read_bytes())
+        self.assertEqual((bundle/'config/mobile/expo-go-v1.json').read_bytes(),(app.REPO/'config/mobile/expo-go-v1.json').read_bytes())
         original=templates.discover()
         project=self.new()
         before={p.relative_to(project):p.read_bytes() for p in project.rglob('*') if p.is_file()}

@@ -225,13 +225,18 @@ def _project(root, *, expected=None, clock=time.time):
         if contract['schema_version']==6:
             import metro_sessions
             from dashboard_metro import project as native_project
-            native=native_project(metro_sessions.status(root),slug)
+            descriptor=metro_sessions.status(root)
+            native=native_project(descriptor,slug)
+            import expo_go
+            from dashboard_go import project as go_project
+            try:go=go_project(expo_go.presentation(root,descriptor),slug,native)
+            except app.AppError:go=None
             app.need(native is not None,'conflict')
             state=native['state']
             overall='ready' if state=='ready' else 'stopped' if state in {'not-started','stopped','expired'} else 'starting' if state in {'preparing','starting','stopping','loopback-running'} else 'failed' if state=='failed' else 'degraded'
             result={'observation_schema':SCHEMA_VERSION,'provider_version':app.VERSION,'project':slug,
                     'observed_at':now,'components':{},'state':overall,'provider_state':overall,
-                    'health':'not-applicable','operation_busy':False,'reason':None,'metro':native,
+                    'health':'not-applicable','operation_busy':False,'reason':None,'metro':native,'expo_go':go,
                     'publication':{'state':'unavailable','origin':None},
                     'routes':{'schema_version':1,'project':slug,'app_path':None,'docs_path':None}}
             app.need(identity(Path(root).stat(follow_symlinks=False))==before,'conflict')

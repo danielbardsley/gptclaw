@@ -179,3 +179,26 @@ rejecting unowned replacements. [HTTPS restoration](../034-expo-go-workflow/clie
 is tied to a compatible released client and actual native verification. Source
 implementation and operator preparation precede conversion; physical iOS/Android
 criteria and source/SDK/account boundaries are unchanged.
+
+
+## Implemented Android launch boundary
+
+The proven SDK-57 Android entry is `exp://OWNED_ORIGIN/_gptclaw/metro-session/GEN`
+without a trailing slash or query nonce. Native normalization strips the earlier
+query and trailing slash; the proxy recognizes only the exact current generation
+path (with optional one slash), maps to the unmodified SDK root and denies obsolete
+entries/unguarded manifest aliases. Resource URLs and signatures are not rewritten.
+The pure serializer requires the same owned HTTP origin/generation, current Ready
+layers, Expo Go 57.0.9 / Android 11, exact source eligibility, and an unexpired
+physical profile. Launch expiry is the earlier session or certification expiry.
+CLI launch checks ownership/current generation again before publication; no hidden
+start, renewal, route or account action.
+
+A finite seven-day profile timestamp follows actual owner device confirmation, not
+a source build or reported version alone. The dashboard labels this as a reviewed
+client profile rather than detecting a phone, preserves Metro’s unverified-device
+observation semantics, and withdraws Open/copy/QR on stale inventory/layers or expiry.
+Pinned local QR encoding/independent decode is shared with the established frontend
+graph. HTTP-capable Go-disabled snapshots are retained for launch-only rollback;
+older HTTPS-only snapshots cannot manage schema-2 sessions. See acceptance for
+actual source/frozen/local/physical results and unfinished installed delivery.

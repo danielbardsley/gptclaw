@@ -1,6 +1,6 @@
 # TASKS-034: Expo Go workflow
 
-- **Status:** Implementation in progress — source/client inspection prepared
+- **Status:** Implementation in progress — Android native workflow verified; delivery pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-034](spec.md) · **Design:** [TDD-034](technical-design.md)
@@ -18,14 +18,14 @@
   prove native launch rules and stale-QR/session isolation. Record unsupported
   platforms accurately; any signed-client/account need is a separate MOB-004 scope.
   (GO-001/002/005; AC-001/002/005)
-- [ ] T-003: Add a reviewed versioned eligibility profile and source/client/freshness
+- [x] T-003: Add a reviewed versioned eligibility profile and source/client/freshness
   invalidation checks, without editing published releases or silently changing SDKs.
   (GO-001/007; AC-001/007)
-- [ ] T-004: Implement read-only native launch serializer/local QR and CLI inspection,
+- [x] T-004: Implement read-only native launch serializer/local QR and CLI inspection,
   with complete descriptor/generation/expiry/origin/privacy/ownership validation.
   Pin/check the QR dependency and test malformed/wrong/stale/secret payloads and decode.
   (GO-002/003/006; AC-002/003/006)
-- [ ] T-005: Add minimum Go-specific dashboard action/detail with accessible copy/QR
+- [x] T-005: Add minimum Go-specific dashboard action/detail with accessible copy/QR
   and accurate unsupported/readiness reasons; preserve all existing web/backend
   links and leave full telemetry to MOB-009. (GO-003/006; AC-003/006)
 - [ ] T-006: Run relevant profile/URI/QR/CLI/dashboard/worktree/security regressions
@@ -118,3 +118,14 @@ protocol/privacy tests. Both approved one-hour HTTP backends are loopback health
 and Android bundles warm; exact plans are recorded. Operator replacement and
 private/native acceptance are still pending. All broader task gates remain open;
 no Delivered or physical-certification claim is made. See current acceptance.
+
+
+## Current Android consumer checkpoint
+
+T-003/004/005 implementation and focused local checks are complete. Android
+Go 57.0.9 / Android 11 now has actual two-project native load, interaction,
+Fast Refresh, full reload, network/tailnet/background and compile-recovery evidence.
+The seven-day profile records that evidence; iOS remains uncertified/outside the
+credential-free client prerequisites. T-002/006/007/008 retain the final matrix,
+product QR/stale/restart/expiry, broad CI, installed rollout/rollback, review/merge
+and owner acceptance gates. No feature is marked Delivered. See current acceptance.

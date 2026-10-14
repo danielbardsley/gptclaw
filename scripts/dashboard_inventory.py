@@ -209,6 +209,9 @@ class Scanner:
                     and isinstance((self.capabilities or {}).get('metro_session_schemas'),list)
                     and any(type(n) is int and n==1 for n in self.capabilities['metro_session_schemas'])):
                 binding['native_session']=1
+                if (isinstance((self.capabilities or {}).get('expo_go_launch_schemas'),list)
+                        and any(type(n) is int and n==1 for n in self.capabilities['expo_go_launch_schemas'])):
+                    binding['expo_go']=1
             return row, binding
         finally:
             os.close(fd)

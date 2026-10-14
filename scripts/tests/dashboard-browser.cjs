@@ -213,6 +213,30 @@ const { chromium } = require('playwright-core');
   await page.getByText('Native client acceptance',{exact:true}).waitFor();
   assert.equal(await page.getByRole('heading',{name:'Component observations',exact:true}).count(),0);
   assert.equal(await page.locator('a[href^="exp"],a[href^="exps"]').count(),0);
+  layout.rows[0].status.metro.state='ready';layout.rows[0].status.metro.observations.route.state='verified';
+  const goUri='exp://synthetic.tail123.ts.net:8443/_gptclaw/metro-session/'+'1'.repeat(32);
+  layout.rows[0].status.expo_go={schema_version:1,adapter:'expo-go-v1',project:'mobile-source',platform:'android',
+    client_version:'57.0.9',os_version:'11',client_evidence:'reviewed-profile',state:'compatible',reason:'verified-client-profile',
+    physical_verified_at:nativeNow-60,certification_expires_at:nativeNow-60+604800,
+    launch:{schema_version:1,project:'mobile-source',platform:'android',generation:'1'.repeat(32),uri:goUri,expires_at:nativeNow+3600}};
+  await page.reload();
+  await page.getByRole('link',{name:'Open in Expo Go (Android)',exact:true}).waitFor();
+  await page.getByRole('button',{name:'Service details for Native source fixture'}).click();
+  await page.getByRole('region',{name:'Expo Go launch'}).waitFor();
+  await page.getByRole('button',{name:'Show QR',exact:true}).focus();await page.keyboard.press('Enter');
+  const goQr=page.getByRole('img',{name:'Expo Go launch QR for mobile-source'});await goQr.waitFor();
+  assert.ok((await goQr.getAttribute('src')).startsWith('data:image/svg+xml,'));
+  assert.equal(await page.getByRole('button',{name:'Hide QR',exact:true}).getAttribute('aria-expanded'),'true');
+  await page.getByRole('button',{name:'Copy Expo Go URL',exact:true}).click();
+  assert.match(await page.getByRole('status').filter({hasText:/Launch URL copied|Copy unavailable/}).textContent(),/Launch URL copied|Copy unavailable/);
+  layout.rows[0].status.metro.state='expired';
+  await page.reload();assert.equal(await page.locator('a[href^="exp://"]').count(),0);
+  await page.getByRole('button',{name:'Service details for Native source fixture'}).click();
+  assert.equal(await page.getByRole('img',{name:'Expo Go launch QR for mobile-source'}).count(),0);
+  layout.rows[0].status.metro.state='ready';
+  layout.rows[0].status.expo_go.launch.uri+='?token=secret';
+  await page.reload();assert.equal(await page.locator('a[href^="exp://"]').count(),0);
+  delete layout.rows[0].status.expo_go;
   layout.rows[0].status.metro.project='foreign';
   await page.reload();
   await page.getByText('Metro observation unavailable',{exact:true}).waitFor();
