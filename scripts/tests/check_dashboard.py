@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Build the exact dashboard and verify its HTTP/UI behavior in task-owned containers."""
 import argparse
+from http.server import BaseHTTPRequestHandler
 import json
 import os
 from pathlib import Path
 import socket
+import socketserver
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -75,6 +78,21 @@ def main():
             for version,name_part in ((1,'web'),(2,'api'),(3,'group'),(4,'db')):
                 fixtures.project(name_part,version)
             run_dir=work/'run';run_dir.mkdir(mode=0o700)
+            # No runtime adapter: prove writes traverse the built Next route
+            # and fixed Unix transport, then receive a typed refusal.
+            class ControlStub(BaseHTTPRequestHandler):
+                def log_message(self,*_):pass
+                def reply(self,status,value):
+                    body=json.dumps(value).encode();self.send_response(status)
+                    self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body)
+                def do_GET(self):self.reply(200,{'schema_version':1,'enabled':True,'projects':{}})
+                def do_POST(self):
+                    data=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+                    assert self.path=='/v1/intents' and data=={'schema_version':1,'project_key':'d'*32,'action':'start','component':None}
+                    assert self.headers['X-Control-Session']=='a'*64 and self.headers['X-CSRF-Token']=='b'*64
+                    self.reply(409,{'error':'control-unsupported'})
+            control_stub=socketserver.UnixStreamServer(str(run_dir/'control.sock'),ControlStub)
+            control_thread=threading.Thread(target=control_stub.serve_forever,daemon=True);control_thread.start()
             collector=subprocess.Popen([sys.executable,'-B',str(ROOT/'scripts/dashboard_collector.py'),
                 '--projects-root',str(fixtures.projects),'--socket',str(run_dir/'collector.sock')],
                 stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
@@ -89,6 +107,7 @@ def main():
                 '--volume',str(app/'standalone')+':/app:ro','--volume',str(app/'static')+':/app/.next/static:ro',
                 '--volume',str(run_dir)+':/run/gptclaw:ro','--workdir','/app',
                 '--env','HOSTNAME=0.0.0.0','--env','DASHBOARD_ORIGIN='+origin,'--env','PORT=3000',
+                '--env','DASHBOARD_CONTROLS=1',
                 '--env','NEXT_TELEMETRY_DISABLED=1',image,'node','server.js'])
             created=True
             for _ in range(60):
@@ -100,7 +119,7 @@ def main():
                 if collector.poll() is not None:raise AssertionError('collector failed')
                 time.sleep(.2)
             else:raise AssertionError('dashboard did not observe four synthetic projects')
-            checks=[('POST','/dashboard/api/snapshot/',{},405),('GET','/dashboard/api/snapshot/?root=/etc',{},400),
+            checks=[('POST','/dashboard/api/snapshot/',{'Origin':origin,'Sec-Fetch-Site':'same-origin','Content-Type':'application/json'},405),('GET','/dashboard/api/snapshot/?root=/etc',{},400),
                     ('GET','/dashboard/api/snapshot/',{'Origin':'https://untrusted.invalid'},403),
                     ('GET','/dashboard/api/snapshot/',{'Host':'untrusted.invalid'},403),
                     ('GET','/dashboard/',{'Sec-Fetch-Site':'cross-site','Sec-Fetch-Mode':'navigate','Sec-Fetch-Dest':'document'},200),
@@ -111,10 +130,20 @@ def main():
                 except urllib.error.HTTPError as error:response=error
                 assert response.code==expected,(method,path,response.code)
                 response.close()
+            write=urllib.request.Request(origin+'/dashboard/api/control-intents/',
+                data=json.dumps({'schema_version':1,'project_key':'d'*32,'action':'start','component':None}).encode(),
+                headers={'Origin':origin,'Sec-Fetch-Site':'same-origin','Content-Type':'application/json',
+                         'Cookie':'__Secure-gptclaw-control='+'a'*64,'X-CSRF-Token':'b'*64})
+            try:response=urllib.request.urlopen(write,timeout=5)
+            except urllib.error.HTTPError as error:response=error
+            with response:
+                assert response.code==409 and json.load(response)=={'error':'control-unsupported'},'built write route did not reach controller'
             run(['run','--rm',*common,'--network=host','--env','HOME=/tmp','--env','DASHBOARD_BROWSER_ORIGIN='+origin,
                  '--volume',str(ROOT/'scripts/tests/dashboard-browser.cjs')+':/checks/dashboard-browser.cjs:ro',
                  '--volume',str(output)+':/checks/output:rw',browser_image,'node','dashboard-browser.cjs'])
         finally:
+            if 'control_stub' in locals():
+                control_stub.shutdown();control_stub.server_close();control_thread.join(timeout=5)
             if created:
                 observed=run(['container','inspect',name,'--format','{{index .Config.Labels "com.gptclaw.dashboard-check"}}'],capture_output=True,text=True)
                 assert observed.stdout.strip()==token,'refuse unknown container cleanup'

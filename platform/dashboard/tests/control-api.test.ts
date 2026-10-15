@@ -29,6 +29,13 @@ test('frontend forwards only bounded same-origin cookie/CSRF JSON to the fixed c
     const request=(extra:Record<string,string>={},payload:string|Uint8Array=JSON.stringify(body))=>new Request(origin+'/dashboard/api/control-intents/',{method:'POST',headers:{...headers,...extra},body:typeof payload==='string'?payload:new Uint8Array(payload).buffer});
     const success=await submitControl(request(),'/v1/intents');assert.equal(success.status,200);
     assert.deepEqual(calls,[{url:'/v1/intents',body}]);
+    const internal=new Request(origin+'/api/control-intents/',{method:'POST',headers,body:JSON.stringify(body)});
+    assert.equal((await submitControl(internal,'/v1/intents')).status,200);
+    assert.equal(calls.length,2);
+    for(const pathname of ['/api/operations/','/api/control-intents/?root=/etc','/api//control-intents/']) {
+      const wrong=new Request(origin+pathname,{method:'POST',headers,body:JSON.stringify(body)});
+      assert.notEqual((await submitControl(wrong,'/v1/intents')).status,200);
+    }
     for(const raw of invalidBodies)assert.equal((await submitControl(request({},raw),'/v1/intents')).status,400);
     assert.deepEqual(rejected,invalidBodies,'controller must receive original duplicate-key, malformed and invalid-UTF8 bodies');
     assert.equal((await submitControl(request({origin:'https://attacker.example'}),'/v1/intents')).status,403);
@@ -36,7 +43,7 @@ test('frontend forwards only bounded same-origin cookie/CSRF JSON to the fixed c
     assert.equal((await submitControl(request({cookie:''}),'/v1/intents')).status,403);
     assert.equal((await submitControl(request({},'x'.repeat(8193)),'/v1/intents')).status,413);
     process.env.DASHBOARD_CONTROLS='0';assert.equal((await submitControl(request(),'/v1/intents')).status,503);
-    assert.equal(calls.length,1);
+    assert.equal(calls.length,2);
   }finally{
     for(const [key,value] of Object.entries({DASHBOARD_ORIGIN:before.origin,DASHBOARD_CONTROLS:before.enabled,DASHBOARD_CONTROL_SOCKET:before.socket})){if(value===undefined)delete process.env[key];else process.env[key]=value;}
     await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));

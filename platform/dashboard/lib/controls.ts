@@ -18,7 +18,12 @@ export async function submitControl(request: Request, path: '/v1/intents' | '/v1
   if (process.env.DASHBOARD_CONTROLS !== '1') return controlResponse({error:'control-disabled'},503);
   try {
     const { allowedRequest } = await import('./boundary.ts');
-    const rejection = allowedRequest(request,process.env.DASHBOARD_ORIGIN || '',true);
+    // Next strips basePath before invoking route handlers. Restore it only for
+    // this route's exact internal pathname; the proxy validates the public URL.
+    const url = new URL(request.url);
+    const endpoint = path === '/v1/intents' ? '/api/control-intents' : '/api/operations';
+    if ([endpoint,endpoint+'/'].includes(url.pathname)) url.pathname='/dashboard'+url.pathname;
+    const rejection = allowedRequest({method:request.method,url:url.href,headers:request.headers},process.env.DASHBOARD_ORIGIN || '',true);
     if (rejection) return controlResponse({error:'invalid-request'},rejection);
     if (request.headers.get('content-type') !== 'application/json') return controlResponse({error:'invalid-request'},400);
     const declared = request.headers.get('content-length');

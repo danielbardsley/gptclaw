@@ -78,7 +78,7 @@ also passed at that revision. These were PR quality checks, not infrastructure
 apply or runtime deployment evidence. Subsequent frontend transport, optional
 native-harness and documentation edits need their publication/CI checkpoint.
 
-The currently active dashboard is release
+The pre-rollout dashboard was release
 `355073098b3f810379b1e3a90f0e8a71edb74b3caf1fd98e7e44acf2e9a915de`:
 status and links enabled, controls absent; both owned services were observed active.
 The stable installed CLI reports 1.14.0; the implementation provider is 1.15.0.
@@ -114,7 +114,47 @@ the compatible read-only release. Preserve runtime data and operation evidence.
 Detailed commands and refusal conditions are in the dashboard runbook. These are
 proposed effects, not executed rollout evidence or new authorization.
 
-Final publication/CI and deployed acceptance remain pending. Generated check logs/captures stay in
-ignored task output; no credentials, environment dumps, source payloads or database
+### First approved private activation and route correction
+
+All four workflows passed on `8cb6e0aee4329eef92d8fa7505d5e71502c8ac72`:
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38803942019),
+[application](https://github.com/danielbardsley/gptclaw/actions/runs/38803942009),
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38803941881)
+and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38803941933).
+The application workflow's first mobile job timed out downloading pnpm during
+bootstrap; rerunning only that failed job at the same revision passed. No project
+test failed in that attempt and no package pin changed.
+
+After those checks, the approved disposable API peer started through provider
+1.15.0. The owned stable launcher/ingress upgraded to the exact frozen provider.
+Candidate `90520b38…` activated with all three services active; real private HTTPS
+snapshot and secure session requests passed. All ten pre-existing managed
+container IDs/states and the Serve baseline digest remained unchanged.
+
+The first dashboard intent was refused before operation admission: Next removes
+`/dashboard` from the request URL before invoking an application route handler.
+The additional handler boundary had required the public path and returned 405.
+New writes were disabled through the reviewed manager. The correction restores
+only the selected handler's exact internal path before validation; query, malformed
+path, origin, cookie, CSRF and body checks remain enforced. The new regression
+sends a POST through the actual production Next server and Unix socket to a
+non-mutating controller stub. Frozen frontend tests (21), typecheck, build,
+real HTTP/socket and full synthetic browser acceptance passed after correction.
+The first harness rerun required its old read-only method test to supply valid
+write headers now that controls are enabled; the second complete run passed.
+Corrected immutable assets are staged; their publication/CI and activation are
+pending. No successful dashboard lifecycle operation is claimed yet.
+
+Both named Metro fixtures now have fresh finite running sessions and verified
+loopback protocol observations. Their private routes remain pending the existing
+SSM operator's exact handoff; this does not establish private Metro readiness.
+Fresh API/DB initialization retained a blocked allocation receipt when API
+preparation used an unselected image. Diagnosis identified the supported
+component dependency-install prerequisite; preparation and same-ID initialization
+recovery are in progress. No reset, source change or data deletion was used.
+
+Live lifecycle/rollback acceptance, final corrected-head CI, owner desktop/mobile
+acceptance and review/merge remain pending. Generated logs/captures stay in ignored
+task output; no credentials, environment dumps, source payloads or database
 contents are retained in this evidence. Existing user services/data have not been
-mutated for acceptance. No private rollout or owner acceptance has occurred.
+mutated for acceptance.
