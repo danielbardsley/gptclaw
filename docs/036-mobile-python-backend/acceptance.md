@@ -262,3 +262,28 @@ checkpoint the route remains operator-required, transport unavailable and no Go
 launch link is available; physical Android, screenshots, owner acceptance and full
 T9 acceptance remain pending. All 443 HTTPS handlers and Funnel-off must be
 independently checked after operator execution.
+
+
+## Preview verification before operator handoff
+
+The broad repository command finished with 44 suites / 845 tests and exit 1.
+Forty-three suites passed; the only failing suite was the initial manifest test
+that still treated schema 8 as unsupported. Its corrected full 28-test rerun
+passed separately. The later full 59-test credential suite passed against the
+corrected publication/profile implementation; the known earlier invocation's
+error is retained above. No other broad-suite failures remain recorded.
+
+A first bounded Android loopback bundle probe returned a non-200 response; its
+finer cause was not retained. A subsequent bounded check returned 200, followed
+by a successful complete Android manifest/bundle probe through the owned proxy:
+6,464,006 bundle bytes, SHA-256
+68aec52e5b6ea06ab6e4f55363c7446c228805e9fd68099076c541cf745fcc10.
+No manifest or bundle contents were retained. Current process/protocol remain Up/
+Ready; private transport remains route-pending. These are host checks, not phone
+launch or owner acceptance.
+
+Actual private HTTPS API create/read/update/delete passed using one uniquely
+identified synthetic check record. Only that record was deleted afterward. No
+other notes/data were reset or removed. The complete previous Serve baseline is
+unchanged, Funnel remains off and approved HTTP 8445 is still absent at the latest
+readback. The exact add command has been requested from the existing SSM operator.

@@ -1,6 +1,9 @@
 # Fieldnotes private Expo Go preview
 
-Requested and explicitly approved by the project owner on October 15, 2026. Confirmed phone: Android 11,
+Requested and explicitly approved by the project owner on October 15, 2026.
+Current status: both private repositories created with passing generated CI;
+backend and Metro protocol ready; exact private route awaits the SSM operator.
+See [actual evidence](acceptance.md) for receipts and remaining device gates. Confirmed phone: Android 11,
 Expo Go 57.0.9, connected to the development tailnet.
 
 Create only these private repositories through the existing managed GitHub App:
@@ -10,7 +13,7 @@ Create only these private repositories through the existing managed GitHub App:
 The explicit named workflow-publication policy currently contains only
 `gptclaw-shelfmark`, `gptclaw-trailboard`, `mob001-accept-one`, and `mob001-accept-two`.
 Read-only `new ... --plan` refused both new names with credential-workflow-policy.
-No repository or runtime has been created. Preserve all four existing names;
+At the initial plan checkpoint no repository or runtime had been created. Preserve all four existing names;
 add only `fieldnotes-api` and `fieldnotes-mobile`. Retain current App grants,
 private visibility and PR review policy. No credentials or grant expansion.
 The supported policy update requires temporary profile deactivation and verified
