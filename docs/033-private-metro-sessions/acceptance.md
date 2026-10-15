@@ -1,13 +1,13 @@
 # SPEC-033 acceptance tracking
 
-- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
+- **Status:** Delivered (Android-first); final operator cleanup verified
 - **Owner:** Project owner
 - **Observed:** October 14, 2026 UTC
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md) · **Tasks:** [TASKS-033](tasks.md)
 - **Planning baseline:** Main fd6566426e0f18f16bc19150edcc113902da3e84;
   planning commit 66c19a26eb9fba81812165b6c7bda3d390e776ed / [PR #77](https://github.com/danielbardsley/gptclaw/pull/77).
   Installed implementation is on codex/mobile-metro /
-  [merged PR #78](https://github.com/danielbardsley/gptclaw/pull/78); implementation CI and runtime rollout pass; both planning and implementation are merged, with operator removal/readback explicitly deferred.
+  [merged PR #78](https://github.com/danielbardsley/gptclaw/pull/78); implementation CI and runtime rollout pass; both planning and implementation are merged, and final operator removal/readback is complete.
 
 ## Criterion mapping
 
@@ -16,11 +16,11 @@
 | AC-001 | Passed | Schema-6 opt-in, canonical/input denial, versioned capabilities/receipts and installed parity pass. Historical contracts and immutable releases are preserved. |
 | AC-002 | Passed (Android-first) | Real independent sessions, idempotence, SSM reconnect, crash restart, mutation/input drift denial and bounded expiry pass. The repeated physical stop/isolation check now passes: app one is unavailable while unchanged app two remains usable. The earlier both-failed result remains recorded. Owner confirms intended-session restart, post-crash Reload and physical expiry isolation; app-two identity/expiry and source are preserved. |
 | AC-003 | Passed (Android-first) | Private manifests, >2 MiB native bundles, assets/maps and both WebSocket paths pass. Owner verifies Android 11 / Go 57.0.9 native load, local assets, Fast Refresh and reload. Owner selected Android-first delivery; iOS remains explicitly unsupported/follow-up. |
-| AC-004 | In progress | Approved HTTP conversion, exact route readback, preserved HTTPS handlers/Funnel off and owner-reported off-tailnet denial pass. All devices on this tailnet are owner-permitted. Exact operator-owned listener-removal readback remains pending. |
+| AC-004 | Passed | Owner executed exact HTTP listener removals through SSM. Independent intermediate readback proved 8444 absent with 8443 and HTTPS intact; final readback proves both owned listeners absent and the original HTTPS/Funnel-off baseline preserved. Whole-tailnet access and off-tailnet denial retain their accepted evidence. |
 | AC-005 | Passed | Installed CLI/collector distinguish readiness/expiry and withdraw launch targets; typed generation/origin/expiry, source parity and Go-only rollback/roll-forward pass. No device-online/backend-health claim is made. |
 | AC-006 | Passed | Exact runtime disposition, effective mounts/resource/environment predicates, bounded sanitized records, tested exception/version/expiry denials and live lock/environment-file admission shutdown pass. A separate allowed source-exclusion probe proves the synthetic private canary file is absent from the SDK view and native bundle; failed forbidden-dotenv probes remain recorded. |
 | AC-007 | Passed | Offline bind/route/health/interruption/foreign-lease boundaries, real owned crash recovery, bounded expiry/reconciliation, actual private renewal, capable refresh/rollback and older-provider rejection pass. Source/data and the existing app baseline are preserved; preexisting group degradation is not reported as healthy. Physical reconnect and expiry isolation also pass under AC-002/003 and SPEC-034 AC-005. |
-| AC-008 | In progress — cleanup deferred | Planning PR #77 and implementation PR #78 are merged after approved review and passing CI. The Android physical matrix, installed parity/rollback and retained source/history pass. The owner explicitly defers exact listener removal/readback until SSM access at home; this obligation still prevents a Delivered label. |
+| AC-008 | Passed (Android-first) | Approved planning/implementation merges, all four combined-revision CI workflows, installed parity/rollback, complete Android physical matrix, retained source/history and exact owner-operated cleanup/readback pass. Final delivery is recorded; iOS remains unsupported/follow-up. |
 
 ## Historical local verification
 
@@ -1384,3 +1384,23 @@ owned-listener removal, independently verify the intermediate/final preserved
 configuration, and record completion. Do not restart/renew fixtures, bypass operator
 permissions or delete source/data. Catalogue state is Implemented; mark Delivered
 only after that remaining acceptance gate actually passes.
+
+
+## Final operator cleanup and delivery — October 14, 2026 at 10:23 p.m. Eastern
+
+The owner confirmed execution of the reviewed HTTP listener-removal commands in
+the SSM operator session. Independent readback after the first command proves
+8444 absent while the exact 8443 handler and original port-443 HTTPS routes remain.
+After the second command, both 8443/8444 TCP/Web handlers are absent. The preserved
+configuration digest is the original
+`d0c41e928966c5d085e704d5826120b76ae4b4af854eb0aa570e447d52db5539`;
+Funnel remains off. Forge performed no privileged Tailscale mutation.
+
+Both temporary SDK/audit containers, networks and loopback listeners are absent.
+App one retains its expired receipt; app two retains its stopped receipt. Both
+source repositories, metadata/history, sticky ownership records and published
+releases are preserved. The prior deferred cleanup is now complete, and no repeated
+phone check is required: the owner had already confirmed both expiry-isolation
+results. All selected Android-first criteria pass and MOB-002/003 are Delivered.
+The previously recorded passing CI/merges and unsupported iOS follow-up remain
+unchanged. Historical failed and deferred checkpoints above are retained.

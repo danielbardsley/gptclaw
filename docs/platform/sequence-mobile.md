@@ -291,15 +291,15 @@ creation/quality/private-repository implementation merged in PR #73, and the own
 confirmed acceptance October 13. MOB-001 is Delivered; M1 remains incomplete. [Evidence](../031-expo-project-creation/acceptance.md)
 records actual checks and scope. Other roadmap stages retain their separate gates.
 
-**Current implemented slices:** [SPEC-033](../033-private-metro-sessions/spec.md)
+**Current delivered slices:** [SPEC-033](../033-private-metro-sessions/spec.md)
 (MOB-002) and [SPEC-034](../034-expo-go-workflow/spec.md) (MOB-003) are merged and
 installed through [PR #78](https://github.com/danielbardsley/gptclaw/pull/78).
 The owner-selected Android 11 / Expo Go 57.0.9 matrix passes two-project native
 load/edit/reload, private stop/restart/crash recovery and expiry isolation. iOS
-remains explicitly unsupported/follow-up. Both temporary runtimes are absent;
-the owner defers exact SSM listener removal/readback until access at home, so
-catalogue state remains Implemented and final delivery remains pending. Source,
-receipts/history and existing apps/data are retained.
+remains explicitly unsupported/follow-up. Both temporary runtimes and owned listeners are absent after owner-executed SSM
+cleanup and independent preserved-route readback. Catalogue state is Delivered
+for this Android-first scope. Source, receipts/history and existing apps/data
+are retained.
 
 The Metro provider precedes its Go consumer. Concrete runtime security and private
 operator routing remain separate gates. Private HTTP compatibility is bounded to

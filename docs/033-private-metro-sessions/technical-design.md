@@ -1,6 +1,6 @@
 # TDD-033: Metro lifecycle and private transport
 
-- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
+- **Status:** Delivered (Android-first); final operator cleanup verified
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Tasks:** [TASKS-033](tasks.md)
