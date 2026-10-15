@@ -1,6 +1,6 @@
 # SPEC-035 — TypeScript API template (TPL-002)
 
-Status: Implementation authorized; initial stateless slice. Owner: Project owner.
+Status: Delivered — initial stateless slice accepted. Owner: Project owner.
 Date: 2026-10-15 (America/New_York).
 [Design](technical-design.md) · [Tasks](tasks.md)
 
@@ -43,5 +43,7 @@ is recorded here; review, merge and runtime/owner acceptance remain separate.
 | AC-003 | Real managed lifecycle, private docs/OpenAPI, update/error recovery, stop retention and independent-service checks pass | TSAPI-003 |
 | AC-004 | Runbook, CI and acceptance evidence reviewed; implementation merged and project owner accepts initial slice | TSAPI-004,005 |
 
-The catalogue remains partially scoped until migrations are separately specified
-and accepted. Project owner owns review and final acceptance.
+Implementation merged in [PR #82](https://github.com/danielbardsley/gptclaw/pull/82).
+The project owner accepted the private API checks on October 15, 2026. See
+[acceptance evidence](acceptance.md). Delivered covers this initial stateless
+slice; PostgreSQL/migrations remain separately scoped.

@@ -242,7 +242,7 @@ dispositions independently of feature implementation status.
   [Tasks](034-expo-go-workflow/tasks.md) ·
   [Acceptance tracking](034-expo-go-workflow/acceptance.md)
 
-- **035 — TypeScript API template (TPL-002), initial stateless slice in review:**
+- **035 — TypeScript API template (TPL-002), initial stateless slice delivered and accepted:**
   [Specification](035-typescript-api-template/spec.md) ·
   [Technical design](035-typescript-api-template/technical-design.md) ·
   [Tasks](035-typescript-api-template/tasks.md) ·

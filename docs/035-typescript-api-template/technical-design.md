@@ -1,6 +1,6 @@
 # TDD-035 — Fastify initial stateless API
 
-Status: Implementation design. Owner: Project owner. Date: 2026-10-15.
+Status: Implemented and accepted — initial stateless slice. Owner: Project owner. Date: 2026-10-15.
 [Specification](spec.md) · [Tasks](tasks.md)
 
 ## Approach

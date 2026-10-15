@@ -1,7 +1,7 @@
 # Manage private TypeScript APIs
 
 [SPEC-035](../docs/035-typescript-api-template/spec.md) adds the initial stateless
-TPL-002 slice in source provider 1.13.0. Verify `gptclawctl capabilities` reports
+TPL-002 slice in source provider 1.13.0. Verify `gptclawctl --version` reports
 manifest 7 and catalogue 6 before selecting this template; an older installed
 provider cannot discover or run it. Use the reviewed repository launcher until
 an installed snapshot includes this change.
