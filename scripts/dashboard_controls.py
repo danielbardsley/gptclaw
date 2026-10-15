@@ -25,6 +25,7 @@ HEX = re.compile(r'[0-9a-f]{32}')
 MAX_BODY = 8192
 MAX_RECORDS = 1000
 MAX_BYTES = 10*1024*1024
+CAPABILITY_TIMEOUT = 8
 RETENTION = 7*86400
 ACTIVE = {'accepted', 'running', 'unknown'}
 PUBLIC_FIELDS = {'schema_version', 'operation_id', 'project_key', 'project', 'name', 'action',
@@ -106,7 +107,7 @@ class Controller:
         self.recover_startup()
 
     def inspect_capabilities(self, root):
-        value=bounded(capability_job,str(root),4)
+        value=bounded(capability_job,str(root),CAPABILITY_TIMEOUT)
         require(value.get('schema_version')==1 and isinstance(value.get('actions'),list)
                 and isinstance(value.get('generation'),str) and re.fullmatch(r'[0-9a-f]{64}',value['generation']), 'control-unavailable',503)
         return value
@@ -185,7 +186,7 @@ class Controller:
                 def inspect(item):
                     key, row = item
                     try:
-                        value = bounded(capability_job, bindings[key]['root'], 4)
+                        value = bounded(capability_job, bindings[key]['root'], CAPABILITY_TIMEOUT)
                         if value.get('schema_version') != 1:
                             raise ValueError('unavailable')
                         return key, value

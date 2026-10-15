@@ -158,3 +158,33 @@ acceptance and review/merge remain pending. Generated logs/captures stay in igno
 task output; no credentials, environment dumps, source payloads or database
 contents are retained in this evidence. Existing user services/data have not been
 mutated for acceptance.
+
+
+### Live capability timing correction
+
+The corrected Next release `0cf6e4b…` activated with status/links/controls enabled.
+Real private intent admission passed. All ten negative HTTPS checks passed with
+unchanged peer identity: missing/foreign Origin, missing cookie/CSRF, duplicate
+keys, invalid UTF-8, malformed JSON, extra command field, command component and
+oversized body. Start operation `52bdd143687d437da29760fdd4c2d80d` and ready Start
+no-op `81ebd3a69920420fbd99fc68f14a9620` both completed successfully through the
+actual controller/systemd/rootless path. The following Pause intent was refused
+before admission because capability inspection exceeded its four-second budget.
+
+Read-only timing on the actual two-CPU host reproduced four concurrent isolated
+capability reads taking 4.92–5.84 seconds, despite a single direct read taking 1.65
+seconds. The UI cache consequently reported unavailable capabilities for valid
+running projects. New writes were disabled again while correcting that read
+budget to eight seconds for cache collection and submission preflight. The
+regression covers valid six-second reads and continued fail-closed timeout
+handling; no lifecycle deadline, worker count or service resource limit changes.
+Fourteen focused controller tests pass. Corrected staging/live evidence and
+final corrected-head CI remain pending.
+
+Both fresh persistent fixture databases now initialized successfully through the
+reviewed dependency/install and database interfaces. The first retained its exact
+initialization operation ID `519d8c208d11441db73f4e5881776b76` throughout recovery;
+no reallocation, reset or credential inspection was used. The required setup is
+API component dependency preparation before initial database migration. Named
+Metro sessions remain finite and protocol-ready, with private routes pending the
+existing operator; their backends and all unrelated services are preserved.

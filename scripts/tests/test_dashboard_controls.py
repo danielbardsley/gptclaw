@@ -60,6 +60,19 @@ class ControllerTests(unittest.TestCase):
         for key in ('root','session_hash','generation'):self.assertNotIn(key,result)
         self.assertTrue(lifecycle.guard_path('sample').exists())
 
+    def test_parallel_read_cost_does_not_disable_valid_capabilities(self):
+        # Live two-CPU inspection took 4.9–5.8s with four isolated readers.
+        # Keep those valid reads usable while still rejecting a bounded timeout.
+        def bounded_read(function,root,seconds):
+            return dict(self.caps) if seconds>=6 else {'error':'observation-timeout'}
+        bindings={self.key:{'root':str(self.root)}}
+        with patch.object(controls,'bounded',side_effect=bounded_read),patch.object(self.controller,'discover',return_value=(bindings,{self.key:self.row})):
+            self.assertEqual(self.controller.inspect_capabilities(self.root),self.caps)
+            self.controller.refresh()
+            self.assertEqual(self.controller.snapshot()['projects'][self.key]['capabilities'],self.caps)
+        with patch.object(controls,'bounded',return_value={'error':'observation-timeout'}):
+            with self.assertRaises(controls.Refusal):self.controller.inspect_capabilities(self.root)
+
     def test_duplicate_same_operation_never_dispatches_twice(self):
         intent=self.intent();first=self.submit(intent);second=self.submit(intent)
         self.assertEqual(first,second);self.assertEqual(self.launched,['d'*32])
