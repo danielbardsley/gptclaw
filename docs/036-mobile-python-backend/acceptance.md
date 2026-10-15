@@ -1,6 +1,6 @@
 # SPEC-036 acceptance evidence
 
-Status: Implementation in verification; Android/installed/owner acceptance pending.
+Status: Implementation locally verified; final CI/Android/installed/owner acceptance pending.
 Owner: Project owner. Evidence date: 2026-10-15 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 [Review PR #83](https://github.com/danielbardsley/gptclaw/pull/83).
@@ -137,5 +137,29 @@ The full local repository command exposed one existing worktree-test timing race
 its assertion observed a runnable child immediately after SIGKILL delivery. The
 production cleanup code was unchanged. The test now waits at most two seconds for
 absence or zombie state and still fails for a surviving descendant. The focused
-timeout regression passed; the entire 28-test worktree suite is being rerun. The
+timeout regression and the complete corrected 28-test worktree suite passed. The
 original full-run failure is retained as evidence rather than reported as a pass.
+
+## Final local reconciliation
+
+The repository command completed 43 suites / 837 tests: 42 suites passed, with
+only the immediate post-SIGKILL assertion failing in the original 28-test worktree
+suite. Its complete corrected rerun passed all 28 tests. The original full command
+therefore exited 1; this record does not relabel that invocation as a pass. All
+other suites completed successfully, including the new binding, legacy project,
+Metro, repository, database and dashboard checks.
+
+Two subsequent targeted binding cases passed: recreating ignored generated config
+after a fresh clone and preserving existing public-input fingerprint checks. The
+controller now creates only its owned public config directory/module using the
+reviewed atomic writer. Generated config declares stable public field types,
+avoiding accidental URL-literal types after binding. A separate synthetic bound
+fixture passed `pnpm typecheck` in the reviewed Node container with networking
+disabled; the combined CI helper now repeats that bound-config check. No starter
+asset bytes or application API/database behavior changed in these corrections.
+
+Final remote CI remains separately tracked on PR #83. Implementation/source and
+local verification are ready for review; installed rollout, private device HTTPS,
+Android interaction/screenshots/accessibility, owner acceptance and merge remain
+pending. The implementation worktree is clean after publishing the record;
+unrelated Fastify work in the original checkout was preserved.

@@ -32,6 +32,9 @@ def main():
             '--workdir=/workspace','--env','CI=1','--env','EXPO_NO_TELEMETRY=1','--env','EXPO_NO_DOTENV=1']
     subprocess.run([*common,image,'pnpm','install','--frozen-lockfile','--ignore-scripts','--no-runtime','--pm-on-fail=error','--ignore-pnpmfile','--registry=https://registry.npmjs.org/'],check=True,timeout=600)
     subprocess.run([*common,image,'pnpm','verify'],check=True,timeout=1200)
+    from mobile_backend import generated
+    (mobile/'src/config/backend.generated.ts').write_text(generated({'profile':'development','contract_version':1,'api_url':'https://fixture.invalid/projects/native-api/api'}))
+    subprocess.run([*common,image,'pnpm','typecheck'],check=True,timeout=300)
     api=[sys.executable,str(a.REPO/'scripts/tests/check_database_template.py'),str(base/'database-check'),
          '--engine',args.engine,'--source-root',str(backend),'--node-image',image]
     if args.api_image:api+=['--api-image',args.api_image]

@@ -62,6 +62,13 @@ class MobileBackend(unittest.TestCase):
             (self.mobile/mb.GENERATED).write_text(text+'// changed')
             with self.assertRaises(a.AppError):mb.fingerprint(self.mobile)
 
+    def test_fresh_clone_recreates_only_owned_public_generated_config(self):
+        path=self.mobile/mb.GENERATED;path.unlink();path.parent.rmdir()
+        self.assertEqual(self.bind()['state'],'backend-bound')
+        self.assertTrue(path.is_file());self.assertIn('owned.example.ts.net',path.read_text())
+        self.assertNotIn('password',path.read_text())
+        self.assertEqual(path.stat().st_mode & 0o777,0o600)
+
     def test_binding_rejects_changed_identity_and_unsupported_contract(self):
         self.bind()
         with patch.object(a,'node_identity',return_value='owned.example.ts.net'),patch('project_worktrees.canonical'):

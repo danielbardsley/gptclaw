@@ -38,12 +38,13 @@ Date: 2026-10-15 (America/New_York).
 
 ## Verification and delivery
 
-- [ ] T8: Run relevant repository/generated offline/container checks with meaningful
+- [x] T8: Run relevant repository/generated offline/container checks with meaningful
   failure injection: schema/version/identity/URL rejection before execution, atomic
   generation, stale client/types, breaking API, native state interactions, failed
   start/DB readiness, interrupted ownership, API-only route refusal/fallback, old
   provider refusal and historical stack regressions. Check sanitization and generator
-  reproducibility. Record exact commands/results and skipped checks. (AC-001–003,005–007)
+  reproducibility. Exact results and the corrected worktree timing-test rerun are
+  recorded in acceptance.md; final remote CI remains T10. (AC-001–003,005–007)
 - [ ] T9: After scoped rollout, verify installed/source parity and current device/client
   eligibility; execute physical Android CRUD, validation/pagination, saved-data
   persistence through reload/restarts/relaunch, offline/API/DB recovery, uncertain
@@ -60,11 +61,11 @@ Date: 2026-10-15 (America/New_York).
 
 ## Current handover
 
-Implementation is authorized and in verification on the isolated
+Implementation and local verification are complete on the isolated
 `codex/mobile-python-backend-spec` branch for PR #83. Exact API/DB-only and native
 notes starters, binding, versioned lifecycle/snapshot integration, native UI/client,
 contract checks, generated CI and runbook are implemented. See [acceptance](acceptance.md)
 for actual local results and explicit remaining CI/installed/device/owner gates.
 No installed runtime or existing application/data has been changed. SPEC-035 work
-and the original checkout are preserved. Next action: finish local regressions and
-publish the implementation for review; do not mark MOB-010/M1 accepted from code alone.
+and the original checkout are preserved. Next action: review the published implementation and final CI, then perform the
+scoped installed/device acceptance in T9. Do not mark MOB-010/M1 accepted from code alone.
