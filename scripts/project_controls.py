@@ -192,7 +192,7 @@ def eligibility(value, rows, action, component=None):
     database = 'db' in rows
     if native and rows['metro'].get('receipt') is None:
         return 'control-unsupported'
-    if native and action in {'start','restart'} and rows['metro']['receipt'].get('expires_at',time.time()+60)-time.time()<60:
+    if native and (action == 'restart' or action == 'start' and not rows['metro']['active']) and rows['metro']['receipt'].get('expires_at',time.time()+60)-time.time()<60:
         return 'control-expired'
     if (native and action in {'rebuild', 'pause', 'resume'}) or (database and action in {'pause', 'resume'}):
         return 'control-unsupported'
@@ -523,11 +523,13 @@ def execute(root, action, component=None, *, expected=None, operation_id=None, s
                 app.need(old is not None, 'control-unsupported')
                 # A restart cannot extend the approved lease. Start supports an
                 # existing unexpired opted-in session only, never creates consent.
-                ttl = int(old['expires_at']-time.time())
-                app.need(ttl >= 60, 'control-expired')
+                starting = action == 'restart' or action == 'start' and not rows['metro']['active']
+                if starting:
+                    ttl = int(old['expires_at']-time.time())
+                    app.need(ttl >= 60, 'control-expired')
                 if action in {'stop', 'restart'}:
                     stage('stop', 'metro'); metro.stop(root)
-                if action in {'start', 'restart'}:
+                if starting:
                     stage('start', 'metro')
                     metro.start(root, ttl_seconds=ttl, transport='tailnet-http' if old['origin'].startswith('http://') else 'https', lease_expiry=old['expires_at'])
             elif component:

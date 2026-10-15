@@ -157,7 +157,7 @@ const { chromium } = require('playwright-core');
     assert.ok(bounds.document<=width+1,'Document overflow at '+width+': '+bounds.document);
     assert.ok(bounds.buttons.every(button=>button.width>= (width<=768?44:24) && button.height>= (width<=768?44:24)),'Small primary targets at '+width);
     assert.equal(await page.getByRole('columnheader',{name:'Project',exact:true}).count(),1);
-    assert.equal(await page.getByRole('rowheader').count(),6);
+    assert.equal(await page.locator('.project-name[role="rowheader"]').count(),6);
     if(width===390)await page.screenshot({path:'/checks/output/dashboard-refined-mobile.png',fullPage:true});
   }
   // 720 CSS px represents a 1440 px desktop at 200% layout zoom.

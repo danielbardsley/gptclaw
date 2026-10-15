@@ -161,6 +161,44 @@ class Controls(unittest.TestCase):
         self.assertTrue(app.state_for('sample')['health_ready'])
         self.assertEqual(self.commands, [])
 
+    def metro_operation(self, action, *, seconds=300, active=True, component=None):
+        import metro_sessions as metro
+        old={'expires_at':ctl.time.time()+seconds,'origin':'http://synthetic.example.ts.net:8443'}
+        rows={'metro':{'active':active,'ready':active,'paused':False,'busy':False,'receipt':old,'generation':'owned'}}
+        value={'schema_version':9,'project':{'id':'sample'}}
+        calls=[]
+        def stop(root):
+            calls.append(('stop',root));rows['metro'].update(active=False,ready=False)
+        def start(root, **kw):
+            calls.append(('start',root,kw));rows['metro'].update(active=True,ready=True)
+        with patch.object(app,'target',return_value=(self.root,value)),patch.object(ctl,'inspect',return_value=(self.root,value,None,rows,'generation')),patch.object(ctl,'runtime_rows',return_value=(None,rows)),patch.object(metro,'stop',side_effect=stop),patch.object(metro,'start',side_effect=start):
+            result=ctl.execute(self.root,action,component)
+        return result,calls,old
+
+    def test_running_metro_start_is_noop_even_near_absolute_expiry(self):
+        before=copy.deepcopy(self.native)
+        result,calls,_=self.metro_operation('start',seconds=30)
+        self.assertEqual(result['state'],'succeeded');self.assertEqual(calls,[])
+        self.assertEqual(self.native,before);self.assertEqual(self.commands,[])
+
+    def test_metro_restart_retains_transport_and_absolute_expiry_without_backend_effects(self):
+        before=copy.deepcopy(self.native)
+        result,calls,old=self.metro_operation('restart',component='metro')
+        self.assertEqual(result['state'],'succeeded')
+        self.assertEqual([call[0] for call in calls],['stop','start'])
+        self.assertEqual(calls[1][2]['transport'],'tailnet-http')
+        self.assertEqual(calls[1][2]['lease_expiry'],old['expires_at'])
+        self.assertLessEqual(calls[1][2]['ttl_seconds'],300)
+        self.assertEqual(self.native,before);self.assertEqual(self.commands,[])
+
+    def test_metro_near_expiry_can_stop_but_cannot_start_or_restart(self):
+        result,calls,_=self.metro_operation('stop',seconds=30)
+        self.assertEqual(result['state'],'succeeded');self.assertEqual([c[0] for c in calls],['stop'])
+        for action,active in [('start',False),('restart',True)]:
+            with self.subTest(action=action),self.assertRaises(app.AppError) as error:
+                self.metro_operation(action,seconds=30,active=active)
+            self.assertEqual(error.exception.code,'control-expired')
+
     def test_database_restart_retains_generation_and_application_instances(self):
         import project_database as db
         value=copy.deepcopy(self.value);value['schema_version']=4
