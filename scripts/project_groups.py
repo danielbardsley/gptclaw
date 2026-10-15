@@ -116,7 +116,7 @@ def component_runtime(root):
 
 
 def valid_state(s):
-    a.need(isinstance(s, dict) and s.get('schema_version') in (2,3,4))
+    a.need(isinstance(s, dict) and type(s.get('schema_version')) is int and s['schema_version'] in (2,3,4))
     a.need(set(s) <= {'schema_version','id','root','token','network','components','phase','health_ready','operation','operation_id','operation_result','error','stages','cleanup_errors'})
     a.need(isinstance(s.get('id'), str) and re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*', s['id']) and len(s['id']) <= 48)
     root = a.safe(s['root']); a.need(root.is_relative_to(a.PROJECTS) and root != a.PROJECTS and root != a.REPO and '.gptclaw-runtime' not in root.parts)

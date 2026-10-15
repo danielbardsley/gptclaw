@@ -26,6 +26,12 @@ def url(value, project, hostname):
     return value
 
 
+def verify_owner(root, project):
+    """Refuse a same-ID backend receipt belonging to another canonical root."""
+    owner=app.state_for(project)
+    app.need(owner is None or owner['schema_version']==4 and owner['root']==str(root),'conflict')
+
+
 def inspect(root, hostname=None):
     """Validate local binding against canonical Python/PostgreSQL source identity."""
     root,document=app.target(root);app.need(document['schema_version']==9,'mobile-unsupported')
@@ -41,6 +47,7 @@ def inspect(root, hostname=None):
     app.need(contract['schema_version']==8 and contract['project']['id']==value['backend']
              and contract['components']['api']['adapter']=='fastapi-v1','mobile-policy')
     worktrees.canonical(backend)
+    verify_owner(backend,value['backend'])
     url(value['api_url'],value['backend'],hostname or app.node_identity())
     return value
 
@@ -57,6 +64,7 @@ def bind(root, backend_root, api_url):
     worktrees.canonical(root)
     backend,contract=app.target(backend_root);app.need(contract['schema_version']==8,'mobile-policy')
     worktrees.canonical(backend)
+    verify_owner(backend,contract['project']['id'])
     value={'schema_version':1,'mobile':document['project']['id'],'backend':contract['project']['id'],
            'root':str(backend),'profile':'development','contract_version':1,
            'api_url':url(api_url,contract['project']['id'],app.node_identity())}

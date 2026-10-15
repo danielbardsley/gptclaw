@@ -78,7 +78,15 @@ class MobileBackend(unittest.TestCase):
         with groups.scope(self.backend,self.value):s=groups.reserve(self.backend,self.value)
         self.assertEqual(s['schema_version'],4);groups.valid_state(s)
         with self.assertRaises(a.AppError):groups.valid_state({**s,'components':{**s['components'],'web':'foreign'}})
-        with self.assertRaises(a.AppError):groups.valid_state({**s,'schema_version':3})
+        for version in (3,4.0,True):
+            with self.assertRaises(a.AppError):groups.valid_state({**s,'schema_version':version})
+
+    def test_same_id_runtime_receipt_cannot_redirect_a_canonical_binding(self):
+        self.bind();before=(self.mobile/mb.CONFIG).read_bytes()
+        with patch.object(a,'node_identity',return_value='owned.example.ts.net'),patch('project_worktrees.canonical'),patch.object(a,'state_for',return_value={'schema_version':4,'root':str(self.base/'another-backend')}):
+            with self.assertRaises(a.AppError):mb.inspect(self.mobile)
+            with self.assertRaises(a.AppError):mb.bind(self.mobile,self.backend,'https://owned.example.ts.net/projects/notes-api/api')
+        self.assertEqual((self.mobile/mb.CONFIG).read_bytes(),before)
 
     def test_historical_validator_refuses_both_new_contracts(self):
         source=subprocess.run(['git','show','main:scripts/project_manifest.py'],cwd=a.REPO,capture_output=True,text=True,check=True).stdout

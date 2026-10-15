@@ -81,7 +81,7 @@ that migration. The fixture used task-owned synthetic state and source; its API/
 containers and private network were cleaned up by the runner. Source/data remain
 under the named temporary fixture for evidence, outside Git.
 
-The expanded `test_mobile_backend.py` suite passed all 10 tests, including actual
+The expanded `test_mobile_backend.py` suite passed all 11 tests, including actual
 historical-validator refusal and API/DB-only stop/source retention. A numerical
 normal-text contrast check passed at 5.06:1–12.93:1 across the chosen surfaces;
 this does not replace device accessibility or visual review. The documented stable
@@ -122,3 +122,9 @@ documents, release integrity against `main` and diff checks pass.
 At this record, the complete frozen-source repository rerun and corrected-head CI
 remain in progress. Current PR checks are authoritative for later results; the
 rollout/device/owner gates above remain pending regardless of automated results.
+
+The final ownership review adds explicit refusal when the selected backend ID has
+a runtime receipt belonging to another canonical root, before rewriting a binding.
+The 11-test focused rerun passed, including preserved binding bytes on refusal.
+A targeted receipt test also passed for invented components, wrong versions and
+fractional/boolean schema values; valid historical receipts remain supported.
