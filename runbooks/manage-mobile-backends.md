@@ -41,7 +41,9 @@ reviewed Node job; run both Python and native contract checks.
 
 ## Run and iterate
 
-Use the existing [Metro/Expo Go procedure](manage-metro.md) and its
+The `expo-notes` manifest already declares its Metro opt-in; skip `metro enable`,
+which migrates legacy unbound source only. Use the existing
+[Metro/Expo Go procedure](manage-metro.md) and its
 current eligibility, security, operator-routing and expiry gates. Binding does
 not create a listener, approve an SDK/client combination or expand a Metro HTTP
 exception to the application API. Only Android physical acceptance is selected.

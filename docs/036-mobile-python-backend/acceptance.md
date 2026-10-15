@@ -104,3 +104,21 @@ expiry gates. Obtain scoped installed rollout and real Android observations,
 including screenshots and owner acceptance, before changing MOB-010 to Delivered
 or closing M1. Provider rollback must preserve source/data/roles/backups and use a
 capable provider to reconcile new contracts; database schema rollback is separate.
+
+## CI and final verification follow-through
+
+Implementation commit `b5312e8` passed the new combined mobile/Python job, existing
+mobile-source, development-database, Python API and multi-service jobs in
+[application workflow run 177](https://github.com/danielbardsley/gptclaw/actions/runs/38685254980).
+Its legacy template job found two test-fixture issues: discovery still expected
+catalogue 5, and the historical-release fixture's Git commit omitted the intentionally
+ignored synthetic config asset. The correction expects catalogue 7 and explicitly
+commits each declared asset in that isolated baseline. All 21 template tests pass
+after the correction; no runtime behavior or published starter bytes changed.
+The final native `pnpm verify` passed all gates and both bundle exports after the
+uncertain-refresh fix. Relative links across 10 changed planning/runbook/index
+documents, release integrity against `main` and diff checks pass.
+
+At this record, the complete frozen-source repository rerun and corrected-head CI
+remain in progress. Current PR checks are authoritative for later results; the
+rollout/device/owner gates above remain pending regardless of automated results.

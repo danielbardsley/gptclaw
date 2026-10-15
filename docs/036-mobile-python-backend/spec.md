@@ -113,7 +113,7 @@ an unstyled CRUD form. Use an editorial notebook direction: warm paper surfaces,
 ink typography, a restrained contrasting accent, strong title hierarchy and
 asymmetric card rhythm derived from real note previews. Avoid random decoration,
 remote fonts/assets and a web dashboard squeezed into a phone. Provide a visible
-create action, useful preview/date metadata, comfortable editing, clear save state
+create action, useful preview and note-order metadata, comfortable editing, clear save state
 and deliberate delete confirmation. Motion is subtle and respects reduced motion.
 Keep list, editor, empty/loading/error/reconnecting states visually coherent;
 use skeletons where useful and show success only after the server confirms it.

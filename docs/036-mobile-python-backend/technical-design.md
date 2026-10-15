@@ -73,7 +73,7 @@ an owned compatibility fixture for the additive migration test.
 
 Use a warm notebook visual system: paper background, ink headings, one cobalt accent,
 consistent spacing/corner/elevation tokens and system type. A prominent heading and
-record count lead into readable preview cards; bounded date metadata and alternating
+record count lead into readable preview cards; note-order metadata and alternating
 card emphasis create rhythm without changing reading order. The editor dedicates
 space to title/body with a keyboard-aware save action and visible dirty/saving/saved
 states. Delete uses an accessible confirmation. Use local assets only if they serve
@@ -151,3 +151,8 @@ Python tests detect schema drift and native checks detect stale generated output
 A retained compiled v1 adapter exercises real HTTP CRUD around the isolated additive
 migration, without a credential mount. UI motion is deliberately absent, so the
 experience does not require animation for comprehension or reduced-motion handling.
+
+The accepted v1 notes API has no timestamps. Cards therefore show real note order
+and previews; this slice does not invent per-note dates or add an unrelated schema
+change merely for presentation. Actual timestamps can be a later compatible contract
+extension. The approved visual direction and Android owner review still apply.
