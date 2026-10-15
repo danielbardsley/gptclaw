@@ -1,6 +1,6 @@
 # TDD-036 — Python-backed native notes
 
-Status: Implementation design; authorized, in progress. Owner: Project owner.
+Status: Implemented and merged; remaining native/final acceptance pending. Owner: Project owner.
 Date: 2026-10-15 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
 

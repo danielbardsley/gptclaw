@@ -1,6 +1,6 @@
 # SPEC-036 acceptance evidence
 
-Status: Implementation locally verified; final CI/Android/installed/owner acceptance pending.
+Status: Implementation merged and preview deployed; remaining native/final acceptance pending.
 Owner: Project owner. Evidence date: 2026-10-15 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 [Review PR #83](https://github.com/danielbardsley/gptclaw/pull/83).
@@ -320,3 +320,26 @@ items, screenshots, implementation review/merge and final criterion-by-criterion
 acceptance remain open. Do not infer full AC-004–008 acceptance or mark MOB-010/M1
 Delivered solely from this general preview confirmation. No runtime was stopped,
 renewed or otherwise changed to record this report.
+
+
+## Main merge checkpoint — October 15, 2026
+
+The project owner explicitly instructed “Merge everything into main.”
+[PR #83](https://github.com/danielbardsley/gptclaw/pull/83) merged as
+`bdd2d7e55d3077e6a651cae15ceed35604d5556c` after all four workflows passed on
+final PR revision `d206ef2ddb8a8ca17cd1fb62f769b32df30f56d1`:
+
+- [Private application workflow](https://github.com/danielbardsley/gptclaw/actions/runs/38766903284), including the mobile/Python backend job.
+- [Development host](https://github.com/danielbardsley/gptclaw/actions/runs/38766902983).
+- [Tailscale federation](https://github.com/danielbardsley/gptclaw/actions/runs/38766903077).
+- [Private dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38766903327).
+
+This closes the implementation review/merge and final-head CI portions of AC-008.
+It does not replace the separately listed device/recovery/accessibility scenarios,
+remaining T9 checks or final criterion-by-criterion owner acceptance. The earlier
+“Everything looks good” statement in the TypeScript API chat accepted SPEC-035;
+it is not reused as acceptance of the Fieldnotes device scenarios. MOB-010 is
+Implemented, with the confirmed basic Android preview retained as owner evidence.
+The installed stable provider independently reported 1.14.0, manifests 1–9 and
+catalogue 7 during merge preparation. No runtime session, route, credential profile,
+data or infrastructure was changed to perform this merge or record its evidence.

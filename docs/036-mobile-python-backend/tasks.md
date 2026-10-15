@@ -1,6 +1,6 @@
 # TASKS-036 — Mobile Python backend integration
 
-Owner: Project owner. Status: Implementation authorized; in progress.
+Owner: Project owner. Status: Implementation merged; remaining native/final acceptance pending.
 Date: 2026-10-15 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md)
 
@@ -102,3 +102,11 @@ Android Expo Go preview is now confirmed by the owner, with positive overall
 feedback. T9 remains partly complete: separately enumerated native/recovery/
 accessibility scenarios and screenshots are unrecorded; T10 review/merge and
 final acceptance remain pending. See the acceptance record for evidence limits.
+
+
+Merge checkpoint — October 15: the project owner instructed “Merge everything
+into main.” All four workflows passed on final PR head `d206ef2` before
+[PR #83](https://github.com/danielbardsley/gptclaw/pull/83) merged as `bdd2d7e`.
+The review/merge portion of T10 is complete. Remaining enumerated T9 device,
+recovery and accessibility checks and final integration acceptance stay open;
+MOB-010/M1 are not marked Delivered. Earlier pending-merge notes are historical.

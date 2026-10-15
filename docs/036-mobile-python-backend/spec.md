@@ -1,6 +1,6 @@
 # SPEC-036 — Mobile integration with a Python backend
 
-- **Status:** Implementation authorized; in progress; acceptance pending.
+- **Status:** Implementation merged; remaining native/final acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-15 (America/New_York)
 - **Feature:** MOB-010; supporting development-only MOB-005, RUN-006/011,
