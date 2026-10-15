@@ -1,6 +1,6 @@
 # Private Metro operator plan
 
-- **Status:** Approved operator execution and independent exact readback complete; whole-tailnet access approved; physical-device/removal acceptance pending
+- **Status:** Owner-operated HTTP listener removal and independent readback complete; original HTTPS/Funnel baseline preserved
 - **Owner:** Project owner / existing SSM operator
 - **Scope:** Retained mob001-accept-one and mob001-accept-two only
 - **Observed:** 2026-10-14 UTC
