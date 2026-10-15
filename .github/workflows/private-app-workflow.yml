@@ -4,6 +4,9 @@ on:
     paths:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
+      - config/mobile/**
+      - docs/031-expo-project-creation/**
+      - runbooks/manage-expo-projects.md
       - config/templates/**
       - schemas/templates/**
       - docs/023-repository-credential-broker/**
@@ -14,6 +17,8 @@ on:
       - docs/025-multi-service-projects/**
       - runbooks/manage-multi-service-projects.md
       - config/browser-checks/**
+      - docs/035-typescript-api-template/**
+      - runbooks/manage-typescript-apis.md
       - docs/024-python-fastapi-template/**
       - runbooks/manage-python-apis.md
       - docs/021-template-catalogue/**
@@ -36,6 +41,9 @@ on:
     paths:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
+      - config/mobile/**
+      - docs/031-expo-project-creation/**
+      - runbooks/manage-expo-projects.md
       - config/templates/**
       - schemas/templates/**
       - docs/023-repository-credential-broker/**
@@ -46,6 +54,8 @@ on:
       - docs/025-multi-service-projects/**
       - runbooks/manage-multi-service-projects.md
       - config/browser-checks/**
+      - docs/035-typescript-api-template/**
+      - runbooks/manage-typescript-apis.md
       - docs/024-python-fastapi-template/**
       - runbooks/manage-python-apis.md
       - docs/021-template-catalogue/**
@@ -85,6 +95,7 @@ jobs:
         run: |
           .venv-manifest/bin/python scripts/tests/test_repository_credentials.py
           .venv-manifest/bin/python scripts/tests/test_project_repositories.py
+          .venv-manifest/bin/python scripts/tests/test_project_mobile.py
           .venv-manifest/bin/python scripts/tests/test_project_templates.py
           .venv-manifest/bin/python scripts/tests/test_project_groups.py
           .venv-manifest/bin/python scripts/tests/test_private_apps.py
@@ -123,6 +134,23 @@ jobs:
         run: .venv-manifest/bin/python scripts/tests/check_dependency_template.py "$RUNNER_TEMP/gptclaw-dependency-template" --image gptclaw-toolchain-ci
       - name: Verify selected toolchain acquisition and lifecycle preparation
         run: .venv-manifest/bin/python scripts/tests/check_toolchain_template.py "$RUNNER_TEMP/gptclaw-toolchain-template"
+
+  mobile-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Prepare isolated validator dependencies
+        run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
+      - name: Build exact mobile authoring toolchain
+        run: docker build -t gptclaw-mobile-ci -f templates/apps/releases/expo-react-native/1.0.1/checks/toolchain/Containerfile templates/apps/releases/expo-react-native/1.0.1/checks/toolchain
+      - name: Generate two native projects and verify both targets and defect rejection
+        run: .venv-manifest/bin/python scripts/tests/check_mobile_template.py "$RUNNER_TEMP/gptclaw-mobile-source" --engine docker --image gptclaw-mobile-ci
 
   python-api:
     runs-on: ubuntu-24.04
@@ -174,3 +202,21 @@ jobs:
         run: .venv-manifest/bin/python scripts/tests/check_database_template.py "$RUNNER_TEMP/gptclaw-database-template" --engine docker
       - name: Persistent starter frontend and browser workflow
         run: python3 "$RUNNER_TEMP/gptclaw-database-template/projects"/dbcheck-*/checks/verify.py --engine docker
+
+  typescript-api:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
+      - run: docker build -f templates/apps/node-toolchain/Containerfile -t gptclaw-toolchain-ci templates/apps/node-toolchain
+      - run: .venv-manifest/bin/python scripts/tests/check_fastify_template.py "$RUNNER_TEMP/gptclaw-fastify-template"
+      - name: Build standalone compiled API container
+        run: docker build -f templates/apps/releases/fastify/1.0.0/Containerfile -t gptclaw-fastify-compiled templates/apps/releases/fastify/1.0.0
+      - name: Verify standalone image as its unprivileged user
+        run: docker run --rm --cap-drop=all --security-opt=no-new-privileges --memory=1536m --cpus=1 --pids-limit=256 gptclaw-fastify-compiled pnpm verify

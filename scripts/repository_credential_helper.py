@@ -31,12 +31,15 @@ def main(argv=None):
             broker.check(key not in fields);fields[key]=value
         broker.check(set(fields)<={'protocol','host','path','username'})
         binding=broker.validate_git_helper(Path(args.project_root).absolute())
+        from project_worktrees import validate_invocation
+        validate_invocation(Path(args.project_root).absolute(),Path.cwd())
         expected=broker.repos.ACCOUNT+'/'+binding['name']+'.git'
         broker.check(fields.get('protocol')=='https' and fields.get('host')=='github.com'
                      and fields.get('path')==expected
                      and fields.get('username','x-access-token')=='x-access-token','credential-scope')
+        token=broker.Broker().project_token(args.project_root,'git')
         with app.locked('credential-'+str(binding['repository_id'])):
-            token=broker.Broker().project_token(args.project_root,'git')
+            broker.check(broker.bound(Path(args.project_root).absolute())==binding,'credential-recovery')
             receipt={'schema_version':1,'repository_id':binding['repository_id'],**token.metadata,
                      'revocation':'Git pipe handoff; expires at reported time, no bearer cache'}
             broker.private_directory(broker.location()/'receipts')

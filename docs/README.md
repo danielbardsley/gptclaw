@@ -8,6 +8,9 @@ Platform-level handover documents live together under `docs/platform/`. They
 describe direction and the candidate feature backlog, but they are not
 specifications and do not authorize implementation.
 
+For an explanation of repository directories and how their contents support the
+project, see the [directory guide](repository-layout/README.md).
+
 ## Folder convention
 
 Each initiative uses a numbered, descriptive folder:
@@ -40,7 +43,9 @@ dispositions independently of feature implementation status.
 
 - **Platform direction:**
   [Architecture](./platform/architecture.md) ·
-  [Feature catalogue](./platform/features.md)
+  [Feature catalogue](./platform/features.md) ·
+  [General sequence](./platform/sequence.md) ·
+  [Mobile delivery sequence](./platform/sequence-mobile.md)
 
 - **001 — Bootstrap the remote development host:**
   [Specification](./001-bootstrap-remote-development-host/spec.md) ·
@@ -212,6 +217,36 @@ dispositions independently of feature implementation status.
   [Tasks](030-dashboard-visual-refinement/tasks.md) ·
   [Acceptance](030-dashboard-visual-refinement/acceptance.md) ·
   [Reference brief](030-dashboard-visual-refinement/reference.md)
+
+- **031 — Repeatable Expo / React Native project creation (MOB-001), delivered:**
+  [Specification](031-expo-project-creation/spec.md) ·
+  [Technical design](031-expo-project-creation/technical-design.md) ·
+  [Tasks](031-expo-project-creation/tasks.md) ·
+  [Acceptance](031-expo-project-creation/acceptance.md)
+
+- **032 — Branch and worktree policy (PRJ-006), delivered and accepted:**
+  [Specification](032-branch-worktree-policy/spec.md) ·
+  [Technical design](032-branch-worktree-policy/technical-design.md) ·
+  [Tasks](032-branch-worktree-policy/tasks.md) ·
+  [Acceptance status](032-branch-worktree-policy/acceptance.md)
+
+- **033 — Owned private Metro sessions (MOB-002), Delivered (Android-first):**
+  [Specification](033-private-metro-sessions/spec.md) ·
+  [Technical design](033-private-metro-sessions/technical-design.md) ·
+  [Tasks](033-private-metro-sessions/tasks.md) ·
+  [Acceptance tracking](033-private-metro-sessions/acceptance.md)
+
+- **034 — Compatible Expo Go workflow (MOB-003), Delivered (Android-first):**
+  [Specification](034-expo-go-workflow/spec.md) ·
+  [Technical design](034-expo-go-workflow/technical-design.md) ·
+  [Tasks](034-expo-go-workflow/tasks.md) ·
+  [Acceptance tracking](034-expo-go-workflow/acceptance.md)
+
+- **035 — TypeScript API template (TPL-002), initial stateless slice delivered and accepted:**
+  [Specification](035-typescript-api-template/spec.md) ·
+  [Technical design](035-typescript-api-template/technical-design.md) ·
+  [Tasks](035-typescript-api-template/tasks.md) ·
+  [Acceptance](035-typescript-api-template/acceptance.md)
 
 ## Current application milestone
 

@@ -16,6 +16,7 @@ MAX_ENTRIES = 4096
 MAX_OUTPUT = 1024 * 1024
 MAX_REGISTRY = 128 * 1024
 SCAN_SECONDS = 10
+# Managed source-only task checkouts are never independent dashboard projects.
 NAME = re.compile(r'[A-Za-z0-9][A-Za-z0-9._-]{0,127}')
 ID = re.compile(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*')
 REPOSITORY = re.compile(r'https://github\.com/[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9_.-]{1,100}')
@@ -166,12 +167,17 @@ class Scanner:
         if (not isinstance(caps, dict) or caps.get('provider') != 'gptclawctl'
                 or not isinstance(caps.get('project_manifest_schemas'), list)):
             return 'unavailable'
-        return 'supported' if version in caps['project_manifest_schemas'] else 'unsupported'
+        return 'supported' if version in caps.get('runtime_manifest_schemas', caps['project_manifest_schemas']) else 'unsupported'
 
     def candidate(self, root_fd, name, metadata):
         fd = owned_directory(root_fd, name)
         try:
             info = os.fstat(fd)
+            from project_worktrees import managed
+            from private_apps import AppError
+            try:is_task=managed(self.projects/name)
+            except AppError:raise InventoryError('unsafe-path') from None
+            if is_task:raise FileNotFoundError
             meta = owned_directory(fd, '.gptclaw')
             try:
                 file_info = os.stat('project.yaml', dir_fd=meta, follow_symlinks=False)
@@ -190,7 +196,7 @@ class Scanner:
             project = contract['project']
             root = str(self.projects / name)
             key = hashlib.sha256((root + '\0' + project['id'] + '\0' + str(identity(info))).encode()).hexdigest()[:32]
-            components = sorted(contract['components']) if contract['schema_version'] in (3, 4) else [project['kind']]
+            components = sorted(contract['components']) if contract['schema_version'] in (3, 4) else [] if contract['schema_version'] in (5,6) else [project['kind']]
             fields = metadata.get((root, project['id']), {})
             row = {'key': key, 'id': project['id'], 'name': project['name'], 'kind': project['kind'],
                    'components': components, 'location': name, 'manifest_version': contract['schema_version'],
@@ -199,6 +205,13 @@ class Scanner:
                    'documentation': {'readme': presence(fd, ['README.md']),
                                      'index': presence(fd, ['docs', 'README.md'])}}
             binding = {'root': root, 'id': project['id'], 'identity': identity(info), 'components': components}
+            if (contract['schema_version']==6 and row['runtime_support']=='supported'
+                    and isinstance((self.capabilities or {}).get('metro_session_schemas'),list)
+                    and any(type(n) is int and n==1 for n in self.capabilities['metro_session_schemas'])):
+                binding['native_session']=1
+                if (isinstance((self.capabilities or {}).get('expo_go_launch_schemas'),list)
+                        and any(type(n) is int and n==1 for n in self.capabilities['expo_go_launch_schemas'])):
+                    binding['expo_go']=1
             return row, binding
         finally:
             os.close(fd)

@@ -191,6 +191,56 @@ const { chromium } = require('playwright-core');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   await page.getByText('Conflicting project ID',{exact:true}).waitFor();
   await page.getByText(layout.rows[0].location,{exact:true}).waitFor();
+  layout.rows = [{ ...structuredClone(layout.rows[0]), key:'mobile-source-fixture', id:'mobile-source', name:'Native source fixture', kind:'mobile', components:[], manifest_version:5, runtime_support:'unsupported', identity_state:'valid', location:'mobile-source' }];
+  await page.setViewportSize({width:1440,height:900}); await page.reload();
+  await page.getByText('Native source · Metro not enabled',{exact:true}).waitFor();
+  assert.equal(await page.getByText('Native source · v5',{exact:true}).count(),1);
+  await page.getByRole('button',{name:'Service details for Native source fixture'}).click();
+  assert.equal(await page.getByRole('heading',{name:'Component observations',exact:true}).count(),0);
+  layout.rows[0].manifest_version=6;layout.rows[0].runtime_support='supported';
+  layout.rows[0].inventory_freshness='current';layout.freshness='current';layout.complete=true;
+  const nativeNow=Date.now()/1000;layout.server_time=nativeNow;
+  layout.rows[0].status={...component,health:'not-applicable',observed_at:nativeNow,last_success_at:nativeNow,
+    components:{},provider_version:'1.12.0',publication:{state:'unavailable',origin:null},
+    metro:{schema_version:1,project:'mobile-source',generation:'1'.repeat(32),state:'route-pending',expires_at:nativeNow+3600,
+      native_client_acceptance:'unverified',source_quality:'separate-receipt',
+      observations:{process:{state:'up',observed_at:nativeNow},protocol:{state:'ready',observed_at:nativeNow},route:{state:'pending',observed_at:nativeNow}}}};
+  await page.reload();
+  await page.getByText('Metro: Route pending',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Service details for Native source fixture'}).click();
+  await page.getByRole('region',{name:'Metro session observations'}).waitFor();
+  await page.getByText('Private route',{exact:true}).waitFor();
+  await page.getByText('Native client acceptance',{exact:true}).waitFor();
+  assert.equal(await page.getByRole('heading',{name:'Component observations',exact:true}).count(),0);
+  assert.equal(await page.locator('a[href^="exp"],a[href^="exps"]').count(),0);
+  layout.rows[0].status.metro.state='ready';layout.rows[0].status.metro.observations.route.state='verified';
+  const goUri='exp://synthetic.tail123.ts.net:8443/_gptclaw/metro-session/'+'1'.repeat(32);
+  layout.rows[0].status.expo_go={schema_version:1,adapter:'expo-go-v1',project:'mobile-source',platform:'android',
+    client_version:'57.0.9',os_version:'11',client_evidence:'reviewed-profile',state:'compatible',reason:'verified-client-profile',
+    physical_verified_at:nativeNow-60,certification_expires_at:nativeNow-60+604800,
+    launch:{schema_version:1,project:'mobile-source',platform:'android',generation:'1'.repeat(32),uri:goUri,expires_at:nativeNow+3600}};
+  await page.reload();
+  await page.getByRole('link',{name:'Open in Expo Go (Android)',exact:true}).waitFor();
+  await page.getByRole('button',{name:'Service details for Native source fixture'}).click();
+  await page.getByRole('region',{name:'Expo Go launch'}).waitFor();
+  await page.getByRole('button',{name:'Show QR',exact:true}).focus();await page.keyboard.press('Enter');
+  const goQr=page.getByRole('img',{name:'Expo Go launch QR for mobile-source'});await goQr.waitFor();
+  assert.ok((await goQr.getAttribute('src')).startsWith('data:image/svg+xml,'));
+  assert.equal(await page.getByRole('button',{name:'Hide QR',exact:true}).getAttribute('aria-expanded'),'true');
+  await page.getByRole('button',{name:'Copy Expo Go URL',exact:true}).click();
+  assert.match(await page.getByRole('status').filter({hasText:/Launch URL copied|Copy unavailable/}).textContent(),/Launch URL copied|Copy unavailable/);
+  layout.rows[0].status.metro.state='expired';
+  await page.reload();assert.equal(await page.locator('a[href^="exp://"]').count(),0);
+  await page.getByRole('button',{name:'Service details for Native source fixture'}).click();
+  assert.equal(await page.getByRole('img',{name:'Expo Go launch QR for mobile-source'}).count(),0);
+  layout.rows[0].status.metro.state='ready';
+  layout.rows[0].status.expo_go.launch.uri+='?token=secret';
+  await page.reload();assert.equal(await page.locator('a[href^="exp://"]').count(),0);
+  delete layout.rows[0].status.expo_go;
+  layout.rows[0].status.metro.project='foreign';
+  await page.reload();
+  await page.getByText('Metro observation unavailable',{exact:true}).waitFor();
+  assert.equal(await page.getByRole('region',{name:'Metro session observations'}).count(),0);
   assert.equal(await page.evaluate(()=>localStorage.length),0);
   assert.deepEqual(errors, []);
   console.log('PASS: reference density and responsive bounds, disclosure refresh/focus, safe compact links, readable contrast, reduced motion, long metadata and omitted unsupported controls');

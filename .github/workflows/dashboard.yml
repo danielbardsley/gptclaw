@@ -6,6 +6,9 @@ on:
       - platform/**
       - scripts/dashboard*.py
       - scripts/manage_dashboard.py
+      - scripts/project_mobile.py
+      - config/mobile/**
+      - schemas/project/**
       - scripts/project_manifest.py
       - scripts/private_apps.py
       - scripts/project_groups.py
@@ -23,6 +26,9 @@ on:
     paths:
       - platform/**
       - scripts/*dashboard*
+      - scripts/project_mobile.py
+      - config/mobile/**
+      - schemas/project/**
       - scripts/project_manifest.py
       - scripts/private_apps.py
       - scripts/project_groups.py
@@ -53,6 +59,7 @@ jobs:
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_install.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_observation.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_status.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_metro.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_links.py
       - name: Exact frontend and browser acceptance
         run: .venv-manifest/bin/python -B scripts/tests/check_dashboard.py --engine docker --output "$RUNNER_TEMP/gptclaw-dashboard-check"

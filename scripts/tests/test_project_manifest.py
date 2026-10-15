@@ -88,7 +88,7 @@ class ManifestTests(unittest.TestCase):
                 self.assertEqual(self.validate(data)[2], 0)
 
     def test_versions(self):
-        for value in [0, 5, -1, True, False, 1.0, '1', None, {}, []]:
+        for value in [0, 8, -1, True, False, 1.0, '1', None, {}, []]:
             with self.subTest(value=value):
                 self.invalid(self.change(['schema_version'], value), 'version', '/schema_version')
         data = copy.deepcopy(VALID)
@@ -331,7 +331,7 @@ class ManifestTests(unittest.TestCase):
             schema.write_text(json.dumps(value))
             self.assertEqual(self.validate()[2],1)
             self.assertEqual(check.call_count,2)
-        self.assertLessEqual(manifest.check_schema_bytes.cache_info().maxsize,4)
+        self.assertLessEqual(manifest.check_schema_bytes.cache_info().maxsize,5)
 
     def test_schema_failure_and_remote_refs_fail_without_network(self):
         for content in ['{', '{}', '{"$id":"urn:gptclaw:project:v1","type":"object","$ref":"https://example.invalid/SYNTHETIC_SECRET"}']:

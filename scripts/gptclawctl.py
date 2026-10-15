@@ -16,8 +16,27 @@ def main(argv=None):
  for name in ['validate','start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','hooks']:
   p=sub.add_parser(name);p.add_argument('--project-root',required=True)
   if name in {'logs','test','build','format','lint','typecheck','security','verify'}:p.add_argument('--component',choices=['web','api','db'] if name=='logs' else ['web','api'])
+  if name in {'start','restart'}:p.add_argument('--metro-transport',choices=['https','tailnet-http'],help='Explicit native Metro transport; HTTP remains inside the development tailnet.')
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
+ go=sub.add_parser('go',help='Read-only Expo Go compatibility inspection')
+ go_actions=go.add_subparsers(dest='go_action',required=True)
+ for name in ['inspect','launch']:
+  inspect_go=go_actions.add_parser(name,allow_abbrev=False)
+  inspect_go.add_argument('--project-root',required=True);inspect_go.add_argument('--platform',required=True,choices=['ios','android'])
+  inspect_go.add_argument('--client-version');inspect_go.add_argument('--os-version')
+  if name=='launch':inspect_go.add_argument('--generation',required=True)
+ metro=sub.add_parser('metro',help='Native Metro opt-in, owned supervision and recovery')
+ metro_actions=metro.add_subparsers(dest='metro_action',required=True)
+ enable=metro_actions.add_parser('enable',allow_abbrev=False)
+ enable.add_argument('--project-root',required=True);enable.add_argument('--ttl-seconds',type=int,default=7200)
+ enable.add_argument('--apply',action='store_true');enable.add_argument('--confirm-plan')
+ supervise=metro_actions.add_parser('supervise',allow_abbrev=False);supervise.add_argument('--project-root',required=True);supervise.add_argument('--generation',required=True)
+ recover=metro_actions.add_parser('recover-stop',allow_abbrev=False);recover.add_argument('--project-root',required=True);recover.add_argument('--generation',required=True)
+ renew=metro_actions.add_parser('renew',allow_abbrev=False);renew.add_argument('--project-root',required=True);renew.add_argument('--generation',required=True);renew.add_argument('--ttl-seconds',type=int);renew.add_argument('--apply',action='store_true');renew.add_argument('--confirm-plan')
+ prune=metro_actions.add_parser('prune',allow_abbrev=False);prune.add_argument('--project-root',required=True);prune.add_argument('--apply',action='store_true');prune.add_argument('--confirm-plan')
+ route=metro_actions.add_parser('route-plan',allow_abbrev=False);route.add_argument('--project-root',required=True);route.add_argument('--apply',action='store_true');route.add_argument('--confirm-plan')
+ revoke=metro_actions.add_parser('revoke',allow_abbrev=False);revoke.add_argument('--policy-digest',required=True);revoke.add_argument('--apply',action='store_true')
  templates=sub.add_parser('templates',help='Discover bundled exact template releases')
  template_actions=templates.add_subparsers(dest='template_action',required=True)
  template_actions.add_parser('list',allow_abbrev=False)
@@ -59,6 +78,17 @@ def main(argv=None):
   if name in ['apply','resume']:p.add_argument('--create-only',action='store_true',help='Create private repository, then pause for a repository-specific credential')
   if name=='resume':p.add_argument('--allow-unprotected-main',action='store_true',help='Explicit owner waiver for this recorded operation; no environments or protection removal')
   if name=='resume':p.add_argument('--confirm-repository-id',type=int,help='Explicit owner reconciliation after a lost creation response')
+ worktrees=sub.add_parser('worktrees',help='Source-only task checkouts and explicit handoff')
+ worktree_actions=worktrees.add_subparsers(dest='worktree_action',required=True)
+ for name in ['plan','create','status','handoff','resume','cleanup']:
+  p=worktree_actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True);p.add_argument('--task',required=True)
+  if name!='status':p.add_argument('--owner',required=True)
+  if name=='create':p.add_argument('--base-commit',required=True)
+  if name in {'handoff','resume','cleanup'}:p.add_argument('--generation',type=int,required=True)
+  if name=='handoff':
+   p.add_argument('--checks-file');p.add_argument('--remaining',action='append',default=[]);p.add_argument('--published',action='store_true');p.add_argument('--pr',type=int)
+  if name=='resume':p.add_argument('--target-owner',required=True)
+  if name=='cleanup':p.add_argument('--head',required=True);p.add_argument('--apply',action='store_true')
  credentials=sub.add_parser('credentials',help='Private GitHub App setup and managed repository access')
  credential_actions=credentials.add_subparsers(dest='credential_action',required=True)
  for name in ['configure','installation-policy','workflow-policy','doctor','status','activate','deactivate','rotate','disable','enable','canary','resume','pull-request']:
@@ -72,7 +102,9 @@ def main(argv=None):
    selection=p.add_mutually_exclusive_group(required=True);selection.add_argument('--repository',action='append');selection.add_argument('--disable',action='store_true')
   if name=='rotate':p.add_argument('--key-file',required=True)
   if name in ['disable','enable','pull-request']:p.add_argument('--project-root',required=True)
-  if name=='canary':p.add_argument('--repository',required=True);p.add_argument('--directory',required=True)
+  if name=='canary':
+   p.add_argument('--repository',required=True);p.add_argument('--directory',required=True)
+   p.add_argument('--template');p.add_argument('--template-version')
   if name=='resume':p.add_argument('--operation-id',required=True);p.add_argument('--confirm-repository-id',type=int)
   if name=='pull-request':
    p.add_argument('--head',required=True);p.add_argument('--title',required=True);p.add_argument('--body-file',required=True)
@@ -81,7 +113,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'capabilities':['db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'project_manifest_schemas':[1,2,3,4],'project_kinds':['web','api','group'],'toolchain_schemas':[1,2],'template_catalogue_schema':4,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':3,'credential_profile_schemas':[1,2,3],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['metro','worktrees','db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6],'metro_session_schemas':[1,2],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[1],'project_manifest_schemas':[1,2,3,4,5,6,7],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6,7],'toolchain_schemas':[1,2],'template_catalogue_schema':6,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':4,'credential_profile_schemas':[1,2,3,4],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -95,8 +127,61 @@ def main(argv=None):
     import project_templates as templates
     templates.validate_provenance(Path(args.project_root).absolute())
    print(json.dumps(result,sort_keys=True));return code
+  # A lexical refusal performs no project reads or execution and is user-independent.
+  if hasattr(args,'project_root') and args.action not in {'worktrees','credentials','repo','validate'}:
+   from pathlib import Path
+   import project_worktrees
+   app.need('.gptclaw-worktrees' not in Path(args.project_root).parts,'worktree-source-only')
   app.need(os.getuid()==1002 and os.geteuid()!=0,'setup')
-  if args.action=='db':
+  if hasattr(args,'project_root') and args.action not in {'worktrees','credentials','repo','validate'}:
+   from project_worktrees import guard
+   guard(args.project_root)
+  if args.action=='go':
+   import expo_go
+   result=expo_go.inspect(args.project_root,args.platform,args.client_version,args.os_version) if args.go_action=='inspect' else expo_go.launch(args.project_root,args.platform,args.client_version,args.os_version,args.generation)
+  elif args.action=='metro':
+   if args.metro_action=='prune':
+    import metro_retention
+    print(json.dumps(metro_retention.prune(args.project_root,args.apply,args.confirm_plan),sort_keys=True));return 0
+   if args.metro_action=='renew':
+    import metro_sessions
+    print(json.dumps(metro_sessions.renew(args.project_root,args.generation,args.ttl_seconds,args.apply,args.confirm_plan),sort_keys=True));return 0
+   if args.metro_action=='route-plan':
+    import metro_routes
+    print(json.dumps(metro_routes.plan(args.project_root,args.apply,args.confirm_plan),sort_keys=True));return 0
+   if args.metro_action=='revoke':
+    import metro_sessions
+    print(json.dumps(metro_sessions.revoke(args.policy_digest,args.apply),sort_keys=True));return 0
+   if args.metro_action=='recover-stop':
+    import metro_sessions
+    print(json.dumps(metro_sessions.recover_stop(args.project_root,args.generation),sort_keys=True));return 0
+   if args.metro_action=='supervise':
+    import metro_sessions
+    result=metro_sessions.supervise(args.project_root,args.generation)
+    return 1 if result['state'] in {'failed','recovery-required'} else 0
+   import metro_contract
+   result=metro_contract.public(metro_contract.enable(args.project_root,args.ttl_seconds,args.apply,args.confirm_plan))
+   print(json.dumps(result,sort_keys=True))
+   return 1 if result['state']=='metadata-recovery-required' else 0
+  elif args.action=='worktrees':
+   import project_worktrees as worktrees
+   action=args.worktree_action
+   common=(args.project_root,args.task)
+   if action=='status':result=worktrees.status(*common)
+   elif action=='plan':result=worktrees.plan(*common,args.owner)
+   elif action=='create':result=worktrees.create(*common,args.owner,args.base_commit)
+   elif action=='handoff':
+    from pathlib import Path
+    checks=json.loads(worktrees.small_file(Path(args.checks_file).absolute())) if args.checks_file else []
+    result=worktrees.handoff(*common,args.owner,args.generation,checks,args.remaining,args.published,args.pr)
+   elif action=='resume':result=worktrees.resume(*common,args.owner,args.generation,args.target_owner)
+   else:result=worktrees.cleanup(*common,args.owner,args.generation,args.head,args.apply)
+  elif args.action in {'start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','deps','toolchain','db','hooks'} and app.target(args.project_root)[1]['schema_version'] in (5,6):
+   import project_mobile as mobile
+   result=mobile.dispatch(args)
+  elif getattr(args,'metro_transport',None) is not None:
+   raise app.AppError('mobile-unsupported')
+  elif args.action=='db':
    import project_database as database
    result=database.dispatch(args.project_root,args.database_action,getattr(args,'selected',None),getattr(args,'operation_id',None),getattr(args,'confirm',None))
   elif args.action=='credentials':
@@ -114,7 +199,7 @@ def main(argv=None):
    elif action=='rotate':result=broker.rotate(args.key_file)
    elif action=='disable':result=broker.disable(args.project_root)
    elif action=='enable':result=broker.enable(args.project_root)
-   elif action=='canary':result=broker.create(args.repository,args.directory,canary=True)
+   elif action=='canary':result=broker.create(args.repository,args.directory,canary=True,template=getattr(args,'template',None),version=getattr(args,'template_version',None))
    elif action=='resume':result=broker.resume(args.operation_id,args.confirm_repository_id)
    elif action=='pull-request':
     from pathlib import Path

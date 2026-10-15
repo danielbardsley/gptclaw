@@ -92,6 +92,8 @@ def scope(root, value):
 
 
 def component_target(root):
+    from project_worktrees import guard
+    guard(root)
     entry = SCOPE.get().get(root)
     a.need(entry is not None, 'invalid')
     a.need(a.read_json(root/'.gptclaw/component.json') == {'group': entry['group'], 'component': entry['component']}, 'invalid')
@@ -438,7 +440,9 @@ def install_hooks(root):
         directory=a.safe(root/'.git');a.need(directory.is_dir() and directory.stat().st_uid==os.getuid())
         hooks=a.safe(directory/'hooks');hooks.mkdir(exist_ok=True)
         launcher=a.provider_bundle()/'scripts/gptclawctl'
-        text='#!/usr/bin/env bash\nset -euo pipefail\nexec '+str(launcher)+' verify --project-root '+str(root)+'\n'
+        from project_worktrees import hook_text, hooks as upgrade_hooks
+        upgrade_hooks(root,upgrade=True)
+        text=hook_text(launcher)
         path=a.safe(hooks/'pre-commit')
         if path.exists():
             a.need(deps.read_bytes(path,65536)==text.encode());return {'project':slug,'state':'hooks-installed','changed':False}

@@ -1,0 +1,123 @@
+{
+  "schema_version": 6,
+  "releases": [
+    {
+      "id": "fastify",
+      "version": "1.0.0",
+      "description": "Private stateless TypeScript/Fastify API; migrations deferred",
+      "kind": "api",
+      "provider": "fastify-v1",
+      "manifest_schema": 7,
+      "catalogue_schema": 6,
+      "stack": [
+        "TypeScript",
+        "Fastify",
+        "OpenAPI"
+      ],
+      "toolchain": {
+        "schema_version": 1,
+        "profile": "node-pnpm",
+        "profile_version": 1,
+        "versions": {
+          "node": "24.21.0",
+          "pnpm": "12.10.1"
+        }
+      },
+      "data": "ephemeral",
+      "exposure": "private",
+      "substitutions": [
+        "project-id",
+        "project-name",
+        "base-path"
+      ],
+      "files": [
+        {
+          "source": ".dockerignore",
+          "output": ".dockerignore",
+          "sha256": "ffc195930e3b5679c1da32ee10f538607d8b82533687328752bd082f1932c9a3"
+        },
+        {
+          "source": ".github/workflows/quality.yml",
+          "output": ".github/workflows/quality.yml",
+          "sha256": "a455e488c95b8504906d12230fb3ca52fbd4954aa58e8888653a85ec690a9642"
+        },
+        {
+          "source": ".gitignore",
+          "output": ".gitignore",
+          "sha256": "e0adcd74417dc6799e0f0a22b27528c84bd5b2ca5fe74b30bffc266e4ea5b040"
+        },
+        {
+          "source": "AGENTS.md.template",
+          "output": "AGENTS.md",
+          "sha256": "d77c6a0a3b4d3eaa70bbb08ac10bce293d8422b745dc96d6f69392eb8be183e5"
+        },
+        {
+          "source": "Containerfile",
+          "output": "Containerfile",
+          "sha256": "b2e8105ff4c1f5cc3eeb03b9c5867bd384f5a3b1f620b663326eedd2c4c8a4f6"
+        },
+        {
+          "source": "README.md",
+          "output": "README.md",
+          "sha256": "2814f33fbe4bb93efc1c38701f7eda48c6a82c85524c5b9b5010dc888fde4334"
+        },
+        {
+          "source": "eslint.config.js",
+          "output": "eslint.config.js",
+          "sha256": "6fa7c9d8fa75628456b92de0abb604d5af3f56fd2bfb1867f4c88e697baad836"
+        },
+        {
+          "source": "package.json",
+          "output": "package.json",
+          "sha256": "b43d9d8b89743deb95e8d6a81e271c9768dfed265624099430d8f2427ab3d663"
+        },
+        {
+          "source": "pnpm-lock.yaml",
+          "output": "pnpm-lock.yaml",
+          "sha256": "45761829458944ea6e7cae6be00c1b4b55b37be402a24bfd7ecb6d1460472fba"
+        },
+        {
+          "source": "pnpm-workspace.yaml",
+          "output": "pnpm-workspace.yaml",
+          "sha256": "185021bac428281a21e476e8f0b2ad440916d0534f065fbd2a8b3d1213811f07"
+        },
+        {
+          "source": "scripts/preflight.ts",
+          "output": "scripts/preflight.ts",
+          "sha256": "7cd1f68c364bb00de5aaaaad1c65e0abc60860aeb7213d46b4527f012985685c"
+        },
+        {
+          "source": "src/app.ts",
+          "output": "src/app.ts",
+          "sha256": "7a6d3a8d0d2e83c36855adf3205568fa0d176bcc5380c7312e2b31b361458184"
+        },
+        {
+          "source": "src/server.ts",
+          "output": "src/server.ts",
+          "sha256": "e9c0e4d0ebb4128dae63de50f30b8b255064cebc1589bef302b4646f254c5760"
+        },
+        {
+          "source": "src/service.ts",
+          "output": "src/service.ts",
+          "sha256": "4ed1799018f1974ad2d71be2c69e72d84bf4a1095e4fe12f1dff28710e8c8c12"
+        },
+        {
+          "source": "src/settings.ts",
+          "output": "src/settings.ts",
+          "sha256": "a8148039c44c8b212128a07a54863cbd2d17d011272e55a9fb8fe0ae336fefda"
+        },
+        {
+          "source": "tests/api.test.ts",
+          "output": "tests/api.test.ts",
+          "sha256": "7e0b5811323c9d73610c9c80ab0113774984166e03a617b7c77fb3380d808539"
+        },
+        {
+          "source": "tsconfig.json",
+          "output": "tsconfig.json",
+          "sha256": "f3e66dc9ac8c7207f0f33f6eb875f699ab7850af2924cb99f6d62b33b2e91ae7"
+        }
+      ],
+      "digest": "8b2b93e951e3c9143bc51b94900480820596c5dc33c7a4f95a11ba4e3269fbcb"
+    }
+  ]
+}

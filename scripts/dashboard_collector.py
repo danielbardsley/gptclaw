@@ -1,5 +1,6 @@
 """Private, bounded in-memory dashboard reads over an owned Unix socket."""
 import argparse
+import io
 from concurrent.futures import ThreadPoolExecutor
 import copy
 import contextlib
@@ -24,9 +25,9 @@ import project_templates
 import project_toolchains
 from project_manifest import load_schema
 
-# Compile the four immutable contracts once in the clean forkserver. Workers
+# Compile the immutable contracts once in the clean forkserver. Workers
 # still read exact schema bytes and fully validate each project's current data.
-for schema_version in (1, 2, 3, 4):
+for schema_version in (1, 2, 3, 4, 5, 6, 7):
     load_schema(schema_version)
 
 multiprocessing.set_forkserver_preload(['dashboard_collector'])
@@ -361,6 +362,20 @@ def stop_signal(*_):
     raise SystemExit(0)
 
 
+def provider_capabilities():
+    """Read only the bundled CLI contract, never infer installed support from plans."""
+    import gptclawctl
+    output=io.StringIO()
+    with contextlib.redirect_stdout(output):
+        code=gptclawctl.main(['--version'])
+    raw=output.getvalue()
+    if code!=0 or len(raw)>65536:raise InventoryError('provider-unavailable')
+    value=json.loads(raw)
+    if not isinstance(value,dict) or value.get('provider')!='gptclawctl':
+        raise InventoryError('provider-unavailable')
+    return value
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--projects-root', required=True)
@@ -369,10 +384,8 @@ def main():
     parser.add_argument('--status',action='store_true')
     parser.add_argument('--links',action='store_true')
     args = parser.parse_args()
-    import private_apps as provider
     collector = Collector({'projects': args.projects_root, 'registry': args.registry,
-                           'capabilities': {'provider': 'gptclawctl', 'version': provider.VERSION,
-                                            'project_manifest_schemas': [1, 2, 3, 4]}}, enable_status=args.status or args.links, enable_links=args.links)
+                           'capabilities': provider_capabilities()}, enable_status=args.status or args.links, enable_links=args.links)
     try:
         signal.signal(signal.SIGTERM, stop_signal)
         with SocketLease(args.socket) as lease:

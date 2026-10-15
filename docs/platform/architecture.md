@@ -1,7 +1,7 @@
 # GptClaw Platform Architecture
 
 - **Status:** Current architecture and desired future state
-- **Last updated:** 2026-10-13
+- **Last updated:** 2026-10-15
 - **Delivery evidence:** [README current state](../../README.md#current-state) and [initiative records](../README.md)
 - **Feature catalogue:** [Platform features](./features.md)
 
@@ -88,10 +88,14 @@ snapshots are deployed; restore drills and freshness monitoring are separate wor
 Host/tool-profile and replacement-enrollment acceptance gaps remain recorded in
 the [current-state summary](../../README.md#current-state).
 
-The initial single-web workflow has grown into provider 1.9.0, with manifests
-1–4, pinned Next.js and FastAPI templates, dependency/toolchain policies,
-repository automation, scoped credential bindings, multi-service groups and
-managed development PostgreSQL. The dashboard inventory/status/link slices are
+The initial single-web workflow has grown into installed provider 1.14.0,
+validating manifests 1–9, with pinned Next.js, FastAPI, Fastify and Expo templates,
+dependency/toolchain policies, repository automation, scoped credential bindings,
+multi-service groups and managed development PostgreSQL. Android-first project
+creation, private Metro and compatible Expo Go foundations are delivered. The
+Python/PostgreSQL native backend integration has an approved working preview;
+its detailed device/recovery/accessibility and final integration acceptance remain
+separate gates in [SPEC-036](../036-mobile-python-backend/acceptance.md). The dashboard inventory/status/link slices are
 merged and accepted. Its visual refinement is also merged and privately deployed;
 the actual-browser zoom acceptance check remains unrecorded. Historical initiative
 records can retain earlier pending gates; do not infer acceptance from code alone.
@@ -136,7 +140,8 @@ accidental exposure within a shared forge identity; they do not isolate maliciou
 code running under that same identity.
 
 Future additions include explicit public-preview management, richer observability,
-mobile workflows, constrained control actions and optional Slack integration.
+signed mobile build/release workflows, constrained control actions and optional
+Slack integration.
 They must extend reviewed interfaces rather than turn the dashboard into a shell.
 
 ## 6. Control and data planes
@@ -194,6 +199,11 @@ not illustrative architecture YAML, define the executable contract:
 | 2 | Standalone Python FastAPI service | [Schema](../../schemas/project/v2.schema.json) · [API runbook](../../runbooks/manage-python-apis.md) |
 | 3 | One project containing web and API services | [Schema](../../schemas/project/v3.schema.json) · [Group runbook](../../runbooks/manage-multi-service-projects.md) |
 | 4 | Web/API group with managed development PostgreSQL | [Schema](../../schemas/project/v4.schema.json) · [Database runbook](../../runbooks/manage-development-databases.md) |
+| 5 | Expo application source and quality jobs; no service runtime | [Schema](../../schemas/project/v5.schema.json) · [Expo runbook](../../runbooks/manage-expo-projects.md) |
+| 6 | Explicit private Metro / compatible Expo Go opt-in | [Schema](../../schemas/project/v6.schema.json) · [Metro runbook](../../runbooks/manage-metro.md) |
+| 7 | Standalone stateless TypeScript/Fastify API | [Schema](../../schemas/project/v7.schema.json) · [API runbook](../../runbooks/manage-typescript-apis.md) |
+| 8 | Explicit Python API/PostgreSQL-only backend group | [Schema](../../schemas/project/v8.schema.json) · [Backend runbook](../../runbooks/manage-mobile-backends.md) |
+| 9 | Native application with explicit private backend binding | [Schema](../../schemas/project/v9.schema.json) · [Backend runbook](../../runbooks/manage-mobile-backends.md) |
 
 Validation is separate from execution and does not authorize arbitrary commands.
 Template, dependency, toolchain and database registries pin approved capabilities;
@@ -273,8 +283,10 @@ focused.
 ## 10. Framework and tooling defaults
 
 The table combines implemented families with desired defaults. Current catalogue
-entries support Next.js, FastAPI and web/API/PostgreSQL groups. Tailwind, Vitest,
-Fastify, Expo, Redis and SQLite support is not implied by this table. The dashboard
+entries support Next.js, FastAPI, stateless Fastify, Expo and approved
+web/API/PostgreSQL or API/PostgreSQL shapes. Full native integration acceptance
+remains separate from template availability. Tailwind, Vitest, Redis and SQLite
+support is not implied by this table. The dashboard
 uses repository-local CSS and the Node test runner.
 
 Versions are pinned when a project is created and updated through reviewed
@@ -288,7 +300,7 @@ dependency automation. This document names families, not permanent versions.
 | Web unit/component tests | Vitest and Testing Library | Keep tests fast and colocated with behavior. |
 | Browser acceptance tests | Playwright | Require focused smoke tests for the private preview route. |
 | Standalone TypeScript API | Fastify | Prefer Next.js route handlers when the API and web UI share one lifecycle. |
-| Python API or AI/data service | FastAPI, Pydantic, uv, Ruff, pytest | Use only when Python materially improves the workload. |
+| Python API or AI/data service | FastAPI, Pydantic, uv, Ruff, pytest | Preferred application-backend stack; other stacks require their own selected scope. |
 | Mobile or universal application | Expo, Expo Router, React Native, TypeScript | Start with Expo Go when suitable; use development builds for native modules. |
 | Relational database | PostgreSQL, supported major pinned per project | Use one isolated database/role per project; SQLite is acceptable for genuinely local single-process tools. |
 | Cache or ephemeral coordination | Redis-compatible service only when justified | Do not add a cache by default. |
@@ -336,9 +348,11 @@ https://<forge-magicdns-name>/projects/<project-slug>/
 
 Current templates support the declared private base path. Standalone API docs
 use `/projects/<slug>/docs`; group API docs use `/projects/<slug>/api/docs`.
-Dedicated private HTTPS-port fallback for incompatible frameworks is a future
-design, not a current manifest capability. Forge cannot administer Tailscale;
-shared Serve handlers are installed through the reviewed operator path.
+General private HTTPS-port fallback for arbitrary frameworks remains future
+design. Reviewed Metro sessions use explicit owned private transport/port profiles,
+with operator-managed Serve routes; see the [Metro runbook](../../runbooks/manage-metro.md).
+Forge cannot administer Tailscale. Shared and Metro-specific handlers retain the
+reviewed operator path; no generic port exposure is implied.
 
 ### 12.2 Funnel only on request
 
