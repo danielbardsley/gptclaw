@@ -1,5 +1,5 @@
 import http from 'node:http';
-export function controlRequest(path: string, method = 'GET', body?: unknown, headers: Record<string,string> = {}, timeoutMs = 15000): Promise<{ status: number; data: Record<string,unknown> }> {
+export function controlRequest(path: string, method = 'GET', body?: unknown, headers: Record<string,string> = {}, timeoutMs = 30000): Promise<{ status: number; data: Record<string,unknown> }> {
   return new Promise((resolve,reject) => {
     const origin = new URL(process.env.DASHBOARD_ORIGIN || '');
     const payload = body == null ? null : Buffer.isBuffer(body) ? body : JSON.stringify(body);

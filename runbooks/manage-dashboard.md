@@ -193,7 +193,7 @@ provider. A read-only dashboard release remains usable with the older provider.
 Do not manually retarget the symlink or edit the ownership receipt to pass this gate.
 
 The write population is the existing dashboard tailnet population. There are no new
-individual user accounts/roles. Capability preflights have an eight-second isolated
+individual user accounts/roles. Capability preflights have a twelve-second isolated
 worker deadline. Two background readers publish each completed project immediately;
 the next bounded collection begins after a two-second rest. Discovery remains
 bounded by the inventory contract. Exact Host/Origin, same-origin Fetch Metadata, JSON,

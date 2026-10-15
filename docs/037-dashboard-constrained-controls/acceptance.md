@@ -263,3 +263,22 @@ unchanged 443/8445 handlers and Funnel off. Reviewed route ownership recording w
 idempotent against the existing approved plans. Both named finite generations now
 report actual private route/protocol readiness; this is no phone/client claim.
 Their lifecycle/isolation proof and later operator removal remain pending.
+
+
+The exact unknown Pause was explicitly reconciled through the corrected immutable
+provider, retaining the frozen container identity. A separate reviewed Resume then
+returned that same instance ready. The failed Pause checkpoint and reconciliation
+are retained; it was not replayed. A subsequent live Pause will use a new intent/ID.
+
+The finite Metro acceptance attempt exhausted only its non-mutating preflight wait;
+no Metro operation was admitted. A direct validated capability read succeeded in
+5.30 seconds, while isolated reads under combined load exceeded eight seconds.
+The bounded control preflight now permits twelve seconds; the private transport
+and browser submission deadlines are 30/35 seconds so discovery and revalidation
+can complete without dropping a valid request prematurely. The 60-second intent,
+absolute Metro lease, operation deadlines, capacities and strict target checks are
+unchanged. Fifteen controller tests and the complete frozen frontend (21),
+typecheck/build, real HTTP/socket and browser gate passed after this adjustment.
+An additional post-effect write-failure test passed: completed replacement remains
+unknown/guarded when journal completion cannot persist, a new mutation is refused,
+and explicit reconciliation preserves the new instance without replay.

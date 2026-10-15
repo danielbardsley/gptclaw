@@ -62,10 +62,10 @@ class ControllerTests(unittest.TestCase):
         self.assertTrue(lifecycle.guard_path('sample').exists())
 
     def test_parallel_read_cost_does_not_disable_valid_capabilities(self):
-        # Live two-CPU inspection took 4.9–5.8s with four isolated readers.
-        # Keep those valid reads usable while still rejecting a bounded timeout.
+        # Live two-CPU reads take several seconds; loaded Metro preflight
+        # also needs cold-worker headroom. Keep finite valid reads usable.
         def bounded_read(function,root,seconds):
-            return dict(self.caps) if seconds>=6 else {'error':'observation-timeout'}
+            return dict(self.caps) if seconds>=10 else {'error':'observation-timeout'}
         bindings={self.key:{'root':str(self.root)}}
         with patch.object(controls,'bounded',side_effect=bounded_read),patch.object(self.controller,'discover',return_value=(bindings,{self.key:self.row})):
             self.assertEqual(self.controller.inspect_capabilities(self.root),self.caps)

@@ -99,6 +99,25 @@ class Controls(unittest.TestCase):
         self.assertEqual({name: obj['Id'] for name, obj in self.native.items()}, before)
         self.assertTrue(app.state_for('sample')['health_ready'])
 
+    def test_completion_write_failure_retains_unknown_guard_without_replay(self):
+        ident='6'*32;journal=app.STORE/'control-journals'/(ident+'.json')
+        before=copy.deepcopy(self.native);save=app.save
+        def fail_completion(path,value):
+            if Path(path)==journal and value.get('state')=='succeeded':raise OSError('synthetic write failure')
+            return save(path,value)
+        with patch.object(app,'save',side_effect=fail_completion),self.assertRaises(OSError):
+            ctl.execute(self.root,'restart','web',operation_id=ident)
+        web=app.state_for(self.group['components']['web'])['name']
+        self.assertNotEqual(self.native[web]['Id'],before[web]['Id'])
+        self.assertTrue(ctl.guard_path('sample').exists())
+        self.assertEqual(app.read_json(journal)['state'],'unknown')
+        after=copy.deepcopy(self.native);count=len(self.commands)
+        with self.assertRaises(app.AppError):ctl.execute(self.root,'restart','web')
+        self.assertEqual(len(self.commands),count)
+        ctl.reconcile(self.root,ident,'sample')
+        self.assertEqual(self.native,after)
+        self.assertFalse(ctl.guard_path('sample').exists())
+
     def test_changed_source_after_preview_refuses_before_effects(self):
         generation = ctl.capabilities(self.root)['generation']
         (self.root/'api/README.md').write_text('changed source')

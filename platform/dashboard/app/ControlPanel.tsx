@@ -32,7 +32,7 @@ async function auth():Promise<Auth> {
 }
 async function post(path:string,body:unknown):Promise<Record<string,unknown>> {
   const session=await auth();
-  const response=await fetch(path,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrf},body:JSON.stringify(body),signal:AbortSignal.timeout(20000)});
+  const response=await fetch(path,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrf},body:JSON.stringify(body),signal:AbortSignal.timeout(35000)});
   const data=await response.json();
   if(!response.ok){if(data.error==='invalid-session')authentication=null;throw Error(data.error || 'control-unavailable');}
   return data;
