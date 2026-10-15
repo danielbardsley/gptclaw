@@ -177,7 +177,7 @@ capabilities; those are not prerequisites for creating the first applications.
 | DSH-006 | Log viewer | 4 | Candidate | Stream and search redacted recent logs with project/component filters. |
 | DSH-007 | Build and test status | 4 | Candidate | Show last local checks, GitHub checks, image build, and deployment result. |
 | DSH-008 | Backup state | 2 | Candidate | Show snapshot freshness, retention, restore-test status, and recovery warnings. |
-| DSH-009 | Constrained controls | 4 | Candidate | Start, stop, restart, rebuild, pause, resume, and open a remote task through typed operations. |
+| DSH-009 | Constrained controls | 4 | Draft | [SPEC-037](../037-dashboard-constrained-controls/spec.md) proposes project Start/Stop/Restart/Rebuild/Pause/Resume plus individual service restarts with typed targets, capability gates, confirmations and recoverable results. Remote task opening is excluded; DB-group/Metro pause/resume and Metro rebuild remain deferred. Planning requested October 15; detailed spec review, implementation and rollout authorization pending. |
 | DSH-010 | Funnel controls | 4 | Candidate | Request, confirm, time-box, extend, and revoke public exposure with a persistent warning. |
 | DSH-011 | Activity and audit timeline | 4 | Candidate | Correlate agent tasks, lifecycle changes, deployments, exposure, alerts, and operator approvals. |
 | DSH-012 | Mobile-friendly dashboard | 4 | Candidate | Make status, approvals, logs, and safe controls usable from a phone over Tailscale. |
