@@ -222,7 +222,7 @@ def _project(root, *, expected=None, clock=time.time):
         slug=contract['project']['id']
         if expected is not None:
             app.need(slug==expected['id'],'conflict')
-        if contract['schema_version']==6:
+        if contract['schema_version'] in (6,9):
             import metro_sessions
             from dashboard_metro import project as native_project
             descriptor=metro_sessions.status(root)
@@ -245,14 +245,14 @@ def _project(root, *, expected=None, clock=time.time):
         result={'observation_schema':SCHEMA_VERSION,'provider_version':app.VERSION,'project':slug,
                 'observed_at':now,'components':{},'state':'unknown','provider_state':'unknown',
                 'health':'unknown','operation_busy':False,'reason':None}
-        if contract['schema_version'] in (3,4):
+        if contract['schema_version'] in (3,4,8):
             import project_groups as groups
             if receipt:
                 app.need(receipt['root']==str(root),'conflict')
             with groups.scope(root,contract) as children:
                 with ThreadPoolExecutor(max_workers=3) as pool:
                     futures={pool.submit(component,child,declaration,now=now):name for name,(child,declaration) in children.items()}
-                    if contract['schema_version']==4:
+                    if contract['schema_version'] in (4,8):
                         futures[pool.submit(database,root,contract,now=now)]='db'
                     for future in as_completed(futures):
                         name=futures[future]
@@ -302,7 +302,7 @@ def _project(root, *, expected=None, clock=time.time):
 def route_descriptor(root, contract, result):
     slug=contract['project']['id']
     descriptor={'schema_version':1,'project':slug,'app_path':None,'docs_path':None}
-    if contract['project']['kind'] in {'web','group'}:
+    if contract['project']['kind'] in {'web','group'} and contract['schema_version']!=8:
         descriptor['app_path']='/projects/'+slug+'/'
     if contract['project']['kind'] not in {'api','group'}:
         return descriptor

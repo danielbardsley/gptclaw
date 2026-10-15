@@ -1,0 +1,5 @@
+FROM ghcr.io/astral-sh/uv@sha256:22fbda6ef3b6466750a6fb1c7ce1d23a2a63a53be91e03d408b6e4274753998d AS uv
+FROM docker.io/library/python@sha256:8fb4cfa1a2616d7b8e0c2175cc6ad68f5729c34ea8488c0b360d2934b7be9024
+COPY --from=uv /uv /usr/local/bin/uv
+ENV UV_PYTHON_DOWNLOADS=never UV_NO_CONFIG=1 UV_KEYRING_PROVIDER=disabled UV_NO_ENV_FILE=1 PYTHONDONTWRITEBYTECODE=1
+WORKDIR /workspace

@@ -139,7 +139,7 @@ def plan(root, apply=False, confirm_plan=None):
     """Default is read-only. Apply records a reviewed plan, never a Serve change."""
     import metro_sessions
     root, source = app.target(root)
-    app.need(source['schema_version'] == 6, 'mobile-unsupported')
+    app.need(source['schema_version'] in (6,9), 'mobile-unsupported')
     identity = worktrees.canonical(root)
     value = metro_sessions.load(identity['project'], root)
     app.need(value is not None and value['canonical_key'] == identity['key'], 'conflict')

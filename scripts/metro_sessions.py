@@ -35,7 +35,12 @@ def directory(project):
     mobile.identities(project)
     return app.safe(app.STORE/'metro'/project)
 def location(project):return directory(project)/'session.json'
-def hashes(root):return {name:hashlib.sha256(deps.read_bytes(root/name)).hexdigest() for name in FILES}
+def hashes(root):
+    output={name:hashlib.sha256(deps.read_bytes(root/name)).hexdigest() for name in FILES}
+    if app.validate_project(root)[1]['schema_version']==9:
+        import mobile_backend
+        output.update(mobile_backend.fingerprint(root))
+    return output
 def unit_path(value):return app.safe(UNITS/(value['name']+'.service'))
 def network(value):return value['name']+'-net'
 
@@ -86,9 +91,9 @@ def save(value):
 def control(value,allow_frozen=False):
     data=app.read_json(directory(value['project'])/'control.json')
     app.need(isinstance(data,dict) and set(data)=={'schema_version','project','root','generation','inputs','source','provider','audit','root_identity','mount_identities'}
-             and type(data['schema_version']) is int and data['schema_version']==2 and data['project']==value['project']
+             and type(data['schema_version']) is int and data['schema_version'] in (2,3) and data['project']==value['project']
              and data['root']==value['root'] and data['generation']==value['generation'],'conflict')
-    app.need(isinstance(data['inputs'],dict) and set(data['inputs'])==set(FILES)
+    app.need(isinstance(data['inputs'],dict) and set(data['inputs'])==(set(FILES)|({'.gptclaw/backend.local.json','src/config/backend.generated.ts'} if data['schema_version']==3 else set()))
              and all(isinstance(v,str) and states.HEX64.fullmatch(v) for v in data['inputs'].values()),'conflict')
     app.need(data['source']==str(directory(value['project'])/'sources'/value['generation'])
              and isinstance(data['provider'],str),'conflict')
@@ -223,7 +228,7 @@ def result(value,root,identity=None):
     return descriptor
 
 def status(root):
-    root,source=app.target(root);app.need(source['schema_version']==6,'mobile-unsupported')
+    root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported')
     identity=worktrees.canonical(root);value=load(source['project']['id'],root)
     if value is None:return {'project':source['project']['id'],'state':'not-started','transport_available':False,'origin':None}
     return result(value,root,identity)
@@ -232,7 +237,7 @@ def status(root):
 
 def logs(root,lines=80):
     app.need(type(lines) is int and 1<=lines<=256,'invalid')
-    root,source=app.target(root);app.need(source['schema_version']==6,'mobile-unsupported');worktrees.canonical(root)
+    root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported');worktrees.canonical(root)
     project=source['project']['id'];value=load(project,root)
     if value is None:return {'project':project,'events':[],'log_kind':'lifecycle-events'}
     events=[event for event in read_events(project) if 0<=time.time()-event['observed_at']<=7*86400]
@@ -274,7 +279,7 @@ def lifetime(source,seconds=None):
 
 
 def start(root,no_route=False,ttl_seconds=None,expected_generation=None,transport=None):
-    spike.require_operator();root,source=app.target(root);app.need(source['schema_version']==6,'mobile-unsupported')
+    spike.require_operator();root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported')
     app.need(transport in {None,'https','tailnet-http'},'invalid')
     seconds=lifetime(source,ttl_seconds)
     policy=admitted();identity=worktrees.canonical(root);project=identity['project']
@@ -323,7 +328,7 @@ def start(root,no_route=False,ttl_seconds=None,expected_generation=None,transpor
         try:
             view=directory(project)/'sources'/generation;view.parent.mkdir(parents=True,mode=0o700,exist_ok=True)
             spike.prepare_view(root,view,inventory);retention.seal(value,inventory)
-            data={'schema_version':2,'project':project,'root':str(root),'generation':generation,'inputs':input_files,
+            data={'schema_version':3 if source['schema_version']==9 else 2,'project':project,'root':str(root),'generation':generation,'inputs':input_files,
                   'source':str(view),'provider':str(snapshot),'audit':None,'root_identity':identity['root_identity'],'mount_identities':mount_identities(root)};app.save(directory(project)/'control.json',data)
             path=unit_path(value);app.safe(UNITS);UNITS.mkdir(mode=0o700,parents=True,exist_ok=True)
             if path.exists():
@@ -409,7 +414,7 @@ def recover_stop(root,generation):
 
 
 def stop(root):
-    spike.require_operator();root,source=app.target(root);app.need(source['schema_version']==6,'mobile-unsupported')
+    spike.require_operator();root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported')
     worktrees.canonical(root);project=source['project']['id']
     with app.locked(project):
         value=load(project,root)
@@ -421,7 +426,7 @@ def restart(root,no_route=False,transport=None):stop(root);return start(root,no_
 
 
 def renewal_plan(root,generation,ttl_seconds=None):
-    root,source=app.target(root);app.need(source['schema_version']==6,'mobile-unsupported')
+    root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported')
     app.need(isinstance(generation,str) and states.HEX32.fullmatch(generation),'invalid')
     seconds=lifetime(source,ttl_seconds);identity=worktrees.canonical(root)
     value=load(identity['project'],root);app.need(value is not None and value['generation']==generation,'conflict')
@@ -494,7 +499,7 @@ def supervise(root,generation):
     try:
         verify_unit(value);data=control(value);view=Path(data['source']);policy=admitted(value)
         _,source=app.target(root);identity=worktrees.canonical(root)
-        app.need(source['schema_version']==6 and source['project']['id']==project
+        app.need(source['schema_version'] in (6,9) and source['project']['id']==project
                  and identity['key']==value['canonical_key'] and identity['root_identity']==data['root_identity'],'conflict')
         value.update(phase='starting',operation_result='running');save(value)
         app.need(hashes(root)==data['inputs'] and mount_identities(root)==data['mount_identities'],'conflict')

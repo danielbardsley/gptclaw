@@ -138,7 +138,7 @@ def invalidate(state, complete=False, operation_id=None):
 def quality(root, action):
     import project_dependencies as deps
     import project_toolchains as tools
-    a=app();root,document=a.target(root);check(document['schema_version'] in (5,6))
+    a=app();root,document=a.target(root);check(document['schema_version'] in (5,6,9))
     check(action in document['commands'],'mobile-unsupported')
     slug=document['project']['id']
     # Preparation is a shared transactional operation; it owns its own lock.
@@ -146,7 +146,7 @@ def quality(root, action):
     if status['state']!='dependencies-ready':
         deps.require_clean(root,slug);deps.operate(root,'install')
     with a.locked(slug):
-        if document['schema_version']==6:__import__('metro_sessions').assert_stopped(root,slug)
+        if document['schema_version'] in (6,9):__import__('metro_sessions').assert_stopped(root,slug)
         deps.require_clean(root,slug);ctx=deps.context(root)
         check(manifest_config(root,document))
         state=job_state(root,document);selected=tools.selection(root)
@@ -169,7 +169,7 @@ def quality(root, action):
 def dispatch(args):
     a=app();root,document=a.target(args.project_root)
     check(getattr(args,'component',None) is None,'mobile-unsupported')
-    if document['schema_version']==6 and args.action in {'start','stop','restart','status','observe','logs'}:
+    if document['schema_version'] in (6,9) and args.action in {'start','stop','restart','status','observe','logs'}:
         import metro_sessions as metro
         if args.action in {'status','observe'}:return metro.status(root)
         if args.action=='logs':return metro.logs(root,getattr(args,'lines',80))

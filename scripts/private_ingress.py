@@ -50,7 +50,7 @@ class Handler(BaseHTTPRequestHandler):
    s=state_for(slug)
    if s and s.get('group'):return self.fail(404)
    if not s or s['phase']!='ready' or not s.get('health_ready'):return self.fail(404)
-   if s.get('schema_version') in (2,3):
+   if s.get('schema_version') in (2,3,4):
     import project_groups as groups
     s=groups.upstream(s,parsed.path)
     if s is False:return self.fail(404)
