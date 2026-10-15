@@ -110,6 +110,33 @@ class ReleaseTests(unittest.TestCase):
         with self.assertRaises(app.AppError):manager.prepare()
         self.assertFalse(manager.PLATFORM.exists())
 
+    def test_controls_are_default_off_and_release_flag_freezes_service(self):
+        plain=manager.prepare();active=manager.prepare(with_controls=True)
+        self.assertNotEqual(plain,active)
+        manager.activate(active)
+        owner=manager.owner();self.assertTrue(owner['controls_enabled'])
+        unit=manager.USER_UNITS/manager.CONTROL_UNIT
+        self.assertIn('--enabled',unit.read_text())
+        frontend=(manager.QUADLETS/'gptclaw-dashboard.container').read_text()
+        self.assertIn('DASHBOARD_CONTROLS=1',frontend)
+        self.assertNotIn('/run/podman',frontend)
+        manager.disable_controls()
+        self.assertTrue((manager.PLATFORM/'controls/v1/disabled').exists())
+        manager.activate(plain)
+        self.assertFalse(manager.owner()['controls_enabled']);self.assertFalse(unit.exists())
+        self.assertIn('DASHBOARD_CONTROLS=0',(manager.QUADLETS/'gptclaw-dashboard.container').read_text())
+
+    def test_unknown_active_operations_refuse_rollback_without_discard(self):
+        active=manager.prepare(with_controls=True);manager.activate(active)
+        path=manager.PLATFORM/'controls/v1'/('a'*32+'.json')
+        app.save(path,{'schema_version':1,'operation_id':'a'*32,'state':'unknown','action':'restart','component':'web','reason':'control-recovery'})
+        self.calls.clear()
+        with self.assertRaises(app.AppError):manager.activate(manager.prepare())
+        self.assertTrue(path.exists())
+        self.assertFalse(any('stop' in args for args in self.calls))
+        manager.disable_controls()
+        self.assertTrue(path.exists())
+
 
 class SocketRecoveryTests(unittest.TestCase):
     def test_unknown_socket_preserved_owned_stale_recovered_and_clean_exit(self):

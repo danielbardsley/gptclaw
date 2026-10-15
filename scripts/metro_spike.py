@@ -256,7 +256,7 @@ def run(root,advertised,duration):
             result=security.evaluate(report,policy,lock)
             app.need(source_inventory(root)==value['source'],'conflict')
             # Registry is held only through allocation and bind, not through the spike.
-            with app.locked('registry'):
+            with app.locked('registry',project_guard=False):
                 port=next((p for p in range(18600,18632,2) if app.available(p)),None)
                 app.need(port is not None,'ports')
                 receipt.update(port=port,phase='starting');app.save(stage/'spike.json',receipt)

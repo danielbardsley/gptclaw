@@ -17,7 +17,7 @@ import private_apps as app
 from dashboard_inventory import identity, open_directory
 
 SCHEMA_VERSION = 1
-STATE_MAP = {'ready':'ready','stopped':'stopped','preparing':'starting','starting':'starting',
+STATE_MAP = {'paused':'paused','pausing':'starting','resuming':'starting','ready':'ready','stopped':'stopped','preparing':'starting','starting':'starting',
              'failed':'failed','degraded':'degraded','unhealthy':'degraded','unpublished':'degraded',
              'recovery-required':'degraded','uninitialized':'stopped'}
 HEALTH_MAP = {'ready':'healthy','unhealthy':'unhealthy','unknown':'unknown'}
@@ -88,7 +88,7 @@ def component(root, contract, *, now):
         app.need(type(obj.get('State',{}).get('Running')) is bool,'conflict')
         app.need(obj['State']['Running']==active,'conflict')
     busy=app.object_owned('container',receipt['name']+'-job',receipt['token'])
-    provider_state=('ready' if active and ready else 'unhealthy' if active else receipt['phase'])
+    provider_state=('paused' if obj and obj.get('State',{}).get('Paused') else 'ready' if active and ready else 'unhealthy' if active else receipt['phase'])
     inconsistent = not active and receipt['phase']=='ready'
     if inconsistent: provider_state='resource-unavailable'
     return {'state':STATE_MAP.get(provider_state,'unknown'),'provider_state':provider_state,
@@ -128,7 +128,7 @@ def database(root, contract, *, now):
 
 
 READ_LOCK = threading.Lock()
-INSPECT_FORMAT = '[{"Id":{{json .ID}},"Image":{{json .Image}},"ImageName":{{json .ImageName}},"RestartCount":{{json .RestartCount}},"State":{"Running":{{json .State.Running}},"StartedAt":{{json .State.StartedAt}}},"Config":{"Labels":{{json .Config.Labels}}},"HostConfig":{"PortBindings":{{json .HostConfig.PortBindings}}}}]'
+INSPECT_FORMAT = '[{"Id":{{json .ID}},"Image":{{json .Image}},"ImageName":{{json .ImageName}},"RestartCount":{{json .RestartCount}},"State":{"Running":{{json .State.Running}},"Paused":{{json .State.Paused}},"StartedAt":{{json .State.StartedAt}}},"Config":{"Labels":{{json .Config.Labels}}},"HostConfig":{"PortBindings":{{json .HostConfig.PortBindings}}}}]'
 
 
 @contextlib.contextmanager

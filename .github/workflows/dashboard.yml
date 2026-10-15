@@ -12,6 +12,7 @@ on:
       - scripts/project_manifest.py
       - scripts/private_apps.py
       - scripts/project_groups.py
+      - scripts/project_controls.py
       - scripts/project_database.py
       - scripts/tests/*dashboard*
       - config/toolchains/**
@@ -32,6 +33,7 @@ on:
       - scripts/project_manifest.py
       - scripts/private_apps.py
       - scripts/project_groups.py
+      - scripts/project_controls.py
       - scripts/project_database.py
       - scripts/tests/*dashboard*
       - .github/workflows/dashboard.yml
@@ -57,6 +59,8 @@ jobs:
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_inventory.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_collector.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_install.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_controls.py
+          .venv-manifest/bin/python -B scripts/tests/test_project_controls.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_observation.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_status.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_metro.py

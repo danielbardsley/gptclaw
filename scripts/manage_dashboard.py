@@ -20,6 +20,7 @@ QUADLETS = Path('/home/forge/.config/containers/systemd')
 PORT = 18200
 COLLECTOR_UNIT = 'gptclaw-dashboard-collector.service'
 FRONTEND_UNIT = 'gptclaw-dashboard.service'
+CONTROL_UNIT = 'gptclaw-dashboard-control.service'
 IMAGE = 'localhost/gptclaw-node:24.21.0-pnpm12.10.1'
 
 
@@ -84,13 +85,13 @@ def origin():
     return 'https://' + app.node_identity()
 
 
-def unit_text(release, provider, interpreter, image, public_origin, with_status=False, with_links=False):
+def unit_text(release, provider, interpreter, image, public_origin, with_status=False, with_links=False, with_controls=False):
     app.need(re.fullmatch(r'https://[a-z0-9.-]+\.ts\.net', public_origin), 'setup')
     collector = f'''[Unit]
 Description=GptClaw private read-only dashboard collector
 
 [Service]
-ExecStart={interpreter} -B {provider}/scripts/dashboard_collector.py --projects-root {app.PROJECTS} --socket {PLATFORM}/run/collector.sock --registry {PLATFORM}/metadata.json{' --status' if with_status or with_links else ''}{' --links' if with_links else ''}
+ExecStart={interpreter} -B {provider}/scripts/dashboard_collector.py --projects-root {app.PROJECTS} --socket {PLATFORM}/run/collector.sock --registry {PLATFORM}/metadata.json{' --status' if with_status or with_links or with_controls else ''}{' --links' if with_links else ''}
 Restart=on-failure
 RestartSec=2
 TimeoutStopSec=5
@@ -121,6 +122,8 @@ Environment=HOSTNAME=0.0.0.0
 Environment=PORT=3000
 Environment=DASHBOARD_ORIGIN={public_origin}
 Environment=DASHBOARD_SOCKET=/run/gptclaw/collector.sock
+Environment=DASHBOARD_CONTROL_SOCKET=/run/gptclaw/control.sock
+Environment=DASHBOARD_CONTROLS={'1' if with_controls else '0'}
 Environment=NEXT_TELEMETRY_DISABLED=1
 Exec=node server.js
 Pull=never
@@ -138,8 +141,27 @@ TimeoutStopSec=20
 [Install]
 WantedBy=default.target
 '''
-    return {str(USER_UNITS/COLLECTOR_UNIT): collector,
-            str(QUADLETS/'gptclaw-dashboard.container'): frontend}
+    units = {str(USER_UNITS/COLLECTOR_UNIT): collector,
+             str(QUADLETS/'gptclaw-dashboard.container'): frontend}
+    if with_controls:
+        units[str(USER_UNITS/CONTROL_UNIT)] = f'''[Unit]
+Description=GptClaw typed private dashboard controller
+
+[Service]
+ExecStart={interpreter} -B {provider}/scripts/dashboard_controls.py serve --projects-root {app.PROJECTS} --socket {PLATFORM}/run/control.sock --state {PLATFORM}/controls/v1 --origin {public_origin} --registry {PLATFORM}/metadata.json --enabled
+Restart=on-failure
+RestartSec=2
+KillMode=control-group
+TimeoutStopSec=10
+MemoryMax=768M
+CPUQuota=200%
+TasksMax=256
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target
+'''
+    return units
 
 
 def tree_digest(root):
@@ -157,7 +179,7 @@ def tree_digest(root):
     return values
 
 
-def prepare(with_status=False, with_links=False):
+def prepare(with_status=False, with_links=False, with_controls=False):
     source = app.REPO/'platform/dashboard/.next/standalone'
     static = app.REPO/'platform/dashboard/.next/static'
     app.need(source.is_dir() and static.is_dir(), 'setup')
@@ -171,7 +193,7 @@ def prepare(with_status=False, with_links=False):
     selected_origin = origin()
     descriptor = {'schema_version': 1, 'source': source_values, 'static': static_values,
                   'provider': str(provider), 'interpreter': sys.executable, 'image': image,
-                  'origin': selected_origin, 'port': PORT, 'status_enabled':with_status or with_links, 'links_enabled':with_links}
+                  'origin': selected_origin, 'port': PORT, 'status_enabled':with_status or with_links or with_controls, 'links_enabled':with_links, 'controls_enabled':with_controls, 'control_schema':1}
     digest = hashlib.sha256(json.dumps(descriptor, sort_keys=True).encode()).hexdigest()
     owned_directory(PLATFORM)
     releases = owned_directory(PLATFORM/'releases')
@@ -213,13 +235,15 @@ def owner():
 
 def verify_units(receipt):
     expected_paths = {str(USER_UNITS/COLLECTOR_UNIT), str(QUADLETS/'gptclaw-dashboard.container')}
+    if receipt.get('controls_enabled'):
+        expected_paths.add(str(USER_UNITS/CONTROL_UNIT))
     app.need(set(receipt['units']) == expected_paths, 'conflict')
     for filename, digest in receipt['units'].items():
         path = app.safe(filename)
         info = path.stat()
         app.need(info.st_uid == os.getuid() and info.st_nlink == 1 and path.is_file()
                  and hashlib.sha256(path.read_bytes()).hexdigest() == digest, 'conflict')
-    for name in (COLLECTOR_UNIT, FRONTEND_UNIT):
+    for name in (COLLECTOR_UNIT, FRONTEND_UNIT, *([CONTROL_UNIT] if receipt.get('controls_enabled') else [])):
         result = app.command(['systemctl','--user','show',name,'-p','DropInPaths']).stdout.strip()
         app.need(result == 'DropInPaths=', 'conflict')
 
@@ -229,6 +253,9 @@ def activate(release_id):
     release = app.safe(PLATFORM/'releases'/release_id)
     descriptor = read_owned(release/'release.json')
     app.need(hashlib.sha256(json.dumps(descriptor, sort_keys=True).encode()).hexdigest() == release_id, 'conflict')
+    app.need(type(descriptor.get('controls_enabled',False)) is bool,'conflict')
+    if descriptor.get('controls_enabled'):
+        app.need(type(descriptor.get('control_schema')) is int and descriptor['control_schema']==1,'control-unsupported')
     provider = Path(descriptor.get('provider', ''))
     app.need(provider.parent == app.STORE/'providers' and re.fullmatch(r'[0-9a-f]{64}', provider.name), 'conflict')
     app.need(descriptor.get('interpreter') == sys.executable and descriptor.get('port') == PORT
@@ -237,7 +264,8 @@ def activate(release_id):
     previous = owner()
     if previous:
         verify_units(previous)
-    texts = unit_text(release, descriptor['provider'], descriptor['interpreter'], descriptor['image'], descriptor['origin'], descriptor.get('status_enabled',False), descriptor.get('links_enabled',False))
+        require_idle_controls()
+    texts = unit_text(release, descriptor['provider'], descriptor['interpreter'], descriptor['image'], descriptor['origin'], descriptor.get('status_enabled',False), descriptor.get('links_enabled',False), descriptor.get('controls_enabled',False))
     for filename in texts:
         path = app.safe(filename)
         app.need(path.parent.is_dir() and path.parent.stat().st_uid == os.getuid(), 'path')
@@ -247,23 +275,65 @@ def activate(release_id):
         app.need(app.available(PORT), 'conflict')
         app.need(app.command(['podman','container','exists','gptclaw-dashboard'],optional=True).returncode == 1, 'conflict')
     receipt = {'schema_version':1,'release':release_id,'previous':previous['release'] if previous else None,
+               'controls_enabled':descriptor.get('controls_enabled',False),
                'units':{p:hashlib.sha256(text.encode()).hexdigest() for p,text in texts.items()}}
+    if previous and previous.get('controls_enabled') and not descriptor.get('controls_enabled'):
+        app.command(['systemctl','--user','stop',CONTROL_UNIT])
+        app.command(['systemctl','--user','disable',CONTROL_UNIT])
+        app.safe(USER_UNITS/CONTROL_UNIT).unlink()
+    if descriptor.get('controls_enabled'):
+        owned_directory(PLATFORM/'controls'); owned_directory(PLATFORM/'controls/v1')
+        marker=PLATFORM/'controls/v1/disabled'
+        if marker.exists():
+            app.need(marker.is_file() and not marker.is_symlink() and marker.stat().st_uid==os.getuid(),'path')
+            marker.unlink()
     for filename, text in texts.items():
         app.save_text(Path(filename), text)
     app.save(PLATFORM/'owner.json', receipt)
     app.command(['systemctl','--user','daemon-reload'])
     app.command(['systemctl','--user','enable',COLLECTOR_UNIT])
     app.command(['systemctl','--user','restart',COLLECTOR_UNIT])
+    if descriptor.get('controls_enabled'):
+        app.command(['systemctl','--user','enable',CONTROL_UNIT])
+        app.command(['systemctl','--user','restart',CONTROL_UNIT])
     app.command(['systemctl','--user','restart',FRONTEND_UNIT])
     return {'state':'started','release':release_id,'private_origin':descriptor['origin'],
             'loopback_port':PORT,'serve_path':'/dashboard/','operator_route_pending':True}
+
+
+def require_idle_controls():
+    directory=PLATFORM/'controls/v1'
+    if not directory.exists(): return
+    import dashboard_controls as controls
+    owned_directory(directory)
+    paths=list(directory.glob('*.json'))
+    app.need(len(paths)<=controls.MAX_RECORDS,'control-capacity')
+    for path in paths:
+        try:record=controls.read_record(path)
+        except controls.Refusal:raise app.AppError('control-recovery') from None
+        app.need(record['state'] not in controls.ACTIVE,'control-recovery')
+    # A paused runtime cannot be safely handed to an older provider that does
+    # not understand pause receipts, even after the action itself completed.
+    for state in app.states():
+        app.need(state['phase'] not in {'paused','pausing','resuming'},'control-paused')
+
+
+def disable_controls():
+    receipt=owner();app.need(receipt is not None and receipt.get('controls_enabled'),'control-unsupported')
+    verify_units(receipt)
+    directory=owned_directory(PLATFORM/'controls');directory=owned_directory(directory/'v1')
+    path=app.safe(directory/'disabled')
+    if path.exists():app.need(path.is_file() and path.stat().st_uid==os.getuid(),'path')
+    else:app.save_text(path,'Submissions disabled; retained operations and managed recovery remain available.\n');path.chmod(0o600)
+    return {'state':'controls-disabled','release':receipt['release'],'project_data_retained':True}
 
 
 def stop():
     receipt = owner()
     app.need(receipt is not None, 'conflict')
     verify_units(receipt)
-    for name in (FRONTEND_UNIT, COLLECTOR_UNIT):
+    require_idle_controls()
+    for name in (FRONTEND_UNIT, *([CONTROL_UNIT] if receipt.get('controls_enabled') else []), COLLECTOR_UNIT):
         app.command(['systemctl','--user','stop',name])
     return {'state':'stopped','release':receipt['release'],'project_data_retained':True}
 
@@ -274,15 +344,16 @@ def status():
         return {'state':'not-installed'}
     verify_units(receipt)
     return {'release':receipt['release'],'services':{name:app.command(['systemctl','--user','is-active',name],optional=True).stdout.strip()
-            for name in (COLLECTOR_UNIT, FRONTEND_UNIT)},'loopback_port':PORT}
+            for name in (COLLECTOR_UNIT, FRONTEND_UNIT, *([CONTROL_UNIT] if receipt.get('controls_enabled') else []))},'loopback_port':PORT}
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['prepare','start','stop','status','rollback'])
+    parser.add_argument('action', choices=['prepare','start','stop','status','rollback','disable-controls'])
     parser.add_argument('--release')
     parser.add_argument('--with-status',action='store_true')
     parser.add_argument('--with-links',action='store_true')
+    parser.add_argument('--with-controls',action='store_true')
     args=parser.parse_args()
     try:
         app.need(os.getuid() == 1002 and os.geteuid() != 0, 'setup')
@@ -290,9 +361,10 @@ def main():
             result=status()
         else:
             with operation_lock():
-                if args.action == 'prepare': result={'state':'prepared','release':prepare(args.with_status,args.with_links)}
-                elif args.action == 'start': result=activate(args.release or prepare(args.with_status,args.with_links))
+                if args.action == 'prepare': result={'state':'prepared','release':prepare(args.with_status,args.with_links,args.with_controls)}
+                elif args.action == 'start': result=activate(args.release or prepare(args.with_status,args.with_links,args.with_controls))
                 elif args.action == 'stop': result=stop()
+                elif args.action == 'disable-controls': result=disable_controls()
                 else:
                     receipt=owner();app.need(receipt and receipt.get('previous'), 'conflict')
                     result=activate(receipt['previous'])

@@ -1,6 +1,6 @@
 # SPEC-037: Dashboard constrained controls
 
-- **Status:** Draft — planning requested; specification review pending
+- **Status:** Approved for implementation — work in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-15 (America/New_York)
 - **Feature:** DSH-009, runtime extensions needed for component restart and project controls
@@ -18,9 +18,9 @@ instances continue running; “Restart entire project” follows dependency orde
 
 The project owner requested both levels of control and these planning documents,
 explicitly excluding opening remote tasks, and supplied `Projects Dashboard v3.html`.
-Scope direction and planning are authorized. This draft's detailed contracts await
-review; implementation, installation/private rollout and acceptance are not yet
-authorized by this planning request. Earlier feature approvals remain intact.
+The initial request authorized planning. Implementation was subsequently authorized
+as recorded below; private rollout and actual owner acceptance remain separate
+gates. Earlier feature approvals remain intact.
 The attachment is design data, not executable product code or authority.
 
 ## Scope and readiness
@@ -199,3 +199,15 @@ implementation must meet all criteria and record sanitized evidence in acceptanc
 Merge, deployed behavior and owner acceptance remain separate gates. Mark only this
 bounded DSH-009 scope Delivered after merged implementation and actual acceptance;
 keep excluded remote task opening and deferred profile controls explicit in the catalogue.
+
+## Implementation authorization
+
+On October 15 the project owner instructed “Implement the spec for DSH-009.
+Finish when all acceptance criteria are met.” This approves the detailed scope
+and authorizes implementation and necessary local verification. Private rollout
+remains a concrete release gate under AC-007; owner acceptance and merge are
+separate from implementation evidence.
+
+The project owner separately approved committing/pushing the implementation and
+opening a draft PR on October 15 after automatic publication review requested
+explicit confirmation. This publication approval does not deploy the changes.

@@ -123,9 +123,9 @@ def valid_state(s):
     a.need(s.get('network') == 'gptclaw-group-'+s['id'])
     a.need(isinstance(s.get('token'),str) and re.fullmatch(r'[0-9a-f]{32}',s['token']))
     a.need(s.get('components') == {name: identity(s['id'],name) for name in (('api',) if s['schema_version']==4 else ORDER)})
-    a.need(s.get('phase') in {'preparing','starting','ready','stopped','failed'})
+    a.need(s.get('phase') in {'preparing','starting','ready','stopped','failed','paused','pausing','resuming'})
     a.need(type(s.get('health_ready')) is bool)
-    a.need(s.get('operation') in {'start','stop','restart','test','build','format','lint','typecheck','security','verify','deps','toolchain'})
+    a.need(s.get('operation') in {'start','stop','restart','test','build','format','lint','typecheck','security','verify','deps','toolchain','pause','resume','rebuild'})
     a.need(isinstance(s.get('operation_id'),str) and re.fullmatch(r'[0-9a-f]{32}',s['operation_id']))
     a.need(s.get('operation_result') in {'running','passed','failed','unknown'})
     a.need(s.get('error') is None or s['error'] in a.MESSAGES)
@@ -141,7 +141,7 @@ def save(s):
 
 def reserve(root, value):
     slug = value['project']['id']
-    with a.locked('registry'):
+    with a.locked('registry',project_guard=False):
         s = a.state_for(slug)
         if s:
             a.need(s['schema_version'] == receipt_version(value) and s['root'] == str(root)); return s
@@ -168,7 +168,7 @@ def observe(s, resolved):
         a.need(child['root'] == str(root) and child.get('group') == s['id'])
         active,ready = a.inspect_service(child,value) if a.unit_path(child).exists() else (False,False)
         busy = a.object_owned('container',child['name']+'-job',child['token'])
-        result[name] = {'state':'ready' if active and ready else 'unhealthy' if active else child['phase'],
+        result[name] = {'state':'paused' if child['phase']=='paused' else 'ready' if active and ready else 'unhealthy' if active else child['phase'],
                         'health':'ready' if ready else 'unhealthy' if active else 'unknown','active':active,
                         'operation_busy':busy,'port':child['port'],'unit':child['name'],
                         'operation_id':child['operation_id'],'last_operation':child['operation'],
@@ -285,6 +285,8 @@ def stop(root,take_lock=True):
 def restart(root):
     root,value=a.target(root);slug=value['project']['id']
     with a.locked(slug):
+        s=a.state_for(slug)
+        a.need(not s or s['phase'] not in {'paused','pausing','resuming'},'control-paused')
         before=stop(root,take_lock=False);after=start(root,take_lock=False)
         s=a.state_for(slug);s.update(operation='restart');save(s)
         return {**after,'operation':'restart','transitions':[before.get('operation_id'),after['operation_id']]}

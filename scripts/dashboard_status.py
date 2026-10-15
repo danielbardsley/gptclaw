@@ -7,8 +7,8 @@ import re
 import threading
 import time
 
-STATES={'ready','stopped','starting','failed','degraded','unknown'}
-PROVIDER_STATES={'ready','stopped','preparing','starting','failed','degraded','unhealthy',
+STATES={'paused','ready','stopped','starting','failed','degraded','unknown'}
+PROVIDER_STATES={'paused','ready','stopped','preparing','starting','failed','degraded','unhealthy',
                  'unpublished','recovery-required','uninitialized','never-started','resource-unavailable','unknown'}
 REASONS={'observation-unavailable','observation-timeout','observation-invalid','ownership-conflict',
          'observation-inconsistent','clock-anomaly','unsupported','inventory-stale','capacity-limited'}

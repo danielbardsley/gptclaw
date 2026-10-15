@@ -318,7 +318,7 @@ def lock_key(root):
 
 
 def create(root,task,owner,base_commit):
-    with app.locked('worktree-project-'+lock_key(root)):
+    with app.locked('worktree-project-'+lock_key(root)), __import__('project_controls').source_lock(root):
         proposed=plan(root,task,owner);identity=proposed['identity']
         check(base_commit==proposed['base_commit'],'worktree-drift')
         existing=app.read_json(receipt_path(proposed['allocation_id']))
@@ -398,7 +398,7 @@ def pr_evidence(value,number):
 
 
 def handoff(root,task,owner,generation,checks=None,remaining=None,published=False,pr=None):
-    with app.locked('worktree-project-'+lock_key(root)):
+    with app.locked('worktree-project-'+lock_key(root)), __import__('project_controls').source_lock(root):
         identity=canonical(root)
         value=read(identity,task);authorize(value,owner,generation)
         check(value['state']=='active','worktree-drift');actual=observe(value);check(not actual['git_busy'],'worktree-drift')
@@ -414,7 +414,7 @@ def handoff(root,task,owner,generation,checks=None,remaining=None,published=Fals
 
 def resume(root,task,owner,generation,target_owner):
     slug(target_owner)
-    with app.locked('worktree-project-'+lock_key(root)):
+    with app.locked('worktree-project-'+lock_key(root)), __import__('project_controls').source_lock(root):
         identity=canonical(root)
         value=read(identity,task);authorize(value,owner,generation)
         check(value['state'] in {'active','handed-off'},'worktree-drift')

@@ -242,6 +242,66 @@ const { chromium } = require('playwright-core');
   await page.getByText('Metro observation unavailable',{exact:true}).waitFor();
   assert.equal(await page.getByRole('region',{name:'Metro session observations'}).count(),0);
   assert.equal(await page.evaluate(()=>localStorage.length),0);
+  // DSH-009 uses synthetic operation endpoints: no live runtime write here.
+  const controlNow=Date.now()/1000;
+  layout.rows=[{...fixture.rows[0],key:'c'.repeat(32),id:'controls-fixture',name:'Controls fixture',kind:'group',components:['api','db','web'],manifest_version:4,
+    inventory_freshness:'current',identity_state:'valid',runtime_support:'supported',links:[],
+    status:{...component,last_success_at:controlNow,observed_at:controlNow,components:Object.fromEntries(['api','db','web'].map(name=>[name,{...component,last_success_at:controlNow,observed_at:controlNow}])),publication:{state:'unavailable',origin:null},provider_version:'1.15.0'},
+    controls:{schema_version:1,enabled:true,capabilities:{schema_version:1,generation:'d'.repeat(64),observed_at:controlNow,actions:[
+      ...['start','stop','restart','rebuild','pause','resume'].map(action=>({action,component:null,enabled:!['pause','resume'].includes(action),reason:['pause','resume'].includes(action)?'control-unsupported':null})),
+      ...['api','db','web'].map(component=>({action:'restart',component,enabled:true,reason:null}))]},recent:[],retention_days:7}}];
+  layout.server_time=controlNow;layout.freshness='current';layout.complete=true;
+  const submissions=[];let latestOperation=null;let operationDone=false;let lostResponse=false;let intentScope=null;
+  await page.route('**/dashboard/api/control-session/',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({schema_version:1,csrf:'e'.repeat(64),expires_at:controlNow+900})}));
+  await page.route('**/dashboard/api/control-intents/',async route=>{
+    intentScope=route.request().postDataJSON();
+    return route.fulfill({contentType:'application/json',body:JSON.stringify({...intentScope,intent_id:'f'.repeat(32),generation:layout.rows[0].controls.capabilities.generation,expires_at:controlNow+60,name:'Controls fixture',impact:'Interrupt selected service. Database records retained; sibling services stay running.'})});
+  });
+  await page.route('**/dashboard/api/operations/',async route=>{
+    const data=route.request().postDataJSON();submissions.push({...intentScope,...data});
+    latestOperation={schema_version:1,operation_id:data.idempotency_key,project_key:'c'.repeat(32),project:'controls-fixture',name:'Controls fixture',action:intentScope.action,component:intentScope.component,state:'running',stage:'start',stage_component:intentScope.component,reason:null,observed_at:null,created_at:controlNow,updated_at:controlNow};
+    if(lostResponse)return route.abort();
+    return route.fulfill({status:202,contentType:'application/json',body:JSON.stringify(latestOperation)});
+  });
+  await page.route(/\/dashboard\/api\/operations\/[0-9a-f]{32}\/$/,route=>route.fulfill({status:latestOperation?200:404,contentType:'application/json',body:JSON.stringify(latestOperation?{...latestOperation,state:operationDone?'succeeded':'running',stage:operationDone?'completed':'start',observed_at:operationDone?controlNow:null}:{error:'unknown-operation'})}));
+  await page.reload();await page.getByRole('button',{name:'Service details for Controls fixture'}).click();
+  const panel=page.getByRole('region',{name:'Lifecycle controls for Controls fixture'});
+  await panel.waitFor();
+  assert.equal(submissions.length,0);
+  assert.ok(await panel.getByRole('button',{name:'Pause entire project for Controls fixture',exact:true}).isDisabled());
+  const restartApi=panel.getByRole('button',{name:'Restart API for Controls fixture',exact:true});
+  await restartApi.click();
+  const confirm=page.getByRole('button',{name:'Confirm restart',exact:true});await confirm.waitFor();
+  assert.equal(submissions.length,0);
+  assert.equal(await confirm.evaluate(element=>element===document.activeElement),true);
+  await panel.getByRole('button',{name:'Cancel',exact:true}).click();
+  assert.equal(submissions.length,0);assert.equal(await restartApi.evaluate(element=>element===document.activeElement),true);
+  await restartApi.click();await confirm.click();
+  await panel.getByText(/Restart API: Running/).waitFor();
+  assert.equal(submissions.length,1);assert.equal(submissions[0].component,'api');
+  assert.ok(await panel.getByRole('button',{name:'Restart entire project for Controls fixture',exact:true}).isDisabled());
+  operationDone=true;
+  await panel.getByText(/Restart API: Succeeded/).waitFor({timeout:15000});
+  assert.equal(submissions.length,1);
+  assert.equal(layout.rows[0].status.components.api.restart_count,0);
+  lostResponse=true;operationDone=true;
+  await panel.getByRole('button',{name:'Restart DB for Controls fixture',exact:true}).click();await confirm.click();
+  await panel.getByText(/Restart DB: Succeeded/).waitFor({timeout:15000});
+  assert.equal(submissions.length,2);assert.equal(submissions[1].component,'db');
+  await restartApi.click();await confirm.waitFor();
+  layout.rows[0].controls.capabilities.generation='a'.repeat(64);
+  await panel.getByText('Confirmation expired or project changed. Select the action again.',{exact:true}).waitFor({timeout:8000});
+  assert.equal(await confirm.count(),0);assert.equal(submissions.length,2);
+  for(const width of [1440,1280,768,390,720]){
+    await page.setViewportSize({width,height:width===720?450:1000});
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`controls overflow at ${width}`);
+    if(width<=768){const bounds=await restartApi.boundingBox();assert.ok(bounds.height>=44);}
+    await page.screenshot({path:`/checks/output/dashboard-controls-${width}.png`,fullPage:true});
+  }
+  layout.rows[0].controls.capabilities.observed_at=controlNow-60;
+  await panel.getByText('Controls unavailable while observations are stale.',{exact:true}).waitFor({timeout:8000});
+  assert.ok(await restartApi.isDisabled());assert.equal(submissions.length,2);
+  console.log('PASS: lifecycle reference panel, scoped confirmation/cancel/focus, disabled profile controls, single component dispatch, busy state, lost-response recovery without replay, changed-generation invalidation, unchanged metrics and responsive controls');
   assert.deepEqual(errors, []);
   console.log('PASS: reference density and responsive bounds, disclosure refresh/focus, safe compact links, readable contrast, reduced motion, long metadata and omitted unsupported controls');
   console.log('PASS: real inventory render, semantic table, keyboard skip navigation, safe text, metadata gaps, empty/partial/stale/outage/recovery UI; accessible component status, zero/null metrics and stale health; validated navigation and local preview expiry');

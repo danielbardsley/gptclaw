@@ -171,3 +171,98 @@ GET; the pure link layer never crawls URLs. Repository links use validated metad
 and the browser's GitHub authentication. Log-viewer/preview-registry adapters remain
 unavailable until their separately accepted prerequisites exist. No logs endpoint,
 Funnel operation or public preview is added by these feature switches.
+
+## Typed lifecycle controls (SPEC-037)
+
+Provider 1.15.0 and dashboard control schema 1 add typed project Start/Stop/Restart/
+Rebuild/Pause/Resume and selected component Restart. Prepare a reviewed immutable
+release with `--with-controls` (implies live status); controls remain off in releases
+prepared without that explicit flag. `--with-links` remains independent. A controls
+release owns the additional `gptclaw-dashboard-control.service` and `/run/gptclaw/control.sock`
+in the existing private socket namespace. The frontend receives no source directories,
+credential store or Podman socket. Installing code is separate from actual acceptance.
+
+The write population is the existing dashboard tailnet population. There are no new
+individual user accounts/roles. Capability preflights have a four-second isolated
+worker deadline; discovery remains bounded by the inventory contract. Exact Host/Origin, same-origin Fetch Metadata, JSON,
+a Secure/HttpOnly/SameSite session cookie, CSRF proof and a 60-second typed intent
+bind browser consent to the selected action, component and source/runtime generation.
+The browser cannot specify paths, unit/container names, URLs, argv or environment.
+Only explicit submissions mutate; snapshot/status/navigation/disclosure remain reads.
+
+The controller limits outstanding intents to 64, sessions to 128 (15-minute expiry),
+active operations to four globally and one per project. It keeps terminal results for
+seven days, within 1000 records/10 MiB; active/unknown evidence is never auto-pruned.
+A full safe-retention budget refuses new actions instead of discarding evidence.
+Recent shows at most five results per project. This is operation evidence, not a
+platform audit timeline. Status/links use real observations, not optimistic UI state.
+
+Interrupting project actions and individual restarts require inline confirmation.
+WEB/API/DB restarts leave sibling processes running. A database restart preserves the
+same volume and credentials but can briefly fail dependent requests; failure to
+reconnect requires a separate explicit API restart. Ephemeral API data can be lost.
+Rebuild stages locked source/dependencies/builds separately, replaces generated outputs
+only after stopping the selected application component, and retains displaced outputs
+under the owned provider operation build directory. New rebuilds refuse when eight
+retained build stages exist or less than 2 GiB remains available; inspect and retain
+needed recovery outputs before any scoped cleanup. No automatic source/data deletion
+is introduced. It never rebuilds PostgreSQL,
+changes dependencies/locks or runs migrations; a stopped project stays stopped.
+
+Pause/Resume is available only for stateless single-service and web/API groups.
+Pause withdraws publication, freezes consumers before dependencies and retains the
+instances. Resume unfreezes dependencies first and republishes only after readiness.
+Stop also supports paused instances; Restart/Rebuild require Resume or Stop first.
+Database groups and Metro cannot pause/resume; Metro cannot rebuild. Metro controls
+retain explicit transport and the original absolute session expiry and never renew
+or opt in. A bound backend remains separately controlled through its own project row.
+
+All new provider mutations take the source/project locks plus a durable guard.
+Native container freeze/unfreeze has a 30-second command deadline; service stop 90
+seconds; application start 300 seconds; readiness 120 seconds. Isolated Node install/
+build jobs have 600-second command deadlines; Python's reviewed installer retains
+its existing bounded job deadline. These are stage deadlines, not claims that an
+operation has no effects after timeout. Unknown native outcomes block new writes.
+
+Before release change or rollback, disable submissions using the reviewed manager:
+
+```sh
+/srv/forge/projects/gptclaw/.venv-manifest/bin/python -B scripts/manage_dashboard.py disable-controls
+```
+
+This preserves status/results and running services. Wait for accepted/running actions
+to finish; do not restart the controller to cancel one. If an action becomes unknown,
+retain its operation ID and inspect managed status, owned receipts and unit state.
+Use the reviewed provider's explicit inspection/reconciliation interface:
+
+```sh
+gptclawctl control capabilities --project-root <owned-root>
+gptclawctl control reconcile --project-root <owned-root> --operation-id <opaque-id> --confirm <project-id>
+```
+
+Reconcile verifies the exact guard/target and observed resources under the project
+lock; an owned live job or ambiguous ownership still refuses. It acknowledges partial
+observed effects as failed and permits a new explicitly confirmed action, never replays
+the previous one. Inspect a partially paused project and use explicit project Stop
+when that is the intended recovery. Missing/drifted units, interrupted output swaps
+or inconsistent native state need scoped operator inspection; do not remove unknown
+files, clear receipts or reset a database to make reconciliation pass.
+
+The manager refuses replacement/rollback while records remain active/unknown or
+runtimes remain paused, preserving evidence and data. After reconciliation/resume,
+restore a compatible reviewed immutable release through the existing manager.
+Rollback changes the dashboard/controller only; do not stop project runtimes or
+remove volumes/routes/source. The controls-disabled release preserves reads and
+hides write capability when its provider/controller contract is unavailable.
+
+
+Local native verification can use the optional `scripts/tests/check_controls_runtime.py`
+harness with `--profile single`, `group` or `database` in the prepared manifest
+environment. It requires matching verified canonical toolchain metadata/images and
+reverifies exact executable versions in an isolated namespace. Generated Quadlets
+are translated by a test adapter into owned rootless containers; no actual host unit,
+Serve handler, installed provider or existing project is changed. Its fixture tree,
+operation receipts, loopback ports and synthetic database are task-owned. Successful
+runs verify ownership before removing their containers/networks/image aliases and
+fixture tree; failures retain source/receipts for inspection. These results supplement,
+and do not replace, separately authorized real systemd/private/browser acceptance.

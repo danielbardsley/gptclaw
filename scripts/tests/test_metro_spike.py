@@ -158,7 +158,7 @@ class SpikeTests(unittest.TestCase):
         self.patch(app,'available',lambda *args:True)
         resources={};calls=[];registry=False
         @contextlib.contextmanager
-        def locked(name):
+        def locked(name,**kwargs):
             nonlocal registry
             if name=='registry':registry=True
             try:yield

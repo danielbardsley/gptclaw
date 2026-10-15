@@ -1,6 +1,6 @@
 # TASKS-037: Dashboard constrained controls
 
-- **Status:** Draft planning package; implementation and rollout pending authorization
+- **Status:** Implementation authorized — work in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-15 (America/New_York)
 - **Specification:** [SPEC-037](spec.md) · **Design:** [TDD-037](technical-design.md)
@@ -14,16 +14,16 @@
 - [x] Record the owner's direction: project controls plus individual service restarts; exclude remote task opening entirely.
 - [x] Inspect supplied HTML as reference data; capture desktop/narrow rendering in an offline isolated browser and document supported adaptations.
 - [x] Draft linked requirements, design, tasks and acceptance mapping; update index/catalogue to Draft.
-- [ ] Project owner reviews the detailed proposal and authorizes implementation; record approval separately from planning and later rollout authorization.
+- [x] Project owner authorized implementation October 15: “Implement the spec for DSH-009. Finish when all acceptance criteria are met.” Private rollout and actual owner acceptance remain separate gates.
 
-Planning checks and PR are recorded in the handover below. The request to draft
-plans authorizes this package, not product code changes or runtime operations.
+Planning checks and PR are recorded in the handover below. The initial drafting request authorized this package; the later implementation
+instruction and separate PR-publication approval are recorded in SPEC-037.
 
 ## Implementation in dependency order
 
 ### TASK-037-002 — Freeze typed lifecycle/capability contracts
 
-- [ ] Inventory exact current provider/adapters, release pins, runtime/DB/Metro locks, source-handoff guards and receipt consumers before modifying them.
+- [x] Inventory current provider/adapters, release pins, runtime/DB/Metro locks, source-handoff guards and receipt consumers before modification.
 - [ ] Implement versioned capability/preflight/result schemas and matrix for all profiles in CTL-001, including unknown/old provider and missing ownership refusals.
 - [ ] Add compatible CLI component restart/rebuild/pause/resume parsing and typed dispatch; preserve existing no-component behavior.
 - [ ] Specify canonical target binding/generation/input fingerprints, lock order, exact stage deadlines and pause state/publication semantics in source contracts/runbooks.
@@ -115,19 +115,11 @@ TASK-037-008. Planning/implementation/CI/rollout/owner acceptance remain distinc
 
 ## Current handover
 
-Prepared spec/design/tasks and attachment reference mapping/captures on
-`codex/dsh-009-controls-planning` from initially clean `main`. Only documentation
-and inert reference PNGs change. No product code, installed provider, dashboard,
-project service, data or infrastructure was changed. Scope direction is recorded;
-detailed specification approval, implementation and private rollout remain pending.
-Next action: project-owner review of this concrete planning package, especially
-rebuild behavior, stateless pause eligibility and individual DB restart impact.
-Planning verification: `git diff --check` and `git diff --cached --check` pass;
-268 relative documentation links across the six changed Markdown files resolve.
-Requirement/criterion/task-ID coverage checks pass (7 requirements, 7 criteria,
-9 task groups), accounting for slash-abbreviated references. The initial literal-ID
-checker rejected abbreviated references; the corrected checker passed. The attached
-reference rendered offline at desktop/narrow sizes; these captures establish reference
-appearance only. Runtime/frontend/repository implementation suites, CI, deployment
-and owner acceptance were not run for this documentation-only package. The planning
-branch is delivered through a PR to main.
+Implementation is underway on `codex/dsh-009-controls`, based on the planning
+package in PR #85. Typed provider controls, durable guards/reconciliation, a separate
+private controller, frontend routes/panel, default-off release wiring and synthetic
+behavior/browser tests are implemented. [Acceptance evidence](acceptance.md) records
+actual completed checks and the remaining local/CI/runtime/owner gates. The intermediate offline gate passed 874 cases; native single-service checks and
+synthetic browser controls checks passed. Group/database checks and final gates
+continue. No deployed service has been changed for this feature. Continue from current files/test logs;
+do not treat the initial local checks as final-head or live acceptance.

@@ -1,6 +1,6 @@
 # TDD-037: Typed dashboard lifecycle operations
 
-- **Status:** Draft proposal; implementation not authorized
+- **Status:** Approved for implementation — work in progress
 - **Owner:** Project owner
 - **Date:** 2026-10-15 (America/New_York)
 - **Specification:** [SPEC-037](spec.md) · **Tasks:** [TASKS-037](tasks.md)
@@ -53,8 +53,8 @@ state, data-risk category and affected/dependent components. Unknown versions di
 controls. Never infer capability from `runtime_support: supported` alone.
 
 Use an additive snapshot schema for control availability and a bounded sanitized
-recent-operation projection, obtained by the collector through a read-only controller
-snapshot request (never dispatch). Controller loss makes controls unavailable without
+recent-operation projection, merged by the existing Next.js snapshot endpoint through a second fixed read-only
+controller snapshot request (never dispatch). The collector retains its read-only contract. Controller loss makes controls unavailable without
 invalidating independent inventory/status/link reads. Preserve accepted
 inventory/status/link fields and their semantics. Sensitive canonical roots and
 internal unit/container/volume identities stay in the host controller. Opaque row
@@ -286,4 +286,4 @@ to roll back controls. A feature flag can disable writes while recovery remains 
 Project owner reviews this concrete proposal, including stateless-only pause/resume,
 rebuild preserving a stopped project, current tailnet access population and seven-day
 result retention. These are proposed defaults, not claims of approval or installed
-capability. Implementation begins only after authorization; planning can complete now.
+capability. Implementation was authorized October 15; rollout and owner acceptance remain separate evidence gates.
