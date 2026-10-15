@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { actions, validControls, type Action, type Component, type Operation } from '../lib/control-types.ts';
 import { metroView } from '../lib/metro.ts';
 import { duration, statusFreshness, type ProjectStatus } from '../lib/status.ts';
-type Intent = {intent_id:string;generation:string;expires_at:number;impact:string;name:string;action:Action;component:Component|null};
+type Intent = {intent_id:string;generation:string;prepared_at:number;expires_at:number;impact:string;name:string;action:Action;component:Component|null};
 type Auth = {csrf:string;acquiredAt:number};
 let authentication: Promise<Auth> | null = null;
 const label=(value:string)=>value.charAt(0).toUpperCase()+value.slice(1).replaceAll('-',' ');
@@ -80,7 +80,13 @@ export default function ControlPanel({raw,projectKey,projectId,name,status,serve
     };
     void poll();return()=>{live=false;clearTimeout(timer);};
   },[pending,storageKey]);
-  useEffect(()=>{if(intent && (intent.generation!==caps?.generation || stale || (serverTime || 0)+elapsed>=intent.expires_at)) {restoreFocus.current=true;setIntent(null);setError('Confirmation expired or project changed. Select the action again.');}},[intent,caps?.generation,stale,serverTime,elapsed]);
+  useEffect(()=>{
+    // A validated intent is newer than the snapshot that initiated it. Missing
+    // or older observations cannot revoke that target proof. Submission still
+    // rechecks the exact generation; newer evidence and expiry invalidate it.
+    const changed=intent && caps && caps.observed_at>=intent.prepared_at && intent.generation!==caps.generation;
+    if(intent && (changed || (serverTime || 0)+elapsed>=intent.expires_at)) {restoreFocus.current=true;setIntent(null);setError('Confirmation expired or project changed. Select the action again.');}
+  },[intent,caps?.generation,caps?.observed_at,serverTime,elapsed]);
   useEffect(()=>{if(intent)confirmation.current?.focus();},[intent]);
   useEffect(()=>{
     if(restoreFocus.current && !intent && !working){
@@ -108,7 +114,7 @@ export default function ControlPanel({raw,projectKey,projectId,name,status,serve
     initiating.current=event.currentTarget;setWorking(true);setError('');
     try{
       const data=await post('/dashboard/api/control-intents/',{schema_version:1,project_key:projectKey,action,component});
-      if(typeof data.intent_id!=='string' || !/^[0-9a-f]{32}$/.test(data.intent_id) || typeof data.impact!=='string' || typeof data.generation!=='string' || typeof data.expires_at!=='number')throw Error('control-unavailable');
+      if(typeof data.intent_id!=='string' || !/^[0-9a-f]{32}$/.test(data.intent_id) || typeof data.impact!=='string' || typeof data.generation!=='string' || typeof data.prepared_at!=='number' || !Number.isFinite(data.prepared_at) || typeof data.expires_at!=='number')throw Error('control-unavailable');
       const selected=data as unknown as Intent;
       if(action==='start' || action==='resume')await execute(selected);else setIntent(selected);
     }catch(problem){setError(reason(problem instanceof Error ? problem.message : 'control-unavailable'));}

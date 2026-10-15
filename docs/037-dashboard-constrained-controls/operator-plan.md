@@ -1,6 +1,6 @@
 # DSH-009 private Metro acceptance operator handoff
 
-- **Status:** Prepared; no listener change executed
+- **Status:** Approved additions executed by existing operator and independently verified; removal pending
 - **Owner:** Project owner / existing SSM operator
 - **Scope:** `mob001-accept-one` and `mob001-accept-two` acceptance only
 - **Related:** [Specification](spec.md), [acceptance](acceptance.md), [Metro runbook](../../runbooks/manage-metro.md)

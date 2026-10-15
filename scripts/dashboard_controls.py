@@ -243,8 +243,9 @@ class Controller:
             require(len(selected) == 1 and selected[0]['enabled'], selected[0]['reason'] if selected else 'control-unsupported', 409)
             _, value = app.target(root)
             ident = secrets.token_hex(16)
+            prepared = self.clock()
             intent = {**data, 'intent_id': ident, 'generation': caps['generation'], 'session': session,
-                      'expires_at': self.clock()+60, 'root': str(root), 'project': row['id'], 'name': row['name'],
+                      'prepared_at': prepared, 'expires_at': prepared+60, 'root': str(root), 'project': row['id'], 'name': row['name'],
                       'impact': lifecycle.impact(value, data['action'], data['component'])}
             self.intents[ident] = intent
             return {key: val for key, val in intent.items() if key not in {'root', 'session'}}

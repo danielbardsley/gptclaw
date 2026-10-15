@@ -54,7 +54,8 @@ class NativeUnits:
         if action=='reset-failed':return subprocess.CompletedProcess(argv,0,'','')
         exists=self.original(['podman','container','exists',name],optional=True).returncode==0
         if action=='is-active':
-            running=exists and json.loads(self.original(['podman','container','inspect',name]).stdout)[0]['State']['Running']
+            native=json.loads(self.original(['podman','container','inspect',name]).stdout)[0]['State'] if exists else {}
+            running=bool(native.get('Running') or native.get('Paused'))
             return subprocess.CompletedProcess(argv,0 if running else 3,'active\n' if running else 'inactive\n','')
         fields={};section=None
         for line in unit.read_text().splitlines():

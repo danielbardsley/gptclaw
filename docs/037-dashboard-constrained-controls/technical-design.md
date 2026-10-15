@@ -220,6 +220,11 @@ Keep unsupported verbs disabled with readable reasons, stale/busy constraints, i
 impact/confirmation, real stage/result and bounded Recent strip. Preserve disclosure
 state, focused target and confirmation identity across refresh. Invalidate confirmation
 on changed binding/generation/expiry; never silently retarget an open confirmation.
+Intent responses include their server preflight timestamp. An older or unavailable
+snapshot cannot invalidate that newer proof; only a subsequently observed changed
+generation or the 60-second expiry clears it. Admission still performs fresh
+source/runtime checks before any dispatch. Initial actions stay disabled on stale
+observations.
 
 Use semantic buttons/regions and live polite announcements, logical keyboard order,
 Cancel/focus return and visible target descriptions. Stack at narrow widths, meet the

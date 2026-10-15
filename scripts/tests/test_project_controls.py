@@ -54,7 +54,7 @@ class Controls(unittest.TestCase):
 
     def inspect_service(self, s, contract):
         obj = self.native.get(s['name'])
-        active = bool(obj and obj['State']['Running'])
+        active = bool(obj and (obj['State']['Running'] or obj['State']['Paused']))
         return active, bool(active and not obj['State']['Paused'])
 
     def command(self, argv, **kwargs):
@@ -66,6 +66,7 @@ class Controls(unittest.TestCase):
             obj['State']['Running'] = True; obj['Id'] += '-replacement'
         if argv[:2] in [['podman', 'pause'], ['podman', 'unpause']]:
             self.native[argv[2]]['State']['Paused'] = argv[1] == 'pause'
+            self.native[argv[2]]['State']['Running'] = argv[1] == 'unpause'
         return subprocess.CompletedProcess(argv, 0, '', '')
 
     def test_web_restart_preserves_api_identity_network_and_source(self):
@@ -88,6 +89,7 @@ class Controls(unittest.TestCase):
         self.assertTrue(commands[0][2].endswith('-web'))
         self.assertTrue(commands[1][2].endswith('-api'))
         self.assertEqual(app.state_for('sample')['phase'], 'paused')
+        self.assertTrue(all(not row['State']['Running'] and row['State']['Paused'] for row in self.native.values()))
         self.assertFalse(app.state_for('sample')['health_ready'])
         with self.assertRaises(app.AppError) as error: ctl.execute(self.root, 'restart', 'web')
         self.assertEqual(error.exception.code, 'control-paused')

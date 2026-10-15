@@ -234,3 +234,32 @@ unchanged. Collector (7), status (8), installer (11) and controller (15) suites
 passed; installer assertions also cover flag removal on compatible rollback.
 Live browser and lifecycle rechecks remain pending. No service readiness or
 browser acceptance is inferred from these unit tests.
+
+
+### Fresh confirmation, real pause state and operator readback
+
+The real browser received a successful typed intent, then its confirmation was
+cleared by a stale snapshot older than the just-completed preflight. Intent replies
+now include the server preflight timestamp; the UI preserves that proof until
+expiry or newer changed-generation evidence. Submission still revalidates source,
+ownership and generation. Frozen frontend tests (21), typecheck, build, actual
+HTTP/socket and synthetic browser checks passed, including older-stale-snapshot
+preservation and subsequent-generation invalidation. Fifteen controller tests also
+pass with the explicit 60-second timestamp/expiry contract.
+
+Actual API Pause `5bbacc84eafb4948b7d5bef0833a5983` froze the retained instance
+`a6dec55bb7b6c9e3644a256afbc19d270fc2cd2d34820e9a81c5e5f3df00b722`.
+Its post-check correctly retained an unknown result/guard after encountering a
+native interpretation bug: this Podman reports `Paused=true, Running=false` while
+the owned systemd unit remains active. Provider and observer checks now recognize
+that frozen active state; fake/native adapters now model real systemd semantics.
+Explicit reconciliation and resume are required before another Pause. No replay,
+blind unpause, data deletion or success claim was used. Live unknown-state rollback
+and CLI contention refusal evidence is being retained before recovery.
+
+The project owner supplied existing-operator readback for the approved 8443/8444
+private Metro listeners. Independent readback verified exactly those additions,
+unchanged 443/8445 handlers and Funnel off. Reviewed route ownership recording was
+idempotent against the existing approved plans. Both named finite generations now
+report actual private route/protocol readiness; this is no phone/client claim.
+Their lifecycle/isolation proof and later operator removal remain pending.

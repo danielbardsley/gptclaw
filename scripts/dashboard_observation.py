@@ -86,7 +86,7 @@ def component(root, contract, *, now):
     app.need(not active or obj is not None,'conflict')
     if obj is not None:
         app.need(type(obj.get('State',{}).get('Running')) is bool,'conflict')
-        app.need(obj['State']['Running']==active,'conflict')
+        app.need((obj['State']['Running'] or obj['State'].get('Paused') is True)==active,'conflict')
     busy=app.object_owned('container',receipt['name']+'-job',receipt['token'])
     provider_state=('paused' if obj and obj.get('State',{}).get('Paused') else 'ready' if active and ready else 'unhealthy' if active else receipt['phase'])
     inconsistent = not active and receipt['phase']=='ready'

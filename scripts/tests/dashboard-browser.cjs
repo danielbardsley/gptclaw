@@ -255,7 +255,7 @@ const { chromium } = require('playwright-core');
   await page.route('**/dashboard/api/control-session/',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({schema_version:1,csrf:'e'.repeat(64),expires_at:controlNow+900})}));
   await page.route('**/dashboard/api/control-intents/',async route=>{
     intentScope=route.request().postDataJSON();
-    return route.fulfill({contentType:'application/json',body:JSON.stringify({...intentScope,intent_id:'f'.repeat(32),generation:layout.rows[0].controls.capabilities.generation,expires_at:controlNow+60,name:'Controls fixture',impact:'Interrupt selected service. Database records retained; sibling services stay running.'})});
+    return route.fulfill({contentType:'application/json',body:JSON.stringify({...intentScope,intent_id:'f'.repeat(32),generation:layout.rows[0].controls.capabilities.generation,prepared_at:controlNow,expires_at:controlNow+60,name:'Controls fixture',impact:'Interrupt selected service. Database records retained; sibling services stay running.'})});
   });
   await page.route('**/dashboard/api/operations/',async route=>{
     const data=route.request().postDataJSON();submissions.push({...intentScope,...data});
@@ -274,6 +274,12 @@ const { chromium } = require('playwright-core');
   const confirm=page.getByRole('button',{name:'Confirm restart',exact:true});await confirm.waitFor();
   assert.equal(submissions.length,0);
   assert.equal(await confirm.evaluate(element=>element===document.activeElement),true);
+  layout.rows[0].controls.capabilities.observed_at=controlNow-60;
+  await panel.getByText('Controls unavailable while observations are stale.',{exact:true}).waitFor({timeout:8000});
+  assert.equal(await confirm.count(),1,'an older stale snapshot revoked a freshly validated intent');
+  assert.equal(submissions.length,0);
+  layout.rows[0].controls.capabilities.observed_at=controlNow;
+  await panel.getByText('Controls unavailable while observations are stale.',{exact:true}).waitFor({state:'hidden',timeout:8000});
   await panel.getByRole('button',{name:'Cancel',exact:true}).click();
   assert.equal(submissions.length,0);assert.equal(await restartApi.evaluate(element=>element===document.activeElement),true);
   await restartApi.click();await confirm.click();

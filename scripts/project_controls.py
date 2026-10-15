@@ -165,7 +165,8 @@ def inspect_component(root, contract):
     active, ready = app.inspect_service(s, contract) if s['unit_sha256'] != '0'*64 else (False, False)
     app.need(not active or exists, 'conflict')
     app.need(RECONCILING.get() or s.get('operation_result') not in {'running', 'unknown'}, 'control-recovery')
-    app.need(obj.get('State', {}).get('Running', False) == active, 'control-recovery')
+    native_active = obj.get('State', {}).get('Running', False) or paused
+    app.need(native_active == active, 'control-recovery')
     return {'active': active, 'ready': ready and not paused, 'paused': paused,
             'busy': app.object_owned('container', s['name']+'-job', s['token']),
             'generation': digest({'id': obj.get('Id'), 'started': obj.get('State', {}).get('StartedAt'),

@@ -52,6 +52,7 @@ class ControllerTests(unittest.TestCase):
 
     def test_intent_has_no_effects_and_public_result_has_no_host_path_or_session(self):
         intent=self.intent();self.assertEqual(self.launched,[])
+        self.assertEqual(intent['expires_at']-intent['prepared_at'],60)
         self.assertNotIn('root',intent);self.assertNotIn('session',intent)
         self.assertIn('Restart WEB',intent['impact'])
         self.assertFalse(lifecycle.guard_path('sample').exists())
