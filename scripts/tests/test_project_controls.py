@@ -105,6 +105,32 @@ class Controls(unittest.TestCase):
         self.assertEqual(error.exception.code, 'control-changed')
         self.assertEqual(self.commands, [])
 
+    def test_partial_pause_requires_reconciliation_then_stop_unfreezes_owned_instances(self):
+        ident='e'*32
+        before={name:row['Id'] for name,row in self.native.items()}
+        api=app.state_for(self.group['components']['api'])['name']
+        web=app.state_for(self.group['components']['web'])['name']
+        def fail_second(argv,**kwargs):
+            if argv==['podman','pause',api]:raise app.AppError('timeout')
+            return self.command(argv,**kwargs)
+        with patch.object(app,'command',side_effect=fail_second),self.assertRaises(app.AppError):
+            ctl.execute(self.root,'pause',operation_id=ident)
+        self.assertTrue(self.native[web]['State']['Paused']);self.assertFalse(self.native[api]['State']['Paused'])
+        self.assertFalse(app.state_for('sample')['health_ready']);self.assertTrue(ctl.guard_path('sample').exists())
+        with self.assertRaises(app.AppError):ctl.execute(self.root,'resume')
+        recovered=ctl.reconcile(self.root,ident,'sample')
+        self.assertTrue(recovered['components']['web']['paused']);self.assertFalse(recovered['components']['api']['paused'])
+        self.assertFalse(ctl.guard_path('sample').exists())
+        with self.assertRaises(app.AppError) as error:ctl.execute(self.root,'resume')
+        self.assertEqual(error.exception.code,'control-recovery')
+        def stop(*args,**kw):
+            self.assertFalse(any(row['State']['Paused'] for row in self.native.values()))
+            for row in self.native.values():row['State']['Running']=False
+        with patch.object(app,'stop',side_effect=stop):result=ctl.execute(self.root,'stop')
+        self.assertEqual(result['state'],'succeeded')
+        self.assertEqual({name:row['Id'] for name,row in self.native.items()},before)
+        self.assertFalse(ctl.guard_path('sample').exists())
+
     def test_dependency_refusal_does_not_stop_target(self):
         api = app.state_for(self.group['components']['api'])
         self.native[api['name']]['State']['Running'] = False
