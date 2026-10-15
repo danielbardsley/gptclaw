@@ -81,7 +81,7 @@ can proceed against frozen contracts while backend tests run, but must remain di
 
 ### TASK-037-007 — Local and CI evidence
 
-- [ ] Run relevant provider/controller/frontend adversarial and behavior tests, full offline repository gate, changed-shell syntax, diff checks and documentation link review.
+- [x] Run relevant provider/controller/frontend adversarial and behavior tests, full offline repository gate (882 cases/46 suites), changed-shell syntax, diff checks and documentation link review. Frontend transport correction also passed its frozen full frontend/browser rerun.
 - [x] Run frozen frontend install/test/typecheck/build through existing pinned rootless tools; retain existing snapshot/status/link/Metro/security regressions.
 - [x] Capture deterministic synthetic reference comparisons at 1440/1280/768/390 px and 200% reflow; verify keyboard/confirmation/refresh/focus/targets/contrast and no document overflow.
 - [x] Verify failed/stale/conflicted/unsupported/read-only/controller-unavailable presentation and no mutations from reads/navigation/disclosure; inspect resulting routes and restricted mounts.
@@ -96,7 +96,7 @@ package installation is expected; inspect actual changed scope if that assumptio
 - [x] Test old/new compatibility, missing controller/provider and disabling writes while reads continue; unknown contracts must never enable buttons.
 - [ ] Prove rollout ordering and rollback with active/unknown/paused operation handling, evidence preservation and refusal of incompatible receipt downgrades.
 - [x] Update dashboard/private-app/provider runbooks with exact supported commands, operation retention/deadlines, recovery and no-data-deletion rollback.
-- [ ] Obtain private installation/rollout authorization for the prepared reviewed release; do not infer it from this planning request.
+- [x] Obtain private installation/rollout authorization for the prepared reviewed release; the project owner explicitly approved private rollout and fixture acceptance after remaining checks pass, including the named retained Metro fixtures.
 
 Maps CTL-007 → AC-001/005/007. Depends on TASK-037-007.
 
@@ -119,11 +119,13 @@ Implementation is underway on `codex/dsh-009-controls`, based on the planning
 package in PR #85 and implementation draft PR #86. Typed provider controls, durable guards/reconciliation, a separate
 private controller, frontend routes/panel, default-off release wiring and synthetic
 behavior/browser tests are implemented. [Acceptance evidence](acceptance.md) records
-actual completed checks and the remaining local/CI/runtime/owner gates. The intermediate offline gate passed 874 cases; native single-service checks and
-synthetic browser controls checks passed. The real-container group run passed and
-cleaned its owned resources. The API/DB native run also passed record/volume/credential
-retention and peer isolation, then removed its owned runtime resources. Final
-repository/CI gates continue.
+actual completed checks and the remaining CI/runtime/owner gates. The full local
+offline gate passed 882 cases across 46 suites. Native runs covered single API,
+single WEB, web/API, API/DB and WEB/API/DB, with owned runtime cleanup. The corrected
+frontend JSON transport passed frozen tests/typecheck/build/browser verification.
+All four CI workflows passed at 7e295de; the subsequent correction and verification
+edits need their new publication/CI checkpoint. Private rollout and fixture
+acceptance are explicitly approved after checks pass.
 The controls candidate and compatible read-only rollback are staged without activation,
 and the installer now refuses an older stable provider before changing services. No deployed service has been changed for this feature. Continue from current files/test logs;
 do not treat the initial local checks as final-head or live acceptance.

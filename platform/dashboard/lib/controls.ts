@@ -2,7 +2,7 @@ import http from 'node:http';
 export function controlRequest(path: string, method = 'GET', body?: unknown, headers: Record<string,string> = {}, timeoutMs = 15000): Promise<{ status: number; data: Record<string,unknown> }> {
   return new Promise((resolve,reject) => {
     const origin = new URL(process.env.DASHBOARD_ORIGIN || '');
-    const payload = body == null ? null : JSON.stringify(body);
+    const payload = body == null ? null : Buffer.isBuffer(body) ? body : JSON.stringify(body);
     const request = http.request({socketPath:process.env.DASHBOARD_CONTROL_SOCKET || '/run/gptclaw/control.sock',path,method,timeout:timeoutMs,headers:{host:origin.host,origin:origin.origin,'sec-fetch-site':'same-origin',...(payload ? {'content-type':'application/json','content-length':String(Buffer.byteLength(payload))} : {}),...headers}},response=>{
       const chunks:Buffer[]=[]; let size=0;
       response.on('data',(chunk:Buffer)=>{size+=chunk.length;if(size>1024*1024){response.destroy();reject(new Error('control-unavailable'));}else chunks.push(chunk);});
@@ -26,7 +26,9 @@ export async function submitControl(request: Request, path: '/v1/intents' | '/v1
     const reader=request.body?.getReader();const chunks:Uint8Array[]=[];let length=0;
     if(!reader)return controlResponse({error:'invalid-request'},400);
     while(true){const chunk=await reader.read();if(chunk.done)break;length+=chunk.value.length;if(length>8192){await reader.cancel();return controlResponse({error:'invalid-request'},413);}chunks.push(chunk.value);}
-    const data=JSON.parse(Buffer.concat(chunks).toString('utf8'));
+    // Preserve bytes for the controller's strict JSON parser: decoding and
+    // reserializing here would erase duplicate keys and invalid UTF-8.
+    const data=Buffer.concat(chunks);
     const cookie = request.headers.get('cookie') || '';
     const sessions = cookie.split(';').map(value=>value.trim()).filter(value=>value.startsWith('__Secure-gptclaw-control='));
     const session=sessions.length===1 ? sessions[0].split('=')[1] : '';

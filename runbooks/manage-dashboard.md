@@ -271,7 +271,8 @@ hides write capability when its provider/controller contract is unavailable.
 
 
 Local native verification can use the optional `scripts/tests/check_controls_runtime.py`
-harness with `--profile single`, `group` or `database` in the prepared manifest
+harness with `--profile single` (API), `single-web`, `group`, `database` (API/DB)
+or `database-web` (WEB/API/DB) in the prepared manifest
 environment. It requires matching verified canonical toolchain metadata/images and
 reverifies exact executable versions in an isolated namespace. Generated Quadlets
 are translated by a test adapter into owned rootless containers; no actual host unit,

@@ -9,12 +9,16 @@ const origin='https://forge-dev.example.ts.net';
 test('frontend forwards only bounded same-origin cookie/CSRF JSON to the fixed control socket',async()=>{
   const directory=await fs.mkdtemp(path.join(os.tmpdir(),'dashboard-control-api-'));
   const socket=path.join(directory,'control.sock');const calls:{url:string|undefined;body:unknown}[]=[];
+  const invalidBodies=[Buffer.from('{"schema_version":0,"schema_version":1,"project_key":"'+'d'.repeat(32)+'","action":"restart","component":"api"}'),Buffer.from('{'),Buffer.concat([Buffer.from('{"schema_version":1,"project_key":"'),Buffer.from([255]),Buffer.from('"}')])];
+  const rejected:Buffer[]=[];
   const before={origin:process.env.DASHBOARD_ORIGIN,enabled:process.env.DASHBOARD_CONTROLS,socket:process.env.DASHBOARD_CONTROL_SOCKET};
   const server=http.createServer(async(request,response)=>{
     const chunks:Buffer[]=[];for await(const chunk of request)chunks.push(chunk as Buffer);
-    calls.push({url:request.url,body:JSON.parse(Buffer.concat(chunks).toString('utf8'))});
+    const raw=Buffer.concat(chunks);
     assert.equal(request.headers.origin,origin);assert.equal(request.headers['sec-fetch-site'],'same-origin');
     assert.equal(request.headers['x-control-session'],'a'.repeat(64));assert.equal(request.headers['x-csrf-token'],'b'.repeat(64));
+    if(invalidBodies.some(body=>body.equals(raw))){rejected.push(raw);response.writeHead(400,{'content-type':'application/json'});response.end(JSON.stringify({error:'invalid-request'}));return;}
+    calls.push({url:request.url,body:JSON.parse(raw.toString('utf8'))});
     response.writeHead(200,{'content-type':'application/json'});response.end(JSON.stringify({schema_version:1,intent_id:'c'.repeat(32)}));
   });
   await new Promise<void>(resolve=>server.listen(socket,resolve));
@@ -22,9 +26,11 @@ test('frontend forwards only bounded same-origin cookie/CSRF JSON to the fixed c
   const body={schema_version:1,project_key:'d'.repeat(32),action:'restart',component:'api'};
   const headers={host:'forge-dev.example.ts.net',origin,'sec-fetch-site':'same-origin','content-type':'application/json',cookie:'__Secure-gptclaw-control='+'a'.repeat(64),'x-csrf-token':'b'.repeat(64)};
   try{
-    const request=(extra:Record<string,string>={},payload=JSON.stringify(body))=>new Request(origin+'/dashboard/api/control-intents/',{method:'POST',headers:{...headers,...extra},body:payload});
+    const request=(extra:Record<string,string>={},payload:string|Uint8Array=JSON.stringify(body))=>new Request(origin+'/dashboard/api/control-intents/',{method:'POST',headers:{...headers,...extra},body:typeof payload==='string'?payload:new Uint8Array(payload).buffer});
     const success=await submitControl(request(),'/v1/intents');assert.equal(success.status,200);
     assert.deepEqual(calls,[{url:'/v1/intents',body}]);
+    for(const raw of invalidBodies)assert.equal((await submitControl(request({},raw),'/v1/intents')).status,400);
+    assert.deepEqual(rejected,invalidBodies,'controller must receive original duplicate-key, malformed and invalid-UTF8 bodies');
     assert.equal((await submitControl(request({origin:'https://attacker.example'}),'/v1/intents')).status,403);
     assert.equal((await submitControl(request({'x-csrf-token':''}),'/v1/intents')).status,403);
     assert.equal((await submitControl(request({cookie:''}),'/v1/intents')).status,403);

@@ -211,3 +211,11 @@ separate from implementation evidence.
 The project owner separately approved committing/pushing the implementation and
 opening a draft PR on October 15 after automatic publication review requested
 explicit confirmation. This publication approval does not deploy the changes.
+
+The project owner subsequently answered “Approve private rollout and fixture
+acceptance” to the scoped rollout request. After the remaining checks pass, this
+authorizes the staged private release, owned provider/ingress upgrade and brief
+router/dashboard restarts, disposable single/group/DB fixture acceptance and
+the named retained Metro fixtures `mob001-accept-one` and `mob001-accept-two`.
+Preserve existing project data/processes and Serve handlers. Actual deployed
+evidence, owner usability acceptance and review/merge remain separate outcomes.

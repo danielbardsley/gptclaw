@@ -30,6 +30,9 @@ import project_database as db
 import project_groups as groups
 import project_toolchains as tools
 
+PROFILES={'single':'fastify','single-web':'nextjs','group':'notes',
+          'database':'fastapi-postgres','database-web':'notes-postgres'}
+
 
 class NativeUnits:
     def __init__(self, original, units):
@@ -129,7 +132,8 @@ def seed_verified_tools(root, canonical_store, aliases):
 
 def exercise(root,profile,peer=None):
     stage=lambda phase,component: print('STAGE',profile,phase,component or 'project',flush=True)
-    if profile=='database':
+    persistent=profile in {'database','database-web'}
+    if persistent:
         _,value=app.target(root)
         with groups.scope(root,value) as children:
             groups.reserve(root,value)
@@ -142,7 +146,7 @@ def exercise(root,profile,peer=None):
     before=instances(root)
     controls.execute(root,'start',stage=stage)
     assert instances(root)==before,'start changed an already ready instance'
-    if profile=='single':
+    if profile in {'single','single-web'}:
         controls.execute(root,'pause',stage=stage);paused=instances(root)
         assert paused==before
         controls.execute(root,'resume',stage=stage);assert instances(root)==before
@@ -157,14 +161,26 @@ def exercise(root,profile,peer=None):
         if peer:assert app.status(peer)['state']=='ready'
         before=after
     note=None
-    if profile=='database':
+    if persistent:
         note=request(root,'POST',body={'title':'Synthetic control acceptance','body':'Task-owned generated data'})
+        for action in ('pause','resume'):
+            try:controls.execute(root,action,stage=stage)
+            except app.AppError as error:assert error.code=='control-unsupported'
+            else:raise AssertionError('persistent project accepted '+action)
+            assert instances(root)==before,'unsupported action changed an instance'
         owned=db.state(app.target(root)[1]['project']['id'],root);volume=owned['active'];epoch=owned['epoch']
         controls.execute(root,'restart','db',stage=stage)
-        after=instances(root);assert after['api']==before['api'] and after['db']!=before['db']
+        after=instances(root);assert after['db']!=before['db']
+        assert all(after[name]==before[name] for name in before if name!='db')
         assert db.state(owned['project'],root)['active']==volume and db.state(owned['project'],root)['epoch']==epoch
         assert request(root,suffix='/api/v1/notes/'+note['id'])==note
         before=after
+        if 'web' in before:
+            controls.execute(root,'restart','web',stage=stage)
+            after=instances(root);assert after['web']!=before['web']
+            assert all(after[name]==before[name] for name in before if name!='web')
+            assert request(root,suffix='/api/v1/notes/'+note['id'])==note
+            before=after
     target='api' if 'api' in before else 'web'
     controls.execute(root,'restart',target,stage=stage)
     after=instances(root);assert after[target]!=before[target]
@@ -175,7 +191,7 @@ def exercise(root,profile,peer=None):
     if note:assert request(root,suffix='/api/v1/notes/'+note['id'])==note
     before_rebuild=instances(root)
     controls.execute(root,'rebuild',stage=stage)
-    if profile=='database':assert instances(root)['db']==before_rebuild['db']
+    if persistent:assert instances(root)['db']==before_rebuild['db']
     if note:assert request(root,suffix='/api/v1/notes/'+note['id'])==note
     before_restart=instances(root)
     controls.execute(root,'restart',stage=stage)
@@ -216,8 +232,14 @@ def cleanup(original,roots):
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--profile',choices=['single','group','database','all'],default='all')
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--profile',choices=[*PROFILES,'all'],default='all')
     args=parser.parse_args()
+    if args.profile=='all':
+        # Each profile gets its own receipt/build namespace and cleanup boundary;
+        # retained build artifacts must not exhaust another profile's quota.
+        for profile in PROFILES:
+            subprocess.run([sys.executable,'-B',str(Path(__file__).resolve()),'--profile',profile],check=True,timeout=1800)
+        return
     base=Path(tempfile.mkdtemp(prefix='.dashboard-check-controls-',dir=ROOT));identity=base.stat()
     projects=base/'projects';projects.mkdir(mode=0o700)
     units=base/'units';units.mkdir(mode=0o700)
@@ -229,14 +251,13 @@ def main():
             (app,'route_info',lambda slug:{'state':'configured','url':'https://synthetic.example.ts.net/projects/'+slug+'/'})]:
             stack.enter_context(patch.object(obj,key,value))
         try:
-            profiles=['single','group','database'] if args.profile=='all' else [args.profile]
-            for profile in profiles:
-                template={'single':'fastify','group':'notes','database':'fastapi-postgres'}[profile]
+            for profile in [args.profile]:
+                template=PROFILES[profile]
                 slug='dsh009-'+uuid.uuid4().hex[:8]+'-'+profile
                 root=Path(app.create(slug,template=template,template_version='1.0.0')['root']);roots.append(root)
                 seed_verified_tools(root,canonical_store,aliases)
                 peer=None;peer_instances=None
-                if profile in {'group','database'}:
+                if profile in {'group','database','database-web'}:
                     peer=Path(app.create('dsh009-'+uuid.uuid4().hex[:8]+'-peer',template='fastify',template_version='1.0.0')['root']);roots.append(peer)
                     seed_verified_tools(peer,canonical_store,aliases);controls.execute(peer,'start');peer_instances=instances(peer)
                 exercise(root,profile,peer)
