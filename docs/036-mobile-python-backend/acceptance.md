@@ -287,3 +287,19 @@ identified synthetic check record. Only that record was deleted afterward. No
 other notes/data were reset or removed. The complete previous Serve baseline is
 unchanged, Funnel remains off and approved HTTP 8445 is still absent at the latest
 readback. The exact add command has been requested from the existing SSM operator.
+
+
+## Operator route verified and Expo Go launch available
+
+After the project owner reported the SSM command complete, independent Serve
+readback verified only the approved HTTP 8445 -> loopback 18605 addition. Removing
+that exact owned entry from the observed config reproduces the complete retained
+baseline; all prior HTTPS handlers are preserved and Funnel remains off.
+Installed status reports Ready with process Up, protocol Ready and private route
+Verified for generation 9ceeacbc17b7473d9869515e02d8ffb6. Installed `go launch`
+reports compatible/launch available for the owner-reported Android 11 / Go 57.0.9
+profile, using the generation-bound URI and unchanged 12:09 p.m. Eastern expiry.
+The private URI is returned only to the owner, not committed to source.
+Actual physical launch, native CRUD, visual/accessibility review, review/merge and
+the remaining T9 scenarios are still pending. Earlier route-pending checkpoints
+above are historical.

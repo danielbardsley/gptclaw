@@ -2,7 +2,7 @@
 
 Requested and explicitly approved by the project owner on October 15, 2026.
 Current status: both private repositories created with passing generated CI;
-backend and Metro protocol ready; exact private route awaits the SSM operator.
+backend, Metro and exact private route verified; current Android Go link available.
 See [actual evidence](acceptance.md) for receipts and remaining device gates. Confirmed phone: Android 11,
 Expo Go 57.0.9, connected to the development tailnet.
 
