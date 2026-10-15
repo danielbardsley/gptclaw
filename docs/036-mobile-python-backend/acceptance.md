@@ -132,3 +132,10 @@ fractional/boolean schema values; valid historical receipts remain supported.
 Historical-provider rejection now uses a SHA-256-pinned copy of the real v6
 validator from `cce6476`, so shallow CI checkouts do not need a local `main`
 branch. The targeted historical-validator test passed with the committed fixture.
+
+The full local repository command exposed one existing worktree-test timing race:
+its assertion observed a runnable child immediately after SIGKILL delivery. The
+production cleanup code was unchanged. The test now waits at most two seconds for
+absence or zombie state and still fails for a surviving descendant. The focused
+timeout regression passed; the entire 28-test worktree suite is being rerun. The
+original full-run failure is retained as evidence rather than reported as a pass.
