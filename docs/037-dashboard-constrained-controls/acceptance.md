@@ -199,3 +199,27 @@ rest between windows. This preserves finite reads and fail-closed preflight whil
 avoiding delay behind an unrelated project. A blocked-reader regression verifies
 that the healthy row becomes visible before the slow reader completes. Live
 reverification and final-head checks remain pending; no Pause success is claimed.
+
+
+Incremental collection made the peer's capabilities available, but the live
+browser flow remained disabled because its service status was unknown. A direct
+read-only observer trace identified a separate schema-7 bug: published single
+TypeScript APIs entered the group-only docs-link branch and raised `KeyError`
+for absent `components`. A new complete ready-runtime regression reproduced that
+exact failure before correction. The docs target now uses the single project
+receipt/root for schemas 2 and 7, retaining schema 7's `/api/docs` path. Existing
+status freshness/deadline semantics are unchanged. New writes are disabled until
+the corrected release is verified. The first live browser attempt was stopped
+as an owned test container after an unbounded missing-element wait; its replacement
+has finite locator/failure deadlines. The operation ledger independently confirms
+that no browser mutation was admitted: only the two successful API Start records
+exist. No browser acceptance is claimed from that attempt.
+
+
+After the single API docs correction, complete observation (11), status (8) and
+installer (11) suites passed. The controller rerun exposed a test-client race:
+a server can reject invalid headers before the body finishes sending. Its helper
+now reads and asserts the actual HTTP refusal even after `BrokenPipeError`, and
+always closes the socket; no refusal is inferred from a disconnect. The complete
+15-case controller rerun passed after that test-only correction. Updated exact-head
+CI and deployed verification remain pending.

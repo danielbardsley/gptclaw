@@ -310,9 +310,10 @@ def route_descriptor(root, contract, result):
     # This is the fixed docs capability of the already validated supported
     # adapter, never a browser/manifest-supplied destination or path crawl.
     if result['publication']['state']=='published':
-        target=root if contract['schema_version']==2 else root/contract['components']['api']['root']
+        single=contract['schema_version'] in (2,7)
+        target=root if single else root/contract['components']['api']['root']
         from project_groups import identity as group_identity
-        name=slug if contract['schema_version']==2 else group_identity(slug,'api')
+        name=slug if single else group_identity(slug,'api')
         receipt=app.state_for(name)
         if receipt and receipt['root']==str(target):
             opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),app.NoRedirect())

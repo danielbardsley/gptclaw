@@ -196,8 +196,15 @@ class ControllerTests(unittest.TestCase):
         self.addCleanup(server.shutdown)
         def request(method,path,headers,body=b''):
             conn=http.client.HTTPConnection('localhost');conn.sock=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
-            conn.sock.connect(str(socket_path));conn.request(method,path,body=body,headers={'Host':ORIGIN.removeprefix('https://'),**headers})
-            response=conn.getresponse();status=response.status;response.read();conn.close();return status
+            try:
+                conn.sock.connect(str(socket_path))
+                try:conn.request(method,path,body=body,headers={'Host':ORIGIN.removeprefix('https://'),**headers})
+                except BrokenPipeError:
+                    # Invalid headers may be rejected before the body is sent.
+                    # Still require the actual HTTP refusal, never infer a pass.
+                    pass
+                response=conn.getresponse();status=response.status;response.read();return status
+            finally:conn.close()
         data=json.dumps({'schema_version':1,'project_key':self.key,'action':'restart','component':'web'}).encode()
         headers={'Origin':ORIGIN,'Sec-Fetch-Site':'same-origin','Content-Type':'application/json',
                  'X-Control-Session':self.session['session'],'X-CSRF-Token':self.session['csrf']}
