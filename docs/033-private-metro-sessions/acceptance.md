@@ -1,13 +1,13 @@
 # SPEC-033 acceptance tracking
 
-- **Status:** Android physical acceptance passed; operator cleanup and final CI/merge remain pending
+- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
 - **Owner:** Project owner
 - **Observed:** October 14, 2026 UTC
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md) · **Tasks:** [TASKS-033](tasks.md)
-- **Context:** Main fd6566426e0f18f16bc19150edcc113902da3e84;
+- **Planning baseline:** Main fd6566426e0f18f16bc19150edcc113902da3e84;
   planning commit 66c19a26eb9fba81812165b6c7bda3d390e776ed / [PR #77](https://github.com/danielbardsley/gptclaw/pull/77).
   Installed implementation is on codex/mobile-metro /
-  [draft PR #78](https://github.com/danielbardsley/gptclaw/pull/78); implementation CI and runtime rollout pass; merge and final acceptance remain pending.
+  [merged PR #78](https://github.com/danielbardsley/gptclaw/pull/78); implementation CI and runtime rollout pass; both planning and implementation are merged, with operator removal/readback explicitly deferred.
 
 ## Criterion mapping
 
@@ -20,7 +20,7 @@
 | AC-005 | Passed | Installed CLI/collector distinguish readiness/expiry and withdraw launch targets; typed generation/origin/expiry, source parity and Go-only rollback/roll-forward pass. No device-online/backend-health claim is made. |
 | AC-006 | Passed | Exact runtime disposition, effective mounts/resource/environment predicates, bounded sanitized records, tested exception/version/expiry denials and live lock/environment-file admission shutdown pass. A separate allowed source-exclusion probe proves the synthetic private canary file is absent from the SDK view and native bundle; failed forbidden-dotenv probes remain recorded. |
 | AC-007 | Passed | Offline bind/route/health/interruption/foreign-lease boundaries, real owned crash recovery, bounded expiry/reconciliation, actual private renewal, capable refresh/rollback and older-provider rejection pass. Source/data and the existing app baseline are preserved; preexisting group degradation is not reported as healthy. Physical reconnect and expiry isolation also pass under AC-002/003 and SPEC-034 AC-005. |
-| AC-008 | In progress | All four revised-proxy CI workflows pass at 4ceb99b. Installed rollout/parity/rollback and the complete Android owner matrix pass separately. Final published evidence-head CI, owned listener removal and review/authorized merge remain; source, receipts/history and both synthetic repositories are retained. |
+| AC-008 | In progress — cleanup deferred | Planning PR #77 and implementation PR #78 are merged after approved review and passing CI. The Android physical matrix, installed parity/rollback and retained source/history pass. The owner explicitly defers exact listener removal/readback until SSM access at home; this obligation still prevents a Delivered label. |
 
 ## Historical local verification
 
@@ -1351,3 +1351,36 @@ All four evidence-head workflows also pass at
 and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38652259286).
 Later evidence summaries retain their own final published-head checks. No CI
 success substitutes for pending operator removal or authorizes merge.
+
+
+## Authorized merge and deferred operator cleanup
+
+The project owner explicitly approved merge and deferred SSM cleanup until access
+at home. This permits merge before cleanup; it does not establish that removal
+occurred or waive the operator-path/readback criterion. No additional merge
+approval is pending for the reviewed implementation and its delivery records.
+
+Planning [PR #77](https://github.com/danielbardsley/gptclaw/pull/77) merged at
+`8cac934d27cfa8114a42cb72b184ea113718d24e`. Implementation
+[PR #78](https://github.com/danielbardsley/gptclaw/pull/78) merged at
+`4137f78b6e0955519461efc03c8bdfa77b988c8d`, after the combined revision
+`809ef32bc1a39317450ad6224f4e53506baaef7e` passed all four workflows:
+[private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38657235088),
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38657235105),
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38657235175)
+and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38657235256).
+The combined main additions were only the already merged directory-guide docs;
+implementation source was unchanged. Relative-link and whitespace checks passed.
+No protected infrastructure apply was dispatched.
+
+The complete physical matrix is Android 11 / Expo Go 57.0.9 / SDK 57. iOS remains
+unsupported/follow-up. Both temporary SDK/audit/network/proxy runtimes are absent;
+both project repositories, metadata/history, sticky ownership records and published
+starter releases are retained. Exact HTTP listeners 8443/8444 remain configured,
+with no backend, while HTTPS dashboard/project handlers and Funnel off are preserved.
+
+Remaining action: once the owner has SSM access, execute only the reviewed
+owned-listener removal, independently verify the intermediate/final preserved
+configuration, and record completion. Do not restart/renew fixtures, bypass operator
+permissions or delete source/data. Catalogue state is Implemented; mark Delivered
+only after that remaining acceptance gate actually passes.

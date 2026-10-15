@@ -1,6 +1,6 @@
 # TDD-034: Expo Go compatibility and launch UX
 
-- **Status:** Implemented and installed — final acceptance/merge pending
+- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-034](spec.md) · **Tasks:** [TASKS-034](tasks.md)

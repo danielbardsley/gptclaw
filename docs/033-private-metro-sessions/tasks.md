@@ -1,6 +1,6 @@
 # TASKS-033: Private Metro sessions
 
-- **Status:** Implementation authorized — implementation and installed rollout verified; final owner/delivery gates pending
+- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md)
@@ -32,7 +32,7 @@
 - [x] T-006: Add safe observation/CLI endpoint descriptor, minimum source/session
   presentation and reviewed runbook; distinguish all readiness layers and leave
   full native/device/build telemetry to MOB-009. (MET-005; AC-005)
-- [ ] T-007 (in progress): Run relevant offline, real rootless protocol/lifecycle and legacy app/
+- [x] T-007: Run relevant offline, real rootless protocol/lifecycle and legacy app/
   dashboard/credential/worktree regressions and CI. Package a combined source/
   installed provider and any frozen collector update; prove parity and recovery.
   (MET-001–007; AC-001–007)
@@ -310,3 +310,10 @@ Current cleanup handoff: the owner lacks SSM access now and will remove the owne
 HTTP listeners later. Both temporary runtimes are absent; source/history and
 handlers are retained. Operator removal/readback and final CI/merge remain pending;
 no bypass or Delivered claim is made.
+
+
+Review, passing combined-revision CI and authorized planning/implementation merges
+are complete. The project owner explicitly deferred SSM cleanup until access at
+home. Retained runtime/source/Android evidence is recorded in acceptance; final
+delivery remains open only for exact owned-listener removal/readback. Keep the
+final delivery task unchecked and catalogue Implemented until that action passes.

@@ -1,11 +1,11 @@
 # SPEC-034 acceptance tracking
 
-- **Status:** Android physical acceptance passed; operator cleanup and final CI/merge remain pending
+- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
 - **Owner:** Project owner
 - **Observed:** October 14, 2026 UTC
 - **Specification:** [SPEC-034](spec.md) · **Design:** [TDD-034](technical-design.md) · **Tasks:** [TASKS-034](tasks.md)
-- **Implementation:** [draft PR #78](https://github.com/danielbardsley/gptclaw/pull/78),
-  changes following 9308e0b; installed as the combined provider; not merged.
+- **Implementation:** [merged PR #78](https://github.com/danielbardsley/gptclaw/pull/78),
+  changes following 9308e0b; installed as the combined provider; merged with operator cleanup explicitly deferred.
 
 ## Criterion mapping
 
@@ -16,8 +16,8 @@
 | AC-003 | Passed | Read-only inspect/launch and minimum Open/copy/QR UI preserve existing links and fail closed on missing/stale capability. Portable browser tests and installed CLI/collector parity pass; launch performs no hidden runtime/route/account action. Owner confirms physical QR launch under AC-002. |
 | AC-004 | Passed (Android-first) | Owner confirms both Android projects’ native UI/assets/counter/navigation, state-retaining Fast Refresh and restored-source full reload. Owner accepted the Android-first scope; iOS remains unsupported/follow-up. |
 | AC-005 | Passed (Android-first) | Prior network/tailnet/background/compile recovery passes. Earlier stop/reload isolation failed because app two also could not reload. The installed capacity correction now has owner-confirmed loading for both fresh sessions; the owner reports Reload still works and the repeated physical stop/isolation check passes. The owner confirms native reconnection after app-one restart and post-crash Reload of both apps. Owner separately confirms expired app one is unavailable while app two remains usable; the physical expiry check passes. |
-| AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. All four revised-proxy CI workflows pass at 4ceb99b; final published evidence-head CI and merge/delivery remain AC-007. |
-| AC-007 | In progress | Source/frozen launch parity, rollout, capable rollback and implementation CI pass. Owner-selected Android-first matrix and physical recovery/expiry pass; both synthetic repositories and source/history are retained. Exact operator cleanup, final published evidence-head CI and authorized merge remain. |
+| AC-006 | Passed | Profile/serializer/privacy/ownership/worktree/legacy/collector/package regressions and portable QR/browser/type/build gate pass. Installed public projections and source-exclusion canary remain free of fixture secrets/device data. All four combined-revision CI workflows pass at 809ef32; the remaining deferred-cleanup delivery gate is AC-007. |
+| AC-007 | In progress — cleanup deferred | Source/installed/CI parity, rollout/rollback and the owner-selected Android physical matrix pass. PR #78 is merged; retained source/history and both repositories are preserved. The owner explicitly defers prerequisite listener removal/readback until SSM access at home; the feature remains Implemented rather than Delivered. |
 
 ## Historical verification
 
@@ -50,7 +50,7 @@ client membership/access still requires the real device checks.
 
 Remove only the two exact owned HTTP Metro listeners through the reviewed SSM
 operator path, preserving port-443 HTTPS handlers and Funnel off. Record independent
-readback, final published-head CI and reviewed/authorized merge. The Android physical
+readback and final delivery evidence. Review, CI and authorized merge are complete. The Android physical
 matrix is accepted; iOS remains explicitly unsupported/follow-up. Both retained
 synthetic project repositories, metadata/history and published starter releases
 are preserved. This is a development-client workflow, not product/backend CRUD,
@@ -676,3 +676,36 @@ All four evidence-head workflows also pass at
 and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38652259286).
 Later evidence summaries retain their own final published-head checks. No CI
 success substitutes for pending operator removal or authorizes merge.
+
+
+## Authorized merge and deferred operator cleanup
+
+The project owner explicitly approved merge and deferred SSM cleanup until access
+at home. This permits merge before cleanup; it does not establish that removal
+occurred or waive the operator-path/readback criterion. No additional merge
+approval is pending for the reviewed implementation and its delivery records.
+
+Planning [PR #77](https://github.com/danielbardsley/gptclaw/pull/77) merged at
+`8cac934d27cfa8114a42cb72b184ea113718d24e`. Implementation
+[PR #78](https://github.com/danielbardsley/gptclaw/pull/78) merged at
+`4137f78b6e0955519461efc03c8bdfa77b988c8d`, after the combined revision
+`809ef32bc1a39317450ad6224f4e53506baaef7e` passed all four workflows:
+[private applications](https://github.com/danielbardsley/gptclaw/actions/runs/38657235088),
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38657235105),
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38657235175)
+and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38657235256).
+The combined main additions were only the already merged directory-guide docs;
+implementation source was unchanged. Relative-link and whitespace checks passed.
+No protected infrastructure apply was dispatched.
+
+The complete physical matrix is Android 11 / Expo Go 57.0.9 / SDK 57. iOS remains
+unsupported/follow-up. Both temporary SDK/audit/network/proxy runtimes are absent;
+both project repositories, metadata/history, sticky ownership records and published
+starter releases are retained. Exact HTTP listeners 8443/8444 remain configured,
+with no backend, while HTTPS dashboard/project handlers and Funnel off are preserved.
+
+Remaining action: once the owner has SSM access, execute only the reviewed
+owned-listener removal, independently verify the intermediate/final preserved
+configuration, and record completion. Do not restart/renew fixtures, bypass operator
+permissions or delete source/data. Catalogue state is Implemented; mark Delivered
+only after that remaining acceptance gate actually passes.
