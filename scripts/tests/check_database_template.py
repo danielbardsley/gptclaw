@@ -25,7 +25,8 @@ def replace_fixture_source(root,source,contract):
     Generated component provenance is retained; deleted application files and
     project-owned browser checks must match the selected source, not its starter.
     """
-    for component in ('api','web','checks'):
+    for component in (*groups.order(contract),'checks'):
+        if component=='checks' and not (source/'checks').exists():continue
         origin=source/(contract['components'][component]['root'] if component != 'checks' else 'checks')
         # Replace task-owned fixture source, retaining only generated provenance.
         # Overlaying leaves removed migrations/tests active in evolved applications.
@@ -76,10 +77,13 @@ def main():
                                  (a,'object_owned',owned),(db,'execute',quiet),(db,'start',fixture_start)]:
             stack.enter_context(patch.object(target,key,value))
         snapshot=a.provider_bundle();stack.enter_context(patch.object(a,'REPO',snapshot))
-        root=Path(a.create(slug,template='notes-postgres',template_version='1.0.0')['root'])
+        source=Path(args.source_root).absolute() if args.source_root else None
+        original=a.validate_project(source)[1] if source else None
+        backend_only=bool(original and original['schema_version']==8)
+        root=Path(a.create(slug,template='fastapi-postgres' if backend_only else 'notes-postgres',template_version='1.0.0')['root'])
         value=a.target(root)[1]
         if args.source_root:
-            source=Path(args.source_root).absolute();_,original,_=a.validate_project(source);a.need(original is not None and original['schema_version']==4,'invalid')
+            source=Path(args.source_root).absolute();_,original,_=a.validate_project(source);a.need(original is not None and original['schema_version'] in (4,8),'invalid')
             replace_fixture_source(root,source,original)
             value['database']=original['database'];a.save(root/'.gptclaw/project.yaml',value)
         s=db.create(root,value)
@@ -101,6 +105,33 @@ def main():
                 print(diagnostic,file=sys.stderr,flush=True)
                 raise a.AppError('database-command')
             return result
+        def native_client(phase):
+            """Run the retained compiled native adapter without giving Node DB credentials."""
+            if not backend_only:return
+            output=base/'native-client-output';output.mkdir(exist_ok=True)
+            name=db.name(s)+'-native-api'
+            file=db.home(slug)/'credentials'/s['epoch']/'runtime.json'
+            run([args.engine,'run','--detach','--name',name,'--label',a.LABEL+'='+s['token'],
+                 '--userns=keep-id','--user',str(os.getuid())+':'+str(os.getgid()),
+                 '--network='+db.backend(s),'--network-alias=api','--memory=1536m','--cpus=1','--pids-limit=256',
+                 '--cap-drop=all','--security-opt=no-new-privileges',
+                 '--volume',str(root/'api')+':/workspace:rw','--volume',str(file)+':/run/secrets/database.json:ro',
+                 '--workdir=/workspace','--env','PYTHONPATH=/workspace/src','--env','GPTCLAW_PROJECT_ID='+slug,
+                 '--env','GPTCLAW_DATABASE_FILE=/run/secrets/database.json','--env','GPTCLAW_DATABASE_HOST='+db.name(s),
+                 '--env','GPTCLAW_DATABASE_HEAD='+value['database']['head'],image,
+                 '.venv/bin/python','-m','uvicorn','fastapi_app.main:create_app','--factory','--app-dir','src',
+                 '--host','0.0.0.0','--port','8000','--no-access-log','--no-proxy-headers'])
+            try:
+                profile=json.loads((a.REPO/'config/toolchains/v1.json').read_text())['profiles'][0]
+                result=run([args.engine,'run','--rm','--userns=keep-id','--user',str(os.getuid())+':'+str(os.getgid()),
+                            '--network='+db.backend(s),'--memory=1536m','--cpus=1','--pids-limit=256',
+                            '--cap-drop=all','--security-opt=no-new-privileges',
+                            '--volume',str(root/'checks/v1-client')+':/client:ro','--volume',str(output)+':/output:rw',
+                            '--workdir=/client','--env','GPTCLAW_COMPAT_URL=http://api:8000/projects/'+slug+'/api',
+                            '--env','GPTCLAW_COMPAT_PHASE='+phase,args.node_image or profile['base_image'],'node','check.cjs'])
+                print(result.stdout.strip(),flush=True)
+            finally:
+                if owned('container',name,s['token']):run([args.engine,'rm','--force',name])
         try:
             db.acquire();db.start(s);db.grants(s)
             probe=run([args.engine,'exec',db.name(s),'sh','-c',"! tr '\\0' '\\n' </proc/1/environ | grep -Eq '^(POSTGRES_PASSWORD|PGPASSWORD)='"],optional=True)
@@ -194,7 +225,7 @@ def main():
                   RETURN md5(combined::text);
                 END $digest$; SELECT pg_temp.gptclaw_domain();"""
                 return db.sql(s,statement).strip().splitlines()[-1]
-            db.start(s);before_migration=domain_digest();db.stop(s)
+            db.start(s);native_client('before');before_migration=domain_digest();db.stop(s)
             previous_head=value['database']['head']
             probe_head='probe_'+uuid.uuid4().hex[:16]
             migration=root/('api/migrations/versions/'+probe_head+'.py')
@@ -205,11 +236,12 @@ def main():
             assert s['revision']==probe_head
             db.start(s)
             assert domain_digest()==before_migration
+            native_client('after')
             db.stop(s)
             print('PASS: corrupt-backup refusal and explicit data-preserving forward migration',flush=True)
             value['database']['head']=previous_head;a.save(root/'.gptclaw/project.yaml',value);migration.unlink()
 
-            receipt={'schema_version':1,'project':slug,'postgres':db.acquire(),'manifest':4,'database':s['revision'],
+            receipt={'schema_version':1,'project':slug,'postgres':db.acquire(),'manifest':value['schema_version'],'database':s['revision'],
                      'passed':['generation','migration','quality','persistence','role-denial','backup','restore','secret-metadata','reset','restore-promotion','rotation','old-login-denial','generation-prune','failed-reset-preservation','corrupt-backup-refusal','forward-migration'],
                      'security':'skipped-explicitly' if args.skip_security else 'passed','fixture':'isolated-rootless' if args.engine=='podman' else 'isolated-docker'}
             (base/'receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')

@@ -20,7 +20,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.12.0'
+VERSION = '1.14.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -178,7 +178,7 @@ def target(root):
  result, contract, code = validate_project(root)
  need(code == 0, 'invalid')
  marker = read_json(root / '.gptclaw/template.json')
- need(marker == {'provider': 'expo-v1' if contract['schema_version'] in (5,6) else 'notes-postgres-v1' if contract['schema_version'] == 4 else 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'nextjs-v1'}, 'invalid')
+ need(marker == {'provider': 'expo-notes-v1' if contract['schema_version']==9 else 'fastapi-postgres-v1' if contract['schema_version']==8 else 'expo-v1' if contract['schema_version'] in (5,6,9) else 'notes-postgres-v1' if contract['schema_version'] == 4 else 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'nextjs-v1'}, 'invalid')
  import project_templates as templates
  templates.validate_provenance(root)
  need(not any((root/name).exists() for name in ['.env','.env.local','.env.development','.env.production','.npmrc','.ssh','.aws']),'invalid')
@@ -186,7 +186,7 @@ def target(root):
 
 
 def valid_state(s):
- if isinstance(s,dict) and s.get('schema_version') in (2,3):
+ if isinstance(s,dict) and s.get('schema_version') in (2,3,4):
   import project_groups as groups
   return groups.valid_state(s)
  need(isinstance(s, dict) and s.get('schema_version') == 1, 'conflict')
@@ -272,7 +272,7 @@ def available(port):
 
 
 def reserve(root, contract):
- need(contract['schema_version'] not in (5,6), 'mobile-unsupported')
+ need(contract['schema_version'] not in (5,6,9), 'mobile-unsupported')
  slug = contract['project']['id']
  with locked('registry'):
   s = state_for(slug)
@@ -482,8 +482,8 @@ def save_text(path,text):
 
 
 def start(root, no_route=False, take_lock=True):
- if target(root)[1]['schema_version'] in (5,6): raise AppError('mobile-unsupported')
- if target(root)[1]['schema_version'] in (3,4):
+ if target(root)[1]['schema_version'] in (5,6,9): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (3,4,8):
   import project_groups as groups
   return groups.start(root,no_route,take_lock)
  import project_dependencies as deps
@@ -528,8 +528,8 @@ def start(root, no_route=False, take_lock=True):
 
 
 def stop(root, take_lock=True):
- if target(root)[1]['schema_version'] in (5,6): raise AppError('mobile-unsupported')
- if target(root)[1]['schema_version'] in (3,4):
+ if target(root)[1]['schema_version'] in (5,6,9): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (3,4,8):
   import project_groups as groups
   return groups.stop(root,take_lock)
  root,contract=target(root);slug=contract['project']['id']
@@ -555,8 +555,8 @@ def stop(root, take_lock=True):
 
 
 def restart(root):
- if target(root)[1]['schema_version'] in (5,6): raise AppError('mobile-unsupported')
- if target(root)[1]['schema_version'] in (3,4):
+ if target(root)[1]['schema_version'] in (5,6,9): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (3,4,8):
   import project_groups as groups
   return groups.restart(root)
  root,contract=target(root);slug=contract['project']['id']
@@ -571,8 +571,8 @@ def restart(root):
 
 
 def status(root):
- if target(root)[1]['schema_version'] in (5,6): raise AppError('mobile-unsupported')
- if target(root)[1]['schema_version'] in (3,4):
+ if target(root)[1]['schema_version'] in (5,6,9): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (3,4,8):
   import project_groups as groups
   return groups.status(root)
  root,contract=target(root);slug=contract['project']['id'];s=state_for(slug)
@@ -590,7 +590,7 @@ def test_app(root):
 
 
 def quality_app(root, action='test'):
- if target(root)[1]['schema_version'] in (5,6):
+ if target(root)[1]['schema_version'] in (5,6,9):
   return __import__('project_mobile').quality(root,action)
  import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
@@ -629,7 +629,7 @@ def redact(text):
 
 
 def logs(root,lines):
- if target(root)[1]['schema_version'] in (5,6): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (5,6,9): raise AppError('mobile-unsupported')
  root,contract=target(root);s=state_for(contract['project']['id']);need(s is not None,'invalid')
  need(s['root']==str(root));need(1<=lines<=200,'invalid')
  if unit_path(s).exists():verify_unit(s)
@@ -705,7 +705,7 @@ WantedBy=default.target
 
 def provider_bundle():
  paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','project_dependencies.py','project_toolchains.py','gptclawctl.py','gptclawctl','project_repositories.py','repository_askpass.py','repository_credentials.py','repository_credential_helper.py','repository-credential-helper']]
- paths += [Path('scripts/project_worktrees.py')]
+ paths += [Path('scripts/project_worktrees.py'),Path('scripts/mobile_backend.py'),Path('schemas/project/v8.schema.json'),Path('schemas/project/v9.schema.json')]
  paths += [Path('scripts/project_mobile.py'), Path('scripts/expo_go.py'), Path('scripts/dashboard_go.py'), Path('config/mobile/expo-go-v1.json'), Path('scripts/metro_contract.py'), Path('scripts/metro_state.py'), Path('scripts/metro_protocol.py'), Path('scripts/metro_proxy.py'), Path('scripts/metro_routes.py'), Path('scripts/metro_retention.py'), Path('scripts/metro_sessions.py'), Path('scripts/metro_spike.py'), Path('scripts/metro_security.py'), Path('config/metro/runtime-security-v1.json'), Path('config/mobile/v1.json'), Path('schemas/project/v5.schema.json'), Path('schemas/project/v6.schema.json')]
  paths += [Path('scripts/dashboard_inventory.py'), Path('scripts/dashboard_collector.py'), Path('scripts/dashboard_observation.py'), Path('scripts/dashboard_status.py'), Path('scripts/dashboard_metro.py'), Path('scripts/dashboard_links.py')]
  paths += [Path('config/project-dependencies/v1.json'),Path('schemas/project-dependencies/v1.schema.json')]
@@ -734,7 +734,7 @@ def provider_bundle():
 
 
 def install_hooks(root):
- if target(root)[1]['schema_version'] in (3,4):
+ if target(root)[1]['schema_version'] in (3,4,8):
   import project_groups as groups
   return groups.install_hooks(root)
  root,contract=target(root);need(contract['schema_version']==2,'invalid');slug=contract['project']['id']

@@ -40,3 +40,14 @@ __pycache__/
 **/tsconfig.tsbuildinfo
 /.dashboard-qa/
 /.dashboard-check-*/
+
+# Task-owned generated-template verification outputs
+**/.venv/
+**/.gptclaw-cache/
+**/.gptclaw-build/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.pytest_cache/
+**/.cache/
+**/coverage/
+**/.coverage

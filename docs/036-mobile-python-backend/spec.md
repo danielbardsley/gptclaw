@@ -1,6 +1,6 @@
 # SPEC-036 — Mobile integration with a Python backend
 
-- **Status:** Draft for review; planning requested, implementation not authorized.
+- **Status:** Implementation authorized; in progress; acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-15 (America/New_York)
 - **Feature:** MOB-010; supporting development-only MOB-005, RUN-006/011,
@@ -23,7 +23,8 @@ application backends, and requested a good-looking, interesting UI. FastAPI is
 the selected backend here and the default recommendation for subsequent mobile
 application work. SPEC-035's optional Fastify template remains separate work;
 this initiative neither depends on it nor changes its authorization. The owner
-requested planning only for this initiative. Review, implementation authorization,
+requested planning initially and subsequently authorized implementation in this chat, authorizing
+implementation of this scope. Review, implementation authorization,
 merge, rollout and owner acceptance remain distinct.
 
 Include a reusable API/DB-only project shape and exact immutable starter, an

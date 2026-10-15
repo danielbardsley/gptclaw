@@ -1,0 +1,9 @@
+{
+  "contract_version": 1,
+  "source": {
+    "client.ts": "f23fd0abd8690291f47784d9ad14b5c856b63ab01b4dee7d4bf89b92bd4017d5",
+    "contract.ts": "14fda6fe85e38eba6368a4203f358083426b933aa790b2ecc155cf814ce28dec"
+  },
+  "compiler": "typescript 6.0.3",
+  "target": "es2022 commonjs"
+}

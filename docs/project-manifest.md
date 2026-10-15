@@ -228,3 +228,12 @@ preparation stage the source provider advertises source schemas 1–6 but runtim
 schemas 1–4, and the installed provider still rejects schema 6. Runtime, operator
 routing and physical iOS/Android acceptance remain pending. No existing app or
 immutable source release is automatically upgraded.
+
+## Mobile Python composition (SPEC-036)
+
+Manifest 8 is a strict persistent Python API/DB-only group; manifest 9 is an
+opt-in Expo Metro source project with an explicit development FastAPI binding.
+Historical schemas remain unchanged. Provider 1.14.0 adds group receipt 4, Metro
+control receipt 3 and catalogue 7; source support does not establish installed
+rollout or device acceptance. See [operation and recovery](../runbooks/manage-mobile-backends.md)
+and [SPEC-036](036-mobile-python-backend/spec.md).

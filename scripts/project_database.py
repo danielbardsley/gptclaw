@@ -671,7 +671,7 @@ def rotate(s):
 def dispatch(root, action, selected=None, operation_id=None, confirm=None):
     from project_worktrees import guard
     guard(root)
-    root,contract=a.target(root);check(contract['schema_version']==4,'invalid');slug=contract['project']['id']
+    root,contract=a.target(root);check(contract['schema_version'] in (4,8),'invalid');slug=contract['project']['id']
     if action=='status' and contract['database'].get('storage')!=STORAGE:
         return {'project':slug,'state':'storage-upgrade-required','minimum_provider':'1.8.2','data_retained':True}
     require_storage(contract)
@@ -718,7 +718,7 @@ def dispatch(root, action, selected=None, operation_id=None, confirm=None):
 def logs(root, lines=80):
     """Read bounded owned DB logs and remove every retained credential value."""
     check(type(lines) is int and 1<=lines<=200,'invalid')
-    root,contract=a.target(root);check(contract['schema_version']==4,'invalid')
+    root,contract=a.target(root);check(contract['schema_version'] in (4,8),'invalid')
     s=state(contract['project']['id'],root);check(s is not None,'database-state')
     check(a.object_owned('container',name(s),s['token']),'database-state')
     result=a.command(['podman','logs','--tail='+str(lines),name(s)])

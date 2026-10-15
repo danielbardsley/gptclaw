@@ -1,0 +1,16 @@
+node_modules/
+.expo/
+.gptclaw-cache/
+.gptclaw-build/
+coverage/
+android/
+ios/
+.env
+.env.*
+*.keystore
+*.p12
+*.mobileprovision
+.cache/
+
+.gptclaw/backend.local.json
+src/config/backend.generated.ts

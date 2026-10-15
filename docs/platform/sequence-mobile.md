@@ -313,7 +313,7 @@ proposes MOB-010 with Python/FastAPI and PostgreSQL, a new API/DB-only backend s
 explicit development binding and a polished native synthetic-notes experience.
 The project owner selected Python as the application backend default. Android
 CRUD, persistence, recovery and visual/accessibility acceptance close the remaining
-M1 integration gap when passed; implementation is not yet authorized. Fastify's
+M1 integration gap when passed; implementation is authorized and in progress. Fastify's
 optional template work is separate and is not a mobile backend prerequisite.
 
 **M1 spans stages 1–4 across compatible initiatives:** SPEC-031 begins with

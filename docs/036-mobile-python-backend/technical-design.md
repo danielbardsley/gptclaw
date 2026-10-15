@@ -1,6 +1,6 @@
 # TDD-036 — Python-backed native notes
 
-Status: Proposed design; implementation not authorized. Owner: Project owner.
+Status: Implementation design; authorized, in progress. Owner: Project owner.
 Date: 2026-10-15 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
 
@@ -134,7 +134,20 @@ passed criteria is created during planning.
 
 Routine implementation choices include unused schema/release numbers and compatible
 exact client-generator pins; document them before publication. The project owner
-reviews this scope before implementation. Android-first acceptance follows the
+authorized this scope after the planning PR; implementation review is pending. Android-first acceptance follows the
 available accepted device; iOS requires a separate observed device matrix. If current
 client compatibility or private transport cannot pass within existing contracts,
 record the blocker and propose a scoped change without broadening permissions.
+
+## Implementation selections
+
+Provider 1.14.0 selects manifest 8 (API/DB-only), manifest 9 (bound mobile),
+API/DB group receipt 4, bound Metro control receipt 3 and catalogue 7. Releases
+are `fastapi-postgres@1.0.0` and `expo-notes@1.0.0`. Existing schemas/releases and
+the default web selection remain unchanged. The client generator is repository-owned
+v1 JavaScript using Node built-ins, frozen with the starter; it requires no new
+package/toolchain pin. FastAPI emits the source OpenAPI without connecting to DB,
+Python tests detect schema drift and native checks detect stale generated output.
+A retained compiled v1 adapter exercises real HTTP CRUD around the isolated additive
+migration, without a credential mount. UI motion is deliberately absent, so the
+experience does not require animation for comprehension or reduced-motion handling.

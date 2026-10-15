@@ -242,10 +242,11 @@ dispositions independently of feature implementation status.
   [Tasks](034-expo-go-workflow/tasks.md) ·
   [Acceptance tracking](034-expo-go-workflow/acceptance.md)
 
-- **036 — Mobile Python backend integration (MOB-010), draft for review:**
+- **036 — Mobile Python backend integration (MOB-010), implementation in progress:**
   [Specification](036-mobile-python-backend/spec.md) ·
   [Technical design](036-mobile-python-backend/technical-design.md) ·
-  [Tasks](036-mobile-python-backend/tasks.md)
+  [Tasks](036-mobile-python-backend/tasks.md) ·
+  [Acceptance](036-mobile-python-backend/acceptance.md)
 
 ## Current application milestone
 

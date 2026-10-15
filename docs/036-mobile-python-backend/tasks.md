@@ -1,6 +1,6 @@
 # TASKS-036 — Mobile Python backend integration
 
-Owner: Project owner. Status: Draft; implementation not authorized.
+Owner: Project owner. Status: Implementation authorized; in progress.
 Date: 2026-10-15 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md)
 
@@ -8,29 +8,30 @@ Date: 2026-10-15 (America/New_York).
 
 - [x] T1: Inspect mobile creation/Metro/Go, persistent backend contracts, actual group
   routing and existing planning; draft the Python/Android-first scope and visual direction.
-- [ ] T2: Project owner reviews scope; record implementation authorization when given.
-  Recheck merged/installed baseline and concurrent SPEC-035 work; allocate unused
-  schema/catalogue/release versions and exact tool choices without changing old contracts.
+- [x] T2: Project owner authorized implementation in this chat after PR #83 opened.
+  Source baseline and SPEC-035 allocations checked; selected unused
+  project schemas 8/9, catalogue 7, provider 1.14.0 and repository-owned client generator v1.
+  Python/uv and Expo/Node profiles and historical contracts remain unchanged.
   Planning, review, merge, runtime rollout and final acceptance stay distinct. (MB-007)
 
 ## Implementation after authorization
 
-- [ ] T3: Implement strict opt-in mobile binding/public-config validation and API/DB-only
+- [x] T3: Implement strict opt-in mobile binding/public-config validation and API/DB-only
   contracts; extend capability/receipt validation, declared-component lifecycle,
   readiness, gateway routing and minimal inventory links. Preserve unbound mobile,
   old-provider refusal and all historical web/API/group/DB behavior. (MB-001,002,004)
-- [ ] T4: Publish a new exact Python/PostgreSQL backend starter using existing database
+- [x] T4: Publish a new exact Python/PostgreSQL backend starter using existing database
   ownership, init, roles, migration/backup/recovery and portable tests. Keep notes v1,
   prefixed docs/health/security; no web component or implicit data mutation. (MB-002,003,006)
-- [ ] T5: Verify/pin contract generator and produce reproducible typed client output,
+- [x] T5: Verify/pin contract generator and produce reproducible typed client output,
   contract drift checks and old-v1-client fixture; implement bounded network calls,
   cancellation, errors and explicit uncertain-write recovery. (MB-003,004)
-- [ ] T6: Build the native notebook list/editor, tokens and all empty/loading/error/
+- [x] T6: Build the native notebook list/editor, tokens and all empty/loading/error/
   reconnect/save states; draft retention, delete confirmation, keyboard handling,
   accessibility, large text and reduced motion. Remove unrelated starter screens/
   routes/assets/tests and update imports/OpenAPI together; retain notes and operational
   docs/health/security intentionally for this synthetic demonstration. (MB-004,005,007)
-- [ ] T7: Publish immutable bound-mobile release and provider snapshot packaging;
+- [x] T7: Publish immutable bound-mobile release and provider snapshot packaging;
   update guidance, pinned CI and runbooks for explicit generation/binding, public
   config, independent operation, database recovery and compatibility. Preserve the
   default web selection and existing published releases. (MB-007)
@@ -59,7 +60,11 @@ Date: 2026-10-15 (America/New_York).
 
 ## Current handover
 
-Planning documents and cross-references are the only intended changes in this task.
-No app implementation, provider installation, runtime/DB mutation, network/device
-trial or acceptance has occurred. Next action: project owner reviews SPEC-036;
-implementation requires subsequent authorization. Existing SPEC-035 work is preserved.
+Implementation is authorized and in verification on the isolated
+`codex/mobile-python-backend-spec` branch for PR #83. Exact API/DB-only and native
+notes starters, binding, versioned lifecycle/snapshot integration, native UI/client,
+contract checks, generated CI and runbook are implemented. See [acceptance](acceptance.md)
+for actual local results and explicit remaining CI/installed/device/owner gates.
+No installed runtime or existing application/data has been changed. SPEC-035 work
+and the original checkout are preserved. Next action: finish local regressions and
+publish the implementation for review; do not mark MOB-010/M1 accepted from code alone.
