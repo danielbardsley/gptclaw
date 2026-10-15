@@ -151,10 +151,15 @@ const { chromium } = require('playwright-core');
     await appLink.click();assert.equal(await toggle.getAttribute('aria-expanded'),'true');
   }
   await page.screenshot({path:'/checks/output/dashboard-refined-details.png',fullPage:true});
-  for(const width of [1280,768,390,720]) {
+  for(const width of [1440,1280,768,390,720]) {
     await page.setViewportSize({width,height:width===720?450:900});
     const bounds=await page.evaluate(()=>({viewport:innerWidth,document:document.documentElement.scrollWidth,overview:document.querySelector('.overview').getBoundingClientRect(),buttons:[...document.querySelectorAll('.project-row button,.project-row a')].map(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height}))}));
     assert.ok(bounds.document<=width+1,'Document overflow at '+width+': '+bounds.document);
+    const pills=await page.locator('.project-row .link-pill').evaluateAll(elements=>elements.map(element=>({height:element.getBoundingClientRect().height,font:getComputedStyle(element).fontSize,padding:getComputedStyle(element).padding,enabled:element.tagName==='A'})));
+    assert.ok(pills.some(pill=>pill.enabled)&&pills.some(pill=>!pill.enabled),'Mixed available/unavailable quick links required');
+    assert.ok(Math.max(...pills.map(pill=>pill.height))-Math.min(...pills.map(pill=>pill.height))<=1,'Quick-link heights differ at '+width);
+    assert.equal(new Set(pills.map(pill=>pill.font)).size,1,'Quick-link fonts differ at '+width);
+    assert.equal(new Set(pills.map(pill=>pill.padding)).size,1,'Quick-link padding differs at '+width);
     assert.ok(bounds.buttons.every(button=>button.width>= (width<=768?44:24) && button.height>= (width<=768?44:24)),'Small primary targets at '+width);
     assert.equal(await page.getByRole('columnheader',{name:'Project',exact:true}).count(),1);
     assert.equal(await page.locator('.project-name[role="rowheader"]').count(),6);
