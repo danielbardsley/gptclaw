@@ -80,3 +80,12 @@ Owner approved the exact two names/private route. The first named-policy update
 refused the old four-name capacity without modifying the policy; the original
 active profile was restored. Versioned six-name compatibility is now part of
 preview preparation. Focused mobile/backend (12) and corrected manifest (28) pass.
+
+
+Private preview rollout: both approved canonical repositories and their initial
+PRs now exist; both generated CI workflows passed. Stable 1.14.0 is installed with
+matching source capabilities, new API/DB group Ready, HTTPS health/list probes
+passed, installed binding verified, and Metro process/protocol Ready. Exact 8445
+route plan is recorded; operator execution/readback and a current Go link remain
+pending. Current session expires October 15 at 12:09 p.m. Eastern. T9/T10 stay
+open for physical acceptance, review/merge and remaining evidence.

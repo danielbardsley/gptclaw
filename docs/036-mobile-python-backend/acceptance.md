@@ -205,3 +205,60 @@ After merging current main, all 12 focused mobile/backend tests passed in
 private-application and dashboard CI passed at 9429b13; Terraform checks were still
 pending/running when observed. The earlier broad local command encountered the
 now-corrected unsupported-version test and is not recorded as a passing invocation.
+
+
+## Private preview rollout checkpoint — October 15
+
+The owner-approved schema-5 six-name workflow policy was applied with all four
+prior names and existing grants retained. Registered owned helpers were refreshed
+through the managed updater. Scoped first publication of `fieldnotes-api` completed
+at operation `67550ad087814c529f0c8216ceb6b008`, repository 1420817009,
+[initial PR](https://github.com/danielbardsley/fieldnotes-api/pull/1), source
+0e28453355cdf8e7434f74f90b43020321e6a93c. The profile was reactivated; ordinary
+creation of `fieldnotes-mobile` completed at operation
+`dd2995f203aa468d80d0e8f666319da4`, repository 1420819339,
+[initial PR](https://github.com/danielbardsley/fieldnotes-mobile/pull/1), source
+b0b0d4079c5e6d9c2efe928c27a9a5107e0b0f8a.
+Both generated CI workflows passed: backend run 38747345148 and mobile run
+38747570563. No main-branch merge is implied.
+
+The six-name publication test found that initial publication attempted to stage
+the ignored public backend-config placeholder. Source correction 99cac1c omits
+that exact local input from repository publication; binding/checks recreate it.
+The corrected end-to-end isolated test passed (1 test, 46.769 s), including old
+profile-bound refusal, foreign-target refusal, no public-config publication and
+scoped/revoked workflow tokens. The earlier full credential invocation loaded the
+pre-correction implementation and completed 59 tests with that one known error;
+its remaining 58 tests passed. Do not describe that invocation as passing.
+Actual new-repository publication also passed with the correction.
+
+New-database initialization allocated generation dadb615759694425b662f50dc2d7bcde
+and operation 550a40946b8242d4afca64e3ab11d564. Its first attempt stopped during API
+dependency preparation and retained the allocated data/roles; the original command
+error has no established finer cause. Scoped dependency installation completed
+without source/lock changes at 282dea0d9be44f5d9002c4d11c1ddfba. Resuming the same
+init operation succeeded. Group start 4e8760a2b7e649308df249835fb6bb65 is passed/Ready
+with API and DB ready, no web component, and the existing private HTTPS route
+configured. Actual HTTPS ready and notes-list probes returned 200 (zero initial
+records). Data/source/roles are retained; no existing dataset was reset.
+
+The installed stable provider is now 1.14.0 at immutable digest
+87b27973e04c7612f9a9ab37f718e919f7c1268f04463a5b84fa844af3b73059. Source and
+installed --version capability JSON match exactly, including manifest schemas
+1–9 and credential profiles 1–5. Binding/inspect ran through the installed CLI
+and selected the canonical Python backend with development contract v1.
+Mobile frozen dependencies completed at 4fdc47d0cce948c59d0dce0586a5cd77 with
+unchanged dependency hashes. Initial Metro preflight refused before session
+submission when those dependencies were missing; after preparation the single
+submitted generation 9ceeacbc17b7473d9869515e02d8ffb6 reached process Up and protocol
+Ready. Expiry is October 15 at 12:09 p.m. Eastern.
+
+The exact route plan c094b8cfeb550652a309818271bd543b5a75c7621fb9ed8db0a18e21ffaa4d85
+was recorded through the installed CLI against baseline
+d0c41e928966c5d085e704d5826120b76ae4b4af854eb0aa570e447d52db5539. It selects
+only private HTTP 8445 to loopback 18605. The existing SSM operator was given the
+exact reviewed add command. Forge performed no Tailscale mutation. At this
+checkpoint the route remains operator-required, transport unavailable and no Go
+launch link is available; physical Android, screenshots, owner acceptance and full
+T9 acceptance remain pending. All 443 HTTPS handlers and Funnel-off must be
+independently checked after operator execution.
