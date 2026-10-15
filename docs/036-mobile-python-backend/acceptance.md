@@ -303,3 +303,20 @@ The private URI is returned only to the owner, not committed to source.
 Actual physical launch, native CRUD, visual/accessibility review, review/merge and
 the remaining T9 scenarios are still pending. Earlier route-pending checkpoints
 above are historical.
+
+
+## Owner-confirmed Android Expo Go preview — October 15
+
+After receiving the locally generated QR for the verified current Fieldnotes
+generation, the project owner reported: “That works perfectly.” Record this as
+owner-reported successful Android Expo Go preview and positive overall feedback
+on the accepted Android 11 / Go 57.0.9 device profile. The earlier physical-launch
+pending checkpoint is superseded for this basic preview. This is owner evidence,
+not a host-observed phone session or a screenshot.
+
+The report does not enumerate individual CRUD, restart/persistence, failure/
+recovery, keyboard, TalkBack, large-text or reduced-motion scenarios. Those T9
+items, screenshots, implementation review/merge and final criterion-by-criterion
+acceptance remain open. Do not infer full AC-004–008 acceptance or mark MOB-010/M1
+Delivered solely from this general preview confirmation. No runtime was stopped,
+renewed or otherwise changed to record this report.

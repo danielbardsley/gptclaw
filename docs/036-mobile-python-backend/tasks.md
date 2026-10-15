@@ -95,3 +95,10 @@ Operator handoff completed: independent readback verifies the exact owned 8445
 route with full baseline/Funnel preservation. Installed Metro and Android Go
 launch are Ready/available for the current bounded generation. Owner device/
 visual acceptance and remaining T9/T10 gates stay open.
+
+
+October 15 owner feedback after the QR handoff: “That works perfectly.” Basic
+Android Expo Go preview is now confirmed by the owner, with positive overall
+feedback. T9 remains partly complete: separately enumerated native/recovery/
+accessibility scenarios and screenshots are unrecorded; T10 review/merge and
+final acceptance remain pending. See the acceptance record for evidence limits.
