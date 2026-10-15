@@ -14,7 +14,7 @@ import subprocess
 import sys
 import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import private_apps as app
 import project_controls as lifecycle
@@ -175,14 +175,15 @@ class Controller:
             return
         try:
             bindings, rows = self.discover()
-            cache = dict(self.cache)
             keys = sorted(rows)
             window = keys[self.offset:self.offset+20]
             self.offset = 0 if self.offset+20 >= len(keys) else self.offset+20
-            cache = {key: value for key, value in cache.items() if key in rows}
+            with self.lock:
+                self.cache = {key: value for key, value in self.cache.items() if key in rows}
+                self.bindings = bindings
             # Finite project workers, bounded by the same native command
             # deadlines as provider reads. Snapshot requests only read cache.
-            with ThreadPoolExecutor(max_workers=4) as pool:
+            with ThreadPoolExecutor(max_workers=2) as pool:
                 def inspect(item):
                     key, row = item
                     try:
@@ -192,10 +193,13 @@ class Controller:
                         return key, value
                     except (app.AppError, OSError, ValueError, KeyError):
                         return key, {'schema_version': 1, 'actions': [], 'reason': 'control-unavailable', 'observed_at': self.clock()}
-                for key, value in pool.map(inspect, ((key, rows[key]) for key in window)):
-                    cache[key] = value
-            with self.lock:
-                self.cache, self.bindings = cache, bindings
+                pending = [pool.submit(inspect, (key, rows[key])) for key in window]
+                for future in as_completed(pending):
+                    key, value = future.result()
+                    # A slow unrelated project must not age completed reads
+                    # while the rest of the collection window is inspected.
+                    with self.lock:
+                        self.cache[key] = value
         except (Refusal, InventoryError, OSError, ValueError):
             with self.lock:
                 self.cache = {}
@@ -319,7 +323,7 @@ class Controller:
             self.refresh()
             for record in self.records():
                 self.operation(record['operation_id'])
-            self.stop_event.wait(10)
+            self.stop_event.wait(2)
 
 
 def worker(state, ident):

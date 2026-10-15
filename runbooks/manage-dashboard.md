@@ -194,7 +194,9 @@ Do not manually retarget the symlink or edit the ownership receipt to pass this 
 
 The write population is the existing dashboard tailnet population. There are no new
 individual user accounts/roles. Capability preflights have an eight-second isolated
-worker deadline; discovery remains bounded by the inventory contract. Exact Host/Origin, same-origin Fetch Metadata, JSON,
+worker deadline. Two background readers publish each completed project immediately;
+the next bounded collection begins after a two-second rest. Discovery remains
+bounded by the inventory contract. Exact Host/Origin, same-origin Fetch Metadata, JSON,
 a Secure/HttpOnly/SameSite session cookie, CSRF proof and a 60-second typed intent
 bind browser consent to the selected action, component and source/runtime generation.
 The browser cannot specify paths, unit/container names, URLs, argv or environment.

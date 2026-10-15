@@ -73,6 +73,26 @@ class ControllerTests(unittest.TestCase):
         with patch.object(controls,'bounded',return_value={'error':'observation-timeout'}):
             with self.assertRaises(controls.Refusal):self.controller.inspect_capabilities(self.root)
 
+    def test_completed_capability_is_visible_while_another_project_is_slow(self):
+        slow=threading.Event();healthy=threading.Event();other='a'*32
+        bindings={other:{'root':'slow'},self.key:{'root':'healthy'}}
+        rows={other:self.row | {'key':other},self.key:self.row}
+        def read(function,root,seconds):
+            if root=='slow':slow.wait(5)
+            else:healthy.set()
+            return dict(self.caps)
+        with patch.object(controls,'bounded',side_effect=read),patch.object(self.controller,'discover',return_value=(bindings,rows)):
+            thread=threading.Thread(target=self.controller.refresh);thread.start()
+            try:
+                self.assertTrue(healthy.wait(2))
+                for _ in range(100):
+                    if self.key in self.controller.snapshot()['projects']:break
+                    threading.Event().wait(.01)
+                self.assertIn(self.key,self.controller.snapshot()['projects'])
+                self.assertTrue(thread.is_alive(),'slow read should still be pending')
+            finally:slow.set();thread.join(5)
+            self.assertFalse(thread.is_alive())
+
     def test_duplicate_same_operation_never_dispatches_twice(self):
         intent=self.intent();first=self.submit(intent);second=self.submit(intent)
         self.assertEqual(first,second);self.assertEqual(self.launched,['d'*32])

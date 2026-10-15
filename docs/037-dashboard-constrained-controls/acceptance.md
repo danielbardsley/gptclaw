@@ -188,3 +188,14 @@ no reallocation, reset or credential inspection was used. The required setup is
 API component dependency preparation before initial database migration. Named
 Metro sessions remain finite and protocol-ready, with private routes pending the
 existing operator; their backends and all unrelated services are preserved.
+
+
+The first eight-second release preserved the running peer and API instances, but
+another Pause intent was refused before admission. Service counters showed no OOM,
+restart or memory-limit event. Further read-only inspection found cache entries
+aging while the entire collection window completed. Collection now uses two
+background readers and publishes each completed row immediately, with a two-second
+rest between windows. This preserves finite reads and fail-closed preflight while
+avoiding delay behind an unrelated project. A blocked-reader regression verifies
+that the healthy row becomes visible before the slow reader completes. Live
+reverification and final-head checks remain pending; no Pause success is claimed.
