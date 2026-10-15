@@ -17,9 +17,9 @@ acceptance, final review/merge and catalogue delivery remain separate gates.
 | AC-001 | Capability/refusal and compatibility tests cover every profile/action, source/worktree/identity/lease conflicts, old providers and unsupported combinations. Actual managed Metro Start no-op, component/project restart and Stop passed. | Complete deployed non-Metro matrix and final-head CI. |
 | AC-002 | Native-container tests passed for all five non-Metro profiles, including running/stopped rebuild and stateless freeze/resume. Actual API Start/no-op passed; interrupted Pause was explicitly reconciled and the same instance resumed. | Full corrected private lifecycle matrix and paused rollback refusal. |
 | AC-003 | Five native profiles verify sibling/data/volume/epoch retention and ephemeral API loss. Actual Metro restarts retained absolute expiry/transport and the other session/backend peer. Actual Metro Stop released owned handles. | Deployed individual WEB/API/DB restarts, persistent notes and dependency-route recovery. |
-| AC-004 | Strict socket/frontend tests and ten actual HTTPS negative cases passed. The frontend has only immutable assets and a read-only socket-directory mount. | Recheck final installed mounts alongside final flow. |
+| AC-004 | Strict socket/frontend tests and ten actual HTTPS negative cases passed. The frontend has only immutable assets and a read-only socket-directory mount. | Passed on the current installed release; retain final regression evidence. |
 | AC-005 | Automated worker death, timeout, storage, contention and idempotency tests pass. Actual unknown Pause blocked CLI/rollback; exact reconciliation did not replay effects. A lost, never-admitted Stop request was resolved by retiring its controller with no record/journal/guard. | Final actual browser/reload result and remaining fixture operations. |
-| AC-006 | Full synthetic browser suite passes all viewports, focus, confirmations, lost-response recovery, stale/busy/unsupported states and unchanged real metrics. Actual private confirmation displayed correctly. | Complete actual Cancel/focus/narrow check and owner desktop/mobile/keyboard/zoom acceptance. |
+| AC-006 | Full synthetic browser suite passes all viewports, focus, confirmations, lost-response recovery, stale/busy/unsupported states and unchanged real metrics. Actual private confirmation displayed correctly. | Owner desktop/mobile/keyboard/zoom acceptance. |
 | AC-007 | Private rollout and real read-only rollback executed. Broad local gate passed 888 cases/46 suites; focused final-code and frozen frontend checks pass. | Remaining private matrix, persistent-data rollback, final-head CI, owner acceptance and review/merge. |
 
 ## Verification
@@ -59,8 +59,8 @@ handlers remained unchanged through the observed upgrades.
 
 Current implementation checkpoint:
 
-- Controls release: `2964bf4fbb58a074073d8e460c7a63cbce4a130a90f861cf0c5334e6fe86784d`.
-- Compatible read-only rollback: `1352b0951772d58cdb19cd964d4dcaafcb99712bf6684d8be4339d5ba84a3bbb`.
+- Controls release: `c636c3bcf09306a2d14c755c748a16ffd1e185248e6939eba9d98f6a987caff3`.
+- Compatible read-only rollback: `230a0ff5e1d77717ed075327dea5cbb26a5125577dbae9d6aa0644df7fb08a2f`.
 - Frozen provider: `234f928b41d91a3bff55cb9c0af13111936f6a2ffd6c5b6308e8c41d3598b3a8`.
 
 Real activation exposed and corrected four integration issues: Next removes the
@@ -126,13 +126,21 @@ component dependency-install prerequisite. A failed first initialization retaine
 its allocation and resumed with the same initialization ID; no reset or reallocation
 was used. Full deployed profile operations and persistent-note evidence remain pending.
 
-The real browser successfully displayed/focused the confirmation. Its first Cancel
-assertion incorrectly required the initiating button even when a newer snapshot
-disabled it; the implementation's documented result-region focus fallback was used.
-The task-owned browser assertion now permits either valid destination. A final real
-narrow/focus run and actual owner acceptance are pending. A copy-only correction
-replaces the misleading release-specific unavailable message with a neutral message;
-its pinned offline production build passed, with final installation pending.
+The final real private HTTPS browser passed at the installed copy-corrected release:
+component confirmation and Confirm focus, Cancel focus returned to the enabled
+initiator or documented result-region fallback, 1440/390 layout without document
+overflow, no browser errors and **zero lifecycle operation submissions**. Cropped
+captures contain only the synthetic peer panel. The final frontend has exactly
+read-only immutable `/app` assets and `/run/gptclaw` socket-directory mounts.
+The project owner requested changes during usability acceptance: the confirmation
+button hover colors were incorrect. The shared neutral hover rule overrode the
+destructive button background while retaining white text. Explicit neutral Cancel
+and dark-red Confirm hover states are implemented; the existing browser suite now
+checks 4.5:1 text contrast while each is hovered. The complete pinned frontend test/typecheck/build, real socket/HTTP and browser
+gate passed, including the hover contrast checks. Installation and owner recheck
+remain pending. Owner desktop/mobile/keyboard/actual-zoom acceptance
+is still open.
+The neutral unavailable-action copy passed the pinned production build and is installed.
 
 Keep final-head CI, actual lifecycle/data/rollback, owner acceptance and merge distinct.
 Generated logs/captures and operation metadata remain in ignored/private task output;

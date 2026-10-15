@@ -27,7 +27,7 @@ instruction and separate PR-publication approval are recorded in SPEC-037.
 - [x] Implement versioned capability/preflight/result schemas and matrix for all profiles in CTL-001, including unknown/old provider and missing ownership refusals.
 - [x] Add compatible CLI component restart/rebuild/pause/resume parsing and typed dispatch; preserve existing no-component behavior.
 - [x] Specify canonical target binding/generation/input fingerprints, lock order, exact stage deadlines and pause state/publication semantics in source contracts/runbooks.
-- [ ] Test invalid action/component combinations, worktree/checkout/drift/conflict, missing/expired Metro authorization and backward compatibility.
+- [x] Test invalid action/component combinations, worktree/checkout/drift/conflict, missing/expired Metro authorization and backward compatibility.
 
 Maps CTL-001/002/007 → AC-001/002/007. Gate: a versioned contract and meaningful
 provider tests exist before UI buttons can enable an operation.
@@ -36,18 +36,18 @@ provider tests exist before UI buttons can enable an operation.
 
 - [x] Add selected-component restart under shared project/DB/Metro locking and durable active-operation guards; reject stopped/paused targets or unavailable dependencies.
 - [x] Preserve sibling instance IDs, existing network/ports/artifacts/source; persist before/after stages and partial/unknown failure receipts.
-- [ ] Implement graceful DB restart with identical volume and record retention, conflicts with DB maintenance, dependent health/route rechecks and explicit recovery without cascading.
-- [ ] Keep Metro restart within its generation/transport/expiry contract; prove backend and other-session isolation. Warn for ephemeral API loss.
-- [ ] Add tests for every declared component, dependency failure, unknown ownership, death during replacement and concurrency with group/CLI/DB/source-handoff actions.
+- [x] Implement graceful DB restart with identical volume and record retention, conflicts with DB maintenance, dependent health/route rechecks and explicit recovery without cascading.
+- [x] Keep Metro restart within its generation/transport/expiry contract; prove backend and other-session isolation. Warn for ephemeral API loss.
+- [x] Add tests for every declared component, dependency failure, unknown ownership, death during replacement and concurrency with group/CLI/DB/source-handoff actions.
 
 Maps CTL-001/003/006 → AC-001/003/005. Depends on TASK-037-002.
 
 ### TASK-037-004 — Deliver remaining project controls
 
-- [ ] Verify start/no-op/stop/restart and partial-group cleanup against shared guard/receipts, source/data retention and dependency/readiness order.
-- [ ] Implement rebuild validation/build-before-replace, input revalidation, retained prior artifacts, stopped-project preservation and DB exclusion; inject preparation/replacement/readiness failures.
-- [ ] Implement pause/resume only for stateless eligible profiles, typed freeze/unfreeze, paused observations, publication withdrawal/recovery and graceful stop while paused.
-- [ ] Test pause/resume partial failures and controller/provider interruption; preserve actual instance counters and refuse paused restart/rebuild or DB/Metro pause/resume.
+- [x] Verify start/no-op/stop/restart and partial-group cleanup against shared guard/receipts, source/data retention and dependency/readiness order.
+- [x] Implement rebuild validation/build-before-replace, input revalidation, retained prior artifacts, stopped-project preservation and DB exclusion; inject preparation/replacement/readiness failures.
+- [x] Implement pause/resume only for stateless eligible profiles, typed freeze/unfreeze, paused observations, publication withdrawal/recovery and graceful stop while paused.
+- [x] Test pause/resume partial failures and controller/provider interruption; preserve actual instance counters and refuse paused restart/rebuild or DB/Metro pause/resume.
 - [x] Record explicit recovery steps; do not introduce auto-repair, idle shutdown, dependency upgrades, migrations or data rollback.
 
 Maps CTL-002/006 → AC-002/005. Depends on TASK-037-002/003 so group and component
@@ -60,7 +60,7 @@ operations share one ownership and serialization model.
 - [x] Add 60-second one-time intents with impact/generation binding, durable accepted operation/idempotency records and worker capacity limits; changed bindings or effects require new consent.
 - [x] Implement atomic safe state writes, restart/orphan reconciliation, bounded terminal-result retention and fail-closed capacity/storage behavior; preserve active/unknown records.
 - [x] Test malicious paths/commands/fields, missing/foreign Origin, replay, expired confirmation, changed directory/manifest/runtime, two tabs, retries and direct CLI contention.
-- [ ] Inject lost responses, worker/controller death, timeouts and disk/write failures at each side-effect boundary; prove at-most-once dispatch and honest unknown outcomes.
+- [x] Inject lost responses, worker/controller death, timeouts and disk/write failures at each side-effect boundary; prove at-most-once dispatch and honest unknown outcomes.
 
 Maps CTL-001/005/006/007 → AC-001/004/005. Depends on TASK-037-002–004.
 Gate: backend/security/recovery tests pass before controls can be enabled in a browser.
@@ -81,7 +81,7 @@ can proceed against frozen contracts while backend tests run, but must remain di
 
 ### TASK-037-007 — Local and CI evidence
 
-- [x] Run relevant provider/controller/frontend adversarial and behavior tests, full offline repository gate (882 cases/46 suites), changed-shell syntax, diff checks and documentation link review. Frontend transport correction also passed its frozen full frontend/browser rerun.
+- [x] Run relevant provider/controller/frontend adversarial and behavior tests, full offline repository gates (882 then 888 cases/46 suites), changed-shell syntax, diff checks and documentation link review. Frontend transport correction also passed its frozen full frontend/browser rerun.
 - [x] Run frozen frontend install/test/typecheck/build through existing pinned rootless tools; retain existing snapshot/status/link/Metro/security regressions.
 - [x] Capture deterministic synthetic reference comparisons at 1440/1280/768/390 px and 200% reflow; verify keyboard/confirmation/refresh/focus/targets/contrast and no document overflow.
 - [x] Verify failed/stale/conflicted/unsupported/read-only/controller-unavailable presentation and no mutations from reads/navigation/disclosure; inspect resulting routes and restricted mounts.
@@ -115,17 +115,23 @@ TASK-037-008. Planning/implementation/CI/rollout/owner acceptance remain distinc
 
 ## Current handover
 
-Implementation is underway on `codex/dsh-009-controls`, based on the planning
-package in PR #85 and implementation draft PR #86. Typed provider controls, durable guards/reconciliation, a separate
-private controller, frontend routes/panel, default-off release wiring and synthetic
-behavior/browser tests are implemented. [Acceptance evidence](acceptance.md) records
-actual completed checks and the remaining CI/runtime/owner gates. The full local
-offline gate passed 882 cases across 46 suites. Native runs covered single API,
-single WEB, web/API, API/DB and WEB/API/DB, with owned runtime cleanup. The corrected
-frontend JSON transport passed frozen tests/typecheck/build/browser verification.
-All four CI workflows passed at 7e295de; the subsequent correction and verification
-edits need their new publication/CI checkpoint. Private rollout and fixture
-acceptance are explicitly approved after checks pass.
-The controls candidate and compatible read-only rollback are staged without activation,
-and the installer now refuses an older stable provider before changing services. No deployed service has been changed for this feature. Continue from current files/test logs;
-do not treat the initial local checks as final-head or live acceptance.
+Implementation is published in [draft PR #86](https://github.com/danielbardsley/gptclaw/pull/86)
+on `codex/dsh-009-controls`. Provider, controller, frontend, immutable release
+wiring and regression tests are implemented. The broad local repository gate
+passed 888 cases across 46 suites; its changing worktree scope is explicitly
+recorded in [acceptance evidence](acceptance.md), separately from final-head CI.
+
+The approved private rollout is active with provider 1.15.0. Actual Metro Start
+no-op, component/project restart and Stop passed without extending the original
+leases or changing the backend peer. Both Metro fixtures are inactive; removal of
+only temporary 8443/8444 handlers awaits the existing operator. A real compatible
+read-only rollback retained API/peer instances and operation evidence. An interrupted
+Pause was explicitly reconciled and resumed without replacement; a fresh corrected
+Pause now succeeds. The remaining five-profile private matrix is running sequentially.
+
+The real HTTPS browser passed confirmation/Cancel, focus and 1440/390 layout with
+zero operation submissions; final installed frontend mounts remain read-only assets
+and the control socket directory only. Owner desktop/mobile/keyboard/actual-zoom
+acceptance has been requested. Persistent-data rollback, remaining live profile
+checks, final-head CI, owner acceptance and review/merge still gate completion.
+No remote task action is included; catalogue delivery remains In progress.

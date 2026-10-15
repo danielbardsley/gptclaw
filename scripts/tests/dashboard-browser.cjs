@@ -274,6 +274,18 @@ const { chromium } = require('playwright-core');
   const confirm=page.getByRole('button',{name:'Confirm restart',exact:true});await confirm.waitFor();
   assert.equal(submissions.length,0);
   assert.equal(await confirm.evaluate(element=>element===document.activeElement),true);
+  // Hover must preserve readable text for both neutral Cancel and destructive Confirm.
+  for(const button of [panel.getByRole('button',{name:'Cancel',exact:true}),confirm]) {
+    await button.hover();
+    const ratio=await button.evaluate(element=>{
+      const luminance=color=>color.match(/[\d.]+/g).slice(0,3).map(Number).map(value=>{
+        value/=255;return value<=.04045?value/12.92:((value+.055)/1.055)**2.4;
+      }).reduce((sum,value,index)=>sum+value*[.2126,.7152,.0722][index],0);
+      const style=getComputedStyle(element),a=luminance(style.color),b=luminance(style.backgroundColor);
+      return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+    });
+    assert.ok(ratio>=4.5,'Confirmation button loses text contrast on hover: '+ratio);
+  }
   layout.rows[0].controls.capabilities.observed_at=controlNow-60;
   await panel.getByText('Controls unavailable while observations are stale.',{exact:true}).waitFor({timeout:8000});
   assert.equal(await confirm.count(),1,'an older stale snapshot revoked a freshly validated intent');
