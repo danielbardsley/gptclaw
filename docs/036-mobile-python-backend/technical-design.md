@@ -166,3 +166,10 @@ therefore needs the next private slot, HTTP 8445 to loopback 18605, through the
 existing operator path. This amends the original listener-reuse assumption only
 after owner approval of [the concrete preview plan](preview-plan.md). Existing
 HTTPS API ingress, private access, source/data and unrelated handlers are preserved.
+
+The owner approved the two repository names and exact private route on October 15.
+Preserving all four current workflow names requires credential profile schema 5
+with a six-name ceiling. Schemas 3/4 keep their two/four-name ceilings. Existing
+App grants, one-repository token scope and publication verification are retained.
+Update all registered owned helpers to a capable immutable provider before the
+profile changes; first-target canary proves publication before reactivation.

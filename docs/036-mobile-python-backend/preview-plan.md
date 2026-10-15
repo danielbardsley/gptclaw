@@ -1,6 +1,6 @@
 # Fieldnotes private Expo Go preview
 
-Requested by the project owner on October 15, 2026. Confirmed phone: Android 11,
+Requested and explicitly approved by the project owner on October 15, 2026. Confirmed phone: Android 11,
 Expo Go 57.0.9, connected to the development tailnet.
 
 Create only these private repositories through the existing managed GitHub App:
@@ -14,7 +14,10 @@ No repository or runtime has been created. Preserve all four existing names;
 add only `fieldnotes-api` and `fieldnotes-mobile`. Retain current App grants,
 private visibility and PR review policy. No credentials or grant expansion.
 The supported policy update requires temporary profile deactivation and verified
-helper refresh, then reactivation; preserve the prior profile for recovery.
+helper refresh, then first-target canary publication and reactivation; preserve the prior profile for recovery.
+Profile schema 5 adds six-name support while preserving schema 3/4 bounds and
+existing token grants. The original six-name update was refused before mutation;
+the existing schema-4 profile was reactivated before preparing this correction.
 
 After that gate and passing source checks: create canonical projects, initialize
 only their new synthetic database, start the API through the managed provider,

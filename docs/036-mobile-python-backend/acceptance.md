@@ -187,3 +187,21 @@ loopback 18605 through the existing operator path; old slots remain reserved. Th
 is a proposed routing amendment to the original design's listener-reuse assumption.
 Named policy/publication and the exact additional listener await owner approval.
 No current Go link or device acceptance is claimed.
+
+
+## Explicit preview approval and policy compatibility correction
+
+The project owner explicitly approved adding only `fieldnotes-api` and
+`fieldnotes-mobile`, creating both private repositories and the private 8445 route.
+The initial update refused `credential-policy` before changing the four-name
+profile, because schema 4 has a four-name ceiling. The same existing profile was
+reactivated successfully through the managed CLI. No grants were expanded.
+A versioned schema-5 six-name correction and regression coverage are being
+verified before another policy transition. Previous two/four-name schemas remain
+strict and ordinary Git/PR tokens retain their existing scopes.
+
+After merging current main, all 12 focused mobile/backend tests passed in
+187.533 seconds. The corrected 28-test manifest suite passed. Combined-head
+private-application and dashboard CI passed at 9429b13; Terraform checks were still
+pending/running when observed. The earlier broad local command encountered the
+now-corrected unsupported-version test and is not recorded as a passing invocation.
