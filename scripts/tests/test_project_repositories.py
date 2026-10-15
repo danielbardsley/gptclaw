@@ -189,6 +189,18 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(self.api.prs),1)
         self.assertFalse(any('/secrets/' in path or '/environments/' in path for _,path,_ in self.api.calls))
 
+    def test_exact_fastify_selection_survives_repository_generation(self):
+        self.plan=self.new_plan(template='fastify',template_version='1.0.0')
+        self.assertEqual(self.plan['template']['id'],'fastify')
+        result=self.apply();root=self.projects/'sample'
+        self.assertEqual(result['state'],'repository-ready')
+        self.assertEqual(app.validate_project(root)[1]['schema_version'],7)
+        templates.validate_provenance(root)
+        self.assertTrue((root/'src/app.ts').is_file())
+        self.assertFalse((root/'pyproject.toml').exists())
+        self.assertEqual(len(self.api.prs),1)
+        self.assertFalse(any('/secrets/' in path or '/environments/' in path for _,path,_ in self.api.calls))
+
     def test_create_only_then_scoped_resume(self):
         receipt=self.apply(create_only=True)
         self.assertEqual(receipt['state'],'operator-required')
@@ -445,5 +457,16 @@ class Tests(unittest.TestCase):
         help_result=subprocess.run([sys.executable,str(bundle/'scripts/gptclawctl.py'),'repo','--help'],capture_output=True,text=True,check=True)
         self.assertIn('plan,apply,resume,status',help_result.stdout)
 
+
+    def test_mobile_plan_binds_identity_and_private_creation(self):
+        value = repos.plan('mobile-one', str(self.projects/'mobile-one'), self.api, template='expo-react-native', template_version='1.0.1')['plan']
+        self.assertEqual(value['mobile_inputs']['identity']['ios']['bundleIdentifier'], 'dev.gptclaw.mobile-one')
+        changed=copy.deepcopy(value);changed['mobile_inputs']['identity']['scheme']='changed'
+        changed['plan_digest']=repos.digest({k:v for k,v in changed.items() if k!='plan_digest'})
+        with self.assertRaises(app.AppError):repos.validate_plan(changed)
+        result=repos.apply(value,self.api)
+        self.assertTrue(result['plan']['private'])
+        self.assertEqual(app.target(self.projects/'mobile-one')[1]['schema_version'],5)
+        self.assertEqual(len(self.api.prs),1)
 
 if __name__=='__main__':unittest.main()

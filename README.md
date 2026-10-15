@@ -67,6 +67,9 @@ scripts/                   Bootstrap, validation, verification, and offline test
 templates/                 App starters, container toolchain, planning and guidance templates
 ```
 
+For the purpose of each directory and its main subdirectories, see the
+[directory guide](docs/repository-layout/README.md).
+
 ## Working with GptClaw
 
 - **Connect to the host:** follow [the remote project connection runbook](runbooks/connect-chatgpt.md).

@@ -21,6 +21,11 @@ Include relevant checks, behavioral acceptance, evidence recording, review/PR,
 merge, status updates, and cleanup of owned fixtures. Separate implementation
 completion from acceptance that needs a different environment or operator.
 
+For products adapted from application starters, include a starter adaptation
+review: remove demo-only code/content outside the product spec, update dependent
+registrations/imports/API schema/docs/tests, and verify the resulting product API
+and UI. Record any spec-required retained demos and preserve user data.
+
 ## Current handover
 
 Summarize completed work, evidence, remaining tasks, limitations, and the next

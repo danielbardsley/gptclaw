@@ -8,6 +8,9 @@ Platform-level handover documents live together under `docs/platform/`. They
 describe direction and the candidate feature backlog, but they are not
 specifications and do not authorize implementation.
 
+For an explanation of repository directories and how their contents support the
+project, see the [directory guide](repository-layout/README.md).
+
 ## Folder convention
 
 Each initiative uses a numbered, descriptive folder:
@@ -40,7 +43,9 @@ dispositions independently of feature implementation status.
 
 - **Platform direction:**
   [Architecture](./platform/architecture.md) ·
-  [Feature catalogue](./platform/features.md)
+  [Feature catalogue](./platform/features.md) ·
+  [General sequence](./platform/sequence.md) ·
+  [Mobile delivery sequence](./platform/sequence-mobile.md)
 
 - **001 — Bootstrap the remote development host:**
   [Specification](./001-bootstrap-remote-development-host/spec.md) ·
@@ -184,6 +189,64 @@ dispositions independently of feature implementation status.
   [Technical design](./025-multi-service-projects/technical-design.md) ·
   [Tasks](./025-multi-service-projects/tasks.md) ·
   [Acceptance](./025-multi-service-projects/acceptance.md)
+
+- **026 — Development database lifecycle (RUN-011), initial development slice delivered:**
+  [Specification](026-development-databases/spec.md) ·
+  [Technical design](026-development-databases/technical-design.md) ·
+  [Tasks](026-development-databases/tasks.md)
+
+- **027 — Dashboard project inventory (DSH-001), delivered and accepted:**
+  [Specification](027-dashboard-project-inventory/spec.md) ·
+  [Technical design](027-dashboard-project-inventory/technical-design.md) ·
+  [Tasks](027-dashboard-project-inventory/tasks.md) · [Acceptance](027-dashboard-project-inventory/acceptance.md)
+
+- **028 — Dashboard live service status (DSH-002), delivered and accepted:**
+  [Specification](028-dashboard-live-service-status/spec.md) ·
+  [Technical design](028-dashboard-live-service-status/technical-design.md) ·
+  [Tasks](028-dashboard-live-service-status/tasks.md) · [Acceptance](028-dashboard-live-service-status/acceptance.md)
+
+- **029 — Dashboard project links (DSH-003), delivered and accepted:**
+  [Specification](029-dashboard-project-links/spec.md) ·
+  [Technical design](029-dashboard-project-links/technical-design.md) ·
+  [Tasks](029-dashboard-project-links/tasks.md) · [Acceptance](029-dashboard-project-links/acceptance.md)
+
+
+- **030 — Dashboard visual refinement (DSH-015), implementation in review:**
+  [Specification](030-dashboard-visual-refinement/spec.md) ·
+  [Technical design](030-dashboard-visual-refinement/technical-design.md) ·
+  [Tasks](030-dashboard-visual-refinement/tasks.md) ·
+  [Acceptance](030-dashboard-visual-refinement/acceptance.md) ·
+  [Reference brief](030-dashboard-visual-refinement/reference.md)
+
+- **031 — Repeatable Expo / React Native project creation (MOB-001), delivered:**
+  [Specification](031-expo-project-creation/spec.md) ·
+  [Technical design](031-expo-project-creation/technical-design.md) ·
+  [Tasks](031-expo-project-creation/tasks.md) ·
+  [Acceptance](031-expo-project-creation/acceptance.md)
+
+- **032 — Branch and worktree policy (PRJ-006), delivered and accepted:**
+  [Specification](032-branch-worktree-policy/spec.md) ·
+  [Technical design](032-branch-worktree-policy/technical-design.md) ·
+  [Tasks](032-branch-worktree-policy/tasks.md) ·
+  [Acceptance status](032-branch-worktree-policy/acceptance.md)
+
+- **033 — Owned private Metro sessions (MOB-002), Delivered (Android-first):**
+  [Specification](033-private-metro-sessions/spec.md) ·
+  [Technical design](033-private-metro-sessions/technical-design.md) ·
+  [Tasks](033-private-metro-sessions/tasks.md) ·
+  [Acceptance tracking](033-private-metro-sessions/acceptance.md)
+
+- **034 — Compatible Expo Go workflow (MOB-003), Delivered (Android-first):**
+  [Specification](034-expo-go-workflow/spec.md) ·
+  [Technical design](034-expo-go-workflow/technical-design.md) ·
+  [Tasks](034-expo-go-workflow/tasks.md) ·
+  [Acceptance tracking](034-expo-go-workflow/acceptance.md)
+
+- **035 — TypeScript API template (TPL-002), initial stateless slice delivered and accepted:**
+  [Specification](035-typescript-api-template/spec.md) ·
+  [Technical design](035-typescript-api-template/technical-design.md) ·
+  [Tasks](035-typescript-api-template/tasks.md) ·
+  [Acceptance](035-typescript-api-template/acceptance.md)
 
 ## Current application milestone
 

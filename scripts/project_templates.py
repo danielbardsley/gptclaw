@@ -56,12 +56,27 @@ def catalogue():
         extension = data(group_path)
         check(not list(deps.StrictValidator(data(app().REPO/'schemas/templates/v3.schema.json')).iter_errors(extension)))
         value = {**value, 'schema_version': 3, 'releases': [*value['releases'], *extension['releases']]}
+    persistent_path = app().REPO/'config/templates/v4.json'
+    if persistent_path.exists() or persistent_path.is_symlink():
+        extension = data(persistent_path)
+        check(not list(deps.StrictValidator(data(app().REPO/'schemas/templates/v4.schema.json')).iter_errors(extension)))
+        value = {**value, 'schema_version': 4, 'releases': [*value['releases'], *extension['releases']]}
+    mobile_path = app().REPO/'config/templates/v5.json'
+    if mobile_path.exists() or mobile_path.is_symlink():
+        extension = data(mobile_path)
+        check(not list(deps.StrictValidator(data(app().REPO/'schemas/templates/v5.schema.json')).iter_errors(extension)))
+        value = {**value, 'schema_version': 5, 'releases': [*value['releases'], *extension['releases']]}
+    typescript_path = app().REPO/'config/templates/v6.json'
+    if typescript_path.exists() or typescript_path.is_symlink():
+        extension = data(typescript_path)
+        check(not list(deps.StrictValidator(data(app().REPO/'schemas/templates/v6.schema.json')).iter_errors(extension)))
+        value = {**value, 'schema_version': 6, 'releases': [*value['releases'], *extension['releases']]}
     releases = {}
     _, profiles = tools.registry()
     for release in value['releases']:
         key = (release['id'], release['version']); check(key not in releases)
         check(release['digest'] == digest({k: v for k, v in release.items() if k != 'digest'}))
-        for declaration in (release['toolchains'].values() if release['provider']=='notes-v1' else [release['toolchain']]):
+        for declaration in (release['toolchains'].values() if release['provider'] in {'notes-v1','notes-postgres-v1'} else [release['toolchain']]):
             declaration=tools.declaration(declaration)
             profile_key = (declaration['profile'], declaration['profile_version'])
             check(profile_key in profiles and profiles[profile_key]['versions'] == declaration['versions'])
@@ -77,7 +92,7 @@ def catalogue():
             total += len(content); check(total <= 8*1024*1024)
             check(hashlib.sha256(content).hexdigest() == item['sha256'])
             sources.add(source); outputs.add(output); contents[output] = content
-        if release['provider']=='notes-v1':
+        if release['provider'] in {'notes-v1','notes-postgres-v1'}:
             check({'AGENTS.md','README.md','web/package.json','web/pnpm-lock.yaml','web/pnpm-workspace.yaml','api/pyproject.toml','api/uv.lock','api/.python-version','api/docs/python-standards.md','api/src/fastapi_app/main.py'} <= outputs)
             package=deps.json_data(contents['web/package.json'])
             check(package['packageManager']=='pnpm@'+release['toolchains']['web']['versions']['pnpm'])
@@ -85,6 +100,20 @@ def catalogue():
             py.dependencies(py.toml(contents['api/pyproject.toml']))
             check(contents['api/.python-version'].decode().strip()==release['toolchains']['api']['versions']['python'])
             releases[key]=(release,contents);continue
+        if release['provider'] == 'expo-v1':
+            import project_mobile as mobile
+            check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','app.json','AGENTS.md','README.md','checks/quality.cjs','src/app/index.tsx','tests/counter.test.tsx'} <= outputs)
+            mobile.validate_package(deps.json_data(contents['package.json']))
+            check(release['mobile_profile_digest']==hashlib.sha256(json.dumps(mobile.profile(),sort_keys=True,separators=(',',':')).encode()).hexdigest())
+            releases[key] = (release, contents); continue
+        if release['provider'] == 'fastify-v1':
+            check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','AGENTS.md','README.md','src/app.ts','src/server.ts','tests/api.test.ts','Containerfile'} <= outputs)
+            package = deps.json_data(contents['package.json'])
+            policy, _ = deps.policy(); deps.validate_package(package, policy)
+            check(package['packageManager'] == 'pnpm@'+declaration['versions']['pnpm'])
+            for name, constraint in package.get('engines', {}).items():
+                check(tools.satisfies(declaration['versions'][name], constraint))
+            releases[key] = (release, contents); continue
         if release['provider'] == 'fastapi-v1':
             import project_python as py
             check({'pyproject.toml','uv.lock','.python-version','AGENTS.md','README.md','src/fastapi_app/main.py','scripts/quality.py','docs/python-standards.md','Containerfile','.pre-commit-config.yaml'} <= outputs)
@@ -135,6 +164,8 @@ def validate_provenance(root):
     release, _ = resolve(value['id'], value['version'])
     check(value == provenance(release))
     check(app().read_json(root/'.gptclaw/template.json') == {'provider':release['provider']})
+    if release['provider']=='expo-v1':
+        __import__('project_mobile').validate_policies(root,release)
     # Provenance is creation identity; subsequent supported toolchain switches
     # are independent and are validated by the toolchain contract.
 
@@ -152,6 +183,18 @@ def publish(stage, destination):
 
 
 def generate(path, slug, release, contents):
+    if release['provider']=='expo-v1':
+        import project_mobile as mobile
+        with app().locked('mobile-identity'):
+            mobile.assert_identity_vacant(path,slug)
+            return _generate(path,slug,release,contents)
+    return _generate(path,slug,release,contents)
+
+
+def _generate(path, slug, release, contents):
+    expected={item['output']:item['sha256'] for item in release['files']}
+    check(set(contents)==set(expected) and len(expected)==len(release['files']))
+    check(all(isinstance(data,bytes) and hashlib.sha256(data).hexdigest()==expected[name] for name,data in contents.items()))
     parent_info = path.parent.stat()
     stage = path.parent/('.gptclaw-create-'+uuid.uuid4().hex)
     stage.mkdir(mode=0o700)
@@ -164,18 +207,27 @@ def generate(path, slug, release, contents):
             'commands':{'build':['pnpm','build'],'start':['pnpm','dev'],'test':['pnpm','test']},
             'service':{'internal_port':3000,'health':{'path':'/projects/'+slug+'/api/health/','timeout_seconds':5}},
             'exposure':{'private':True,'base_path':'/projects/'+slug+'/','funnel':False},'data':{'mode':'ephemeral'}}
+        if release['provider'] == 'expo-v1':
+            import project_mobile as mobile
+            contract = mobile.contract(slug)
+            config = deps.json_data(contents['app.json'])
+            config['expo'].update(mobile.identities(slug))
+            (stage/'app.json').write_text(json.dumps(config,indent=2)+'\n')
+        if release['provider'] == 'fastify-v1':
+            from project_fastify import contract as fastify_contract
+            contract = fastify_contract(slug)
         if release['provider'] == 'fastapi-v1':
             import project_python as py
             contract = py.contract(slug)
-        if release['provider']=='notes-v1':
+        if release['provider'] in {'notes-v1','notes-postgres-v1'}:
             import project_groups as groups
             contract=groups.initialize(stage,slug,release)
         app().save(meta/'project.yaml', contract)
         app().save(meta/'template.json', {'provider':release['provider']})
-        if release['provider']!='notes-v1':app().save(meta/'toolchain.json', release['toolchain'])
+        if release['provider'] not in {'notes-v1','notes-postgres-v1'}:app().save(meta/'toolchain.json', release['toolchain'])
         app().save(meta/'template-release.json', provenance(release))
         check(app().validate_project(stage)[2] == 0)
-        if release['provider']=='notes-v1':
+        if release['provider'] in {'notes-v1','notes-postgres-v1'}:
             for child,_ in groups.children(stage,contract).values():
                 deps.context(child);tools.selection(child)
         else:
@@ -200,6 +252,14 @@ def bundle_paths():
         paths += [Path('config/templates/v2.json'), Path('schemas/templates/v2.schema.json')]
     if (app().REPO/'config/templates/v3.json').exists():
         paths += [Path('config/templates/v3.json'),Path('schemas/templates/v3.schema.json')]
+    if (app().REPO/'config/templates/v4.json').exists():
+        paths += [Path('config/templates/v4.json'),Path('schemas/templates/v4.schema.json')]
+    if (app().REPO/'config/templates/v4.json').exists():
+        paths += [Path('config/templates/v4.json'),Path('schemas/templates/v4.schema.json')]
+    if (app().REPO/'config/templates/v5.json').exists():
+        paths += [Path('config/templates/v5.json'),Path('schemas/templates/v5.schema.json')]
+    if (app().REPO/'config/templates/v6.json').exists():
+        paths += [Path('scripts/project_fastify.py'),Path('config/templates/v6.json'),Path('schemas/templates/v6.schema.json'),Path('schemas/project/v7.schema.json')]
     for release in value['releases']:
         base = Path('templates/apps/releases')/release['id']/release['version']
         paths += [base/item['source'] for item in release['files']]

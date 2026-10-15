@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "GptClaw Starter",
+    "slug": "gptclaw-starter",
+    "scheme": "gptclaw-starter",
+    "version": "1.0.0",
+    "platforms": ["ios", "android"],
+    "orientation": "portrait",
+    "ios": {
+      "bundleIdentifier": "dev.gptclaw.starter"
+    },
+    "android": {
+      "package": "dev.gptclaw.starter"
+    }
+  }
+}

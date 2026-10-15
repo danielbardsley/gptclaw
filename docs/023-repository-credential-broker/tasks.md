@@ -109,3 +109,18 @@ revoked PATs were not read or reused. No deployment/public callback/new host
 package/service mutation occurred. PR #54 contains reviewable implementation;
 merge is not implied by the coding request. The later separately authorized live
 checks are recorded as passed with their actual limits in acceptance.md.
+
+## October 12 approved workflow extension
+
+- [x] T-012a: Diagnose the workflow-entry denial without broader credentials or
+  recreation; prepare the concrete policy and obtain project-owner approval.
+  CRD-009/010; AC-009/010. Approval is recorded in the current chat.
+- [x] T-012b: Implement/test explicit schema-3 policy, preflight, immutable binding
+  checks, singleton provisioning grants, role exclusions, compatible helper
+  migration and interruption/unknown-edit recovery. Deliver a reviewed PR with
+  actual local and final-head CI evidence. CRD-009/010; AC-009/010.
+- [x] T-012c: After owner App/installation grant update, verify exact readback,
+  migrate the inactive profile, resume the retained first operation, activate only
+  after actual workflow publication, create the second target and prove private
+  repository CI plus existing scoped helper behavior. Record actual limitations
+  and rollback disposition. CRD-009/010; AC-009/010.

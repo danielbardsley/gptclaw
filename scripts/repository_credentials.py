@@ -30,6 +30,7 @@ app.MESSAGES.update({
     'credential-auth': 'The configured App/key/installation could not authenticate; reconcile its scope without broadening permissions.',
     'credential-scope': 'GitHub did not prove the exact requested repository and permissions; no fallback credential was used.',
     'credential-disabled': 'This profile or repository binding is disabled; activate only the reviewed target.',
+    'credential-workflow-policy': 'This starter publishes workflows. Approve an explicit named workflow policy and matching App/installation grant before creation; no broader credential was used.',
     'credential-recovery': 'Credential enrollment or provisioning needs reconciliation with the same operation; resources were retained.',
 })
 
@@ -61,10 +62,16 @@ def profile(value=None):
     fields={'schema_version','account','app_id','installation_id',
             'key_file','bootstrap_repository_ids','policy','active','creation_verified'}
     check(isinstance(value,dict) and type(value.get('schema_version')) is int
-          and value['schema_version'] in {1,2})
-    check(set(value)==(fields if value['schema_version']==1 else fields|{'repository_selection'}))
+          and value['schema_version'] in {1,2,3,4})
+    expected=fields if value['schema_version']==1 else fields|{'repository_selection'}
+    if value['schema_version'] in {3,4}:expected|={'workflow_repositories','workflow_verified'}
+    check(set(value)==expected)
     check(value['account']==repos.ACCOUNT)
-    if value['schema_version']==2:check(value['repository_selection'] in {'selected','all'})
+    if value['schema_version']>=2:check(value['repository_selection'] in {'selected','all'})
+    if value['schema_version'] in {3,4}:
+        names=value['workflow_repositories']
+        check(value['repository_selection']=='all' and type(value['workflow_verified']) is bool)
+        check(isinstance(names,list) and 1<=len(names)<=(2 if value['schema_version']==3 else 4) and all(isinstance(n,str) and re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',n) and len(n)<=48 for n in names) and names==sorted(set(names)))
     for field in ['app_id','installation_id']:
         check(type(value[field]) is int and value[field] > 0)
     ids = value['bootstrap_repository_ids']
@@ -81,7 +88,19 @@ def selection(value):
 
 
 def grants(value):
-    return ALL_GRANTS if selection(value)=='all' else GRANTS
+    base=ALL_GRANTS if selection(value)=='all' else GRANTS
+    return {**base,'workflows':'write'} if value['schema_version'] in {3,4} else dict(base)
+
+
+def workflow_names(value):
+    return value.get('workflow_repositories',[])
+
+
+def workflow_preflight(value,name,release):
+    publishes=any(item['output'].startswith('.github/workflows/') for item in release['files'])
+    check(not publishes or name in workflow_names(value),'credential-workflow-policy')
+    return publishes
+
 
 
 def operations():
@@ -262,13 +281,27 @@ class Broker:
         check(role in ROLES)
         if role=='enroll':check(selection(self.profile)=='selected','credential-policy')
         check((role in {'audit','create','enroll'}) == (repo_id is None),'credential-scope')
-        body={'permissions':ROLES[role]}
+        permissions=dict(ROLES[role])
+        if role=='provision' and name in workflow_names(self.profile):
+            with app.locked('credential-profile'):
+                current=profile()
+                check(current['app_id']==self.profile['app_id'] and current['installation_id']==self.profile['installation_id'] and name in workflow_names(current),'credential-disabled')
+                self.profile=current
+            registered=[b for b in bindings() if b['repository_id']==repo_id and b['name']==name]
+            check(len(registered)==1,'credential-scope');binding=registered[0]
+            check(binding['enabled'] and binding['app_id']==self.profile['app_id'] and binding['installation_id']==self.profile['installation_id'],'credential-scope')
+            receipt=repos.read_receipt(binding['operation_id']);provider=receipt.get('credential_provider',{})
+            check(receipt.get('repository_id')==repo_id and receipt['plan']['repository']==name and receipt['plan']['destination']==binding['root'] and receipt['plan']['operation_id']==binding['operation_id'] and provider.get('kind')=='github-app' and provider.get('app_id')==binding['app_id'] and provider.get('installation_id')==binding['installation_id'],'credential-scope')
+            import project_templates as templates
+            release,_=templates.resolve(receipt['plan']['template']['id'],receipt['plan']['template']['version'])
+            if workflow_preflight(self.profile,name,release):permissions['workflows']='write'
+        body={'permissions':permissions}
         if repo_id is not None:body['repository_ids']=[repo_id]
         data=self.api().request('POST','/app/installations/'+str(self.profile['installation_id'])+'/access_tokens',body)
         token=None
         try:
             check(isinstance(data,dict),'credential-scope')
-            perms=data.get('permissions');check(perms==ROLES[role],'credential-scope')
+            perms=data.get('permissions');check(perms==permissions,'credential-scope')
             expected='selected' if repo_id is not None else selection(self.profile)
             check(data.get('repository_selection')==expected,'credential-scope')
             expires=data.get('expires_at');parsed=dt.datetime.fromisoformat(expires.replace('Z','+00:00'))
@@ -309,7 +342,7 @@ class Broker:
             else:raise app.AppError('credential-scope')
         check(required<=observed,'credential-scope')
         if selection(self.profile)=='selected':check(observed<=approved,'credential-scope')
-        return {**identity,'state':'ready' if self.profile['creation_verified'] else 'canary-required',
+        return {**identity,'state':'ready' if self.profile['creation_verified'] and (self.profile['schema_version'] not in {3,4} or self.profile['workflow_verified']) else 'canary-required',
                 'active':self.profile['active'],'creation_verified':self.profile['creation_verified'],
                 'selected_repository_ids':sorted(observed&approved),'installation_repository_count':len(observed),
                 'policy':self.profile['policy']}
@@ -385,11 +418,86 @@ def set_installation_policy(repository_selection):
     return {**result,'state':'installation-policy-updated','active':False}
 
 
+def upgrade_registered_helpers(roots=None):
+    """Refresh only validated owned helper paths, with hash-bound interruption recovery."""
+    import project_dependencies as deps
+    bundle=app.provider_bundle()
+    for initial in bindings():
+        if roots is not None and initial['root'] not in roots:continue
+        if initial['helper_command'] is None:continue
+        root=Path(initial['root']);repo_id=initial['repository_id']
+        with app.locked('credential-'+str(repo_id)):
+            app.safe(root)
+            if not root.exists():
+                journal=load(location()/('helper-upgrade-'+str(repo_id)+'.json'),optional=True)
+                if journal is not None:
+                    check(set(journal)=={'repository_id','root','old','new','before','after','stage'} and journal['root']==str(root) and journal['repository_id']==repo_id and journal['stage']=='complete','credential-recovery')
+                # Preserve absent/archived source bindings and their old helper without adoption.
+                continue
+            value=bound(root,False);old=value['helper_command']
+            new=str(bundle/'scripts/repository-credential-helper')+' --project-root '+str(root)
+            journal_path=location()/('helper-upgrade-'+str(repo_id)+'.json')
+            journal=load(journal_path,optional=True)
+            config=root/'.git/config';raw=deps.read_bytes(config,8192)
+            digest=hashlib.sha256(raw).hexdigest()
+            if journal and journal.get('stage')!='complete':
+                check(set(journal)=={'repository_id','root','old','new','before','after','stage'} and journal['root']==str(root) and journal['repository_id']==repo_id and journal['new']==new,'credential-recovery')
+                check(old in {journal['old'],new} and digest in {journal['before'],journal['after']},'credential-recovery')
+                original=raw if digest==journal['before'] else raw.replace(('helper = '+new+'\n').encode(),('helper = '+journal['old']+'\n').encode(),1)
+                check(hashlib.sha256(original).hexdigest()==journal['before'],'credential-recovery')
+            else:
+                validate_git_helper(root,require_enabled=False)
+                if old==new:continue
+                check(raw.count(('helper = '+old+'\n').encode())==1,'credential-recovery')
+                original=raw
+                after=raw.replace(('helper = '+old+'\n').encode(),('helper = '+new+'\n').encode(),1)
+                journal={'repository_id':repo_id,'root':str(root),'old':old,'new':new,'before':digest,'after':hashlib.sha256(after).hexdigest(),'stage':'planned'}
+                app.save(journal_path,journal)
+            after=original.replace(('helper = '+journal['old']+'\n').encode(),('helper = '+new+'\n').encode(),1)
+            check(hashlib.sha256(after).hexdigest()==journal['after'],'credential-recovery')
+            if digest==journal['before']:
+                check(deps.read_bytes(config,8192)==raw,'credential-recovery');deps.write_bytes(config,after)
+            value['helper_command']=new;app.save(binding_path(root),value)
+            validate_git_helper(root,require_enabled=False)
+            journal['stage']='complete';app.save(journal_path,journal)
+
+
+def set_workflow_policy(names):
+    """Apply only an explicit owner-selected named policy after exact grant readback."""
+    with app.locked('credential-profile'):
+        old=profile();check(not old['active'],'credential-disabled')
+        base={k:v for k,v in old.items() if k not in {'workflow_repositories','workflow_verified'}}
+        names=sorted(names)
+        value=profile({**base,'schema_version':(3 if len(names)<=2 else 4),'workflow_repositories':names,
+            'workflow_verified':old.get('workflow_verified',False) if names==workflow_names(old) else False} if names else {**base,'schema_version':2})
+        result=Broker(value).doctor()
+        # Install compatible owned helpers before changing the profile contract.
+        # An interrupted helper write is resumed by its exact hash-bound journal.
+        upgrade_registered_helpers()
+        app.save(location()/'previous-workflow-profile.json',old)
+        app.save(location()/'profile.json',value)
+    return {**result,'state':'workflow-policy-updated','active':False,'workflow_repositories':names,
+            'workflow_verified':value.get('workflow_verified',False)}
+
+
+def verify_workflow_publication(receipt):
+    name=receipt['plan']['repository']
+    with app.locked('credential-profile'):
+        current=profile()
+        if name not in workflow_names(current):return
+        provider=receipt.get('credential_provider',{})
+        check(provider.get('kind')=='github-app' and provider.get('app_id')==current['app_id'] and provider.get('installation_id')==current['installation_id'],'credential-recovery')
+        check(receipt['state']=='repository-ready' and receipt.get('branch_published') is True,'credential-recovery')
+        check(any(p.startswith('.github/workflows/') for p in receipt['source_inventory']),'credential-recovery')
+        current['workflow_verified']=True;app.save(location()/'profile.json',current)
+
+
 def set_active(active):
     with app.locked('credential-profile'):
         value=profile()
         if active:
             Broker(value).doctor();check(value['creation_verified'],'credential-recovery')
+            check(value['schema_version'] not in {3,4} or value['workflow_verified'],'credential-recovery')
         value['active']=active;app.save(location()/'profile.json',value)
     return {'state':'active' if active else 'local-only','policy':value['policy']}
 
@@ -416,7 +524,7 @@ def disable(root):
 
 def enable(root):
     initial=bound(root,False)
-    with app.locked('credential-'+str(initial['repository_id'])),app.locked('credential-profile'):
+    with app.locked('credential-profile'),app.locked('credential-'+str(initial['repository_id'])):
         value=bound(root,False);current=profile();b=Broker(current);b.identity()
         with b.lease('git',value['repository_id'],value['name']) as token:
             actual=token.request('GET','/repos/'+repos.ACCOUNT+'/'+value['name'])
@@ -521,8 +629,8 @@ def enroll(root):
         return value
 
 
-def validate_git_helper(root, supplied=None):
-    value=bound(root);command=helper_command(root);check(command is not None,'credential-recovery')
+def validate_git_helper(root, supplied=None, require_enabled=True):
+    value=bound(root,require_enabled);command=helper_command(root);check(command is not None,'credential-recovery')
     import project_dependencies as deps
     raw=deps.read_bytes(Path(root)/'.git/config',8192).decode('utf-8')
     # Parse only owned credential section; foreign URL rewriting/include/helper sections stop issuance.
@@ -543,7 +651,11 @@ def validate_git_helper(root, supplied=None):
 
 
 def create(name,directory=None,canary=False,template=None,version=None):
-    broker=Broker();broker.doctor()
+    broker=Broker()
+    import project_templates as templates
+    release,_=templates.resolve(template,version)
+    workflow_preflight(broker.profile,name,release)
+    broker.doctor()
     check(canary or broker.profile['active'],'credential-disabled')
     destination=directory or str(app.PROJECTS/name)
     # Creation-only adapter can observe availability, not authenticate as a human.
@@ -559,6 +671,7 @@ def create(name,directory=None,canary=False,template=None,version=None):
         with app.locked('credential-profile'):
             current=profile();check(current['app_id']==broker.profile['app_id'] and current['installation_id']==broker.profile['installation_id'])
             current['creation_verified']=True;app.save(location()/'profile.json',current)
+    verify_workflow_publication(result)
     return result
 
 
@@ -566,6 +679,9 @@ def resume(operation,repo_id=None):
     receipt=repos.read_receipt(operation);provider=receipt.get('credential_provider')
     check(isinstance(provider,dict) and provider.get('kind')=='github-app','credential-policy')
     broker=Broker()
+    import project_templates as templates
+    release,_=templates.resolve(receipt['plan']['template']['id'],receipt['plan']['template']['version'])
+    workflow_preflight(broker.profile,receipt['plan']['repository'],release)
     check(provider['app_id']==broker.profile['app_id'] and provider['installation_id']==broker.profile['installation_id'])
     adapter=Provision(broker,receipt['plan'],receipt,canary=provider.get('canary',False) if provider else False)
     try:result=repos.resume(operation,adapter,repo_id)
@@ -576,6 +692,7 @@ def resume(operation,repo_id=None):
         with app.locked('credential-profile'):
             current=profile();check(current['app_id']==broker.profile['app_id'] and current['installation_id']==broker.profile['installation_id'])
             current['creation_verified']=True;app.save(location()/'profile.json',current)
+    verify_workflow_publication(result)
     return result
 
 
@@ -586,13 +703,14 @@ def preview(name,directory=None,template=None,version=None,local_only=False):
     check(isinstance(name,str) and re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',name) and len(name)<=48)
     destination=app.safe(Path(directory).absolute() if directory else app.PROJECTS/name)
     if value and value['active']:
+        workflow_preflight(value,name,release)
         b=Broker(value);b.doctor();adapter=Provision(b,{'repository':name})
         planned=repos.plan(name,str(destination),adapter,template=template,template_version=version)['plan']
         return {'state':'planned','project':name,'root':str(destination),'template':planned['template'],
                 'private':True,'repository':repos.ACCOUNT+'/'+name,'branches':planned['branches'],
                 'policy':{'id':'unprotected-private-dev','protection_enforced':False},
                 'credential_provider':{'app_id':value['app_id'],'installation_id':value['installation_id'],
-                  'creation':ROLES['create'],'provision':ROLES['provision'],'ongoing_git':ROLES['git']},
+                  'creation':ROLES['create'],'provision':{**ROLES['provision'],**({'workflows':'write'} if workflow_preflight(value,name,release) else {})},'ongoing_git':ROLES['git']},
                 'installation_enrollment':ROLES['enroll'] if selection(value)=='selected' else None,
                 'installation_selection':selection(value),
                 'side_effects':['create private repository']+(['add created repository to selected installation'] if selection(value)=='selected' else [])+['publish starter branch','open initial PR','enroll scoped Git helper'],

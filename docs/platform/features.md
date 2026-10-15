@@ -1,8 +1,9 @@
 # GptClaw Platform Feature Catalogue
 
 - **Status:** Directional backlog; not a specification
-- **Last updated:** 2026-10-11 (America/New_York)
+- **Last updated:** 2026-10-15 (America/New_York)
 - **Architecture:** [GptClaw platform architecture](./architecture.md)
+- **Mobile delivery track:** [React Native / Expo sequence](./sequence-mobile.md)
 
 ## 1. How to use this catalogue
 
@@ -100,7 +101,7 @@ capabilities; those are not prerequisites for creating the first applications.
 | PRJ-003 | Template catalogue | 2 | Delivered | [SPEC-021](../021-template-catalogue/spec.md) implements versioned discovery, exact selection and provenance for the existing Next.js web starter in provider 1.3.0. Daniel authorized implementation October 10; 111 focused tests, repository checks and scoped live verification passed. All three final PR-head CI workflows passed. Daniel accepted the reviewed initial slice October 10; [PR #50](https://github.com/danielbardsley/gptclaw/pull/50) merged as `527f04d`. Delivered covers `nextjs@1.0.0` catalogue mechanics; [Evidence](../021-template-catalogue/acceptance.md). API, Python, Expo, static site, CLI and multi-package entries remain later reviewed scope. |
 | PRJ-004 | New GitHub repository automation | 3 | Delivered | [SPEC-022](../022-github-repository-automation/spec.md) initial personal-account private-repository workflow in provider 1.4.0 merged in [PR #52](https://github.com/danielbardsley/gptclaw/pull/52) as `869b1b7`. The project owner accepted completion October 10. 41 focused tests, repository checks, all three final-head CI workflows, live repository/initial PR and private app checks passed; the project owner confirmed desktop access. The retained fixture has an explicit owner-approved protection waiver, never claimed as enforced. [Evidence](../022-github-repository-automation/acceptance.md). Token revocation is owner-managed follow-through; PRJ-005 ongoing credentials and broader organization/public/production scope remain separate. |
 | PRJ-005 | Repository credential broker | 3 | Delivered | [SPEC-023](../023-repository-credential-broker/spec.md) provider 1.5.2 merged in [PR #54](https://github.com/danielbardsley/gptclaw/pull/54) as `f485190`. The owner-approved All repositories App provides configured private new-repository creation and singleton Git/API credentials after one setup. Live retained recovery/successive creation, native worktree Git/later PRs, scope denial, renewal/revocation/disable/enable, signing-key rotation and two private apps/owner desktop checks passed. 47 broker tests, repository checks, all final-head and push-to-main workflows passed. Earlier narrower failures and public-read/owner-reported retirement limits remain explicit. [Evidence](../023-repository-credential-broker/acceptance.md). Broader organization/public/production scope and fixture PR merges remain separate. |
-| PRJ-006 | Branch and worktree policy | 2 | Candidate | Parallel agents use isolated worktrees, predictable branch names, per-project locks, and clean handoff. |
+| PRJ-006 | Branch and worktree policy | 2 | Delivered | [SPEC-032](../032-branch-worktree-policy/spec.md) delivers isolated source-only task checkouts, predictable codex branches, short project locks, scoped Git compatibility and recoverable handoff/cleanup in provider 1.11.0. [PR #74](https://github.com/danielbardsley/gptclaw/pull/74) merged as `9bbdf75`; integrated local checks, four final-head workflows and the owner-authorized Trailboard live exercise passed. Canonical source/data and independent app health were preserved; test checkouts were removed and branches/receipts retained. [Acceptance](../032-branch-worktree-policy/acceptance.md). General task runtime/build/database adapters remain separate scope. |
 | PRJ-007 | Project discovery | 3 | Candidate | Dashboard safely discovers valid manifests without executing repository content. |
 | PRJ-008 | Project archive and restore | 4 | Candidate | Stop services, retain or export data by policy, archive metadata, and make later restoration predictable. |
 | PRJ-009 | Example and seed projects | 3 | Candidate | Golden-path sample applications continuously prove every supported template and routing mode. |
@@ -132,7 +133,7 @@ capabilities; those are not prerequisites for creating the first applications.
 | RUN-008 | Pause, resume, and idle shutdown | 4 | Candidate | Reclaim memory and CPU from inactive projects while preserving data and URLs. |
 | RUN-009 | Build queue | 4 | Candidate | Bound concurrent CPU-heavy builds and surface queue state to agents and the dashboard. |
 | RUN-010 | Runtime garbage collection | 4 | Candidate | Safely remove orphaned containers, images, caches, ports, and abandoned worktrees. |
-| RUN-011 | Development database lifecycle | 3 | Candidate | Create isolated PostgreSQL databases, users, backups, migrations, and safe reset operations per project. |
+| RUN-011 | Development database lifecycle | 3 | Delivered | [SPEC-026](../026-development-databases/spec.md) initial synthetic private web/API/PostgreSQL slice accepted with installed provider 1.8.4: two distinct complete applications, locked private CI, actual browser/owner writes, managed persistence, native recovery/migrations/reset/rotation/interruption, roles/networks and real commit hooks pass. Reviewed implementation PRs #60/#62/#63/#64/#65 are merged; 464 local repository cases and final provider CI pass. Local development credentials remain selected; production/cloud secrets and host-loss recovery are separate. [Evidence](../026-development-databases/acceptance.md). |
 | RUN-012 | Synthetic seed-data lifecycle | 4 | Candidate | Load and reset approved non-sensitive datasets consistently. |
 
 ## 8. Framework templates
@@ -140,9 +141,9 @@ capabilities; those are not prerequisites for creating the first applications.
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
 | TPL-001 | Next.js full-stack template | 3 | Delivered | [SPEC-018](../018-first-private-application/spec.md) initial single-web slice merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40): pinned Next.js starter, rootless lifecycle/limits/ports/health and owned private ingress. Both desktop pages/counters and automatic source updates confirmed; first-app stop/start retained source and kept the second app available. Provider 1.0.1 port-reuse repair and acceptance merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); 32 focused tests, repository checks and all three CI workflows passed. Delivered covers this initial slice; broader row scope remains future work. [Evidence](../018-first-private-application/acceptance.md). |
-| TPL-002 | TypeScript API template | 4 | Candidate | Fastify service with schema validation, OpenAPI, health checks, tests, container, and migrations. |
+| TPL-002 | TypeScript API template | 4 | Delivered | Initial stateless slice under [SPEC-035](../035-typescript-api-template/spec.md) merged in [PR #82](https://github.com/danielbardsley/gptclaw/pull/82): exact Fastify/TypeScript starter, schemas, OpenAPI/bundled docs, health, quality/coverage/container and managed private lifecycle. Final implementation CI passed; two private APIs and managed reload/recovery/test/restart/stop-retention checks passed, and the project owner accepted the result October 15. PostgreSQL/migrations remain explicitly deferred. [Evidence](../035-typescript-api-template/acceptance.md). |
 | TPL-003 | Python API/AI template | 4 | Delivered | Initial standalone FastAPI API slice delivered under [SPEC-024](../024-python-fastapi-template/spec.md) and merged in [PR #56](https://github.com/danielbardsley/gptclaw/pull/56): pinned Python/uv execution and dependency policy, exact catalogue release, typed synthetic API/settings, owner-derived standards and quality/security/coverage/CI, private docs/routing and managed lifecycle/repository selection. Local, final-head CI and live checks passed; the project owner confirmed independent docs/echo behavior and accepted the result October 11. [Acceptance](../024-python-fastapi-template/acceptance.md) records the evidence and retained fixtures. AI integrations, databases and multi-service orchestration remain separate scope. |
-| TPL-004 | Expo universal application template | 4 | Candidate | Expo Router, TypeScript, web export, device development, EAS profiles, tests, and environment separation. |
+| TPL-004 | React Native application template (Expo) | 4 | Candidate | Native iOS/Android starter using React Native, Expo Router and TypeScript; pinned compatible SDK/toolchain, accessible native UI, optional typed backend binding, tests and separate environment/build profiles. Web preview is optional; native device acceptance is required. [SPEC-031](../031-expo-project-creation/spec.md) records the delivered creation/quality foundation; full template/device scope remains Candidate. Delivery order: [mobile sequence](sequence-mobile.md). |
 | TPL-005 | Static site template | 4 | Candidate | Minimal static output with accessibility, link, performance, and private-preview checks. |
 | TPL-006 | CLI/automation template | 5 | Optional | Typed CLI, structured output, tests, packaging, and scheduled execution hooks. |
 | TPL-007 | Multi-package product template | 5 | Optional | pnpm workspace with shared contracts and UI packages when one release lifecycle justifies a monorepo. |
@@ -168,9 +169,9 @@ capabilities; those are not prerequisites for creating the first applications.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| DSH-001 | Project inventory | 3 | Candidate | List all managed projects with type, repository, owner, runtime, and documentation state. |
-| DSH-002 | Live service status | 3 | Candidate | Show health, uptime, restarts, components, and last status change. |
-| DSH-003 | Private/open links | 3 | Candidate | Open project UI, API docs, repository, logs, and active preview URLs. |
+| DSH-001 | Project inventory | 3 | Delivered | [SPEC-027](../027-dashboard-project-inventory/spec.md) implements private inventory, bounded safe discovery, metadata/documentation state and the initial dashboard foundation; local/CI/private/lifecycle/owner acceptance passed; merged in PR #69. |
+| DSH-002 | Live service status | 3 | Delivered | [SPEC-028](../028-dashboard-live-service-status/spec.md) defines approved observed health/components, current-instance uptime/restarts, last observed change and explicit freshness over SPEC-027; implemented after inventory; local/CI/private/owner acceptance passed; merged in PR #69. |
+| DSH-003 | Private/open links | 3 | Delivered | [SPEC-029](../029-dashboard-project-links/spec.md) defines approved private app/docs/repository links and unavailable/capability-gated logs and preview destinations; implemented after status; local/CI/private/owner acceptance passed; merged in PR #69. Initial app/docs/repository integration is delivered; live logs/preview integration depends on separately accepted prerequisites. |
 | DSH-004 | Git status | 3 | Candidate | Show branch, dirty state, ahead/behind, last commit, pull request, and active worktrees. |
 | DSH-005 | Resource telemetry | 3 | Candidate | Display host and per-project CPU, memory, disk, network, and process consumption. |
 | DSH-006 | Log viewer | 4 | Candidate | Stream and search redacted recent logs with project/component filters. |
@@ -182,20 +183,29 @@ capabilities; those are not prerequisites for creating the first applications.
 | DSH-012 | Mobile-friendly dashboard | 4 | Candidate | Make status, approvals, logs, and safe controls usable from a phone over Tailscale. |
 | DSH-013 | Search and filtering | 4 | Candidate | Find projects by status, stack, owner, tag, repository, health, or exposure. |
 | DSH-014 | Read-only degraded mode | 3 | Candidate | Preserve useful diagnosis when the lifecycle manager or a project is unhealthy. |
+| DSH-015 | Dashboard visual refinement | 3 | In review | [SPEC-030](../030-dashboard-visual-refinement/spec.md) proposes a compact, readable presentation closer to the project owner's reference, preserving delivered inventory/status/link behavior. Attached HTML is inspected; unsupported demo features are omitted. Implementation/private rollout authorized; local/CI/private browser and rollback checks passed. Owner acceptance and merge pending. |
 
 ## 11. Mobile and Expo workflow
 
+The project owner selected mobile delivery planning on October 13. Follow the
+[mobile sequence](sequence-mobile.md) to reuse the delivered backend/platform
+while extending native contracts. MOB-001 is now selected for
+[SPEC-031](../031-expo-project-creation/spec.md); other entries retain their own status. Sequencing does not authorize implementation,
+account changes or publication.
+
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| MOB-001 | Expo project creation | 4 | Candidate | Generate the approved Expo Router template with consistent native/web structure. |
-| MOB-002 | Physical-device development | 4 | Candidate | Connect a device to Metro over the tailnet or an explicitly approved Expo transport. |
-| MOB-003 | Expo Go workflow | 4 | Candidate | Provide the quickest compatible feedback loop for applications without unsupported native modules. |
-| MOB-004 | Development builds | 4 | Candidate | Create signed EAS development builds when native modules or production parity require them. |
-| MOB-005 | Environment profiles | 4 | Candidate | Separate local, development, preview, and production configuration and credentials. |
-| MOB-006 | EAS Build and Submit | 5 | Candidate | Produce reviewable iOS/Android artifacts and owner-approved store submissions. |
+| MOB-001 | Expo project creation | 4 | Delivered | [SPEC-031](../031-expo-project-creation/spec.md) delivers repeatable native source creation through the exact catalogue, mobile manifest/provider, pinned tools/dependencies, quality/bundle checks and private repository workflow. Implementation merged in [PR #73](https://github.com/danielbardsley/gptclaw/pull/73) as `f40a7f3`; local/CI/installed/private rollout and rollback passed. Project owner confirmed dashboard links/runtime messaging and source creation/edit/check acceptance October 13. [Evidence](../031-expo-project-creation/acceptance.md). Metro/device access, backend binding and signed builds remain follow-ups. |
+| MOB-002 | Physical-device development | 4 | Delivered | [SPEC-033](../033-private-metro-sessions/spec.md), [merged PR #78](https://github.com/danielbardsley/gptclaw/pull/78) and [acceptance](../033-private-metro-sessions/acceptance.md). Bounded rootless Metro, private transport, exact security/ownership and independent lifecycle/readiness/recovery are merged and installed. Android 11 / Expo Go 57.0.9 physical acceptance and final operator listener cleanup/readback pass. Both temporary runtimes/listeners are absent; source/history, existing HTTPS routes and apps/data are preserved. iOS remains unsupported/follow-up. |
+| MOB-003 | Expo Go workflow | 4 | Delivered | [SPEC-034](../034-expo-go-workflow/spec.md), [merged PR #78](https://github.com/danielbardsley/gptclaw/pull/78) and [acceptance](../034-expo-go-workflow/acceptance.md). Read-only eligibility/launch and minimum dashboard Open/copy/local QR are merged and installed. Two-project Android native edit/reload, failure/reconnect/expiry and final owned-listener cleanup pass. Client/SDK/profile freshness is enforced. iOS, signed development builds, account setup and backend CRUD remain separately scoped follow-ups. |
+| MOB-004 | Development builds | 4 | Candidate | Create and install the project's own signed Expo development client, with reviewed EAS account/signing custody, native-module compatibility and private Metro/API access. |
+| MOB-005 | Environment profiles | 4 | Candidate | Separate local/development/preview/production API bindings, app identities, builds and update channels. Client configuration is public; server, EAS and signing credentials have scoped storage/handoff and never enter bundles. |
+| MOB-006 | EAS Build and Submit | 5 | Candidate | Record reproducible build inputs and external job/artifact provenance, signed development/internal-preview binaries and authorized install access; deliver store testing/submission/release as separately gated slices. |
 | MOB-007 | EAS Update policy | 5 | Candidate | Define channels, runtime compatibility, rollout, rollback, and owner approval for updates. |
 | MOB-008 | Universal web preview | 4 | Candidate | Export or serve the Expo web target through the same private preview model when appropriate. |
-| MOB-009 | Device and release dashboard state | 5 | Candidate | Show active Metro sessions, build jobs, QR links, channels, and release versions. |
+| MOB-009 | Device and release dashboard state | 5 | Candidate | Show distinct Metro/backend/build states, safe launch/install links, freshness, channels and native release versions through reviewed adapters; do not infer a device is online or model installed apps as HTTP containers. |
+| MOB-010 | Mobile backend integration | 4 | Candidate | Bind native clients to existing FastAPI/private HTTPS and PostgreSQL lifecycles; typed API contracts, explicit environment selection, error/reconnect behavior and installed-client compatibility. Extend reviewed API/DB-only backend shapes without replacing database ownership/recovery. |
+| MOB-011 | Native application acceptance tests | 4 | Candidate | Pinned native component and device/end-to-end checks for iOS/Android, API CRUD/persistence, app relaunch, offline/reconnect, accessibility and build/update compatibility; record physical-device acceptance separately from web tests. |
 
 ## 12. Secrets, data, and security
 

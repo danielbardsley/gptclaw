@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import stat
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -51,7 +52,7 @@ class Factory:
             if ids is not None and any(i not in self.selected for i in ids):raise app.AppError('credential-scope')
             self.token_count+=1;secret='synthetic_'+str(self.token_count)+'.format-variable-token'
             expires=(dt.datetime.now(dt.timezone.utc)+dt.timedelta(minutes=59)).isoformat()
-            data={'token':secret,'expires_at':expires,'permissions':body['permissions'],'repository_selection':'selected' if ids is not None else self.selection,
+            data={'token':secret,'expires_at':expires,'permissions':copy.deepcopy(body['permissions']),'repository_selection':'selected' if ids is not None else self.selection,
                   'repositories':[self.selected[i] for i in (ids if ids is not None else self.selected)]}
             if self.mutate:self.mutate(data)
             self.tokens[secret]={'data':copy.deepcopy(data),'ids':ids,'revoked':False}
@@ -93,6 +94,8 @@ class Factory:
         if info['ids'] is not None and repo_id not in info['ids']:raise app.AppError('credential-scope')
         if path.endswith('/pulls') and method=='POST' and 'pull_requests' not in info['data']['permissions']:
             raise app.AppError('credential-scope')
+        if path.endswith('/git/trees') and method=='POST' and any(item['path'].startswith('.github/workflows/') for item in body['tree']) and info['data']['permissions'].get('workflows')!='write':
+            raise app.AppError('repository-api')
         result=api.request(method,path,body,missing)
         # FakeAPI's PR IDs are fixed to 42; expose actual bound repo identity.
         if '/pulls' in path:
@@ -125,6 +128,135 @@ class Tests(unittest.TestCase):
     def configure(self):return broker.configure(17,19,str(self.key),[100])
     def first(self):
         self.configure();result=broker.create('first',str(self.projects/'first'),canary=True);broker.set_active(True);return result
+    def workflow_profile(self,names):
+        self.factory.selection='all';self.factory.grants=copy.deepcopy(broker.ALL_GRANTS)
+        broker.configure(17,19,str(self.key),[100],'all')
+        broker.create('baseline',str(self.projects/'baseline'),canary=True)
+        self.factory.grants['workflows']='write'
+        return broker.set_workflow_policy(names)
+    def test_workflow_preflight_precedes_any_remote_operation(self):
+        self.configure();before=copy.deepcopy(self.factory.root_calls)
+        with self.assertRaises(app.AppError) as error:
+            broker.create('persistent',str(self.projects/'persistent'),canary=True,template='notes-postgres',version='1.0.0')
+        self.assertEqual(error.exception.code,'credential-workflow-policy')
+        self.assertEqual(self.factory.root_calls,before);self.assertFalse(self.factory.repos)
+        self.assertFalse((self.projects/'persistent').exists())
+    def test_workflow_policy_requires_exact_owner_grant_and_stays_inactive(self):
+        self.factory.selection='all';self.factory.grants=copy.deepcopy(broker.ALL_GRANTS)
+        broker.configure(17,19,str(self.key),[100],'all');old=broker.profile()
+        with self.assertRaises(app.AppError):broker.set_workflow_policy(['persistent'])
+        self.assertEqual(broker.profile(),old)
+        self.factory.grants['workflows']='write'
+        for names in [['persistent','persistent'],['one','two','three','four','five'],['*'],['../foreign']]:
+            with self.assertRaises(app.AppError):broker.set_workflow_policy(names)
+            self.assertEqual(broker.profile(),old)
+        result=broker.set_workflow_policy(['persistent'])
+        self.assertFalse(result['active']);self.assertFalse(result['workflow_verified'])
+        self.assertEqual(broker.profile()['schema_version'],3)
+        with self.assertRaises(app.AppError):broker.set_active(True)
+    def test_two_named_workflow_projects_and_ordinary_tokens_exclude_workflows(self):
+        self.workflow_profile(['persistent-one','persistent-two'])
+        with self.assertRaises(app.AppError):broker.set_active(True)
+        first=broker.create('persistent-one',str(self.projects/'persistent-one'),canary=True,template='notes-postgres',version='1.0.0')
+        self.assertTrue(broker.profile()['workflow_verified']);broker.set_active(True)
+        second=broker.create('persistent-two',str(self.projects/'persistent-two'),template='notes-postgres',version='1.0.0')
+        self.assertEqual(first['state'],'repository-ready');self.assertEqual(second['state'],'repository-ready')
+        for role in ['git','pr']:
+            token=broker.Broker().project_token(self.projects/'persistent-one',role)
+            self.assertNotIn('workflows',token.metadata['permissions']);token.close()
+        ordinary=broker.Broker().project_token(self.projects/'baseline','git');ordinary.close()
+        workflow_tokens=[v for v in self.factory.tokens.values() if 'workflows' in v['data']['permissions']]
+        self.assertTrue(workflow_tokens)
+        self.assertTrue(all(v['ids'] in [[first['repository_id']],[second['repository_id']]] and v['revoked'] for v in workflow_tokens))
+        for role in ['audit','create']:
+            token=broker.Broker().issue(role);self.assertNotIn('workflows',token.metadata['permissions']);token.close()
+        before=len(self.factory.root_calls)
+        with self.assertRaises(app.AppError):broker.create('foreign',str(self.projects/'foreign'),template='notes-postgres',version='1.0.0')
+        self.assertEqual(len(self.factory.root_calls),before)
+    def test_changed_installation_never_implicitly_adopts_workflows(self):
+        self.configure();old=broker.profile();self.factory.grants['workflows']='write'
+        with self.assertRaises(app.AppError):broker.Broker().doctor()
+        self.assertEqual(old,broker.profile());self.assertEqual(broker.grants(old),broker.GRANTS)
+    def test_workflow_lease_requires_app_created_binding_and_exact_singleton(self):
+        self.workflow_profile(['persistent'])
+        before=len(self.factory.root_calls)
+        with self.assertRaises(app.AppError):broker.Broker().issue('provision',100,'persistent')
+        self.assertEqual(len(self.factory.root_calls),before)
+        original=broker.Provision.request
+        def deny(adapter,method,path,body=None,missing=False):
+            if path.endswith('/git/trees') and method=='POST':raise app.AppError('repository-api')
+            return original(adapter,method,path,body,missing)
+        with patch.object(broker.Provision,'request',deny):
+            with self.assertRaises(app.AppError):broker.create('persistent',str(self.projects/'persistent'),canary=True,template='notes-postgres',version='1.0.0')
+        operation=next(b['operation_id'] for b in broker.bindings() if b['name']=='persistent')
+        self.assertFalse(broker.profile()['workflow_verified'])
+        result=broker.resume(operation);self.assertEqual(result['state'],'repository-ready')
+        self.assertEqual(sum(c[1]=='/user/repos' and c[2]['name']=='persistent' for c in self.factory.calls),1)
+        self.assertTrue(broker.profile()['workflow_verified'])
+    def test_workflow_token_wrong_grant_or_repository_is_revoked(self):
+        self.workflow_profile(['persistent'])
+        result=broker.create('persistent',str(self.projects/'persistent'),canary=True,template='notes-postgres',version='1.0.0')
+        for mutate in [lambda d:d['permissions'].pop('workflows'),lambda d:d.update(repositories=[row(100,'bootstrap')]),lambda d:d.update(permissions={**d['permissions'],'administration':'write'})]:
+            self.factory.mutate=mutate
+            with self.assertRaises(app.AppError):broker.Broker().issue('provision',result['repository_id'],'persistent')
+            self.assertTrue(list(self.factory.tokens.values())[-1]['revoked'])
+        self.factory.mutate=None
+    def test_workflow_rollback_requires_owner_grant_removal_and_preserves_helper(self):
+        self.workflow_profile(['persistent']);old=broker.profile()
+        with self.assertRaises(app.AppError):broker.set_workflow_policy([])
+        self.assertEqual(broker.profile(),old)
+        stale=broker.Broker()
+        self.factory.grants.pop('workflows');result=broker.set_workflow_policy([])
+        with self.assertRaises(app.AppError):stale.issue('provision',100,'persistent')
+        self.assertFalse(result['active']);self.assertEqual(broker.profile()['schema_version'],2)
+        broker.set_active(True)
+        token=broker.Broker().project_token(self.projects/'baseline','git')
+        self.assertEqual(token.metadata['permissions'],broker.ROLES['git']);token.close()
+    def test_cli_canary_forwards_exact_mobile_selection(self):
+        import contextlib,io
+        import gptclawctl
+        with patch.object(app.os,'getuid',return_value=1002),patch.object(broker,'create',return_value={'state':'repository-ready'}) as create,contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(gptclawctl.main(['credentials','canary','--repository','mobile-one','--directory',str(self.projects/'mobile-one'),'--template','expo-react-native','--template-version','1.0.0']),0)
+        create.assert_called_once_with('mobile-one',str(self.projects/'mobile-one'),canary=True,template='expo-react-native',version='1.0.0')
+
+    def test_four_name_workflow_policy_preserves_legacy_bounds_and_singleton_tokens(self):
+        self.workflow_profile(['one','two','three','four'])
+        self.assertEqual(broker.profile()['schema_version'],4)
+        legacy=copy.deepcopy(broker.profile());legacy['schema_version']=3
+        with self.assertRaises(app.AppError):broker.profile(legacy)
+        with self.assertRaises(app.AppError):broker.set_active(True)
+        first=broker.create('one',str(self.projects/'one'),canary=True,template='expo-react-native',version='1.0.0')
+        self.assertEqual(first['state'],'repository-ready');broker.set_active(True)
+        ordinary=broker.Broker().project_token(self.projects/'one','git');self.assertNotIn('workflows',ordinary.metadata['permissions']);ordinary.close()
+        workflow=[v for v in self.factory.tokens.values() if 'workflows' in v['data']['permissions']]
+        self.assertTrue(workflow);self.assertTrue(all(v['ids']==[first['repository_id']] and v['revoked'] for v in workflow))
+
+    def test_archived_source_binding_is_preserved_and_pending_upgrade_blocks(self):
+        self.first();broker.set_active(False);root=self.projects/'first';binding=broker.bound(root)
+        archive=self.projects/'.archived';root.rename(archive);before=broker.bindings()
+        broker.upgrade_registered_helpers();self.assertEqual(before,broker.bindings())
+        app.save(broker.location()/('helper-upgrade-'+str(binding['repository_id'])+'.json'),{'stage':'planned'})
+        with self.assertRaises(app.AppError):broker.upgrade_registered_helpers()
+        self.assertEqual(before,broker.bindings());self.assertTrue((archive/'.git/config').is_file())
+
+    def test_helper_upgrade_recovers_known_config_write_and_preserves_unknown(self):
+        self.first();broker.set_active(False)
+        root=self.projects/'first';old=broker.bound(root)['helper_command'];original=(root/'.git/config').read_bytes()
+        bundle=app.provider_bundle();candidate=bundle.parent/'helper-upgrade-fixture';shutil.copytree(bundle,candidate)
+        real_save=app.save;failed=[False]
+        def interrupted(path,value):
+            if path==broker.binding_path(root) and value['helper_command']!=old and not failed[0]:
+                failed[0]=True;raise app.AppError('credential-recovery')
+            return real_save(path,value)
+        with patch.object(app,'provider_bundle',return_value=candidate),patch.object(app,'save',side_effect=interrupted):
+            with self.assertRaises(app.AppError):broker.upgrade_registered_helpers()
+        self.assertNotEqual((root/'.git/config').read_bytes(),original)
+        with patch.object(app,'provider_bundle',return_value=candidate):broker.upgrade_registered_helpers()
+        self.assertNotEqual(broker.validate_git_helper(root)['helper_command'],old)
+        self.assertEqual(broker.profile()['schema_version'],2)
+        before=(root/'.git/config').read_bytes();(root/'.git/config').write_bytes(before+b'[include]\n path = unreviewed\n')
+        with self.assertRaises(app.AppError):broker.upgrade_registered_helpers()
+        self.assertTrue((root/'.git/config').read_bytes().endswith(b'[include]\n path = unreviewed\n'))
     def test_setup_is_private_and_ready_only_after_canary(self):
         result=self.configure();self.assertEqual(result['state'],'canary-required')
         with self.assertRaises(app.AppError):broker.set_active(True)

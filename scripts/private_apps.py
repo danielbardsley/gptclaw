@@ -20,7 +20,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.7.0'
+VERSION = '1.13.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -34,6 +34,22 @@ CPU = '1'
 PIDS = 256
 DEADLINE = 120
 MESSAGES = {
+ 'metro-capacity': 'Owned Metro runtime retention reached its bounded capacity; inspect metro prune and remove only confirmed inactive generated copies. Source and unknown files are preserved.',
+ 'metro-prune-recovery': 'An owned Metro copy changed during cleanup; retain the prune-GENERATION staging directory and reconcile its identity before retrying. Canonical source is unchanged.',
+ 'metro-metadata-recovery': 'A Metro opt-in publication needs scoped reconciliation; inspect its owned metadata record and retained previous file before retrying.',
+ 'mobile-unsupported': 'Mobile source creation and quality checks are supported; Metro, device and native release operations are not available.',
+ 'mobile-policy': 'Mobile identity, SDK packages or source configuration do not match the reviewed Expo profile.',
+ 'database-state': 'Database ownership or persisted state is invalid; no data was initialized or removed.',
+ 'database-storage': 'Expected persistent database storage is missing or incompatible; use reviewed recovery.',
+ 'database-profile': 'The exact PostgreSQL profile or data major is incompatible.',
+ 'database-health': 'The owned database did not reach authenticated readiness.',
+ 'database-command': 'A scoped database operation failed; credentials and SQL diagnostics were suppressed.',
+ 'database-schema': 'The database schema does not match the declared migration revision.',
+ 'database-capacity': 'Database backup or generation limits require reviewed pruning or more capacity.',
+ 'database-backup': 'The selected database backup is invalid or lacks required verification.',
+ 'database-recovery': 'A database operation needs explicit recovery before publication.',
+ 'database-confirmation': 'Apply requires the matching operation ID and exact project confirmation.',
+ 'database-plan': 'The database plan is stale; prepare a new plan.',
  'invalid': 'Invalid project manifest or unsupported runtime target.',
  'path': 'Use a regular, owned project directory under the projects root; symlinks and unsafe paths are unsupported.',
  'conflict': 'Existing state, resources or route belong to a different target; nothing was overwritten.',
@@ -151,6 +167,8 @@ def json_command(args):
 
 
 def target(root):
+ from project_worktrees import guard
+ guard(root)
  root = safe(Path(root).absolute())
  need(root.is_relative_to(PROJECTS) and root != PROJECTS and root != REPO and '.gptclaw-runtime' not in root.parts, 'path')
  need(root.is_dir() and root.stat().st_uid == os.getuid(), 'path')
@@ -160,7 +178,7 @@ def target(root):
  result, contract, code = validate_project(root)
  need(code == 0, 'invalid')
  marker = read_json(root / '.gptclaw/template.json')
- need(marker == {'provider': 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'nextjs-v1'}, 'invalid')
+ need(marker == {'provider': 'expo-v1' if contract['schema_version'] in (5,6) else 'notes-postgres-v1' if contract['schema_version'] == 4 else 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'fastify-v1' if contract['schema_version'] == 7 else 'nextjs-v1'}, 'invalid')
  import project_templates as templates
  templates.validate_provenance(root)
  need(not any((root/name).exists() for name in ['.env','.env.local','.env.development','.env.production','.npmrc','.ssh','.aws']),'invalid')
@@ -168,7 +186,7 @@ def target(root):
 
 
 def valid_state(s):
- if isinstance(s,dict) and s.get('schema_version')==2:
+ if isinstance(s,dict) and s.get('schema_version') in (2,3):
   import project_groups as groups
   return groups.valid_state(s)
  need(isinstance(s, dict) and s.get('schema_version') == 1, 'conflict')
@@ -254,6 +272,7 @@ def available(port):
 
 
 def reserve(root, contract):
+ need(contract['schema_version'] not in (5,6), 'mobile-unsupported')
  slug = contract['project']['id']
  with locked('registry'):
   s = state_for(slug)
@@ -371,6 +390,8 @@ def unit_text(s, contract, dns):
  argv = contract['commands']['start']
  import project_python as py
  guard = py.GUARD_ENV if contract['schema_version'] == 2 else deps.GUARD_ENV
+ import project_groups as groups
+ database_config = groups.database_unit(s)
  def quote(value):
   # Quadlet Exec uses systemd argv parsing, not a shell. Escape its substitutions as well.
   return '"'+value.replace('\\','\\\\').replace('"','\\"').replace('%','%%').replace('$','$$')+'"'
@@ -386,7 +407,7 @@ Label=com.gptclaw.project={s['id']}
 Label={LABEL}={s['token']}
 UserNS=keep-id
 Network={s.get('network','slirp4netns')}
-PublishPort=127.0.0.1:{s['port']}:{contract['service']['internal_port']}
+{database_config}PublishPort=127.0.0.1:{s['port']}:{contract['service']['internal_port']}
 Volume={s['root']}:/workspace:rw
 WorkingDir=/workspace
 Environment=GPTCLAW_PROJECT_ID={s.get('runtime_project_id',s['id'])}
@@ -461,12 +482,13 @@ def save_text(path,text):
 
 
 def start(root, no_route=False, take_lock=True):
- if target(root)[1]['schema_version']==3:
+ if target(root)[1]['schema_version'] in (5,6): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (3,4):
   import project_groups as groups
   return groups.start(root,no_route,take_lock)
  import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
- if contract['schema_version']==2 and not no_route: route_info(slug)
+ if contract['schema_version'] in (2,7) and not no_route: route_info(slug)
  with (locked(slug) if take_lock else contextlib.nullcontext()):
   deps.require_clean(root,slug);deps.context(root)
   import project_toolchains as tools
@@ -506,7 +528,8 @@ def start(root, no_route=False, take_lock=True):
 
 
 def stop(root, take_lock=True):
- if target(root)[1]['schema_version']==3:
+ if target(root)[1]['schema_version'] in (5,6): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (3,4):
   import project_groups as groups
   return groups.stop(root,take_lock)
  root,contract=target(root);slug=contract['project']['id']
@@ -532,7 +555,8 @@ def stop(root, take_lock=True):
 
 
 def restart(root):
- if target(root)[1]['schema_version']==3:
+ if target(root)[1]['schema_version'] in (5,6): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (3,4):
   import project_groups as groups
   return groups.restart(root)
  root,contract=target(root);slug=contract['project']['id']
@@ -547,7 +571,8 @@ def restart(root):
 
 
 def status(root):
- if target(root)[1]['schema_version']==3:
+ if target(root)[1]['schema_version'] in (5,6): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (3,4):
   import project_groups as groups
   return groups.status(root)
  root,contract=target(root);slug=contract['project']['id'];s=state_for(slug)
@@ -565,6 +590,8 @@ def test_app(root):
 
 
 def quality_app(root, action='test'):
+ if target(root)[1]['schema_version'] in (5,6):
+  return __import__('project_mobile').quality(root,action)
  import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
  need(action in contract['commands'], 'invalid')
@@ -584,7 +611,7 @@ def quality_app(root, action='test'):
    else:
     tools.assert_active(selected,s)
     need(s.get('prepared_digest')==dependency_digest(s),'busy')
-   run_in_app(s,contract['commands'][action],read_only_dependency_files=contract['schema_version']==2)
+   run_in_app(s,contract['commands'][action],read_only_dependency_files=contract['schema_version'] in (2,7))
   except AppError as error:
    s.update(operation_result='failed',error=error.code)
    if not active:s.update(phase='failed',health_ready=False)
@@ -602,6 +629,7 @@ def redact(text):
 
 
 def logs(root,lines):
+ if target(root)[1]['schema_version'] in (5,6): raise AppError('mobile-unsupported')
  root,contract=target(root);s=state_for(contract['project']['id']);need(s is not None,'invalid')
  need(s['root']==str(root));need(1<=lines<=200,'invalid')
  if unit_path(s).exists():verify_unit(s)
@@ -677,12 +705,15 @@ WantedBy=default.target
 
 def provider_bundle():
  paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','project_dependencies.py','project_toolchains.py','gptclawctl.py','gptclawctl','project_repositories.py','repository_askpass.py','repository_credentials.py','repository_credential_helper.py','repository-credential-helper']]
+ paths += [Path('scripts/project_worktrees.py')]
+ paths += [Path('scripts/project_mobile.py'), Path('scripts/expo_go.py'), Path('scripts/dashboard_go.py'), Path('config/mobile/expo-go-v1.json'), Path('scripts/metro_contract.py'), Path('scripts/metro_state.py'), Path('scripts/metro_protocol.py'), Path('scripts/metro_proxy.py'), Path('scripts/metro_routes.py'), Path('scripts/metro_retention.py'), Path('scripts/metro_sessions.py'), Path('scripts/metro_spike.py'), Path('scripts/metro_security.py'), Path('config/metro/runtime-security-v1.json'), Path('config/mobile/v1.json'), Path('schemas/project/v5.schema.json'), Path('schemas/project/v6.schema.json')]
+ paths += [Path('scripts/dashboard_inventory.py'), Path('scripts/dashboard_collector.py'), Path('scripts/dashboard_observation.py'), Path('scripts/dashboard_status.py'), Path('scripts/dashboard_metro.py'), Path('scripts/dashboard_links.py')]
  paths += [Path('config/project-dependencies/v1.json'),Path('schemas/project-dependencies/v1.schema.json')]
  paths += [Path('config/toolchains/v1.json'),Path('schemas/toolchains/v1.schema.json'),Path('templates/apps/node-toolchain/install-pnpm.cjs')]
  paths += [Path('schemas/project/v1.schema.json'),Path('templates/apps/node-toolchain/Containerfile')]
  import project_templates as templates
  paths += templates.bundle_paths()
- paths += [Path(p) for p in ['scripts/project_python.py','scripts/project_groups.py','schemas/project/v3.schema.json','config/toolchains/v2.json','schemas/toolchains/v2.schema.json','config/project-dependencies/v2.json','schemas/project/v2.schema.json','templates/apps/python-toolchain/Containerfile']]
+ paths += [Path(p) for p in ['scripts/project_python.py','scripts/project_groups.py','scripts/project_database.py','templates/apps/start-development-postgres.sh','scripts/tests/check_database_template.py','config/databases/v1.json','schemas/project/v4.schema.json','schemas/project/v3.schema.json','config/toolchains/v2.json','schemas/toolchains/v2.schema.json','config/project-dependencies/v2.json','schemas/project/v2.schema.json','templates/apps/python-toolchain/Containerfile']]
  interpreter=Path(sys.executable).absolute()
  digest=hashlib.sha256(str(interpreter).encode()+b'\0')
  for rel in sorted(paths):digest.update(str(rel).encode()+b'\0'+(REPO/rel).read_bytes())
@@ -703,7 +734,7 @@ def provider_bundle():
 
 
 def install_hooks(root):
- if target(root)[1]['schema_version']==3:
+ if target(root)[1]['schema_version'] in (3,4):
   import project_groups as groups
   return groups.install_hooks(root)
  root,contract=target(root);need(contract['schema_version']==2,'invalid');slug=contract['project']['id']
@@ -713,7 +744,9 @@ def install_hooks(root):
   directory=safe(root/'.git');need(directory.is_dir() and directory.stat().st_uid==os.getuid(),'conflict')
   hooks=safe(directory/'hooks');hooks.mkdir(exist_ok=True)
   snapshot=provider_bundle();launcher=snapshot/'scripts/gptclawctl'
-  text='#!/usr/bin/env bash\nset -euo pipefail\nexec '+str(launcher)+' verify --project-root '+str(root)+'\n'
+  from project_worktrees import hook_text, hooks as upgrade_hooks
+  upgrade_hooks(root,upgrade=True)
+  text=hook_text(launcher)
   path=safe(hooks/'pre-commit')
   if path.exists():
    need(deps.read_bytes(path,65536)==text.encode(),'conflict');return {'project':slug,'state':'hooks-installed','changed':False}

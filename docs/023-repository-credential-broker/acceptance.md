@@ -271,8 +271,8 @@ for each through the reviewed resource-limited provider job.
 
 Both private HTTPS pages and health endpoints returned 200 and matching project
 identity. The owner answered “Both load correctly” for
-[one](https://forge-dev-01-4.tail8c3304.ts.net/projects/gptclaw-prj005-one/) and
-[two](https://forge-dev-01-4.tail8c3304.ts.net/projects/gptclaw-prj005-two/).
+the first private project (address retained outside public evidence) and
+the second private project (address retained outside public evidence).
 They remain ready on loopback ports 18086/18087. `hello-second` remained ready on
 18081 before, between and after operations and passed private page/health checks.
 The stable installed runner reports 1.5.2/schema 2. No unrelated runtime, public
@@ -353,3 +353,23 @@ the previously verified private provider/runtime acceptance remains separate.
 All required acceptance criteria passed with their recorded limitations, so the
 approved All repositories slice is Delivered. The key, retained verification
 projects/apps and open fixture PRs remain in the authorized disposition above.
+
+## Approved workflow publication extension accepted
+
+The project owner explicitly approved the bounded two-project workflow policy and
+completed the App/installation update. Exact five-grant readback, inactive schema-3
+migration, first retained creation recovery, actual workflow publication, activation
+and normal second creation passed. Reviewed provider 1.8.1 merged through
+[PR #62](https://github.com/danielbardsley/gptclaw/pull/62); final code `2af04d7`
+passed all three configured workflows. Both complete private applications subsequently
+passed actual repository CI; their existing ordinary Contents/Metadata helpers
+fetched and published source. A project helper refused cross-repository access;
+disabling it denied its fetch while the peer fetched successfully, and enabling it
+restored access. Real credentials were neither printed nor committed.
+
+The App installation retains its explicitly approved All repositories authority
+and five root grants. Project leases stay restricted to one repository, and only
+matching allowlisted provisioning leases carry Workflows. No generic workflow-write
+interface or Actions permission was added. Removing the allowlist disables the
+provisioning exception; owner removal of the root Workflows grant remains a separate
+operator step. The retained synthetic projects continue to use the approved policy.

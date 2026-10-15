@@ -33,3 +33,10 @@ __pycache__/
 
 # Project package-manager caches are never release assets.
 **/node_modules/
+
+# Local provider interpreter and dashboard build output
+.python-path
+**/.next/
+**/tsconfig.tsbuildinfo
+/.dashboard-qa/
+/.dashboard-check-*/

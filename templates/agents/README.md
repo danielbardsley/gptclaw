@@ -4,6 +4,10 @@ The [template](AGENTS.md.template) is an inert, stack-neutral starting point for
 a root `AGENTS.md`. Daniel owns the canonical template and GptClaw adoption;
 each other repository's owner owns its adaptation. Version 1.0.0 establishes the
 six sections below. A source version records ancestry, not identical contents.
+Version 1.0.1 adds the application-starter adaptation completion rule. The planning
+bootstrap copies that rule and the specification skill's matching task/acceptance
+review. Adopt it into existing project guidance through a reviewed change;
+published application releases and existing projects are not synchronized.
 The [GptClaw adoption](../../AGENTS.md) and
 [synthetic example](../../scripts/tests/fixtures/repository-agents/AGENTS.md.fixture)
 show two different projects. Neither example is a default stack to install.
