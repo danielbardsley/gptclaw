@@ -1,6 +1,6 @@
 # TASKS-025: Multi-service projects
 
-- **Status:** Implemented — local/CI/live/client verified; review/merge pending
+- **Status:** Delivered — initial two-service slice merged and accepted
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-025](spec.md) · **Design:** [TDD-025](technical-design.md)
@@ -56,7 +56,7 @@
   implementation PR, record final-head configured CI and versioned provider rollout.
   Trial rollback/refusal and preserve v1/v2/template/repository-credential behavior.
   Depends on T-008. MS-001, MS-008; AC-001–003, AC-006–008.
-- [ ] T-010: After authorized rollout, use named local-only synthetic fixtures on EC2;
+- [x] T-010: After authorized rollout, use named local-only synthetic fixtures on EC2;
   inspect capacity/network/resource bounds, measure cold/warm preparation, exercise
   private UI/API/docs, group lifecycle, outage/recovery, reload/data loss and stop/
   source retention while independent web/API projects remain healthy. Obtain an
@@ -85,8 +85,9 @@ the stopped group lock passed with independent sources preserved. Cold local
 Node acquisition hit the existing build nproc limit; exact verified images were
 reused without changing host limits. The final golden seeded-defect checks and managed live/client observations now
 pass. The project owner confirmed independent CRUD and source-update behavior.
-Final source CI passed all three configured workflows at `ca0080b`; review/merge
-remain in T-010; see [acceptance](acceptance.md).
+Final source CI and all three reviewed-head workflows passed. PR #58 merged as
+`c1afac9` after project-owner acceptance; T-010 is complete for the initial slice.
+See [acceptance](acceptance.md).
 
 Published existing release integrity and whitespace checks pass. Terraform was
 not changed and no local Terraform or infrastructure apply was run. Acceptance
@@ -104,7 +105,7 @@ owner independently confirmed the requested private CRUD and visible source upda
 All 211 reviewed local links resolve; whitespace, Python compilation, changed Bash
 syntax and published release immutability pass. Final source CI at `ca0080b` is green
 in all three workflows; acceptance.md links exact runs. The notes fixture remains
-ready with source retained. T-010 stays unchecked for review/merge and final delivery;
+ready with source retained. PR #58 is merged and T-010 is complete for initial delivery;
 no infrastructure apply/public exposure or unrelated data cleanup occurred.
 
 
@@ -113,3 +114,12 @@ hydration warning. It is recorded in [acceptance](acceptance.md), with diagnosis
 pending; the project owner explicitly treats it as non-blocking for RUN-006.
 Earlier CRUD/source-update evidence is retained. No live/template change or
 warning suppression was made.
+
+
+Merge closeout (October 11): the project owner accepted the reviewed slice with
+“ok, merge the PR.” All three workflows passed at reviewed head `c4dc197`;
+implementation merged as `c1afac9`. AC-001–008 and T-001–010 are complete for the
+initial web/API group slice. Catalogue/index/sequence record Delivered, while
+the hydration warning and deferred database/cache/worker graphs remain explicit.
+Closeout is documentation-only; relative links and staged/unstaged whitespace
+checks pass. No runtime, repository-suite or Terraform rerun was needed locally.

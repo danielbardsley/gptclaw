@@ -1,10 +1,12 @@
 # SPEC-025 implementation acceptance
 
-- **Status:** Implementation and local/CI/live/client checks complete; review/merge pending
+- **Status:** Delivered — initial two-service slice merged and accepted; AC-001–008 passed
 - **Owner:** Project owner
 - **Date:** 2026-10-11 (America/New_York)
 - **Specification:** [SPEC-025](spec.md) · **Design:** [TDD-025](technical-design.md) · **Tasks:** [TASKS-025](tasks.md)
 - **Implementation review:** [PR #58](https://github.com/danielbardsley/gptclaw/pull/58)
+- **Final reviewed head:** `c4dc19741a83e1ec35058523590d81cd1827a539`
+- **Implementation merge:** `c1afac9a83edb484c0880d4d30232a16d3b01dc6`, October 11, 2026
 - **Provider/release:** `gptclawctl 1.7.0`, `notes@1.0.0`; project/catalogue v3, group receipt v2
 
 The project owner authorized implementation and scoped synthetic verification on
@@ -25,7 +27,7 @@ ports, node URL and ownership tokens remain in chat/local receipts, not this rec
 | AC-005 | passed | Real API and browser tests cover CRUD, bounded summaries/detail reads, pagination, missing/invalid/capacity input, plain text and failed drafts. Refresh/web reload retain notes; API reload/group restart clear them. Labels/keyboard/mobile checks pass. The project owner independently confirmed CRUD and the source-update text from the requested private desktop check. |
 | AC-006 | passed | Exact-container quality and golden browser/contract/seeded-defect gates pass; critical coverage is 275/277 statements and 18/18 branches. All three configured workflows passed at final source `ca0080b`, including the multi-service Docker/browser/golden job. |
 | AC-007 | passed | Independent synthetic standalone web/API fixtures remained ready through group failure/recovery/restart/stop. Scoped logs, distinct identities/ports and limits were observed. The committed pre-group provider refused v3 before execution on a stopped fixture and preserved selected source/manifest/lock hashes; a capable warm start restored it. |
-| AC-008 | pending | Sanitized local/generated/CI/live/client evidence is recorded. Project owner confirmed “CRUD and update work” to the explicit create/edit/refresh/delete and “Two services, one project.” check. Implementation review/merge and post-merge feature acceptance remain; catalogue is In review, not Delivered. |
+| AC-008 | passed | Sanitized local/generated/CI/live/client evidence is recorded. Project owner confirmed “CRUD and update work” to the explicit create/edit/refresh/delete and “Two services, one project.” check. The project owner accepted the reviewed initial slice with “ok, merge the PR.” All reviewed-head CI passed and PR #58 merged as `c1afac9`; only this initial slice is Delivered. |
 
 ## Local and generated checks
 
@@ -80,8 +82,11 @@ regressions, passed all configured workflows:
 - [Development host #179](https://github.com/danielbardsley/gptclaw/actions/runs/38171087530).
 - [Tailscale federation #83](https://github.com/danielbardsley/gptclaw/actions/runs/38171087512).
 
-The subsequent documentation/evidence head is tracked on PR #58; source acceptance
-is tied to `ca0080b`. Terraform
+The final reviewed documentation/evidence head `c4dc197` also passed all three:
+[private application #73](https://github.com/danielbardsley/gptclaw/actions/runs/38172052892),
+[development host #181](https://github.com/danielbardsley/gptclaw/actions/runs/38172052853),
+and [federation #85](https://github.com/danielbardsley/gptclaw/actions/runs/38172052893).
+Source verification remains tied to `ca0080b`; merged delivery is `c1afac9`. Terraform
 source did not change; no local Terraform checks or protected apply was executed.
 
 ## Managed EC2 and independent client behavior
@@ -112,7 +117,7 @@ labels/keyboard and mobile layout passed. It is host-based browser evidence, dis
 from the independent project-owner desktop confirmation. The project owner answered
 “CRUD and update work” to the explicitly requested create/edit/refresh/delete and
 visible source-update-text check on October 11. This completes the client observation;
-review/merge and final feature delivery remain separate.
+the subsequent merge approval establishes initial-slice acceptance, recorded below.
 
 ## Reported browser rendering warning
 
@@ -133,8 +138,10 @@ made in response to this report.
 
 ## Remaining work and fixture disposition
 
-Complete implementation review/merge and record the merged
-revision/feature acceptance before marking the initial slice Delivered. Database,
+The project owner accepted the reviewed initial slice on October 11 with
+“ok, merge the PR.” PR #58 merged as `c1afac9` after all three reviewed-head
+checks passed. AC-001–008 are passed and this initial slice is Delivered; the
+reported hydration warning remains a non-blocking frontend follow-up. Database,
 cache, worker and arbitrary graph orchestration remain separate scope. Older providers
 cannot operate v3 or interpret group receipts; stop/reconcile with the capable snapshot
 before any rollback, preserving source and unknown resources. Ephemeral notes cannot
