@@ -1,6 +1,6 @@
 # TASKS-034: Expo Go workflow
 
-- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
+- **Status:** Delivered (Android-first); final operator cleanup verified
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-034](spec.md) · **Design:** [TDD-034](technical-design.md)
@@ -40,7 +40,7 @@
   and intended-session reconnect. Record actual versions and owner confirmation,
   separately from CI/browser/component tests and any coordinated SPEC-033 evidence.
   (GO-004/005; AC-004/005)
-- [ ] T-008: Record sanitized profile/device/installed/CI/owner evidence and runbook,
+- [x] T-008: Record sanitized profile/device/installed/CI/owner evidence and runbook,
   review/authorized merge and retained fixture disposition. Mark MOB-003 Delivered
   only for the explicitly accepted scope; retain unsupported platform limitations,
   M1 backend/device/product work, signing and MOB-004/009/010/011 as follow-ups.
@@ -183,3 +183,9 @@ are complete. The project owner explicitly deferred SSM cleanup until access at
 home. Retained runtime/source/Android evidence is recorded in acceptance; final
 delivery remains open only for exact owned-listener removal/readback. Keep the
 final delivery task unchecked and catalogue Implemented until that action passes.
+
+
+Final operator cleanup is now owner-executed and independently verified. Both
+owned Metro listeners and all temporary runtimes are absent; original HTTPS
+handlers/Funnel-off state and retained source/history are preserved. All selected
+Android-first acceptance and delivery tasks are complete. iOS remains a follow-up.

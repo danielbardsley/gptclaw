@@ -1,6 +1,6 @@
 # TASKS-033: Private Metro sessions
 
-- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
+- **Status:** Delivered (Android-first); final operator cleanup verified
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Design:** [TDD-033](technical-design.md)
@@ -46,7 +46,7 @@
   platform/client version and owner acceptance separately. Native-client acceptance
   may be coordinated with SPEC-034 after this provider is available; if blocked on
   MOB-004, keep actual device criteria pending. (MET-001–007; AC-001–008)
-- [ ] T-009: Record sanitized acceptance/runbook/retention and final revision/CI,
+- [x] T-009: Record sanitized acceptance/runbook/retention and final revision/CI,
   complete review/authorized merge, mark only MOB-002 Delivered once all criteria
   pass, and stop only owned temporary sessions/remove only approved owned routes.
   Preserve source/receipts/data and remaining M1/MOB features. (AC-008)
@@ -317,3 +317,9 @@ are complete. The project owner explicitly deferred SSM cleanup until access at
 home. Retained runtime/source/Android evidence is recorded in acceptance; final
 delivery remains open only for exact owned-listener removal/readback. Keep the
 final delivery task unchecked and catalogue Implemented until that action passes.
+
+
+Final operator cleanup is now owner-executed and independently verified. Both
+owned Metro listeners and all temporary runtimes are absent; original HTTPS
+handlers/Funnel-off state and retained source/history are preserved. All selected
+Android-first acceptance and delivery tasks are complete. iOS remains a follow-up.

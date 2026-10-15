@@ -201,3 +201,12 @@ Retain both synthetic project repositories, source metadata, PRs, sticky leases,
 receipts and history; no project data or published release is deleted. Missing or
 changed ownership blocks removal. These commands use the already reviewed operator
 path; forge does not administer Tailscale. Operator execution/readback is pending.
+
+
+## Completed removal
+
+The owner executed both current HTTP removal commands through SSM. Independent
+intermediate readback verified only 8444 removed, preserving 8443 and original
+HTTPS handlers. Final readback verifies both owned listeners absent with the
+original HTTPS/Funnel-off baseline intact. Both temporary runtimes are absent;
+source, receipts/history and sticky ownership remain retained. See final acceptance.
