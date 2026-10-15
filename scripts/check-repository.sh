@@ -138,6 +138,46 @@ if ! python3 -B scripts/tests/test_project_mobile.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_expo_go.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_metro_security.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_metro_spike.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_metro_protocol.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_metro_contract.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_metro_state.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_metro_sessions.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_metro_retention.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_metro_routes.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_metro_proxy.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/tests/test_project_templates.py; then
   status=1
 fi
@@ -190,6 +230,14 @@ if ! python3 -B scripts/tests/test_dashboard_observation.py; then
   status=1
 fi
 if ! python3 -B scripts/tests/test_dashboard_status.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_dashboard_metro.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_dashboard_go.py; then
   status=1
 fi
 

@@ -1,6 +1,6 @@
 # TDD-034: Expo Go compatibility and launch UX
 
-- **Status:** Draft proposal — not installed capability
+- **Status:** Implemented and installed — final acceptance/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-034](spec.md) · **Tasks:** [TASKS-034](tasks.md)
@@ -120,3 +120,85 @@ are the extension for native requirements outside Go.
 [Expo's May 2026 notice](https://expo.dev/changelog/expo-go-and-app-store-may-2026)
 records historical store constraints and personal signed Go/account requirements;
 it is not evidence of today's client availability.
+
+
+The owner confirmed whole-tailnet host access on October 14. Go eligibility requires
+membership in that development tailnet, with no additional per-device ACL selector.
+Private host protocol evidence and session-bound root entry/old-generation denial
+now exist for both fixture origins. Exact Go-client nonce preservation, physical
+reload/interaction and local QR proof remain required before supported launch claims.
+
+
+## Selected local QR and acquisition prerequisites
+
+The reviewed exact encoder is `toqr` 0.1.1 (MIT, zero runtime dependencies), already
+present in the approved locked Expo CLI graph. The frontend now pins it directly;
+`jsqr` 1.4.0 (Apache-2.0, zero runtime dependencies) is a test-only independent decoder.
+Registry integrity metadata and installed licenses were inspected; frozen install,
+fresh zero-finding audit, exact decode and rendered-SVG checks are recorded in
+[QR review](qr-review.md). These do not certify native URI semantics.
+
+`localQr` is pure local rendering with a 512-byte printable-ASCII input limit,
+finite matrix/output bounds and a four-module white quiet zone. Generated SVG has
+only numeric paths and contains no raw payload markup, external asset or network
+reference. Browser/decode tests rasterize the final SVG rather than only checking
+its internal matrix. Public launch integration still requires the validated current
+provider/target/generation/profile payload; no launch action is enabled by this utility.
+
+The official September 3 notice rechecked October 14 says latest physical iOS Go
+requires matching Expo CLI/app login; Android enforcement is described as future.
+The candidate iOS profile therefore reports the CLI-login prerequisite as outside
+this spec's credential-free scope and points to MOB-004. Keep the iOS native software
+path and protocol evidence, without claiming a usable credential-free Go client or
+changing SDK/signing/accounts. Android 57.0.9 is still an unverified reported candidate.
+
+
+## Measured Android query incompatibility
+
+The owner’s Android 11 / Go 57.0.9 query-based manual and independently decoded QR
+launches failed before Metro, with three aggregate `stale-launch` rejections and
+zero forwarded resources on the fresh diagnostic session. Cold bundle warmup did
+not fix the failure. The next candidate binds the generation in the exact path
+`/_gptclaw/metro-session/GENERATION`, mapped only to the unchanged SDK manifest
+root. SDK signatures and resource URLs are preserved; stale paths and unbound
+manifest aliases are rejected. Physical verification must establish the actual
+client behavior before this candidate becomes an available launch capability.
+No account, SDK, TLS or access-policy change follows from the generic error.
+
+
+The exact entry permits the current generation with or without one trailing slash;
+Go’s Android kernel removes nonreserved queries and the final slash. Generate the
+slash-free path, retain the generation guard and leave manifest bodies/signatures
+unchanged. Native client verification is separate from host path tests.
+
+
+The owner-approved SDK-57 compatibility path is explicit private HTTP within the
+encrypted development tailnet on the same two owned Metro ports. It uses a new
+versioned transport/session/route binding, preserving legacy HTTPS behavior and
+rejecting unowned replacements. [HTTPS restoration](../034-expo-go-workflow/client-transport-decision.md#approved-decision-and-https-restoration-follow-up)
+is tied to a compatible released client and actual native verification. Source
+implementation and operator preparation precede conversion; physical iOS/Android
+criteria and source/SDK/account boundaries are unchanged.
+
+
+## Implemented Android launch boundary
+
+The proven SDK-57 Android entry is `exp://OWNED_ORIGIN/_gptclaw/metro-session/GEN`
+without a trailing slash or query nonce. Native normalization strips the earlier
+query and trailing slash; the proxy recognizes only the exact current generation
+path (with optional one slash), maps to the unmodified SDK root and denies obsolete
+entries/unguarded manifest aliases. Resource URLs and signatures are not rewritten.
+The pure serializer requires the same owned HTTP origin/generation, current Ready
+layers, Expo Go 57.0.9 / Android 11, exact source eligibility, and an unexpired
+physical profile. Launch expiry is the earlier session or certification expiry.
+CLI launch checks ownership/current generation again before publication; no hidden
+start, renewal, route or account action.
+
+A finite seven-day profile timestamp follows actual owner device confirmation, not
+a source build or reported version alone. The dashboard labels this as a reviewed
+client profile rather than detecting a phone, preserves Metro’s unverified-device
+observation semantics, and withdraws Open/copy/QR on stale inventory/layers or expiry.
+Pinned local QR encoding/independent decode is shared with the established frontend
+graph. HTTP-capable Go-disabled snapshots are retained for launch-only rollback;
+older HTTPS-only snapshots cannot manage schema-2 sessions. See acceptance for
+actual source/frozen/local/physical results and unfinished installed delivery.

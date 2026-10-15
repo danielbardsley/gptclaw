@@ -1,6 +1,6 @@
 # TDD-033: Metro lifecycle and private transport
 
-- **Status:** Draft proposal — not installed capability
+- **Status:** Implemented and installed — final acceptance/merge pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Tasks:** [TASKS-033](tasks.md)
@@ -15,18 +15,30 @@ port leases, selected origin, lifecycle/operation outcome, start/expiry timestam
 and route readback. Do not store client credentials or device identity. Stop preserves
 source, dependencies and caches. Web/backend receipts retain their existing meaning.
 
-Propose an explicitly versioned opt-in manifest extension (schema 6 if still vacant),
-with static approved mode/config and runtime capability separate from schema-5 source.
-Recheck reservations before coding; no mutation of schema 5 or published templates.
+Schema 6 was vacant and is selected for explicit opt-in. It preserves the schema-5
+source fields and adds only `metro: {adapter: metro-v1, mode: expo-go, ttl_seconds: N}`
+with an integer lifetime of 60–28800 seconds (default 7200). Schema 5 and published
+templates remain unchanged; no host, port, environment or URL is project-declared.
+Source validation capability includes schema 6 separately from actual runtime
+capability. The development provider is 1.12.0; installed 1.10.1 is unchanged.
 Provide a reviewed opt-in upgrade/validation operation for existing canonical source;
-reject dirty/concurrently changed metadata and preserve source/provenance. A new exact
+reject dirty/concurrently changed metadata and preserve source/provenance.
+Migration reuses PRJ-006 canonical identity/configuration checks, requires tracked
+clean metadata and exact mobile toolchain/dependency inputs, and revalidates under
+the project lock. Atomic exchange retains displaced metadata in an owned journal
+archive. A racing edit or unknown publication leaves both copies recoverable and
+blocks further migration until reconciliation. Commit the reviewed manifest before
+using it; the source plan digest grants neither runtime nor security permission. A new exact
 starter release is needed only if reviewed source/SDK inputs change. Later MOB-004
 can consume the generic transport descriptor without this spec creating its client.
 
 Proposed CLI uses existing lifecycle verbs after mobile dispatch, with explicit
 Metro enablement and a finite lifetime. Existing schema-5 behavior remains unsupported
 for lifecycle. Exact flag/schema syntax is finalized and tested during implementation;
-these are interface requirements, not currently runnable commands. Logs and observation
+the lifecycle/transport interfaces remain pending. The implemented source command
+`metro enable --project-root ROOT` emits a read-only plan; `--apply --confirm-plan
+DIGEST` explicitly upgrades metadata and starts no session. A supported provider
+will advertise session/runtime capability only after the adapter is available. Logs and observation
 use bounded read-only provider calls; state changes stay in lifecycle/recovery paths.
 Require the main-branch PRJ-006 canonical-root guard even though the installed launcher
 observed at planning was older. Do not add worktree runtime previews or auto-integration.
@@ -149,3 +161,165 @@ of this design. [Tailscale Serve](https://tailscale.com/docs/features/tailscale-
 describes private serving; actual listener/access configuration still needs reviewed
 operator ownership. [SPEC-031 security scope](../031-expo-project-creation/security-review.md)
 excludes Metro and is the authoritative limit on existing exceptions.
+
+## State boundary implementation checkpoint
+
+`metro_state.py` now validates a separate receipt schema 1 with exact project/root/
+canonical key, ownership token and generation, immutable image/input/policy/unit
+hashes, bounded paired ports/origin, finite lifetime and independent process/protocol/
+route timestamps. Its pure descriptor hides an origin on expiry, stale/future
+observations, input drift, pending/failed route, unknown operation and inactive phase.
+It reports transport readiness separately from source quality and native-client
+acceptance; it emits no Go URI, web app link, credential or device-online claim.
+This boundary is bundled for the forthcoming controller. It is not yet connected
+to live lifecycle/collector observations and adds no installed session capability.
+
+## Controller source checkpoint
+
+Source lifecycle now freezes the provider in an exact forge user service, with
+sticky per-project Metro/proxy slots and independently observed protocol state.
+The unit definition/readback must match the receipt with no drop-ins. Mutating
+source jobs also require a confirmed inactive unit, preventing automatic restart
+races. A registry-bound `metro recover-stop` uses the exact generation and unit
+proof even if app metadata is invalid. Partial outcomes preserve owned receipts
+and prior generations; they do not kill foreign resources or claim shutdown.
+
+The source log interface exposes enumerated lifecycle events only, bounded to
+256 records/64 KiB/seven days, with no persistent raw SDK output. Exact policy
+revocation has a read-only plan and explicit marker publication; frozen supervisors
+check the shared marker. Fresh audit execution is bounded by remaining session
+lifetime. These are tested source mechanics, not completed installed/live evidence.
+Streaming private proxy, operator readback, persistent cache/renewal measurements,
+collector/native presentation and actual two-session/device acceptance remain open.
+
+
+## Streaming proxy source checkpoint
+
+The source supervisor now owns its paired loopback proxy in the same user-service
+process. The adapter binds only 127.0.0.1 and derives upstream/origin/generation
+from the typed receipt. Eight concurrent forwarded connections, 16 KiB headers,
+64 MiB response/WebSocket bounds, bounded symbolication input, fixed forwarded
+headers and deadlines protect each session. It streams Content-Length, chunked
+and EOF responses with drain/backpressure rather than buffering a full bundle.
+Manifest bodies and signing headers are preserved; no manifest/signature rewriting.
+
+Host/Origin/credential/traversal/framing/redirect inputs reject before forwarding.
+Device/identity headers are discarded. HTTP launch at the origin root
+historically required the exact generation query; the native-compatible entry now
+uses `/_gptclaw/metro-session/GENERATION`. SDK bundle/assets/maps and /hot plus /message
+keep their verified root paths. This host-side stale-launch guard still requires
+actual native-client entry-path preservation evidence in SPEC-034; no launch/QR
+capability or working phone claim follows from the synthetic test.
+
+WebSocket handshake/accept, mask direction, opcodes, continuation/control framing,
+size and expiry are checked before bounded forwarding. Shutdown closes both
+transports and cancels in-flight work before waiting for the Python 3.12 listener
+to release. Exact policy revocation is checked through the live receipt loader.
+Private route readiness remains pending; no operator listener is created.
+
+## Implemented private route boundary
+
+metro_routes.py produces read-only plans bound to the canonical registry,
+sticky HTTPS origin and exact odd-port loopback target. Digest-confirmed local
+recording rechecks current configuration under the registry lock and runs no
+Tailscale mutation. Occupied unrecorded listeners block; only previously recorded
+exact targets can be subtracted when comparing preserved baseline handlers across
+two sessions. Wrong targets, extra handlers, Funnel, unknown configuration or
+baseline drift fail closed.
+
+The owned supervisor independently observes Serve readback plus default-trust
+HTTPS health matching project/generation/expiry every ten seconds. Config
+readback alone cannot establish readiness; host TLS verification alone cannot
+establish phone access/native rendering. Existing process/protocol freshness remains
+separate. Operator commands/access selectors and rollback are documented in the
+[concrete plan](operator-plan.md); actual operator/device acceptance is pending.
+
+## Implemented renewal and runtime-retention bounds
+
+Renewal plans bind current generation, canonical/input/policy/unit identities,
+origin, prior expiry and requested finite TTL. Applying the unchanged digest
+requires actual verified private transport and owned active state, stops the old
+generation, then freshly admits a new generation. The stop/start interval guards
+the previous generation under the project lock; it cannot adopt an interleaving
+start. Running immutable container timeouts are never extended. Status also checks
+current admission and hides transport immediately on security unavailability.
+
+Runtime-store admission caps generated copies at 1 GiB, metadata/artifacts at
+10 MiB, entries at 65,536 and copies at 128. Each new filtered copy gets a typed
+generation/root/key/directory/content marker. Inactive prune is a read-only plan
+plus digest-confirmed apply under project lock: rename the exact selected copy,
+recheck its identity/hash, then remove only that generated tree. Current,
+unresolved, modified and pre-marker copies remain. Known inactive metadata can
+retire after seven days, while protocol/acceptance evidence remains; batches cap
+at 32 copies and 64 records. A race or interrupted cleanup retains staging for
+review. Canonical application source and backend data are outside this scope.
+
+## Implemented minimum native observation
+
+Inventory marks a native observation binding only for schema 6 plus provider runtime
+schema 6 and Metro session schema 1. The shared bounded status worker/cache observes
+its existing session provider and projects a separate Metro facet. No component,
+web publication or app/docs destination is synthesized. Typed finite timestamps
+and generation/project identity are checked; arbitrary extras and origins are
+omitted. Each layer ages independently, collector loss retains visibly last-known
+values and expiry removes ready state. The frontend shows native source-only
+behavior for schema 5 and a read-only Metro summary/details for capable schema 6.
+Source quality and physical-client acceptance remain separate. Go launch/QR
+presentation belongs to SPEC-034 and is absent here.
+
+## Established protocol-observation failures
+
+The initial protocol-readiness deadline remains 300 seconds. After a process has
+established protocol readiness, a failed/timed-out manifest observation marks that
+layer failed and removes launch availability; it does not prove process exit or
+restart the owned SDK. Continue bounded observations in the same generation and
+original finite lifetime, recovering readiness in place. Actual SDK exit, proxy
+failure, security/input/mount drift and expiry retain their existing owned cleanup/
+recovery paths. Four focused cases distinguish first startup, established timeout,
+truthful unavailable state and in-place recovery.
+
+
+## Confirmed private access boundary (October 14)
+
+The owner explicitly permits every device on the existing development tailnet to
+reach the host. The supplied wildcard source/destination/IP grant matches this
+scope. No narrower ACL, new tag, group or network-policy mutation is needed.
+Denied-access acceptance targets off-tailnet/non-member devices; it does not expect
+a different permitted same-tailnet identity to be denied. Keep Serve/Funnel readback,
+route generation ownership and permitted physical-client proof as separate checks.
+
+
+The exact entry permits the current generation with or without one trailing slash;
+Go’s Android kernel removes nonreserved queries and the final slash. Generate the
+slash-free path, retain the generation guard and leave manifest bodies/signatures
+unchanged. Native client verification is separate from host path tests.
+
+
+The owner-approved SDK-57 compatibility path is explicit private HTTP within the
+encrypted development tailnet on the same two owned Metro ports. It uses a new
+versioned transport/session/route binding, preserving legacy HTTPS behavior and
+rejecting unowned replacements. [HTTPS restoration](../034-expo-go-workflow/client-transport-decision.md#approved-decision-and-https-restoration-follow-up)
+is tied to a compatible released client and actual native verification. Source
+implementation and operator preparation precede conversion; physical iOS/Android
+criteria and source/SDK/account boundaries are unchanged.
+
+
+## Bounded capacity correction from native acceptance
+
+Keep the eight-slot total ceiling. At most seven forwarded SDK/native requests may
+run, leaving capacity for fixed health/diagnostic requests. When the total pool is
+full, reclaim only a proxy-owned connection still waiting for complete headers for
+at least one second; no SDK request has been forwarded. Cancel/reconcile that exact
+handler, then recheck capacity before admitting a concurrent arrival. Never evict
+complete HTTP/WebSocket work or increase the resource ceiling. Capacity diagnostics
+contain counts only, with no peer/path/header/device data. Native saturation and
+idle-header tests accompany installed/device revalidation; prior failed reload
+isolation remains recorded until the repeated physical check passes.
+
+
+Within the seven forwarded native slots, at most four are WebSockets. This leaves
+three slots for manifest/bundle/asset HTTP requests, in addition to the fixed health
+slot. Native launch HTTP must remain available under a reconnecting WebSocket burst;
+health availability alone is not native readiness proof. Aggregate WebSocket count
+is not an online-device count. The open-WebSocket HTTP/health regression verifies
+this split without raising the eight-slot total.

@@ -41,6 +41,19 @@ class UnixClient(http.client.HTTPConnection):
 
 
 class CollectorTests(unittest.TestCase):
+    def test_entrypoint_uses_the_bundled_cli_native_and_go_capabilities(self):
+        import gptclawctl
+        import io
+        from contextlib import redirect_stdout
+        output=io.StringIO()
+        with redirect_stdout(output):self.assertEqual(gptclawctl.main(['--version']),0)
+        actual=collector.provider_capabilities()
+        self.assertEqual(actual,json.loads(output.getvalue()))
+        self.assertIn(6,actual['runtime_manifest_schemas'])
+        self.assertEqual(actual['metro_session_schemas'],[1,2])
+        self.assertEqual(actual['expo_go_launch_schemas'],[1])
+
+
     def test_timeout_output_limit_and_reaping(self):
         before = {p.pid for p in multiprocessing.active_children()}
         # Bootstrap the trusted forkserver before measuring a worker deadline.

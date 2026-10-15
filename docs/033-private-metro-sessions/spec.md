@@ -1,6 +1,6 @@
 # SPEC-033: Owned private Metro sessions
 
-- **Status:** Draft — planning requested; implementation not authorized
+- **Status:** Approved for implementation by active goal — acceptance pending
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** MOB-002 — Physical-device development
@@ -18,7 +18,10 @@ projects and backend lifecycles. Stopping Metro stops development delivery, not 
 installed application's existence or an independently managed API/database.
 
 The project owner requested separate MOB-002 and MOB-003 specs. This authorizes
-planning and a reviewable PR only. This spec owns lifecycle, protocol transport,
+the initial planning set. The subsequent active goal explicitly requests “In order
+first implement MOB-002 followed by MOB-003. Finish when all acceptance criteria
+are met.” This authorizes implementation in that order, preserving the concrete
+runtime-security and operator gates below. This spec owns lifecycle, protocol transport,
 operational readiness and a typed endpoint descriptor. [SPEC-034](../034-expo-go-workflow/spec.md)
 owns Expo Go compatibility, user launch/QR presentation and the supported client loop.
 MOB-002 can use a compatible existing native client during its protocol spike; it
@@ -88,7 +91,10 @@ origin, never host/container loopback, an unapproved LAN address or a public rel
 Handle large responses by bounded streaming, backpressure and cancellation; isolate
 per-session capacity so development traffic cannot starve web/API/dashboard services.
 Devices use the approved tailnet access policy. Explicitly verify permitted-device
-access and denied external/unpermitted access. No automatic tunnel, Funnel, LAN
+access and denied external/unpermitted access. The owner explicitly selected all
+devices on the development tailnet as permitted on October 14; there is no
+per-device or per-user restriction within that tailnet. Test denied access from
+outside this tailnet, without changing the existing wildcard grant. No automatic tunnel, Funnel, LAN
 listener, certificate bypass or arbitrary proxy target/Host rewriting.
 
 ### MET-004 — Operator route ownership
@@ -160,3 +166,37 @@ until disposition, and mark Delivered only after merge and AC-001–008 pass. Ph
 native acceptance cannot be replaced with desktop HTTP/WebSocket tests; if a compatible
 client is unavailable, record Implemented/pending device evidence and address MOB-003
 or separately approved MOB-004 rather than claim completion or open a public tunnel.
+
+
+## Approved SDK-57 Go transport amendment (October 14 UTC)
+
+The project owner approved replacing only the two owned Metro listeners 8443/8444
+with private HTTP over the authenticated, encrypted development Tailscale network.
+For these Go sessions this supersedes application-layer TLS in MET-003; port-443
+dashboard/project and app/API routes retain HTTPS. No public/LAN exposure, account,
+SDK migration, native build or expanded dependency exception is authorized.
+Explicit versioned session/route/profile contracts must distinguish the transport;
+legacy HTTPS receipts remain valid and older providers reject unknown contracts.
+Exact owned replacement/readback/rollback goes through the SSM operator after
+source checks and healthy bounded backends. Preserve finite expiry, source/data,
+stale-generation guards, fixed origins and every unaffected handler. All physical
+acceptance and platform-matrix criteria remain required.
+
+The owner also requested restoration of HTTPS when a compatible official Go client
+ships. [The release-triggered follow-up and decision](../034-expo-go-workflow/client-transport-decision.md#approved-decision-and-https-restoration-follow-up)
+requires native HTTPS status/bundle/assets/reload checks and SDK/client compatibility
+before conversion. SDK-58 Go drops SDK-57 support; no automatic source upgrade or
+TLS restoration from a store release alone.
+
+
+## Approved first-platform delivery (October 14 UTC)
+
+The project owner explicitly selected **Android-first delivery**, retaining iOS as
+a follow-up. The claimed physical matrix for this release is Android 11 / Expo Go
+57.0.9 / the exact SDK-57 starter over approved private-tailnet HTTP. This selects
+the first-platform slice already permitted by this spec; paired physical iOS
+criteria are deferred and must not be marked passed or advertised as supported.
+The iOS software/protocol path remains, but physical certification and the current
+CLI-login prerequisite need separate resolution. No account, signing, native client
+build or SDK migration is authorized by this decision. All other lifecycle,
+security, private operator, Android physical, review/merge and retention gates remain.

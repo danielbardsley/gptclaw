@@ -25,7 +25,7 @@ class Tests(unittest.TestCase):
     def setUp(self):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         self.base=Path(temp.name);self.repo=self.base/'repo';self.repo.mkdir()
-        for rel in ['config/mobile','config/databases','config/templates','schemas/templates','config/toolchains','schemas/toolchains','config/project-dependencies','schemas/project-dependencies','schemas/project','templates/apps/releases','templates/apps/node-toolchain','templates/apps/python-toolchain']:
+        for rel in ['config/metro','config/mobile','config/databases','config/templates','schemas/templates','config/toolchains','schemas/toolchains','config/project-dependencies','schemas/project-dependencies','schemas/project','templates/apps/releases','templates/apps/node-toolchain','templates/apps/python-toolchain']:
             shutil.copytree(app.REPO/rel,self.repo/rel,ignore=shutil.ignore_patterns('.venv','.gptclaw-cache','.gptclaw-build','coverage','.expo','.cache','node_modules','__pycache__'))
         helper=Path('templates/apps/start-development-postgres.sh');(self.repo/helper).parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(app.REPO/helper,self.repo/helper)
         shutil.copytree(app.REPO/'scripts',self.repo/'scripts',ignore=shutil.ignore_patterns('__pycache__'))
@@ -167,6 +167,14 @@ class Tests(unittest.TestCase):
         self.assertIn(Path('templates/apps/releases/nextjs/1.0.0/.gitignore'),paths)
     def test_installed_snapshot_parity_and_default_rollback(self):
         bundle=app.provider_bundle()
+        self.assertEqual((bundle/'config/metro/runtime-security-v1.json').read_bytes(),(app.REPO/'config/metro/runtime-security-v1.json').read_bytes())
+        self.assertEqual((bundle/'scripts/metro_sessions.py').read_bytes(),(app.REPO/'scripts/metro_sessions.py').read_bytes())
+        self.assertEqual((bundle/'scripts/metro_routes.py').read_bytes(),(app.REPO/'scripts/metro_routes.py').read_bytes())
+        self.assertEqual((bundle/'scripts/metro_retention.py').read_bytes(),(app.REPO/'scripts/metro_retention.py').read_bytes())
+        self.assertEqual((bundle/'scripts/dashboard_metro.py').read_bytes(),(app.REPO/'scripts/dashboard_metro.py').read_bytes())
+        self.assertEqual((bundle/'scripts/dashboard_go.py').read_bytes(),(app.REPO/'scripts/dashboard_go.py').read_bytes())
+        self.assertEqual((bundle/'scripts/expo_go.py').read_bytes(),(app.REPO/'scripts/expo_go.py').read_bytes())
+        self.assertEqual((bundle/'config/mobile/expo-go-v1.json').read_bytes(),(app.REPO/'config/mobile/expo-go-v1.json').read_bytes())
         original=templates.discover()
         project=self.new()
         before={p.relative_to(project):p.read_bytes() for p in project.rglob('*') if p.is_file()}

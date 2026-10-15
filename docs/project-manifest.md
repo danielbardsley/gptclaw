@@ -199,3 +199,32 @@ metadata/profile selection before jobs. Runtime group receipts use explicit sche
 with component state references, operation stages and owned network identity; component
 receipts retain schema 1. Ports/ownership/health stay outside source. See the
 [group runbook](../runbooks/manage-multi-service-projects.md) for scoped operations.
+
+
+## Native source and Metro opt-in (schemas 5 and 6)
+
+[SPEC-031](031-expo-project-creation/spec.md) defines schema 5: one mobile source
+project with exact Expo/React Native identity, static app.json, reviewed native
+targets and source-quality command vectors. It has no web/API service, host port,
+private route, environment or backend. Source creation/quality is delivered;
+validation never evaluates dynamic app configuration or compiles native code.
+
+[SPEC-033](033-private-metro-sessions/spec.md) adds explicit schema 6 on the
+implementation branch. It preserves schema-5 fields and adds a strictly bounded
+`metro` object with adapter `metro-v1`, mode `expo-go`, and integer `ttl_seconds`
+60–28800. Projects do not choose origins, ports, proxy targets or credentials.
+Schema 5 remains valid and new starter creation still emits it; adoption is explicit.
+
+The source provider's `metro enable` command plans metadata migration by default.
+Apply requires the same plan digest and revalidation of clean tracked metadata,
+PRJ-006 canonical checkout identity and exact toolchain/SDK/dependency inputs under
+the project lock. Only project.yaml changes; previous metadata is retained. Racing
+edits/unknown publication are reported for owned recovery rather than discarded.
+Metadata must be reviewed/committed, and enablement starts no service or route.
+See the [Metro runbook](../runbooks/manage-metro.md).
+
+Schema-6 source validation is distinct from Metro session capability. At this
+preparation stage the source provider advertises source schemas 1–6 but runtime
+schemas 1–4, and the installed provider still rejects schema 6. Runtime, operator
+routing and physical iOS/Android acceptance remain pending. No existing app or
+immutable source release is automatically upgraded.

@@ -71,6 +71,29 @@ class ObservationTests(unittest.TestCase):
           'Config':{'Labels':{app.LABEL:s['token']},'Env':['SYNTHETIC_SECRET=do-not-project']},
           'HostConfig':{'PortBindings':{}},'Mounts':[{'Source':'synthetic-private-path'}]}
 
+
+    def test_native_projection_is_readonly_and_has_no_http_components_or_routes(self):
+        import metro_sessions
+        root=self.root('mobile',template='expo-react-native')
+        contract=app.target(root)[1]
+        contract.update(schema_version=6,metro={'adapter':'metro-v1','mode':'expo-go','ttl_seconds':300})
+        (root/'.gptclaw/project.yaml').write_text(json.dumps(contract))
+        descriptor={'project':'mobile','state':'not-started','transport_available':False,'origin':None}
+        with patch.object(metro_sessions,'status',return_value=descriptor):
+            result=observation.project(root)
+        self.assertEqual(result['components'],{})
+        self.assertEqual(result['metro']['state'],'not-started')
+        from dashboard_status import StatusStore
+        store=StatusStore(lambda *args:None,clock=lambda:result['observed_at'])
+        binding={'id':'mobile','components':[],'native_session':1}
+        store.update('mobile',binding,result)
+        self.assertEqual(store.snapshot('mobile',binding)['metro']['state'],'not-started')
+        self.assertEqual(result['health'],'not-applicable')
+        self.assertEqual(result['publication'],{'state':'unavailable','origin':None})
+        self.assertIsNone(result['routes']['app_path'])
+        self.assertIsNone(result['routes']['docs_path'])
+        self.assertFalse(any('start' in command or 'stop' in command for command in self.calls))
+
     def test_never_started_stopped_ready_unhealthy_and_missing_resource(self):
         root=self.root('web')
         result=observation.project(root)

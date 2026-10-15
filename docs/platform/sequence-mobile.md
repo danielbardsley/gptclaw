@@ -297,9 +297,11 @@ runtime security admission. [SPEC-034](../034-expo-go-workflow/spec.md) (MOB-003
 consumes its versioned endpoint descriptor for verified Go compatibility, safe local
 launch/QR and actual native edit/reconnect acceptance. Implement the Metro provider
 before the Go consumer; device evidence may close both together, without requiring
-the provider's Delivered label before its consumer can be developed. Neither draft
-authorizes implementation, account setup, exposure or an extension of MOB-001's
-source-only advisory exceptions. Proposed scope is both physical iOS and Android;
+the provider's Delivered label before its consumer can be developed. The active
+owner goal now authorizes implementation in this order; concrete runtime-security
+and operator routing gates remain separate. It grants no account setup, public
+exposure or extension of MOB-001's source-only advisory exceptions. Scope retains
+both physical iOS and Android;
 a selected first-platform slice must retain explicit limitations. Backend CRUD,
 private API/database persistence and full M1 remain MOB-010/011 work.
 
