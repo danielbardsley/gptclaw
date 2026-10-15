@@ -163,3 +163,27 @@ local verification are ready for review; installed rollout, private device HTTPS
 Android interaction/screenshots/accessibility, owner acceptance and merge remain
 pending. The implementation worktree is clean after publishing the record;
 unrelated Fastify work in the original checkout was preserved.
+
+## Expo Go preview preparation — October 15, 2026
+
+The project owner requested an Expo Go preview and reported the same Android 11 /
+Expo Go 57.0.9 versions, with the phone connected to Tailscale. This is a supplied
+client report, not a physical launch result. All four final implementation CI
+workflows passed at a2e362276e52394f101aaeb8394e203f5c49c4b1.
+
+Main subsequently merged SPEC-035 in PR #82. Merge f064cac preserves both optional
+Fastify schema 7/catalogue 6 and Python/mobile schemas 8/9/catalogue 7, including
+provider capabilities, dispatch, snapshots and both generated CI jobs. The updated
+manifest unsupported-version test passes (28 tests). Combined-head CI and ongoing
+local regression results remain pending at this checkpoint.
+
+Installed provider remains 1.12.0. Read-only new-project plans for `fieldnotes-api`
+and `fieldnotes-mobile` refused with `credential-workflow-policy`: neither name
+is on the existing four-repository workflow-publication policy. No credentials,
+policy, projects, installed provider or services were changed. An exact
+[preview plan](preview-plan.md) retains those names/grants and proposes the two
+private targets. The next unused sticky Metro slot requires private HTTP 8445 to
+loopback 18605 through the existing operator path; old slots remain reserved. This
+is a proposed routing amendment to the original design's listener-reuse assumption.
+Named policy/publication and the exact additional listener await owner approval.
+No current Go link or device acceptance is claimed.

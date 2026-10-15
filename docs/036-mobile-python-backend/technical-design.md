@@ -156,3 +156,13 @@ The accepted v1 notes API has no timestamps. Cards therefore show real note orde
 and previews; this slice does not invent per-note dates or add an unrelated schema
 change merely for presentation. Actual timestamps can be a later compatible contract
 extension. The approved visual direction and Android owner review still apply.
+
+
+## Preview routing amendment proposed October 15
+
+The earlier two fixtures retain sticky slots after their accepted listener cleanup.
+A separate Fieldnotes root cannot reuse their ownership. The requested preview
+therefore needs the next private slot, HTTP 8445 to loopback 18605, through the
+existing operator path. This amends the original listener-reuse assumption only
+after owner approval of [the concrete preview plan](preview-plan.md). Existing
+HTTPS API ingress, private access, source/data and unrelated handlers are preserved.

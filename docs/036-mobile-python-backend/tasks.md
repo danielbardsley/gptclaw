@@ -69,3 +69,9 @@ for actual local results and explicit remaining CI/installed/device/owner gates.
 No installed runtime or existing application/data has been changed. SPEC-035 work
 and the original checkout are preserved. Next action: review the published implementation and final CI, then perform the
 scoped installed/device acceptance in T9. Do not mark MOB-010/M1 accepted from code alone.
+
+
+Preview requested October 15: phone versions/tailnet confirmed by owner. Main
+conflicts resolved in f064cac; combined-head checks pending. Exact new-repository
+workflow policy and one new private sticky Metro slot are proposed in
+[the preview plan](preview-plan.md); await named approval before those mutations.
