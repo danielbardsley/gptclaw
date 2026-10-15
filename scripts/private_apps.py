@@ -178,7 +178,7 @@ def target(root):
  result, contract, code = validate_project(root)
  need(code == 0, 'invalid')
  marker = read_json(root / '.gptclaw/template.json')
- need(marker == {'provider': 'expo-notes-v1' if contract['schema_version']==9 else 'fastapi-postgres-v1' if contract['schema_version']==8 else 'expo-v1' if contract['schema_version'] in (5,6,9) else 'notes-postgres-v1' if contract['schema_version'] == 4 else 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'nextjs-v1'}, 'invalid')
+ need(marker == {'provider': 'expo-notes-v1' if contract['schema_version']==9 else 'fastapi-postgres-v1' if contract['schema_version']==8 else 'expo-v1' if contract['schema_version'] in (5,6,9) else 'notes-postgres-v1' if contract['schema_version'] == 4 else 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'fastify-v1' if contract['schema_version'] == 7 else 'nextjs-v1'}, 'invalid')
  import project_templates as templates
  templates.validate_provenance(root)
  need(not any((root/name).exists() for name in ['.env','.env.local','.env.development','.env.production','.npmrc','.ssh','.aws']),'invalid')
@@ -488,7 +488,7 @@ def start(root, no_route=False, take_lock=True):
   return groups.start(root,no_route,take_lock)
  import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
- if contract['schema_version']==2 and not no_route: route_info(slug)
+ if contract['schema_version'] in (2,7) and not no_route: route_info(slug)
  with (locked(slug) if take_lock else contextlib.nullcontext()):
   deps.require_clean(root,slug);deps.context(root)
   import project_toolchains as tools
@@ -611,7 +611,7 @@ def quality_app(root, action='test'):
    else:
     tools.assert_active(selected,s)
     need(s.get('prepared_digest')==dependency_digest(s),'busy')
-   run_in_app(s,contract['commands'][action],read_only_dependency_files=contract['schema_version']==2)
+   run_in_app(s,contract['commands'][action],read_only_dependency_files=contract['schema_version'] in (2,7))
   except AppError as error:
    s.update(operation_result='failed',error=error.code)
    if not active:s.update(phase='failed',health_ready=False)

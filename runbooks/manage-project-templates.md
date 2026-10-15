@@ -13,9 +13,10 @@ gptclawctl new my-app --template nextjs --template-version 1.0.0
 Both selection flags are required together. Omitting both uses the catalogue's
 exact default. Unknown IDs/versions and ranges fail without fallback. `new`
 creates source only; use the existing [private app workflow](manage-private-apps.md)
-for validate/test/start and the returned private URL. The initial catalogue has
-one Next.js/React/TypeScript web release with ephemeral application data. API,
-Python, Expo, static-site, CLI and multi-package releases are unsupported.
+for validate/test/start and the returned private URL. The catalogue started with one Next.js web release. Later versioned extensions
+add Python APIs, web/API groups, PostgreSQL groups and Expo sources. Catalogue v6
+adds the initial stateless [Fastify TypeScript API](manage-typescript-apis.md)
+under SPEC-035. Static-site and CLI templates remain unsupported.
 
 The runtime marker `.gptclaw/template.json` retains its legacy meaning. The new
 `.gptclaw/template-release.json` records the original release ID/version/digest;

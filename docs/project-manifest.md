@@ -229,6 +229,16 @@ schemas 1–4, and the installed provider still rejects schema 6. Runtime, opera
 routing and physical iOS/Android acceptance remain pending. No existing app or
 immutable source release is automatically upgraded.
 
+## Version 7: single TypeScript API
+
+[Schema v7](../schemas/project/v7.schema.json) adds the explicit `fastify-v1` API
+provider under [SPEC-035](035-typescript-api-template/spec.md). Its single-service
+shape follows v2, with `kind: api`, ephemeral data and required build/start/test/
+format/lint/typecheck/security/verify command vectors, but selects the reviewed
+Node/pnpm profile. It does not reinterpret v2's Python provider. Unknown versions
+fail before execution. Generation uses catalogue v6; the Next.js default remains
+unchanged. See the [TypeScript runbook](../runbooks/manage-typescript-apis.md).
+
 ## Mobile Python composition (SPEC-036)
 
 Manifest 8 is a strict persistent Python API/DB-only group; manifest 9 is an
