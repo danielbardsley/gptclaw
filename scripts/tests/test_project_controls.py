@@ -181,6 +181,22 @@ class Controls(unittest.TestCase):
         self.assertEqual(result['state'],'succeeded');self.assertEqual(calls,[])
         self.assertEqual(self.native,before);self.assertEqual(self.commands,[])
 
+    def test_metro_observation_refresh_keeps_intent_generation_but_failed_protocol_is_not_ready(self):
+        import metro_sessions as metro
+        owned={'phase':'running','expires_at':ctl.time.time()+300,'canonical_key':'canonical',
+               'input_digest':'inputs','name':'metro-sample','token':'owned',
+               'observations':{'protocol':{'state':'ready','observed_at':1}}}
+        identity={'key':'canonical','root_identity':[1,2]}
+        control={'root_identity':[1,2],'mount_identities':{'src':[3,4]}}
+        with patch.object(metro,'load',return_value=owned),patch.object(metro,'admitted'),patch.object(metro,'control',return_value=control),patch.object(metro.contract,'inputs'),patch.object(metro,'require_idle'),patch.object(metro.worktrees,'canonical',return_value=identity),patch.object(metro,'mount_identities',return_value=control['mount_identities']),patch.object(metro,'hashes',return_value={}),patch.object(metro,'digest',return_value='inputs'),patch.object(metro,'verify_unit'),patch.object(metro,'ownership',return_value='owned'),patch.object(metro,'result',return_value={'state':'ready'}) as descriptor:
+            first=ctl.runtime_rows(self.root,{'schema_version':9,'project':{'id':'sample'}})[1]['metro']
+            owned['observations']['protocol']['observed_at']=2
+            refreshed=ctl.runtime_rows(self.root,{'schema_version':9,'project':{'id':'sample'}})[1]['metro']
+            self.assertEqual(first['generation'],refreshed['generation']);self.assertTrue(refreshed['ready'])
+            descriptor.return_value={'state':'failed'}
+            failed=ctl.runtime_rows(self.root,{'schema_version':9,'project':{'id':'sample'}})[1]['metro']
+            self.assertTrue(failed['active']);self.assertFalse(failed['ready'])
+
     def test_metro_restart_retains_transport_and_absolute_expiry_without_backend_effects(self):
         before=copy.deepcopy(self.native)
         result,calls,old=self.metro_operation('restart',component='metro')

@@ -41,6 +41,10 @@ class ReleaseTests(unittest.TestCase):
         for target, name, value in [(app,'command',command),(app,'provider_bundle',lambda:app.STORE/'providers'/('1'*64)),
                                     (app,'node_identity',lambda:'forge-dev.example.ts.net'),(app,'available',lambda _:True)]:
             mock=patch.object(target,name,value);mock.start();self.addCleanup(mock.stop)
+        app.STORE.mkdir()
+        launcher=app.STORE/'providers'/('1'*64)/'scripts/gptclawctl'
+        (app.STORE/'gptclawctl').symlink_to(launcher)
+        app.save(app.STORE/'ingress-owner.json',{'launcher':str(launcher)})
 
     def test_prepare_activate_reprepare_stop_and_previous_release(self):
         first=manager.prepare()
@@ -136,6 +140,17 @@ class ReleaseTests(unittest.TestCase):
         self.assertFalse(any('stop' in args for args in self.calls))
         manager.disable_controls()
         self.assertTrue(path.exists())
+
+    def test_old_stable_provider_refuses_controls_before_service_changes(self):
+        active=manager.prepare(with_controls=True)
+        link=app.STORE/'gptclawctl';link.unlink()
+        link.symlink_to(app.STORE/'providers'/('2'*64)/'scripts/gptclawctl')
+        self.calls.clear()
+        with self.assertRaises(app.AppError) as error:manager.activate(active)
+        self.assertEqual(error.exception.code,'control-unsupported')
+        self.assertEqual(self.calls,[]);self.assertIsNone(manager.owner())
+        manager.activate(manager.prepare())
+        self.assertFalse(manager.owner()['controls_enabled'])
 
 
 class SocketRecoveryTests(unittest.TestCase):

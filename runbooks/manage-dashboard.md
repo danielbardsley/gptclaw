@@ -182,6 +182,16 @@ release owns the additional `gptclaw-dashboard-control.service` and `/run/gptcla
 in the existing private socket namespace. The frontend receives no source directories,
 credential store or Podman socket. Installing code is separate from actual acceptance.
 
+Before activating controls, upgrade the stable CLI/ingress through the reviewed
+provider path using the same frozen provider as the prepared dashboard release.
+Starting a specifically authorized disposable fixture through that provider runs
+the existing owned `ensure_ingress` installer: it replaces only the verified launcher
+and owned ingress unit and briefly restarts the shared loopback router. Preserve
+all Serve handlers and project processes. The controls installer refuses activation
+if the stable launcher and ingress ownership receipt do not reference that exact
+provider. A read-only dashboard release remains usable with the older provider.
+Do not manually retarget the symlink or edit the ownership receipt to pass this gate.
+
 The write population is the existing dashboard tailnet population. There are no new
 individual user accounts/roles. Capability preflights have a four-second isolated
 worker deadline; discovery remains bounded by the inventory contract. Exact Host/Origin, same-origin Fetch Metadata, JSON,
@@ -216,6 +226,10 @@ Stop also supports paused instances; Restart/Rebuild require Resume or Stop firs
 Database groups and Metro cannot pause/resume; Metro cannot rebuild. Metro controls
 retain explicit transport and the original absolute session expiry and never renew
 or opt in. A bound backend remains separately controlled through its own project row.
+Start on a running Metro session is a no-op, including its final minute; Stop remains
+available then, while a replacement needs at least 60 seconds of the original lease.
+Observation refreshes do not invalidate an intent's stable session identity. Success
+requires fresh process/protocol/private-route readiness, not only a running phase.
 
 All new provider mutations take the source/project locks plus a durable guard.
 Native container freeze/unfreeze has a 30-second command deadline; service stop 90

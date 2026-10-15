@@ -145,8 +145,8 @@ def runtime_rows(root, value):
                 app.need(metro.ownership('container', owned['name'], owned['token']) == 'owned', 'conflict')
             app.need(owned['phase'] in {'running', 'stopped'}, 'control-recovery')
         return None, {'metro': {'active': bool(owned and owned['phase'] == 'running'),
-                               'ready': bool(owned and owned['phase'] == 'running'), 'paused': False,
-                               'busy': False, 'generation': digest(owned) if owned else None,
+                               'ready': bool(owned and owned['phase'] == 'running' and metro.result(owned,root,identity)['state']=='ready'), 'paused': False,
+                               'busy': False, 'generation': digest({key:item for key,item in owned.items() if key!='observations'}) if owned else None,
                                'receipt': owned, 'root': str(root)}}
     return parent, {value['project']['kind']: inspect_component(root, value)}
 
@@ -564,6 +564,11 @@ def execute(root, action, component=None, *, expected=None, operation_id=None, s
                     stage('start', None); start_converge(root, value, stage)
             stage('observe', component)
             _, after = runtime_rows(root, value)
+            if 'metro' in rows and action in {'start','restart'}:
+                until=time.monotonic()+min(app.DEADLINE,max(0,old['expires_at']-time.time()))
+                while not after['metro']['ready'] and time.monotonic()<until:
+                    time.sleep(1)
+                    _,after=runtime_rows(root,value)
             if action in {'start', 'restart', 'resume'}:
                 app.need(all(row['ready'] for row in after.values()), 'health')
             elif action == 'rebuild':

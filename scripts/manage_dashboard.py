@@ -258,6 +258,14 @@ def activate(release_id):
         app.need(type(descriptor.get('control_schema')) is int and descriptor['control_schema']==1,'control-unsupported')
     provider = Path(descriptor.get('provider', ''))
     app.need(provider.parent == app.STORE/'providers' and re.fullmatch(r'[0-9a-f]{64}', provider.name), 'conflict')
+    if descriptor.get('controls_enabled'):
+        # The stable CLI must share this provider's durable guard semantics.
+        # A new controller alongside the older launcher cannot serialize later
+        # CLI mutations after an interrupted worker releases its native lock.
+        launcher=app.safe(app.STORE)/'gptclawctl'
+        ingress=app.read_json(app.STORE/'ingress-owner.json')
+        app.need(launcher.is_symlink() and launcher.readlink()==provider/'scripts/gptclawctl'
+                 and ingress is not None and ingress.get('launcher')==str(provider/'scripts/gptclawctl'),'control-unsupported')
     app.need(descriptor.get('interpreter') == sys.executable and descriptor.get('port') == PORT
              and re.fullmatch(r'sha256:[0-9a-f]{64}', descriptor.get('image', '')), 'conflict')
     app.need(tree_digest(release/'web') == read_owned(release/'web-files.json'), 'conflict')
