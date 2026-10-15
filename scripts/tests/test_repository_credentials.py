@@ -246,6 +246,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(self.factory.root_calls,before)
         first=broker.create('one',str(self.projects/'one'),canary=True,template='expo-notes',version='1.0.0')
         self.assertEqual(first['state'],'repository-ready');broker.set_active(True)
+        self.assertFalse((self.projects/'one'/'src/config/backend.generated.ts').exists())
+        self.assertNotIn('src/config/backend.generated.ts',first['source_inventory'])
+        self.assertIn('app.json',first['source_inventory'])
         ordinary=broker.Broker().project_token(self.projects/'one','git')
         self.assertNotIn('workflows',ordinary.metadata['permissions']);ordinary.close()
         workflow=[v for v in self.factory.tokens.values() if 'workflows' in v['data']['permissions']]
