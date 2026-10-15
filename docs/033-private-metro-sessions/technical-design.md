@@ -1,6 +1,6 @@
 # TDD-033: Metro lifecycle and private transport
 
-- **Status:** Implemented and installed — final acceptance/merge pending
+- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-033](spec.md) · **Tasks:** [TASKS-033](tasks.md)
@@ -8,7 +8,7 @@
 ## Approach and ownership boundary
 
 Extend the mobile adapter with a Metro session adapter; preserve non-HTTP quality
-receipts. Proposed Metro receipts live outside source under the runtime store,
+receipts. Metro receipts live outside source under the runtime store,
 separate from mobile job.json, with typed schema, canonical project/root, ownership
 token, generation, exact SDK/lock/toolchain/config hashes, unit/container identity,
 port leases, selected origin, lifecycle/operation outcome, start/expiry timestamps

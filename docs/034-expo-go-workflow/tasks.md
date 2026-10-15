@@ -1,6 +1,6 @@
 # TASKS-034: Expo Go workflow
 
-- **Status:** Implementation in progress — Android native workflow verified; delivery pending
+- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Specification:** [SPEC-034](spec.md) · **Design:** [TDD-034](technical-design.md)
@@ -28,7 +28,7 @@
 - [x] T-005: Add minimum Go-specific dashboard action/detail with accessible copy/QR
   and accurate unsupported/readiness reasons; preserve all existing web/backend
   links and leave full telemetry to MOB-009. (GO-003/006; AC-003/006)
-- [ ] T-006: Run relevant profile/URI/QR/CLI/dashboard/worktree/security regressions
+- [x] T-006: Run relevant profile/URI/QR/CLI/dashboard/worktree/security regressions
   and CI; package and verify installed provider/frozen consumer parity and safe
   launch-capability rollback with Metro/source retained. (GO-001–003/006/007; AC-001–003/006/007)
 
@@ -176,3 +176,10 @@ Current cleanup handoff: the owner lacks SSM access now and will remove the owne
 HTTP listeners later. Both temporary runtimes are absent; source/history and
 handlers are retained. Operator removal/readback and final CI/merge remain pending;
 no bypass or Delivered claim is made.
+
+
+Review, passing combined-revision CI and authorized planning/implementation merges
+are complete. The project owner explicitly deferred SSM cleanup until access at
+home. Retained runtime/source/Android evidence is recorded in acceptance; final
+delivery remains open only for exact owned-listener removal/readback. Keep the
+final delivery task unchecked and catalogue Implemented until that action passes.

@@ -1,6 +1,6 @@
 # SPEC-034: Compatible Expo Go development workflow
 
-- **Status:** Approved for implementation by active goal — acceptance pending
+- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** MOB-003 — Expo Go workflow

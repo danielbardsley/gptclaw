@@ -1,6 +1,6 @@
 # SPEC-033: Owned private Metro sessions
 
-- **Status:** Approved for implementation by active goal — acceptance pending
+- **Status:** Implementation merged and installed (Android-first); operator cleanup explicitly deferred
 - **Owner:** Project owner
 - **Date:** 2026-10-13 (America/New_York)
 - **Feature:** MOB-002 — Physical-device development
