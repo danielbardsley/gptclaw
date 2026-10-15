@@ -338,7 +338,7 @@ def status(root, operation_id=None):
     except a.AppError as error:
         result.update(policy='invalid', error=error.code, state='error')
     s = a.state_for(slug)
-    if contract['schema_version'] in (5,6):
+    if contract['schema_version'] in (5,6,9):
         import project_mobile as mobile
         s = mobile.load_state(root, slug)
     result['operation_busy'] = a.object_owned('container', s['name']+'-job', s['token']) if s else False
@@ -348,9 +348,9 @@ def status(root, operation_id=None):
 
 def stopped_state(root, contract):
     a = app()
-    if contract['schema_version']==6:
+    if contract['schema_version'] in (6,9):
         __import__('metro_sessions').assert_stopped(root,contract['project']['id'])
-    if contract['schema_version'] in (5,6):
+    if contract['schema_version'] in (5,6,9):
         import project_mobile as mobile
         return mobile.job_state(root, contract)
     s = a.reserve(root, contract)

@@ -329,7 +329,14 @@ class Tests(unittest.TestCase):
             return process
         with patch.object(w.subprocess,'Popen',side_effect=spawn):self.error('timeout',w.git,self.root,'status',timeout=.2)
         pid=int(pidfile.read_text());status=Path('/proc')/str(pid)/'stat'
-        if status.exists():self.assertEqual(status.read_text().split()[2],'Z')
+        # SIGKILL delivery is asynchronous; allow the kernel a bounded scheduling turn.
+        deadline=time.monotonic()+2
+        while True:
+            try:state=status.read_text().split()[2]
+            except FileNotFoundError:break
+            if state=='Z':break
+            self.assertLess(time.monotonic(),deadline,'descendant survived timeout cleanup')
+            time.sleep(.01)
 
 
 if __name__=='__main__':unittest.main(verbosity=2)

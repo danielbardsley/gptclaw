@@ -59,7 +59,7 @@ def inspect(root,platform,client_version=None,os_version=None,*,_metro=None):
         app.need(value is None or isinstance(value,str) and len(value)<=32
                  and re.fullmatch(r'[0-9]{1,2}(?:\.[0-9]{1,2}){0,2}',value), 'invalid')
     root,document=app.target(root)
-    app.need(document['schema_version'] in {5,6}, 'mobile-unsupported')
+    app.need(document['schema_version'] in {5,6,9}, 'mobile-unsupported')
     worktrees.canonical(root)
     policy=profile();target=policy['targets'][platform]
     selected=tools.selection(root)
@@ -69,7 +69,7 @@ def inspect(root,platform,client_version=None,os_version=None,*,_metro=None):
     app.need(mobile.manifest_config(root,document), 'mobile-policy')
     lock=hashlib.sha256(deps.read_bytes(root/'pnpm-lock.yaml')).hexdigest()
     source_match=lock==policy['lock_sha256']
-    metro=(_metro if _metro is not None else sessions.status(root)) if document['schema_version']==6 else {
+    metro=(_metro if _metro is not None else sessions.status(root)) if document['schema_version'] in (6,9) else {
         'state':'source-only','transport_available':False}
     reason='physical-client-and-launch-rule-unverified'
     state='check-required'

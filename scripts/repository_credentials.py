@@ -62,16 +62,16 @@ def profile(value=None):
     fields={'schema_version','account','app_id','installation_id',
             'key_file','bootstrap_repository_ids','policy','active','creation_verified'}
     check(isinstance(value,dict) and type(value.get('schema_version')) is int
-          and value['schema_version'] in {1,2,3,4})
+          and value['schema_version'] in {1,2,3,4,5})
     expected=fields if value['schema_version']==1 else fields|{'repository_selection'}
-    if value['schema_version'] in {3,4}:expected|={'workflow_repositories','workflow_verified'}
+    if value['schema_version'] in {3,4,5}:expected|={'workflow_repositories','workflow_verified'}
     check(set(value)==expected)
     check(value['account']==repos.ACCOUNT)
     if value['schema_version']>=2:check(value['repository_selection'] in {'selected','all'})
-    if value['schema_version'] in {3,4}:
+    if value['schema_version'] in {3,4,5}:
         names=value['workflow_repositories']
         check(value['repository_selection']=='all' and type(value['workflow_verified']) is bool)
-        check(isinstance(names,list) and 1<=len(names)<=(2 if value['schema_version']==3 else 4) and all(isinstance(n,str) and re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',n) and len(n)<=48 for n in names) and names==sorted(set(names)))
+        check(isinstance(names,list) and 1<=len(names)<={3:2,4:4,5:6}[value['schema_version']] and all(isinstance(n,str) and re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*',n) and len(n)<=48 for n in names) and names==sorted(set(names)))
     for field in ['app_id','installation_id']:
         check(type(value[field]) is int and value[field] > 0)
     ids = value['bootstrap_repository_ids']
@@ -89,7 +89,7 @@ def selection(value):
 
 def grants(value):
     base=ALL_GRANTS if selection(value)=='all' else GRANTS
-    return {**base,'workflows':'write'} if value['schema_version'] in {3,4} else dict(base)
+    return {**base,'workflows':'write'} if value['schema_version'] in {3,4,5} else dict(base)
 
 
 def workflow_names(value):
@@ -342,7 +342,7 @@ class Broker:
             else:raise app.AppError('credential-scope')
         check(required<=observed,'credential-scope')
         if selection(self.profile)=='selected':check(observed<=approved,'credential-scope')
-        return {**identity,'state':'ready' if self.profile['creation_verified'] and (self.profile['schema_version'] not in {3,4} or self.profile['workflow_verified']) else 'canary-required',
+        return {**identity,'state':'ready' if self.profile['creation_verified'] and (self.profile['schema_version'] not in {3,4,5} or self.profile['workflow_verified']) else 'canary-required',
                 'active':self.profile['active'],'creation_verified':self.profile['creation_verified'],
                 'selected_repository_ids':sorted(observed&approved),'installation_repository_count':len(observed),
                 'policy':self.profile['policy']}
@@ -468,7 +468,7 @@ def set_workflow_policy(names):
         old=profile();check(not old['active'],'credential-disabled')
         base={k:v for k,v in old.items() if k not in {'workflow_repositories','workflow_verified'}}
         names=sorted(names)
-        value=profile({**base,'schema_version':(3 if len(names)<=2 else 4),'workflow_repositories':names,
+        value=profile({**base,'schema_version':(3 if len(names)<=2 else 4 if len(names)<=4 else 5),'workflow_repositories':names,
             'workflow_verified':old.get('workflow_verified',False) if names==workflow_names(old) else False} if names else {**base,'schema_version':2})
         result=Broker(value).doctor()
         # Install compatible owned helpers before changing the profile contract.
@@ -497,7 +497,7 @@ def set_active(active):
         value=profile()
         if active:
             Broker(value).doctor();check(value['creation_verified'],'credential-recovery')
-            check(value['schema_version'] not in {3,4} or value['workflow_verified'],'credential-recovery')
+            check(value['schema_version'] not in {3,4,5} or value['workflow_verified'],'credential-recovery')
         value['active']=active;app.save(location()/'profile.json',value)
     return {'state':'active' if active else 'local-only','policy':value['policy']}
 

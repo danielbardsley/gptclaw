@@ -81,3 +81,11 @@ than selecting the default. Rollback to a pre-catalogue provider has no provenan
 validation capability and must be reviewed for the apps involved. Retain their
 source/state and avoid automatic service restarts. Template upgrades are explicit
 reviewed source changes; there is no automatic template migration command.
+
+## Python-backed native notes
+
+SPEC-036 adds explicit `fastapi-postgres@1.0.0` and `expo-notes@1.0.0` catalogue-7
+releases. The Python backend has API/DB only; the native notebook uses a separately
+validated development binding. Neither changes the default selection or published
+releases. See [mobile backend operations](manage-mobile-backends.md); physical
+Android acceptance and provider installation remain separate evidence.

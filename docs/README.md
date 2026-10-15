@@ -248,6 +248,12 @@ dispositions independently of feature implementation status.
   [Tasks](035-typescript-api-template/tasks.md) ·
   [Acceptance](035-typescript-api-template/acceptance.md)
 
+- **036 — Mobile Python backend integration (MOB-010), merged; native acceptance pending:**
+  [Specification](036-mobile-python-backend/spec.md) ·
+  [Technical design](036-mobile-python-backend/technical-design.md) ·
+  [Tasks](036-mobile-python-backend/tasks.md) ·
+  [Acceptance](036-mobile-python-backend/acceptance.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in

@@ -49,7 +49,7 @@ class Tests(unittest.TestCase):
     def test_cli_discovery_and_exact_pair(self):
         output=io.StringIO()
         with contextlib.redirect_stdout(output):self.assertEqual(cli.main(['templates','list']),0)
-        self.assertEqual(json.loads(output.getvalue())['schema_version'],6)
+        self.assertEqual(json.loads(output.getvalue())['schema_version'],7)
         with self.assertRaises(app.AppError):app.create('bad',template='nextjs')
         self.assertFalse((self.projects/'bad').exists())
     def test_unknown_range_and_mismatched_selection(self):
@@ -210,7 +210,11 @@ class Tests(unittest.TestCase):
     def test_historical_release_mutation_rejected(self):
         spec=importlib.util.spec_from_file_location('release_check',Path(__file__).resolve().parents[1]/'check-template-releases.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
         def git(*args):subprocess.run(['git',*args],cwd=self.repo,check=True,capture_output=True)
-        git('init');git('add','.');git('-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','-m','baseline')
+        git('init');git('add','.')
+        for release in templates.catalogue()[0]['releases']:
+            base=Path('templates/apps/releases')/release['id']/release['version']
+            git('add','--force','--',*[str(base/item['source']) for item in release['files']])
+        git('-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','-m','baseline')
         module.verify_baseline('HEAD')
         self.catalogue['releases'][0]['description']='Changed old release';self.seal(self.catalogue['releases'][0]);self.write()
         with self.assertRaises(app.AppError):module.verify_baseline('HEAD')

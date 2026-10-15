@@ -238,3 +238,12 @@ format/lint/typecheck/security/verify command vectors, but selects the reviewed
 Node/pnpm profile. It does not reinterpret v2's Python provider. Unknown versions
 fail before execution. Generation uses catalogue v6; the Next.js default remains
 unchanged. See the [TypeScript runbook](../runbooks/manage-typescript-apis.md).
+
+## Mobile Python composition (SPEC-036)
+
+Manifest 8 is a strict persistent Python API/DB-only group; manifest 9 is an
+opt-in Expo Metro source project with an explicit development FastAPI binding.
+Historical schemas remain unchanged. Provider 1.14.0 adds group receipt 4, Metro
+control receipt 3 and catalogue 7; source support does not establish installed
+rollout or device acceptance. See [operation and recovery](../runbooks/manage-mobile-backends.md)
+and [SPEC-036](036-mobile-python-backend/spec.md).

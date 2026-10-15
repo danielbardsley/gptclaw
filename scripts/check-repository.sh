@@ -198,6 +198,10 @@ if ! python3 -B scripts/tests/test_project_python.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_mobile_backend.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/tests/test_project_groups.py; then
   status=1
 fi

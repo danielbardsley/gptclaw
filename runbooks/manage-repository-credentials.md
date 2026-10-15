@@ -287,3 +287,17 @@ Missing/archived source bindings and original helper paths are retained without
 adoption; unknown or incomplete helper-upgrade journals remain blocking. Restored
 source needs a compatible helper refresh before credential use. Retain the capable
 provider for reconciliation because earlier providers cannot interpret schema 4.
+
+
+## Fieldnotes six-name preview policy
+
+The project owner approved `fieldnotes-api` and `fieldnotes-mobile` on October 15,
+2026, preserving the four existing explicit names. Provider 1.14.0 credential
+profile schema 5 supports at most six sorted unique names; historical schemas
+3/4 retain their two/four-name limits. App grants and single-repository tokens
+are unchanged. Deactivate, apply the exact named workflow policy, create the
+first approved target with `credentials canary` and its exact template/version,
+then reactivate after successful workflow publication. Create the second target
+through ordinary `new`. Keep all bound helpers on a schema-5-capable immutable
+provider before selecting this profile; older helpers refuse it. The retained
+previous profile is a recovery point, not permission to lose existing names.

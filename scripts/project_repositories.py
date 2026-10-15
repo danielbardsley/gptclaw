@@ -379,6 +379,8 @@ def starter(receipt):
     templates.generate(generated, receipt['plan']['repository'], release, contents)
     git(root, 'checkout', '-b', receipt['plan']['branches']['head'])
     for path in sorted(generated.rglob('*')):
+        if release['provider']=='expo-notes-v1' and path.relative_to(generated).as_posix()=='src/config/backend.generated.ts':
+            continue  # Local public binding is recreated before checks/bind, never published.
         if path.is_file():
             out = root/path.relative_to(generated)
             out.parent.mkdir(parents=True, exist_ok=True)

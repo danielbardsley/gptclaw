@@ -36,6 +36,9 @@ def inputs(root):
     output['toolchain-selection']=selected['selection_hash']
     output['mobile-profile']=hashlib.sha256(json.dumps(mobile.profile(),sort_keys=True,separators=(',',':')).encode()).hexdigest()
     output['dependency-policy']=context['policy_hash']
+    if app.validate_project(root)[1]['schema_version']==9:
+        import mobile_backend
+        output.update(mobile_backend.fingerprint(root))
     return output
 
 

@@ -147,7 +147,7 @@ class Tests(unittest.TestCase):
         with self.assertRaises(app.AppError):broker.set_workflow_policy(['persistent'])
         self.assertEqual(broker.profile(),old)
         self.factory.grants['workflows']='write'
-        for names in [['persistent','persistent'],['one','two','three','four','five'],['*'],['../foreign']]:
+        for names in [['persistent','persistent'],['one','two','three','four','five','six','seven'],['*'],['../foreign']]:
             with self.assertRaises(app.AppError):broker.set_workflow_policy(names)
             self.assertEqual(broker.profile(),old)
         result=broker.set_workflow_policy(['persistent'])
@@ -230,6 +230,30 @@ class Tests(unittest.TestCase):
         ordinary=broker.Broker().project_token(self.projects/'one','git');self.assertNotIn('workflows',ordinary.metadata['permissions']);ordinary.close()
         workflow=[v for v in self.factory.tokens.values() if 'workflows' in v['data']['permissions']]
         self.assertTrue(workflow);self.assertTrue(all(v['ids']==[first['repository_id']] and v['revoked'] for v in workflow))
+
+    def test_six_name_workflow_policy_retains_old_bounds_and_exact_tokens(self):
+        names=['one','two','three','four','five','six']
+        self.workflow_profile(names)
+        current=broker.profile()
+        self.assertEqual(current['schema_version'],5)
+        self.assertEqual(current['workflow_repositories'],sorted(names))
+        for version in (3,4):
+            with self.assertRaises(app.AppError):broker.profile({**current,'schema_version':version})
+        with self.assertRaises(app.AppError):broker.set_active(True)
+        before=copy.deepcopy(self.factory.root_calls)
+        with self.assertRaises(app.AppError):
+            broker.create('foreign',str(self.projects/'foreign'),canary=True,template='expo-notes',version='1.0.0')
+        self.assertEqual(self.factory.root_calls,before)
+        first=broker.create('one',str(self.projects/'one'),canary=True,template='expo-notes',version='1.0.0')
+        self.assertEqual(first['state'],'repository-ready');broker.set_active(True)
+        self.assertFalse((self.projects/'one'/'src/config/backend.generated.ts').exists())
+        self.assertNotIn('src/config/backend.generated.ts',first['source_inventory'])
+        self.assertIn('app.json',first['source_inventory'])
+        ordinary=broker.Broker().project_token(self.projects/'one','git')
+        self.assertNotIn('workflows',ordinary.metadata['permissions']);ordinary.close()
+        workflow=[v for v in self.factory.tokens.values() if 'workflows' in v['data']['permissions']]
+        self.assertTrue(workflow)
+        self.assertTrue(all(v['ids']==[first['repository_id']] and v['revoked'] for v in workflow))
 
     def test_archived_source_binding_is_preserved_and_pending_upgrade_blocks(self):
         self.first();broker.set_active(False);root=self.projects/'first';binding=broker.bound(root)

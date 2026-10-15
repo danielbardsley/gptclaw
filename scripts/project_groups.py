@@ -12,6 +12,12 @@ import private_apps as a
 
 SCOPE = ContextVar('gptclaw_components', default={})
 ORDER = ('api', 'web')
+
+def order(value):
+    return tuple(name for name in ORDER if name in value['components'])
+
+def receipt_version(value):
+    return 4 if value['schema_version']==8 else 3 if value['schema_version']==4 else 2
 PROBE_TTL = 1.0
 _PROBE_GUARD = threading.Lock()
 _PROBES = {}
@@ -31,7 +37,7 @@ def contract(slug, toolchains):
            'service': {'internal_port': 3000, 'health': {'path': f'/projects/{slug}/', 'timeout_seconds': 5}}}
     api['service']['health']['path'] = f'/projects/{slug}/api/ready'
     components = {}
-    for name, child in [('api', api), ('web', web)]:
+    for name, child in [('api', api), *([('web', web)] if 'web' in toolchains else [])]:
         service = child['service'].copy()
         service['liveness'] = {'path': f'/projects/{slug}/api/health' if name == 'api' else f'/projects/{slug}/alive/', 'timeout_seconds': 5}
         components[name] = {'root': name, 'adapter': 'fastapi-v1' if name == 'api' else 'nextjs-v1',
@@ -44,14 +50,14 @@ def contract(slug, toolchains):
 
 def initialize(stage, slug, release):
     value = contract(slug, release['toolchains'])
-    for name in ORDER:
+    for name in order(value):
         meta = stage/value['components'][name]['root']/'.gptclaw'
         meta.mkdir()
         a.save(meta/'component.json', {'group': slug, 'component': name})
         a.save(meta/'template.json', {'provider': value['components'][name]['adapter']})
         a.save(meta/'toolchain.json', value['components'][name]['toolchain'])
-    if release['provider']=='notes-postgres-v1':
-        value['schema_version']=4;value['data']={'mode':'persistent'}
+    if release['provider'] in {'notes-postgres-v1','fastapi-postgres-v1'}:
+        value['schema_version']=8 if release['provider']=='fastapi-postgres-v1' else 4;value['data']={'mode':'persistent'}
         value['components']['api']['depends_on']=['db']
         value['components']['db']={'adapter':'postgres-v1','profile':'postgres18-v1','depends_on':[]}
         value['database']={'storage':'runtime-volume-v1','head':'0001','migrate':['.venv/bin/python','-m','fastapi_app.db_cli','migrate'],'seed':['.venv/bin/python','-m','fastapi_app.db_cli','seed']}
@@ -62,7 +68,7 @@ def children(root, value):
     """Resolve and validate both component metadata boundaries before execution."""
     result = {}
     slug = value['project']['id']
-    for name in ORDER:
+    for name in order(value):
         declaration = value['components'][name]
         child = a.safe(root/declaration['root'])
         a.need(child.is_dir() and child.stat().st_uid == root.stat().st_uid, 'path')
@@ -110,13 +116,13 @@ def component_runtime(root):
 
 
 def valid_state(s):
-    a.need(isinstance(s, dict) and s.get('schema_version') in (2,3))
+    a.need(isinstance(s, dict) and type(s.get('schema_version')) is int and s['schema_version'] in (2,3,4))
     a.need(set(s) <= {'schema_version','id','root','token','network','components','phase','health_ready','operation','operation_id','operation_result','error','stages','cleanup_errors'})
     a.need(isinstance(s.get('id'), str) and re.fullmatch(r'[a-z][a-z0-9]*(?:-[a-z0-9]+)*', s['id']) and len(s['id']) <= 48)
     root = a.safe(s['root']); a.need(root.is_relative_to(a.PROJECTS) and root != a.PROJECTS and root != a.REPO and '.gptclaw-runtime' not in root.parts)
     a.need(s.get('network') == 'gptclaw-group-'+s['id'])
     a.need(isinstance(s.get('token'),str) and re.fullmatch(r'[0-9a-f]{32}',s['token']))
-    a.need(s.get('components') == {name: identity(s['id'],name) for name in ORDER})
+    a.need(s.get('components') == {name: identity(s['id'],name) for name in (('api',) if s['schema_version']==4 else ORDER)})
     a.need(s.get('phase') in {'preparing','starting','ready','stopped','failed'})
     a.need(type(s.get('health_ready')) is bool)
     a.need(s.get('operation') in {'start','stop','restart','test','build','format','lint','typecheck','security','verify','deps','toolchain'})
@@ -138,9 +144,9 @@ def reserve(root, value):
     with a.locked('registry'):
         s = a.state_for(slug)
         if s:
-            a.need(s['schema_version'] == (3 if value['schema_version']==4 else 2) and s['root'] == str(root)); return s
-        s = {'schema_version':3 if value['schema_version']==4 else 2, 'id':slug, 'root':str(root), 'token':uuid.uuid4().hex,
-             'network':'gptclaw-group-'+slug, 'components':{name:identity(slug,name) for name in ORDER},
+            a.need(s['schema_version'] == receipt_version(value) and s['root'] == str(root)); return s
+        s = {'schema_version':receipt_version(value), 'id':slug, 'root':str(root), 'token':uuid.uuid4().hex,
+             'network':'gptclaw-group-'+slug, 'components':{name:identity(slug,name) for name in order(value)},
              'phase':'stopped', 'health_ready':False, 'operation':'start', 'operation_id':uuid.uuid4().hex,
              'operation_result':'passed', 'error':None, 'stages':[]}
         save(s); return s
@@ -172,9 +178,10 @@ def observe(s, resolved):
 
 
 def stopped(s, resolved):
+    value={'schema_version':8 if s['schema_version']==4 else 3,'components':resolved}
     status = observe(s,resolved)
     a.need(not any(c.get('active') or c['operation_busy'] for c in status.values()), 'busy')
-    for name in ORDER:
+    for name in order(value):
         child = a.state_for(s['components'][name])
         if child: a.need(not a.object_owned('container',child['name'],child['token']), 'busy')
     a.need(s['phase'] == 'stopped' and s['operation_result'] != 'running','busy')
@@ -184,7 +191,7 @@ def cleanup(s, resolved, names):
     errors = {}
     # A stopped group also reconciles stale isolated contract resources after a
     # bounded job exits. An unresolved web job is retained and reported as busy.
-    web = a.state_for(s['components']['web'])
+    web = a.state_for(s['components']['web']) if 'web' in s['components'] else None
     if web and a.object_owned('container', web['name']+'-job', web['token']):
         errors['web'] = 'busy'
     else:
@@ -195,11 +202,11 @@ def cleanup(s, resolved, names):
             if a.object_owned('network',s['network']+'-contract',s['token']):
                 a.command(['podman','network','rm',s['network']+'-contract'])
         except a.AppError as error:errors['network'] = error.code
-    for name in reversed(ORDER):
+    for name in reversed(tuple(resolved)):
         if name not in names: continue
         try: a.stop(resolved[name][0],take_lock=False)
         except a.AppError as error: errors[name] = error.code
-    if s['schema_version']==3:
+    if s['schema_version'] in (3,4):
         try:
             import project_database as db
             owned=db.state(s['id'],Path(s['root']))
@@ -214,7 +221,7 @@ def cleanup(s, resolved, names):
 
 def start(root, no_route=False, take_lock=True):
     root,value = a.target(root); slug=value['project']['id']
-    if value['schema_version']==4:
+    if value['schema_version'] in (4,8):
         import project_database as db
         db.require_storage(value)
     with (a.locked(slug) if take_lock else contextlib.nullcontext()), scope(root,value) as resolved:
@@ -238,12 +245,12 @@ def start(root, no_route=False, take_lock=True):
         started=[]
         try:
             network(s,create=True);s['stages'].append('network');save(s)
-            if value['schema_version']==4:
+            if value['schema_version'] in (4,8):
                 import project_database as db
                 owned=db.state(slug,root);a.need(owned is not None,'database-state')
                 s['stages'].append('db');save(s);db.acquire();db.start(owned)
                 a.need(db.ready(owned,value),'database-schema')
-            for name in ORDER:
+            for name in order(value):
                 # Persist intent before starting, so interrupted effects can be observed.
                 s.update(phase='starting');s['stages'].append(name);save(s);started.append(name)
                 a.start(resolved[name][0],no_route=True,take_lock=False)
@@ -269,7 +276,7 @@ def stop(root,take_lock=True):
         a.need(s['root']==str(root));changed=s['phase']!='stopped' or network(s)
         s.update(phase='stopped',health_ready=False,operation='stop',operation_id=uuid.uuid4().hex,
                  operation_result='running',error=None);save(s)
-        errors=cleanup(s,resolved,ORDER)
+        errors=cleanup(s,resolved,tuple(resolved))
         s.update(cleanup_errors=errors,operation_result='failed' if errors else 'passed',error=next(iter(errors.values()),None));save(s)
         if errors: raise a.AppError(s['error'])
         return {'project':slug,'operation_id':s['operation_id'],'state':'stopped','changed':changed,'source_retained':True}
@@ -289,7 +296,7 @@ def status(root):
     a.need(s['root']==str(root))
     with scope(root,value) as resolved:
         components=observe(s,resolved)
-    if value['schema_version']==4:
+    if value['schema_version'] in (4,8):
         import project_database as db
         owned=db.state(slug,root);dbready=bool(owned and db.ready(owned,value))
         components['db']={'state':'ready' if dbready else 'stopped' if owned is None or not db.active(owned) else 'unhealthy','health':'ready' if dbready else 'unhealthy','operation_busy':bool(owned and owned['operation'] and owned['operation']['stage']=='running')}
@@ -326,13 +333,13 @@ def probe(s):
 def uncached_probe(s):
     """Validate owned component metadata and both current readiness endpoints."""
     root,value=a.target(Path(s['root']))
-    if value['schema_version']==4:
+    if value['schema_version'] in (4,8):
         import project_database as db
         owned=db.state(s['id'],root)
         if not owned or not db.ready(owned,value):return None
     with scope(root,value) as resolved:
         result={}
-        for name in ORDER:
+        for name in order(value):
             child=a.state_for(s['components'][name])
             if not child:return None
             a.need(child['root']==str(resolved[name][0]) and child.get('group')==s['id'])
@@ -352,7 +359,7 @@ def upstream(s, path):
         if not (suffix.startswith('v1/') or suffix in {'docs','docs/','openapi.json','health','ready'} or suffix.startswith('docs-assets/')):return False
         name='api'
     else:name='web'
-    return components[name]
+    return components.get(name,False)
 
 
 def dispatch(root, action, component=None, **kwargs):
@@ -360,9 +367,9 @@ def dispatch(root, action, component=None, **kwargs):
     import project_dependencies as deps
     import project_toolchains as tools
     root,value=a.target(root);slug=value['project']['id']
-    a.need(component in ORDER or component is None,'invalid')
-    if action not in {'test','verify'}: a.need(component in ORDER,'invalid')
-    if value['schema_version']==4 and action in {'test','verify'}:
+    a.need(component in order(value) or component is None,'invalid')
+    if action not in {'test','verify'}: a.need(component in order(value),'invalid')
+    if value['schema_version'] in (4,8) and action in {'test','verify'}:
         import tempfile
         with a.locked(slug),scope(root,value) as resolved:
             s=reserve(root,value)
@@ -372,7 +379,7 @@ def dispatch(root, action, component=None, **kwargs):
             fixture=Path(tempfile.mkdtemp(prefix='gptclaw-persistent-check-'))/'fixture'
             runner=a.REPO/'scripts/tests/check_database_template.py'
             a.need(runner.is_file(),'setup')
-            a.command([__import__('sys').executable,str(runner),str(fixture),'--engine','podman','--source-root',str(root),'--with-browser'],timeout=2400)
+            a.command([__import__('sys').executable,str(runner),str(fixture),'--engine','podman','--source-root',str(root),*(['--with-browser'] if 'web' in resolved else [])],timeout=2400)
             return {'project':slug,'state':action+'-passed','fixture':str(fixture),'data_retained':True}
     with a.locked(slug),scope(root,value) as resolved:
         s=reserve(root,value)
@@ -384,7 +391,7 @@ def dispatch(root, action, component=None, **kwargs):
         if not observation:
             s.update(operation=action,operation_id=uuid.uuid4().hex,operation_result='running',error=None);save(s)
         try:
-            for name in ([component] if component else ORDER):
+            for name in ([component] if component else order(value)):
                 path,_=resolved[name]
                 if action=='deps':
                     subaction=kwargs.pop('subaction');results[name]=deps.status(path,kwargs.get('operation_id')) if subaction=='status' else deps.operate(path,subaction,**kwargs)
@@ -406,7 +413,7 @@ def cross_service(s, resolved):
     """Run real CRUD in two isolated test containers, separate from live notes."""
     import project_python as py
     api = a.state_for(s['components']['api'])
-    web = a.state_for(s['components']['web'])
+    web = a.state_for(s['components']['web']) if 'web' in s['components'] else None
     net = s['network']+'-contract'
     name = api['name']+'-contract'
     a.need(not a.object_owned('container',name,s['token']),'busy')
@@ -455,7 +462,7 @@ def database_unit(s):
     """Derive only an owned API's selected secret mount and backend network."""
     if s.get('component')!='api':return ''
     parent=a.state_for(s['group'])
-    if not parent or parent['schema_version']!=3:return ''
+    if not parent or parent['schema_version'] not in (3,4):return ''
     import project_database as db
     root,value=a.target(parent['root'])
     owned=db.state(s['group'],root);a.need(owned is not None,'database-state')

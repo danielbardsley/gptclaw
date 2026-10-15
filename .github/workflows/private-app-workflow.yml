@@ -5,6 +5,8 @@ on:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
       - config/mobile/**
+      - docs/036-mobile-python-backend/**
+      - runbooks/manage-mobile-backends.md
       - docs/031-expo-project-creation/**
       - runbooks/manage-expo-projects.md
       - config/templates/**
@@ -42,6 +44,8 @@ on:
       - .github/workflows/private-app-workflow.yml
       - scripts/**
       - config/mobile/**
+      - docs/036-mobile-python-backend/**
+      - runbooks/manage-mobile-backends.md
       - docs/031-expo-project-creation/**
       - runbooks/manage-expo-projects.md
       - config/templates/**
@@ -202,6 +206,20 @@ jobs:
         run: .venv-manifest/bin/python scripts/tests/check_database_template.py "$RUNNER_TEMP/gptclaw-database-template" --engine docker
       - name: Persistent starter frontend and browser workflow
         run: python3 "$RUNNER_TEMP/gptclaw-database-template/projects"/dbcheck-*/checks/verify.py --engine docker
+
+  mobile-python-backend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
+      - name: Verify bound-native and Python API/database starters
+        run: .venv-manifest/bin/python scripts/tests/check_mobile_backend_template.py "$RUNNER_TEMP/gptclaw-mobile-python" --engine docker
 
   typescript-api:
     runs-on: ubuntu-24.04

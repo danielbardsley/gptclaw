@@ -19,6 +19,11 @@ def main(argv=None):
   if name in {'start','restart'}:p.add_argument('--metro-transport',choices=['https','tailnet-http'],help='Explicit native Metro transport; HTTP remains inside the development tailnet.')
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
+ backend=sub.add_parser('backend',help='Explicit Python mobile development binding')
+ backend_actions=backend.add_subparsers(dest='backend_action',required=True)
+ for name in ['bind','inspect']:
+  p=backend_actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True)
+  if name=='bind':p.add_argument('--backend-root',required=True);p.add_argument('--api-url',required=True)
  go=sub.add_parser('go',help='Read-only Expo Go compatibility inspection')
  go_actions=go.add_subparsers(dest='go_action',required=True)
  for name in ['inspect','launch']:
@@ -113,7 +118,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['metro','worktrees','db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6],'metro_session_schemas':[1,2],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[1],'project_manifest_schemas':[1,2,3,4,5,6,7],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6,7],'toolchain_schemas':[1,2],'template_catalogue_schema':6,'receipt_schema':1,'group_receipt_schema':3,'group_receipt_schemas':[2,3],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':4,'credential_profile_schemas':[1,2,3,4],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['backend','metro','worktrees','db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'backend_actions':['bind','inspect'],'backend_contract_schemas':[1],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6,9],'metro_session_schemas':[1,2],'metro_control_schemas':[2,3],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[1],'project_manifest_schemas':[1,2,3,4,5,6,7,8,9],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6,7,8,9],'toolchain_schemas':[1,2],'template_catalogue_schema':7,'receipt_schema':1,'group_receipt_schema':4,'group_receipt_schemas':[2,3,4],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':5,'credential_profile_schemas':[1,2,3,4,5],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -139,6 +144,10 @@ def main(argv=None):
   if args.action=='go':
    import expo_go
    result=expo_go.inspect(args.project_root,args.platform,args.client_version,args.os_version) if args.go_action=='inspect' else expo_go.launch(args.project_root,args.platform,args.client_version,args.os_version,args.generation)
+  elif args.action=='backend':
+   import mobile_backend
+   result=mobile_backend.bind(args.project_root,args.backend_root,args.api_url) if args.backend_action=='bind' else {k:v for k,v in mobile_backend.inspect(args.project_root).items() if k not in {'root','api_url'}}
+   print(json.dumps(result));return 0
   elif args.action=='metro':
    if args.metro_action=='prune':
     import metro_retention
@@ -176,7 +185,7 @@ def main(argv=None):
     result=worktrees.handoff(*common,args.owner,args.generation,checks,args.remaining,args.published,args.pr)
    elif action=='resume':result=worktrees.resume(*common,args.owner,args.generation,args.target_owner)
    else:result=worktrees.cleanup(*common,args.owner,args.generation,args.head,args.apply)
-  elif args.action in {'start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','deps','toolchain','db','hooks'} and app.target(args.project_root)[1]['schema_version'] in (5,6):
+  elif args.action in {'start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','deps','toolchain','db','hooks'} and app.target(args.project_root)[1]['schema_version'] in (5,6,9):
    import project_mobile as mobile
    result=mobile.dispatch(args)
   elif getattr(args,'metro_transport',None) is not None:
@@ -226,7 +235,7 @@ def main(argv=None):
   elif args.action=='logs' and getattr(args,'component',None)=='db':
    import project_database as database
    result=database.logs(args.project_root,args.lines)
-  elif args.action in {'logs','test','build','format','lint','typecheck','security','verify','deps','toolchain'} and app.target(args.project_root)[1]['schema_version'] in (3,4):
+  elif args.action in {'logs','test','build','format','lint','typecheck','security','verify','deps','toolchain'} and app.target(args.project_root)[1]['schema_version'] in (3,4,8):
    import project_groups as groups
    kwargs={}
    if args.action=='logs':kwargs={'lines':args.lines}
