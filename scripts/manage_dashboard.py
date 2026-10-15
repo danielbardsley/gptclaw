@@ -91,7 +91,7 @@ def unit_text(release, provider, interpreter, image, public_origin, with_status=
 Description=GptClaw private read-only dashboard collector
 
 [Service]
-ExecStart={interpreter} -B {provider}/scripts/dashboard_collector.py --projects-root {app.PROJECTS} --socket {PLATFORM}/run/collector.sock --registry {PLATFORM}/metadata.json{' --status' if with_status or with_links or with_controls else ''}{' --links' if with_links else ''}
+ExecStart={interpreter} -B {provider}/scripts/dashboard_collector.py --projects-root {app.PROJECTS} --socket {PLATFORM}/run/collector.sock --registry {PLATFORM}/metadata.json{' --status' if with_status or with_links or with_controls else ''}{' --links' if with_links else ''}{' --controls' if with_controls else ''}
 Restart=on-failure
 RestartSec=2
 TimeoutStopSec=5

@@ -199,6 +199,10 @@ the next bounded collection begins after a two-second rest. Discovery remains
 bounded by the inventory contract. Exact Host/Origin, same-origin Fetch Metadata, JSON,
 a Secure/HttpOnly/SameSite session cookie, CSRF proof and a 60-second typed intent
 bind browser consent to the selected action, component and source/runtime generation.
+Controls-enabled collector units also use two isolated status readers with an
+eight-second deadline, so observation and control reads share this two-CPU host.
+Read-only releases retain their existing status budget; health freshness stays
+unchanged in both modes.
 The browser cannot specify paths, unit/container names, URLs, argv or environment.
 Only explicit submissions mutate; snapshot/status/navigation/disclosure remain reads.
 

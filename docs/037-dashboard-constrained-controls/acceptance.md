@@ -223,3 +223,14 @@ now reads and asserts the actual HTTP refusal even after `BrokenPipeError`, and
 always closes the socket; no refusal is inferred from a disconnect. The complete
 15-case controller rerun passed after that test-only correction. Updated exact-head
 CI and deployed verification remain pending.
+
+
+With the route bug corrected, two concurrent actual isolated observations proved
+both owned APIs ready in 3.32/3.51 seconds. The deployed collector's four-reader,
+four-second budget still timed out alongside the new control reads. The manager
+now supplies a controls-only collector flag selecting two status readers and an
+eight-second deadline. Read-only defaults and 30-second health freshness remain
+unchanged. Collector (7), status (8), installer (11) and controller (15) suites
+passed; installer assertions also cover flag removal on compatible rollback.
+Live browser and lifecycle rechecks remain pending. No service readiness or
+browser acceptance is inferred from these unit tests.

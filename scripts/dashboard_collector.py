@@ -104,7 +104,7 @@ def scan_job(config):
 
 
 class Collector:
-    def __init__(self, config, *, clock=time.time, run=bounded, enable_status=False, enable_links=False):
+    def __init__(self, config, *, clock=time.time, run=bounded, enable_status=False, enable_links=False, enable_controls=False):
         self.config, self.clock, self.run = config, clock, run
         self.lock = threading.RLock()
         self.stop_event = threading.Event()
@@ -112,7 +112,8 @@ class Collector:
         self.bindings = {}
         self.inventory_error = None
         from dashboard_status import StatusStore
-        self.status = StatusStore(run, clock=clock) if enable_status or enable_links else None
+        status_options = {'deadline':8,'workers':2} if enable_controls else {}
+        self.status = StatusStore(run, clock=clock, **status_options) if enable_status or enable_links or enable_controls else None
         self.status_error = False
         self.enable_links = enable_links
 
@@ -383,9 +384,10 @@ def main():
     parser.add_argument('--registry')
     parser.add_argument('--status',action='store_true')
     parser.add_argument('--links',action='store_true')
+    parser.add_argument('--controls',action='store_true',help='Use the bounded status budget for a controls-enabled release')
     args = parser.parse_args()
     collector = Collector({'projects': args.projects_root, 'registry': args.registry,
-                           'capabilities': provider_capabilities()}, enable_status=args.status or args.links, enable_links=args.links)
+                           'capabilities': provider_capabilities()}, enable_status=args.status or args.links, enable_links=args.links, enable_controls=args.controls)
     try:
         signal.signal(signal.SIGTERM, stop_signal)
         with SocketLease(args.socket) as lease:

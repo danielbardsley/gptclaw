@@ -41,6 +41,13 @@ class UnixClient(http.client.HTTPConnection):
 
 
 class CollectorTests(unittest.TestCase):
+    def test_controls_release_uses_finite_status_budget_without_changing_readonly_default(self):
+        controlled=collector.Collector({},enable_controls=True)
+        readonly=collector.Collector({},enable_status=True)
+        self.assertEqual((controlled.status.deadline,controlled.status.workers),(8,2))
+        self.assertEqual(readonly.status.deadline,4)
+        self.assertEqual(controlled.status.window,readonly.status.window)
+
     def test_entrypoint_uses_the_bundled_cli_native_and_go_capabilities(self):
         import gptclawctl
         import io

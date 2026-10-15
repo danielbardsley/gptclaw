@@ -119,6 +119,7 @@ class ReleaseTests(unittest.TestCase):
         self.assertNotEqual(plain,active)
         manager.activate(active)
         owner=manager.owner();self.assertTrue(owner['controls_enabled'])
+        self.assertIn(' --controls', (manager.USER_UNITS/manager.COLLECTOR_UNIT).read_text())
         unit=manager.USER_UNITS/manager.CONTROL_UNIT
         self.assertIn('--enabled',unit.read_text())
         frontend=(manager.QUADLETS/'gptclaw-dashboard.container').read_text()
@@ -128,6 +129,7 @@ class ReleaseTests(unittest.TestCase):
         self.assertTrue((manager.PLATFORM/'controls/v1/disabled').exists())
         manager.activate(plain)
         self.assertFalse(manager.owner()['controls_enabled']);self.assertFalse(unit.exists())
+        self.assertNotIn(' --controls', (manager.USER_UNITS/manager.COLLECTOR_UNIT).read_text())
         self.assertIn('DASHBOARD_CONTROLS=0',(manager.QUADLETS/'gptclaw-dashboard.container').read_text())
 
     def test_unknown_active_operations_refuse_rollback_without_discard(self):
