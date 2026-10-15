@@ -27,7 +27,7 @@ MESSAGES = {
     'yaml_feature': 'Aliases, anchors, explicit tags and merge keys are unsupported.',
     'document': 'Provide exactly one mapping document.',
     'mapping_key': 'Mapping keys must be unique strings.',
-    'version': 'Use a supported integer schema_version: 1 (web), 2 (API), 3 (ephemeral group), 4 (persistent group), 5 (mobile source), or 6 (mobile Metro opt-in).',
+    'version': 'Use a supported integer schema_version: 1 (web), 2 (API), 3 (ephemeral group), 4 (persistent group), 5 (mobile source), 6 (mobile Metro opt-in), or 7 (TypeScript API).',
     'field_required': 'A required field is missing.',
     'field_unknown': 'This object contains unsupported fields.',
     'field_type': 'The field has the wrong type.',
@@ -220,7 +220,7 @@ def validate_project(project_root, *, directory_fd=None):
             return failure('setup', 2)
         document = parse_manifest(read_manifest(project_root, directory_fd))
         version = document.get('schema_version')
-        if type(version) is not int or version not in (1, 2, 3, 4, 5, 6):
+        if type(version) is not int or version not in (1, 2, 3, 4, 5, 6, 7):
             result, contract, code = failure('version')
             result['errors'][0]['path'] = '/schema_version'
             return result, contract, code
