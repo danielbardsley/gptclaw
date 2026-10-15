@@ -52,7 +52,10 @@ pairs, enabled status/reason, manifest digest, binding/runtime generation, busy/
 state, data-risk category and affected/dependent components. Unknown versions disable
 controls. Never infer capability from `runtime_support: supported` alone.
 
-Use an additive snapshot schema for control availability while preserving accepted
+Use an additive snapshot schema for control availability and a bounded sanitized
+recent-operation projection, obtained by the collector through a read-only controller
+snapshot request (never dispatch). Controller loss makes controls unavailable without
+invalidating independent inventory/status/link reads. Preserve accepted
 inventory/status/link fields and their semantics. Sensitive canonical roots and
 internal unit/container/volume identities stay in the host controller. Opaque row
 keys are selectors, not authorization: bind them independently to current validated
@@ -82,6 +85,10 @@ submission. Start/Resume use the same intent flow, submitted after explicit clic
 interrupting actions wait for the inline Confirm button. A canceled/expired intent
 cannot execute. Replayed intent with the same idempotency key returns its original
 operation; a different key or changed payload is a conflict, not a second action.
+Use a client-generated cryptographically random fixed-format operation ID as the
+idempotency key, persisted before submission. The same ID addresses the status read
+after a lost acceptance response; an unrecognized ID never causes execution. Reject
+an existing ID bound to a different target/intent rather than reassigning it.
 
 Bound request bodies to 8 KiB, action/component strings to enums and opaque IDs to
 fixed format. Limit to 64 outstanding intents, 60-second intent TTL, four active

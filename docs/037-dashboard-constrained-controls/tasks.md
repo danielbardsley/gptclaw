@@ -122,4 +122,12 @@ project service, data or infrastructure was changed. Scope direction is recorded
 detailed specification approval, implementation and private rollout remain pending.
 Next action: project-owner review of this concrete planning package, especially
 rebuild behavior, stateless pause eligibility and individual DB restart impact.
-Planning verification and PR delivery are recorded after final checks below.
+Planning verification: `git diff --check` and `git diff --cached --check` pass;
+268 relative documentation links across the six changed Markdown files resolve.
+Requirement/criterion/task-ID coverage checks pass (7 requirements, 7 criteria,
+9 task groups), accounting for slash-abbreviated references. The initial literal-ID
+checker rejected abbreviated references; the corrected checker passed. The attached
+reference rendered offline at desktop/narrow sizes; these captures establish reference
+appearance only. Runtime/frontend/repository implementation suites, CI, deployment
+and owner acceptance were not run for this documentation-only package. The planning
+branch is delivered through a PR to main.
