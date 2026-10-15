@@ -6,11 +6,12 @@
 - **Specification:** [SPEC-037](spec.md) · **Tasks:** [TASKS-037](tasks.md)
 - **Visual target:** [Reference mapping](reference.md)
 
-## Existing behavior and proposed architecture
+## Baseline and implemented architecture
 
 `platform/dashboard/app/ProjectRow.tsx` owns expansion; `StatusPanel.tsx` and
 `MetroPanel.tsx` render observed components. `lib/boundary.ts`/`proxy.ts` permit
-GET/HEAD on specific paths. `lib/collector.ts` reads `/v1/snapshot` over the owned
+GET/HEAD on specific paths at the planning baseline; the implemented write extension
+is limited to the typed routes below. `lib/collector.ts` reads `/v1/snapshot` over the owned
 Unix socket. `scripts/dashboard_collector.py` refreshes bounded observations;
 browser reads do not execute project commands. `scripts/manage_dashboard.py`
 installs immutable collector/frontend releases; the frontend receives only assets
@@ -38,19 +39,22 @@ code executing as forge.
 
 Introduce an additive versioned lifecycle capability/intent/result contract shared
 by CLI and controller. The provider is the source of eligibility; the browser only
-renders it. Keep current flags and no-component behavior compatible. Proposed CLI
-surface, to be implemented and advertised in the next reviewed provider version:
+renders it. Existing flags and no-component behavior remain compatible. The
+implemented provider 1.15.0 CLI surface is:
 
 - `restart --project-root <root> --component web|api|db|metro` for declared eligible components.
 - Project `rebuild`, `pause`, `resume` actions with `--project-root`.
 - Internal typed preflight/execute/reconcile functions used by the controller and CLI.
 
-These are proposals, not commands to run against the current installation. Freeze
-the exact provider/toolchain through existing version sources and release metadata;
-do not invent a pin. Capability inspection reports contract version, action/target
-pairs, enabled status/reason, manifest digest, binding/runtime generation, busy/paused
-state, data-risk category and affected/dependent components. Unknown versions disable
-controls. Never infer capability from `runtime_support: supported` alone.
+Use these commands only through the verified installed 1.15.0 provider and selected
+project contract. Immutable release metadata binds the exact provider/toolchain;
+[acceptance](acceptance.md) records the authorized private installation. Public
+capabilities report schema/provider versions, action/component pairs, enabled
+status/reason, project identity, component names, generation and observation time.
+Host preflight validates the manifest, binding, ownership, source, busy/paused state
+and dependencies; typed intents derive affected-scope and data-risk warnings from
+that inspection. Unknown versions disable controls. Never infer capability from
+`runtime_support: supported` alone.
 
 Use an additive snapshot schema for control availability and a bounded sanitized
 recent-operation projection, merged by the existing Next.js snapshot endpoint through a second fixed read-only
@@ -67,7 +71,7 @@ worktrees retain their existing no-runtime policy.
 
 ## Operation protocol and browser boundary
 
-Proposed exact frontend routes (trailing-slash equivalents allowed), all no-store:
+Implemented exact frontend routes (trailing-slash equivalents allowed), all no-store:
 
 | Method/path | Shape and behavior |
 |---|---|
@@ -96,7 +100,7 @@ operations globally and one per project; return a visible retryable busy/capacit
 refusal, not an unbounded queue. Bound session issuance and retained sessions as
 well. An intent never accepts paths, argv, environment, unit names or URLs. Use the
 existing configured dashboard origin, no forwarded-header-derived authority. These
-numbers are proposed implementation defaults to be verified in TASK-037-002/005.
+limits are implemented and verified in TASK-037-002/005.
 
 Tailnet dashboard access remains the trust population. Session/CSRF is request
 integrity, not individual user authentication or a new identity system. Record
@@ -184,14 +188,20 @@ Persist acceptance/idempotency mapping before dispatch, running before mutation,
 component-stage receipts around each side effect and terminal result after bounded
 post-observation. A record write failure before acceptance causes no dispatch; a
 failure after side effects leaves recoverable unknown evidence and blocks further
-writes. On startup or orphan detection, compare operation stages with actual owned
-resource identities and provider receipts. Never automatically rerun a nonterminal
-operation. Resolve success only from confirmed effects and readiness; otherwise
+writes. Startup/orphan detection preserves nonterminal records as unknown and
+retains guards; explicit managed reconciliation then compares operation stages,
+owned resources and provider receipts before a conflicting write can proceed.
+Never automatically rerun a nonterminal operation. Resolve success only from confirmed effects and readiness; otherwise
 record failed/unknown with an inspect/reconcile path. Lost HTTP responses and browser
 reload query the existing operation ID/idempotency mapping and do not resubmit intent.
 
 Apply finite per-adapter stage deadlines derived from existing provider commands;
-document exact values before implementation acceptance. Killing an HTTP request
+use the implemented limits: freeze/unfreeze 30 seconds, service stop 90 seconds,
+application start 300 seconds, readiness 120 seconds and Node install/build jobs
+600 seconds each. Python installation retains its existing bounded job contract.
+Capability inspection has a twelve-second isolated deadline; private HTTP/browser
+write deadlines are 30/35 seconds. [Operations](../../runbooks/manage-dashboard.md)
+records the deployment and recovery commands. Killing an HTTP request
 never kills an operation. A deadline expiry does not prove the container action
 stopped: mark unknown, reap only owned workers, reconcile native operations before
 unlocking conflicting writes. No arbitrary browser cancel for accepted mutations.
@@ -231,20 +241,20 @@ Cancel/focus return and visible target descriptions. Stack at narrow widths, mee
 specified touch/contrast/zoom targets and use indeterminate reduced-motion-safe busy
 presentation. Keep existing local fonts/packages and tokens; no bundled reference runtime.
 
-## Planned changes
+## Implemented components
 
-| File/component | Planned responsibility | Requirements |
+| File/component | Responsibility | Requirements |
 |---|---|---|
 | `scripts/gptclawctl.py`, `private_apps.py`, `project_groups.py`, `project_database.py`, Metro modules | Versioned capability/preflight, component restart, rebuild, eligible pause/resume, shared locking/receipts/recovery | CTL-001/002/003/006 |
-| Proposed `scripts/dashboard_controls.py` and isolated tests | Typed host controller, identity binding, intent/idempotency/state/worker limits and reconciliation | CTL-001/005/006 |
+| `scripts/dashboard_controls.py` and isolated tests | Typed host controller, identity binding, intent/idempotency/state/worker limits and reconciliation | CTL-001/005/006 |
 | `scripts/dashboard_collector.py` and observation modules | Additive capability/paused projection and real post-action observations without writes on reads | CTL-001/002/006/007 |
-| `platform/dashboard/lib/boundary.ts`, `proxy.ts`, proposed control helpers/API routes | Exact write-path checks, CSRF/session/JSON/schema limits and typed socket forwarding | CTL-005/006 |
-| `app/ProjectRow.tsx`, component panels, proposed control panel, `app/globals.css` | Reference layout, confirmations, eligibility, operation results, responsive/focus behavior | CTL-004/006 |
+| `platform/dashboard/lib/boundary.ts`, `proxy.ts`, `lib/controls.ts` and typed API routes | Exact write-path checks, CSRF/session/JSON/schema limits and typed socket forwarding | CTL-005/006 |
+| `app/ProjectRow.tsx`, component panels, `app/ControlPanel.tsx`, `app/globals.css` | Reference layout, confirmations, eligibility, operation results, responsive/focus behavior | CTL-004/006 |
 | `scripts/manage_dashboard.py`, provider release descriptors/tests, operations runbooks | Default-off owned controller deployment, contract compatibility, read-only rollback and recovery | CTL-007 |
 | Existing focused Python/frontend/browser suites plus new behavior tests | Isolation, hostile input, concurrency, interruption, readiness and visual/accessibility evidence | CTL-001–007 |
 
-Names for new modules/routes are proposed. Keep their schemas explicit and independently
-testable; no framework migration, generic command bus or new infrastructure dependency.
+The implemented modules/routes retain explicit independently tested schemas; no
+framework migration, generic command bus or new infrastructure dependency is included.
 
 ## Verification, rollout and rollback
 
@@ -288,7 +298,8 @@ to roll back controls. A feature flag can disable writes while recovery remains 
 | CTL-006 | Shared locks, durable idempotency, stages and reconciliation | TASK-037-003/004/005/007 | AC-002/003/005/006 |
 | CTL-007 | Default-off versioned release, compatibility and recovery-first rollback | TASK-037-008/009 | AC-001/005/007 |
 
-Project owner reviews this concrete proposal, including stateless-only pause/resume,
-rebuild preserving a stopped project, current tailnet access population and seven-day
-result retention. These are proposed defaults, not claims of approval or installed
-capability. Implementation was authorized October 15; rollout and owner acceptance remain separate evidence gates.
+The project owner authorized implementation October 15 and separately approved the
+private rollout and synthetic fixture acceptance. Stateless-only pause/resume,
+stopped-project rebuild, the existing tailnet access population and seven-day result
+retention remain the approved scope. [Acceptance](acceptance.md) records the actual
+installed release, checks and outstanding owner/review/delivery gates.

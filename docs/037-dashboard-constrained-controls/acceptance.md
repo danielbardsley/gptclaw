@@ -1,149 +1,162 @@
 # SPEC-037 acceptance evidence
 
-- **Status:** Private acceptance in progress; delivery incomplete
+- **Status:** Technical acceptance passed; owner acceptance, cleanup and delivery pending
 - **Owner:** Project owner
 - **Date:** 2026-10-15 UTC
 - **Specification:** [SPEC-037](spec.md) · **Design:** [TDD-037](technical-design.md) · **Tasks:** [TASKS-037](tasks.md)
 - **Implementation:** [Draft PR #86](https://github.com/danielbardsley/gptclaw/pull/86), branch `codex/dsh-009-controls`
 
-Implementation, PR publication, and private rollout/fixture acceptance were separately
-authorized by the project owner. Remote task opening remains excluded. Owner flow
-acceptance, final review/merge and catalogue delivery remain separate gates.
+Implementation, PR publication and private rollout/fixture acceptance were separately
+authorized. Remote task opening remains excluded. Owner usability acceptance,
+review/merge and catalogue delivery remain separate gates.
 
 ## Acceptance map
 
 | Criterion | Observed evidence | Remaining |
 |---|---|---|
-| AC-001 | Capability/refusal and compatibility tests cover every profile/action, source/worktree/identity/lease conflicts, old providers and unsupported combinations. Actual managed Metro Start no-op, component/project restart and Stop passed. | Complete deployed non-Metro matrix and final-head CI. |
-| AC-002 | Native-container tests passed for all five non-Metro profiles, including running/stopped rebuild and stateless freeze/resume. Actual API Start/no-op passed; interrupted Pause was explicitly reconciled and the same instance resumed. | Full corrected private lifecycle matrix and paused rollback refusal. |
-| AC-003 | Five native profiles verify sibling/data/volume/epoch retention and ephemeral API loss. Actual Metro restarts retained absolute expiry/transport and the other session/backend peer. Actual Metro Stop released owned handles. | Deployed individual WEB/API/DB restarts, persistent notes and dependency-route recovery. |
-| AC-004 | Strict socket/frontend tests and ten actual HTTPS negative cases passed. The frontend has only immutable assets and a read-only socket-directory mount. | Passed on the current installed release; retain final regression evidence. |
-| AC-005 | Automated worker death, timeout, storage, contention and idempotency tests pass. Actual unknown Pause blocked CLI/rollback; exact reconciliation did not replay effects. A lost, never-admitted Stop request was resolved by retiring its controller with no record/journal/guard. | Final actual browser/reload result and remaining fixture operations. |
-| AC-006 | Full synthetic browser suite passes all viewports, focus, confirmations, lost-response recovery, stale/busy/unsupported states and unchanged real metrics. Actual private confirmation displayed correctly. | Owner desktop/mobile/keyboard/zoom acceptance. |
-| AC-007 | Private rollout and real read-only rollback executed. Broad local gate passed 888 cases/46 suites; focused final-code and frozen frontend checks pass. | Remaining private matrix, persistent-data rollback, final-head CI, owner acceptance and review/merge. |
+| AC-001 | Profile/action capability and refusal tests, unsafe/source/worktree/identity/lease cases, changed bindings and compatibility passed. All five deployed application profiles and managed Metro operations passed. | None for the technical contract. |
+| AC-002 | Local failure/order/recovery tests and all deployed project actions passed: Start/no-op, Stop, Restart, running/stopped Rebuild and eligible same-instance Pause/Resume. Persistent Pause/Resume refused without effects. | None for technical lifecycle acceptance. |
+| AC-003 | Deployed independent WEB/API/DB/Metro restarts preserved siblings, persistent notes/storage identity and the isolation peer. Ephemeral API warning/loss and Metro lease/backend independence passed; dependency/DB-failure recovery tests passed. | None for technical isolation/data acceptance. |
+| AC-004 | Strict socket/frontend and ten actual HTTPS adversarial cases passed. Final installed frontend has only read-only immutable assets and socket-directory mounts. | None for the technical boundary. |
+| AC-005 | Contention, idempotency, timeout, worker/controller death, storage and retention tests passed. Actual unknown Pause, lost admission response, disconnected rebuild client and browser receipt reload were resolved without replay. | None for technical recovery acceptance. |
+| AC-006 | Synthetic reference/viewport/focus/contrast/response-loss regressions passed. Real private confirmation/Cancel, reload recovery and both owner-requested visual corrections passed browser checks. | Owner desktop/mobile/keyboard/actual-zoom recheck remains open. Feedback is not acceptance. |
+| AC-007 | Local/focused/frontend checks, exact implementation CI, all deployed fixture matrices, persistent-note rollback and deployment/isolation audit passed. | Final evidence publication/CI, owner acceptance, operator route cleanup, peer cleanup, review/merge and delivery records. |
 
-## Verification
+## Local and CI verification
 
-The original complete local repository checkpoint `7e295de` passed 882 cases in
-46 suites. A later complete `./scripts/check-repository.sh` passed **888 cases in
-46 suites**, including repository invariants, in 2,275 seconds. That run started
-at `f5f99c6` and the worktree changed while live corrections landed; it is broad
-regression evidence, not an exact-revision gate. Its durable scope/result records
-are task-private. Exact-head CI is recorded separately below.
+The exact original checkpoint `7e295de` passed the complete repository gate with
+882 cases in 46 suites. A later `./scripts/check-repository.sh` passed **888 cases
+in 46 suites** in 2,275 seconds. That run started at `f5f99c6` and its worktree
+changed while live corrections landed; it is broad regression evidence, not an
+exact-revision gate. Exact implementation CI is recorded separately below.
 
-Relevant focused checks passed after corrections:
+Focused checks passed after the relevant corrections:
 
-- Provider controls: complete 21-case run plus the additional completion-write-failure test; the broad gate ran all 22. Failure after replacement preserves an unknown guard, refuses a new mutation and reconciles without another replacement.
-- Controller: 15 cases, including exact 60-second intent timing, one-time/idempotent admission, capacity/storage failures, stale generation, socket adversarial requests, completed-row publication and failed spawn/recovery.
-- Observer: 12 cases, including schema-7 API docs/health and real paused-state projection. Status: 8 cases. Immutable installer: 11 cases, including exact-provider ordering, unknown/paused refusal, disablement and controls-only collector budget removal on rollback.
-- Frozen frontend: 21 tests, route generation/typecheck, production build, real Unix socket/HTTP and complete synthetic browser suite. The latest full run used the pinned rootless Node/pnpm/browser images; no host packages or dependency pins changed.
-- Native optional harness: single API, single WEB, WEB/API, API/DB and WEB/API/DB passed applicable lifecycle/rebuild/retention/isolation checks and task-owned runtime cleanup. Its finite systemd/Serve adapter is explicitly separate from actual private/systemd acceptance. The adapter now models a frozen container as an active unit.
-- Actual HTTPS rejects missing/foreign Origin, missing cookie/CSRF, duplicate JSON keys, invalid UTF-8, malformed JSON, extra command field, command component and oversized body (expected 400/403/413). The peer instance stayed unchanged.
-- Diff whitespace, changed-shell syntax and documentation links were checked. No Terraform apply, AWS mutation, host package install, public exposure or production operation occurred.
+- Provider controls: 22 cases, including completion-write failure after replacement preserving an unknown guard and reconciliation without another replacement.
+- Controller: 15 cases covering one-time 60-second intents, idempotency, capacity/storage, generation changes, adversarial sockets, spawn failure and recovery.
+- Observer: 12 cases, including schema-7 API docs/health and real paused-state semantics. Status: 8 cases. Immutable installer: 11 cases, including exact-provider ordering, unknown/paused refusal, disablement and compatible rollback.
+- Pinned rootless frontend: 21 tests, type generation/typecheck, production build, real Unix socket/HTTP and complete synthetic browser acceptance. The latest sizing correction reran the full gate, including mixed-link height/font/padding checks at 1440/1280/768/390/720 CSS px and confirmation hover contrast.
+- Optional native harness: single API, single WEB, WEB/API, API/DB and WEB/API/DB passed lifecycle/rebuild/retention/isolation checks and owned runtime cleanup. Its finite systemd/Serve adapter is separate from the actual private/systemd evidence below.
+- Actual HTTPS refused missing/foreign Origin, missing cookie/CSRF, duplicate JSON keys, invalid UTF-8, malformed JSON, extra command field, command component and oversized body (400/403/413); the peer instance remained unchanged.
+- Diff whitespace, changed-shell syntax and initiative relative links passed. No Terraform apply, AWS mutation, host package install, public exposure or production operation occurred.
 
-All four CI workflows passed `8cb6e0a`; its first mobile bootstrap attempt timed
-out downloading pnpm, and the same-revision failed-job rerun passed without a pin
-change. At implementation checkpoint `16ee8a5`, [dashboard #108](https://github.com/danielbardsley/gptclaw/actions/runs/38812934274)
-passed; all jobs in [application #211](https://github.com/danielbardsley/gptclaw/actions/runs/38812934300)
-and the quality job in [development host #310](https://github.com/danielbardsley/gptclaw/actions/runs/38812934170)
-passed. Protected plan/apply jobs were skipped. [Federation #214](https://github.com/danielbardsley/gptclaw/actions/runs/38812934311)
-was pending at the last observation. Final publication/CI remains a delivery gate.
+All four applicable workflows passed implementation revision `4ced498`:
+[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38823534624),
+[application](https://github.com/danielbardsley/gptclaw/actions/runs/38823534635),
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38823534623)
+and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38823534621).
+All four also passed `66ef219` before the sizing correction. Final documentation
+publication/CI is a separate remaining delivery gate.
 
-## Actual private rollout and recovery
+## Actual private fixture matrix
 
-The original read-only dashboard was `35507309…` with stable provider 1.14.0.
-Approved rollout upgraded the owned stable launcher/ingress through a disposable
-API peer, then activated immutable controls releases using provider 1.15.0.
-All ten pre-existing managed container IDs/states and the original private Serve
-handlers remained unchanged through the observed upgrades.
+All operations used reviewed frozen CLI preparation or the actual private HTTPS
+control endpoints with session/CSRF proof and durable UUIDs before submission.
+No mutation was automatically retried. Canonical receipt readback confirmed **51
+distinct successful dashboard operations**: 45 application-profile operations,
+four Metro operations and two additional rollback-fixture Start/Stop operations.
+The separately reconciled interrupted Pause remains a failed historical result.
 
-Current implementation checkpoint:
+| Owned synthetic profile | Successful canonical operations | Verified behavior |
+|---|---:|---|
+| Single API (`fastify`, schema 7) | 9 | Start/no-op; same-instance Pause/Resume; API restart; whole restart; running rebuild; Stop; stopped rebuild. |
+| Single WEB (`nextjs`, schema 1) | 9 | Same project matrix plus independent WEB restart. |
+| Ephemeral WEB/API (`notes`, schema 3) | 10 | Both independent restarts preserve siblings; WEB restart retains the note, API restart gives the recorded in-memory-loss warning and clears it. |
+| API/DB (`fastapi-postgres`, schema 8) | 8 | DB/API restart, whole restart and rebuild preserve the note and persistent identity; Pause/Resume refused without effects. |
+| WEB/API/DB (`notes-postgres`, schema 4) | 9 | Each DB/WEB/API restart preserves siblings and the note; persistent identity retained; Pause/Resume refused without effects. |
+| Managed Metro (schema 6) | 4 | Start no-op; Metro restart; whole-project restart; Stop, with transport/lease/backend isolation. |
 
-- Controls release: `c636c3bcf09306a2d14c755c748a16ffd1e185248e6939eba9d98f6a987caff3`.
-- Compatible read-only rollback: `230a0ff5e1d77717ed075327dea5cbb26a5125577dbae9d6aa0644df7fb08a2f`.
-- Frozen provider: `234f928b41d91a3bff55cb9c0af13111936f6a2ffd6c5b6308e8c41d3598b3a8`.
+Persistent profiles retained volume generation, epoch and migration revision.
+Running Rebuild retained the actual DB instance and stored note; stopped Rebuild
+left every component stopped. Stateless Pause/Resume retained native instance IDs,
+with actual publication/readiness withdrawal and recovery. The paused rollback
+attempt was refused with `control-paused` without changing the frozen instance.
 
-Real activation exposed and corrected four integration issues: Next removes the
-public base path before invoking route handlers; frontend JSON reserialization
-erased duplicate keys; two-CPU concurrent inspection needed finite loaded-read
-headroom; and published schema-7 APIs incorrectly entered a group-only docs branch.
-The resulting gates use strict raw JSON, an exact internal-route normalization,
-two incremental capability readers with a twelve-second deadline, and controls-only
-status readers (two/eight seconds). Private transport/browser write deadlines are
-30/35 seconds. Health freshness, native lifecycle deadlines, capacities and leases
-remain unchanged. A fresh intent includes its server preflight time; older/missing
-snapshots cannot revoke that proof, while newer changed generation or expiry does.
-Submission still rechecks source/runtime identity before dispatch.
+Application source, manifest, lock and metadata retention checks passed. The
+reviewed Next development server rewrites generated `web/next-env.d.ts`. For the
+ephemeral group, replacing only that hash with the pinned template hash exactly
+reconstructs the complete original 75-file fingerprint; all other hashes match.
+Persistent WEB checks allowed only the same exact known generated-content transition
+and required every other hash unchanged. Runtime admission still fingerprints this
+file strictly; no product source-fingerprint exclusion was introduced.
 
-API Pause `5bbacc84eafb4948b7d5bef0833a5983` froze the existing instance, then
-retained an honest unknown/guard because real Podman reports `Paused=true` and
-`Running=false` while systemd stays active. Corrected provider/observer checks and
-fixtures now recognize that state. The unknown blocked both managed rollback and
-the stable CLI's conflicting restart. The exact operation was explicitly reconciled,
-and a separate reviewed Resume returned the same instance ready. It was not replayed.
+All five application fixture runtime sets are now absent through reviewed Stop;
+source and persistent synthetic data remain retained. Successful task-owned generated
+recovery copies were removed only after stopped-state, journal and ownership checks.
+The unchanged API isolation peer remains ready for the owner's final check. Its
+instance identity/readiness was checked throughout, and its actual private health
+endpoint returned 200 afterward. All ten pre-existing managed runtime IDs/states
+and the existing 443/8445 route configuration remained unchanged.
 
-An actual compatible read-only rollback also passed. New writes were disabled,
-the controller retired, and API/peer instance identities and operation evidence
-were retained. An unavailable Stop response for UUID
-`1fd5587004804828b763999213b831ab` had no controller record, native journal or guard
-after controller retirement, proving it was never admitted and could no longer run.
-Only its task-owned observation client was then retired. Controls were restored
-through the reviewed manager for remaining acceptance; no native mutation was retried.
-Persistent-note rollback evidence is still pending.
+## Installed release, rollback and recovery
 
-## Actual Metro evidence
+- Controls release: `19d2c1df51679e7a49df3bbdb5f5c18068c48195ca6eba7423260326225a5dad`.
+- Compatible read-only rollback: `316f7c8db6c4c41f5b99a328a63099109df4637c3a0126c4d09e1d154b5b76b2`.
+- Frozen provider 1.15.0: `234f928b41d91a3bff55cb9c0af13111936f6a2ffd6c5b6308e8c41d3598b3a8`.
 
-The owner-approved retained synthetic roots are `mob001-accept-one` and
-`mob001-accept-two`. Both began clean; their prior leases were expired/stopped.
-Fresh finite sessions reached loopback protocol readiness. The existing SSM operator
-added only private 8443/8444 handlers to owned proxies 18601/18603. Independent readback
-proved exact additions, unchanged 443/8445 handlers and Funnel off; both actual
-private route/protocol observations became ready. [Operator handoff](operator-plan.md).
+The approved rollout upgraded only the owned stable launcher/ingress before controls
+activation; the manager requires their exact frozen provider. Final readback proved
+all three dashboard services active, all operations terminal, the exact stable CLI
+and only read-only `/app` assets plus `/run/gptclaw` socket-directory mounts.
 
-On the original test lease, these dashboard operations passed:
+Persistent-note rollback passed on the owned API/DB fixture. Writes were disabled,
+the compatible read-only release activated, and the controller became inactive.
+The read-only proxy hid control routes with 404; the rehearsal's initial expected
+503 was corrected after observing that deliberate default-off boundary. The same
+API/DB and peer instances, note, database identity and **51 operation-record hashes**
+were retained. Controls were restored to the corrected release; the note and
+instances remained intact, then the fixture's separate Stop succeeded. No data
+rollback, source restore, migration or project restart was used to roll back controls.
+
+Actual recovery evidence remains distinguishable from successful operations:
+
+- Pause `5bbacc84eafb4948b7d5bef0833a5983` froze its existing API instance, then retained an honest unknown/guard because real Podman reports `Paused=true, Running=false` while systemd stays active. Corrected provider/observer checks recognize this state. CLI restart and rollback were blocked; exact explicit reconciliation and a separate Resume retained the same instance. Fresh corrected Pause/Resume later passed.
+- Stop UUID `1fd5587004804828b763999213b831ab` received an unavailable response. After disabling writes and retiring its controller, no controller record, native journal or guard existed, proving it was never admitted and could no longer run. Its observation client was then retired; no native action was replayed.
+- WEB rebuild `7b289a920e5441af9f05aed4f5f37ae0` continued after its observation client ended. A later client observed that same completed UUID, verified receipt-generation continuity and replacement creation time, and submitted only the unfinished subsequent actions.
+- A real browser seeded an already completed API receipt UUID into the normal recovery key. Two reloads fetched the same succeeded receipt and bounded Recent results with zero POSTs. This is actual receipt recovery, not a claim of injecting a new lost mutation response.
+
+## Metro and scoped route cleanup
+
+The explicitly approved retained roots are `mob001-accept-one` and
+`mob001-accept-two`. The existing SSM operator added only private HTTP handlers
+8443/8444 to owned proxies 18601/18603. Independent readback verified exact additions,
+unchanged 443/8445 handlers and Funnel off; both private protocol/routes reached ready.
 
 | Operation | ID | Actual result |
 |---|---|---|
-| Start no-op | `b42ced7bf3454839a919c786ec05f2e3` | Same Metro generation and expiry. |
-| Restart METRO | `b2ebf5e1399c45169b112c96405333a0` | New generation; identical absolute expiry/transport. |
-| Restart project | `902d2e88d6b34dc9823f1196a6b9894d` | New generation; identical absolute expiry/transport. |
+| Start no-op | `b42ced7bf3454839a919c786ec05f2e3` | Same generation and absolute expiry. |
+| Restart METRO | `b2ebf5e1399c45169b112c96405333a0` | New generation; unchanged absolute expiry/transport. |
+| Restart project | `902d2e88d6b34dc9823f1196a6b9894d` | New generation; unchanged absolute expiry/transport. |
 | Stop on a separate finite generation | `c9d7f4ca80bf4c7f94a652ae6e3bb9f4` | Stopped; owned SDK/audit/network absent and proxy released. |
 
-The other session generation/expiry and backend peer identity/readiness stayed
-unchanged. The original leases expired normally without extension. The separate
-finite generation used for the remaining Stop test did not renew either old lease.
-Both fixtures are now inactive, and owned handles/proxies are absent. The existing
-operator has been asked to remove only temporary handlers 8443/8444; independent
-baseline restoration is pending. This establishes host/private Metro control behavior,
-not physical phone, Expo Go or native client acceptance from other initiatives.
+The other session and backend peer identities/health remained unchanged. Original
+leases expired normally without extension; the separate finite Stop generation did
+not renew either old lease. Final readback proved both fixtures inactive, owned
+handles absent, proxies free and retained Git sources clean. This is host/private
+Metro evidence, not physical Expo Go/native-client acceptance from other initiatives.
 
-## Remaining private evidence and delivery
+The existing operator still needs to remove only 8443/8444 and return readback per
+the [operator handoff](operator-plan.md). The expected restored baseline digest is
+`e2260ad525b61b5f15e51d20e38f3074fda6e555458eb6a939fb827725b33e0a`.
+Current readback still matches the exact approved additions, with Funnel off.
+Forge has not administered Tailscale or removed unrelated handlers.
 
-Fresh disposable sources exist for single API, single WEB, ephemeral WEB/API,
-API/DB, WEB/API/DB and an API isolation peer under task-owned `dsh009-ctl-f6a20747-*`
-roots. Both persistent databases initialized successfully using the reviewed API
-component dependency-install prerequisite. A failed first initialization retained
-its allocation and resumed with the same initialization ID; no reset or reallocation
-was used. Full deployed profile operations and persistent-note evidence remain pending.
+## Presentation and owner acceptance
 
-The final real private HTTPS browser passed at the installed copy-corrected release:
-component confirmation and Confirm focus, Cancel focus returned to the enabled
-initiator or documented result-region fallback, 1440/390 layout without document
-overflow, no browser errors and **zero lifecycle operation submissions**. Cropped
-captures contain only the synthetic peer panel. The final frontend has exactly
-read-only immutable `/app` assets and `/run/gptclaw` socket-directory mounts.
-The project owner requested changes during usability acceptance: the confirmation
-button hover colors were incorrect. The shared neutral hover rule overrode the
-destructive button background while retaining white text. Explicit neutral Cancel
-and dark-red Confirm hover states are implemented; the existing browser suite now
-checks 4.5:1 text contrast while each is hovered. The complete pinned frontend test/typecheck/build, real socket/HTTP and browser
-gate passed, including the hover contrast checks. Installation and owner recheck
-remain pending. Owner desktop/mobile/keyboard/actual-zoom acceptance
-is still open.
-The neutral unavailable-action copy passed the pinned production build and is installed.
+Reference-derived synthetic browser checks passed layout, focus/keyboard, Confirm/
+Cancel, stale/busy/unsupported/failure states, unchanged real metrics, reduced motion,
+contrast and all required viewport/reflow proxies. Actual private confirmation,
+Cancel/focus return and 1440/390 layout passed with zero lifecycle submissions.
+The 720 CSS px proxy does not substitute for the owner's actual 200% zoom check.
 
-Keep final-head CI, actual lifecycle/data/rollback, owner acceptance and merge distinct.
-Generated logs/captures and operation metadata remain in ignored/private task output;
-no credentials, authentication material, environment dumps or real datasets appear
-in this record. Only synthetic fixtures were mutated; unrelated project identities,
-data, handlers and access remain protected.
+The project owner requested two corrections; both are implemented and installed:
+
+- Confirmation hover: the shared neutral hover rule washed out the red confirmation button while leaving white text. Explicit neutral Cancel and dark-red Confirm states passed real private contrast checks (15.11:1 and 7.19:1).
+- Quick-link sizing: mobile CSS gave only clickable anchors a 44 px minimum while unavailable spans retained 24 px. All quick-link pills now share mobile minimum dimensions. The full frontend gate and real read-only Fieldnotes API/Mobile checks passed equal heights/fonts/padding at 1440/1280/768/390/720 CSS px: 24 px desktop, 44 px mobile, no overflow and zero mutation requests. Only the two requested rows' link regions were captured.
+
+Neither feedback report constitutes owner acceptance. A fresh recheck covering both
+corrections, desktop/mobile, keyboard and actual 200% zoom has been requested.
+After that check, stop the retained synthetic peer through the reviewed lifecycle.
+Finish scoped operator cleanup, final evidence publication/CI and review/merge before
+marking DSH-009 Delivered. Catalogue status remains In progress. Generated evidence
+is task-private/ignored; no credentials, environment dumps or real datasets are committed.

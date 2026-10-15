@@ -31,10 +31,11 @@ Include the backend extensions, private write boundary, operation receipts and
 recovery needed to make those controls real. Preserve the existing read experience.
 No bulk cross-project actions or independent component start/stop/pause are included.
 
-The current CLI has project start/stop/restart and component build jobs; it has no
-component restart flag, rebuild lifecycle action or project pause/resume contract.
-The dashboard currently allows only GET/HEAD. These are implementation dependencies,
-not capabilities established by the mockup. Database groups and Metro have stricter
+At the planning baseline, the CLI had project start/stop/restart and component build
+jobs but lacked component restart, rebuild and pause/resume contracts; the dashboard
+allowed only GET/HEAD. Provider 1.15.0 and the constrained controller now implement
+these reviewed extensions. Their evidence is tracked in [acceptance](acceptance.md);
+the mockup alone establishes no runtime capability. Database groups and Metro have stricter
 capabilities below. Worker/cache/index/storage and arbitrary service graphs remain
 unsupported. Existing mobile binding does not make its backend part of Metro's lifecycle.
 
@@ -193,9 +194,10 @@ read-only presentation without stopping projects or deleting data/operation evid
 
 ## Completion and ownership
 
-Deliver specification, design, tasks and reference mapping now. Project owner reviews
-the proposed detailed semantics, especially rebuild and pause eligibility. Subsequent
-implementation must meet all criteria and record sanitized evidence in acceptance.md.
+Maintain the specification, design, tasks and reference mapping alongside the
+implementation. The authorized implementation must meet all criteria and record
+sanitized evidence in [acceptance.md](acceptance.md). Project owner reviews the
+actual usability and results, including rebuild and pause eligibility.
 Merge, deployed behavior and owner acceptance remain separate gates. Mark only this
 bounded DSH-009 scope Delivered after merged implementation and actual acceptance;
 keep excluded remote task opening and deferred profile controls explicit in the catalogue.

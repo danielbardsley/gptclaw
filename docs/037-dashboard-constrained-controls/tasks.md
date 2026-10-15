@@ -94,7 +94,7 @@ package installation is expected; inspect actual changed scope if that assumptio
 
 - [x] Version provider/control/snapshot contracts and immutable installer descriptor/service/socket ownership; add default-off controls feature flag.
 - [x] Test old/new compatibility, missing controller/provider and disabling writes while reads continue; unknown contracts must never enable buttons.
-- [ ] Prove rollout ordering and rollback with active/unknown/paused operation handling, evidence preservation and refusal of incompatible receipt downgrades.
+- [x] Prove rollout ordering and rollback with active/unknown/paused operation handling, evidence preservation and refusal of incompatible receipt downgrades.
 - [x] Update dashboard/private-app/provider runbooks with exact supported commands, operation retention/deadlines, recovery and no-data-deletion rollback.
 - [x] Obtain private installation/rollout authorization for the prepared reviewed release; the project owner explicitly approved private rollout and fixture acceptance after remaining checks pass, including the named retained Metro fixtures.
 
@@ -102,10 +102,10 @@ Maps CTL-007 → AC-001/005/007. Depends on TASK-037-007.
 
 ### TASK-037-009 — Live acceptance and delivery
 
-- [ ] After rollout authorization, activate reviewed releases/flag through existing owned paths; preserve private access, all unrelated services/routes and data.
-- [ ] On owned synthetic single web/API, ephemeral group, web/API/DB, API/DB and Metro fixtures, execute applicable project actions and each individual restart; capture before/after sibling identities and real readiness/route evidence.
-- [ ] Verify actual DB record/volume retention, ephemeral API warning/loss, dependency/DB failure recovery and Metro/backend independence; prove stateless freeze/unfreeze and DB/Metro unsupported refusals.
-- [ ] Verify lost response/reload reconciliation, default-off/disable behavior and recovery-first rollback with real owned receipts and no unrelated changes.
+- [x] After rollout authorization, activate reviewed releases/flag through existing owned paths; preserve private access, all unrelated services/routes and data.
+- [x] On owned synthetic single web/API, ephemeral group, web/API/DB, API/DB and Metro fixtures, execute applicable project actions and each individual restart; capture before/after sibling identities and real readiness/route evidence.
+- [x] Verify actual DB record/volume retention, ephemeral API warning/loss, dependency/DB failure recovery and Metro/backend independence; prove stateless freeze/unfreeze and DB/Metro unsupported refusals.
+- [x] Verify lost response/reload reconciliation, default-off/disable behavior and recovery-first rollback with real owned receipts and no unrelated changes.
 - [ ] Project owner checks desktop/narrow/keyboard/actual zoom and confirms usability/design/results; record actual owner acceptance separately from automation.
 - [ ] Finish evidence, reviewable implementation PR and merge; update index/catalogue Delivered only when all required criteria pass. Preserve explicit remote-task exclusion and deferred profile capabilities.
 - [ ] Remove only task-owned disposable fixtures through reviewed lifecycle, retain required evidence, and hand over Git state/remaining work.
@@ -115,23 +115,30 @@ TASK-037-008. Planning/implementation/CI/rollout/owner acceptance remain distinc
 
 ## Current handover
 
-Implementation is published in [draft PR #86](https://github.com/danielbardsley/gptclaw/pull/86)
-on `codex/dsh-009-controls`. Provider, controller, frontend, immutable release
-wiring and regression tests are implemented. The broad local repository gate
-passed 888 cases across 46 suites; its changing worktree scope is explicitly
-recorded in [acceptance evidence](acceptance.md), separately from final-head CI.
+Implementation and both owner-requested visual corrections are published in
+[draft PR #86](https://github.com/danielbardsley/gptclaw/pull/86) on
+`codex/dsh-009-controls`. All four CI workflows passed implementation revision
+`4ced498`. The local broad gate passed 888 cases/46 suites with its mixed-worktree
+scope recorded separately from exact CI in [acceptance](acceptance.md).
 
-The approved private rollout is active with provider 1.15.0. Actual Metro Start
-no-op, component/project restart and Stop passed without extending the original
-leases or changing the backend peer. Both Metro fixtures are inactive; removal of
-only temporary 8443/8444 handlers awaits the existing operator. A real compatible
-read-only rollback retained API/peer instances and operation evidence. An interrupted
-Pause was explicitly reconciled and resumed without replacement; a fresh corrected
-Pause now succeeds. The remaining five-profile private matrix is running sequentially.
+All five actual private application matrices and the managed Metro matrix passed.
+Readback verified 51 distinct successful dashboard operation receipts: 45 canonical
+application operations, four Metro operations and rollback-fixture Start/Stop.
+Persistent notes/storage identity, sibling instances, stateless freeze/resume,
+warned ephemeral API loss and running/stopped rebuild behavior passed. The exact
+Next-generated declaration change is recorded separately from unchanged application
+source/manifest/lock hashes; runtime admission fingerprinting remains strict.
 
-The real HTTPS browser passed confirmation/Cancel, focus and 1440/390 layout with
-zero operation submissions; final installed frontend mounts remain read-only assets
-and the control socket directory only. Owner desktop/mobile/keyboard/actual-zoom
-acceptance has been requested. Persistent-data rollback, remaining live profile
-checks, final-head CI, owner acceptance and review/merge still gate completion.
-No remote task action is included; catalogue delivery remains In progress.
+Actual persistent-note read-only rollback retained instances, database identity,
+note and 51 operation records, then restored controls and stopped the fixture.
+The final controls/rollback releases and exact provider are recorded in acceptance.
+All five fixture runtime sets are absent. The isolation peer remains ready only for
+the owner's recheck. Ten pre-existing runtime IDs/states and 443/8445 handlers are
+unchanged; both Metro fixtures are inactive with no owned handles/proxies.
+
+Hover and quick-link sizing corrections passed pinned frontend and actual private
+browser checks and are installed. Owner desktop/mobile/keyboard/actual-zoom recheck
+remains open; the feedback reports were not acceptance. The existing SSM operator
+must still remove only temporary 8443/8444 handlers. Then finish peer cleanup, final
+evidence publication/CI and review/merge. Keep the catalogue In progress until merged
+implementation and all required acceptance pass. Remote task opening remains excluded.
