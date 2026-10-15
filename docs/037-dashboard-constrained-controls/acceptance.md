@@ -1,284 +1,141 @@
 # SPEC-037 acceptance evidence
 
-- **Status:** Implementation in progress; acceptance incomplete
+- **Status:** Private acceptance in progress; delivery incomplete
 - **Owner:** Project owner
-- **Date:** 2026-10-15 (America/New_York)
+- **Date:** 2026-10-15 UTC
 - **Specification:** [SPEC-037](spec.md) · **Design:** [TDD-037](technical-design.md) · **Tasks:** [TASKS-037](tasks.md)
-- **Branch:** `codex/dsh-009-controls`
+- **Implementation:** [Draft PR #86](https://github.com/danielbardsley/gptclaw/pull/86), branch `codex/dsh-009-controls`
 
-The project owner authorized implementation and completion against the acceptance
-criteria October 15. This record separates synthetic local evidence from actual
-runtime, CI, private rollout and owner acceptance. No criterion is established by
-planned commands or by the supplied visual reference.
+Implementation, PR publication, and private rollout/fixture acceptance were separately
+authorized by the project owner. Remote task opening remains excluded. Owner flow
+acceptance, final review/merge and catalogue delivery remain separate gates.
 
-| Criterion | Current disposition | Evidence / remaining work |
+## Acceptance map
+
+| Criterion | Observed evidence | Remaining |
 |---|---|---|
-| AC-001 | Partial automated coverage | Provider capability/refusal tests and final-head dashboard CI cover supported profiles, invalid actions/components, changed source, lock conflicts and older stable-provider refusal. Actual managed Metro and deployed release compatibility remain pending. |
-| AC-002 | Partial local coverage | Synthetic tests and isolated real-container single/group runs verify pause ordering/same-instance resume, build-before-replace, stopped rebuild retention and failure preservation. Deployed systemd/publication and remaining interruption scenarios still require acceptance. |
-| AC-003 | Partial runtime coverage | Real-container WEB restart preserved API identity/data; API/DB restarts and rebuilds preserved synthetic persistent records, the active volume and credential epoch. Dependent health failure tests do not cascade. Deployed route recovery and actual Metro/backend isolation remain pending. |
-| AC-004 | Partial local coverage | Thirteen isolated controller tests and frontend boundary tests cover sessions/CSRF/Origin, strict JSON/unknown fields, typed actions, duplicate/replayed/expired/changed intents, capacity and socket rejection. Full browser/socket integration and deployed restricted mounts remain to verify. |
-| AC-005 | Partial automated coverage | Tests cover SIGKILL, timeouts, admission/storage failures, partial pause, retained guards, retry exclusion, explicit reconciliation without replay, lost acceptance/idempotency and controller restart. Deployed interruption/recovery scenarios remain pending. |
-| AC-006 | Automated browser checks passed; owner pending | Frozen frontend unit/typecheck/build and the full synthetic browser run passed, including viewport/focus/results/contrast, lost-response recovery, scoped confirmation and unchanged metrics. Actual owner comparison, keyboard and zoom acceptance remain pending. |
-| AC-007 | In progress | All four CI workflows passed at revision 7e295de; the local gate passed 882 cases/46 suites and all five non-Metro native profile runs passed. The later frontend JSON transport correction passed local frontend/browser checks and needs its publication/CI checkpoint. Private rollout is approved; execution, managed-fixture acceptance, rollback, project-owner acceptance and merge remain pending. |
+| AC-001 | Capability/refusal and compatibility tests cover every profile/action, source/worktree/identity/lease conflicts, old providers and unsupported combinations. Actual managed Metro Start no-op, component/project restart and Stop passed. | Complete deployed non-Metro matrix and final-head CI. |
+| AC-002 | Native-container tests passed for all five non-Metro profiles, including running/stopped rebuild and stateless freeze/resume. Actual API Start/no-op passed; interrupted Pause was explicitly reconciled and the same instance resumed. | Full corrected private lifecycle matrix and paused rollback refusal. |
+| AC-003 | Five native profiles verify sibling/data/volume/epoch retention and ephemeral API loss. Actual Metro restarts retained absolute expiry/transport and the other session/backend peer. Actual Metro Stop released owned handles. | Deployed individual WEB/API/DB restarts, persistent notes and dependency-route recovery. |
+| AC-004 | Strict socket/frontend tests and ten actual HTTPS negative cases passed. The frontend has only immutable assets and a read-only socket-directory mount. | Recheck final installed mounts alongside final flow. |
+| AC-005 | Automated worker death, timeout, storage, contention and idempotency tests pass. Actual unknown Pause blocked CLI/rollback; exact reconciliation did not replay effects. A lost, never-admitted Stop request was resolved by retiring its controller with no record/journal/guard. | Final actual browser/reload result and remaining fixture operations. |
+| AC-006 | Full synthetic browser suite passes all viewports, focus, confirmations, lost-response recovery, stale/busy/unsupported states and unchanged real metrics. Actual private confirmation displayed correctly. | Complete actual Cancel/focus/narrow check and owner desktop/mobile/keyboard/zoom acceptance. |
+| AC-007 | Private rollout and real read-only rollback executed. Broad local gate passed 888 cases/46 suites; focused final-code and frozen frontend checks pass. | Remaining private matrix, persistent-data rollback, final-head CI, owner acceptance and review/merge. |
 
-## Local checks observed so far
+## Verification
 
-- `scripts/tests/test_project_groups.py`: 16 existing group tests passed after initial lifecycle extension.
-- `scripts/tests/test_project_controls.py`: 20 focused tests and an additional focused partial-pause test passed locally; the complete 21-test suite passed in final-head dashboard CI. Coverage includes generated-output swaps, SIGKILL guard/reconciliation, Metro running-start no-op/short-lease stop, fixed absolute expiry/backend isolation, stable intent identity across observation refresh and refusal of false protocol readiness. A timeout after freezing WEB retains the guard, blocks Resume until reconciliation, reports mixed pause state, and allows an explicit Stop to unfreeze before stopping without replacing instances.
-- `scripts/tests/test_dashboard_controls.py`: 13 isolated controller tests passed, including admission-time storage failure recovery and refusal of delayed reconciled workers.
-- `scripts/tests/test_dashboard_install.py`: 11 release/ownership/rollback tests passed, including older stable-provider refusal before any service change while reads remain available.
-- Frozen `pnpm install` in the existing rootless Node image passed with the repository lockfile and pinned pnpm 12.10.1.
-- Frontend tests: 21 passed (including a real Unix-socket frontend boundary and stalled-controller/healthy-inventory regression); route type generation/TypeScript and production build passed in the existing pinned rootless environment.
-- The first attempted frontend test used a container with network disabled before dependencies existed. It failed fetching dependencies; only that exact task-owned container was stopped after command/network/mount verification. The subsequent explicit frozen setup succeeded. No host packages were installed.
-- The first browser run failed in the newly added synthetic test block because it ran before the shared layout fixture was initialized. This was a test placement error; it was moved after baseline browser scenarios. Corrected full local and CI runs passed, including confirmation/cancel/focus, lost-response recovery without replay, scope/busy/generation checks, responsive captures and subsequent semantic/freshness refinements. The checks also exposed and verified fixes for browser wall-clock skew and focus return before React enabled the initiating button.
+The original complete local repository checkpoint `7e295de` passed 882 cases in
+46 suites. A later complete `./scripts/check-repository.sh` passed **888 cases in
+46 suites**, including repository invariants, in 2,275 seconds. That run started
+at `f5f99c6` and the worktree changed while live corrections landed; it is broad
+regression evidence, not an exact-revision gate. Its durable scope/result records
+are task-private. Exact-head CI is recorded separately below.
 
-An intermediate full `./scripts/check-repository.sh` run completed successfully: 874 cases across 46 unittest suites, plus the shell/source invariants.
+Relevant focused checks passed after corrections:
 
-The later local gate ended with signal 143 during the worktree suite, before a
-terminal test summary; completed suites had reported no failure. Its handle was
-terminal and no child test processes remained before replacement. A bounded
-replacement completed against `7e295ded15215dedd06a61c21a2fb5303e2dbccd`, with
-task-owned log/result metadata under `/tmp/dsh009-repository-final-7e295de/`.
-It passed with exit 0: 882 cases across 46 suites plus the repository invariants.
-The interrupted attempt itself is not a passing gate. Later edits change only
-frontend transport, optional native verification and documentation; Python provider
-code remains identical to this passing checkpoint.
+- Provider controls: complete 21-case run plus the additional completion-write-failure test; the broad gate ran all 22. Failure after replacement preserves an unknown guard, refuses a new mutation and reconciles without another replacement.
+- Controller: 15 cases, including exact 60-second intent timing, one-time/idempotent admission, capacity/storage failures, stale generation, socket adversarial requests, completed-row publication and failed spawn/recovery.
+- Observer: 12 cases, including schema-7 API docs/health and real paused-state projection. Status: 8 cases. Immutable installer: 11 cases, including exact-provider ordering, unknown/paused refusal, disablement and controls-only collector budget removal on rollback.
+- Frozen frontend: 21 tests, route generation/typecheck, production build, real Unix socket/HTTP and complete synthetic browser suite. The latest full run used the pinned rootless Node/pnpm/browser images; no host packages or dependency pins changed.
+- Native optional harness: single API, single WEB, WEB/API, API/DB and WEB/API/DB passed applicable lifecycle/rebuild/retention/isolation checks and task-owned runtime cleanup. Its finite systemd/Serve adapter is explicitly separate from actual private/systemd acceptance. The adapter now models a frozen container as an active unit.
+- Actual HTTPS rejects missing/foreign Origin, missing cookie/CSRF, duplicate JSON keys, invalid UTF-8, malformed JSON, extra command field, command component and oversized body (expected 400/403/413). The peer instance stayed unchanged.
+- Diff whitespace, changed-shell syntax and documentation links were checked. No Terraform apply, AWS mutation, host package install, public exposure or production operation occurred.
 
-The local native single-API harness passed start/no-op, same-instance pause/resume, component restart, running rebuild, stop and stopped rebuild against real rootless containers. The web/API group also passed whole-project restart, web/API restarts, same-instance pause/resume, running/stopped rebuild and unrelated-peer instance/readiness isolation. Real generated ephemeral notes survived a web restart and were lost on the explicitly warned API restart. The API/DB run passed start/no-op, DB/API/project restarts, running/stopped rebuild, synthetic record retention and unrelated-peer identity/readiness isolation. Its database restart retained the exact active volume generation and credential epoch while the API instance continued; application rebuild retained the DB instance. Additional single-WEB and WEB/API/DB runs passed applicable lifecycle actions, running/stopped rebuild and retention/isolation; the persistent group also refused Pause/Resume without instance changes and retained both app siblings during DB restart. All five runs removed their owned aliases/containers/networks and successful fixture trees. Their systemd/Serve interface is a test adapter; this is not deployed systemd/private acceptance. Managed runtime acceptance remains pending.
+All four CI workflows passed `8cb6e0a`; its first mobile bootstrap attempt timed
+out downloading pnpm, and the same-revision failed-job rerun passed without a pin
+change. At implementation checkpoint `16ee8a5`, [dashboard #108](https://github.com/danielbardsley/gptclaw/actions/runs/38812934274)
+passed; all jobs in [application #211](https://github.com/danielbardsley/gptclaw/actions/runs/38812934300)
+and the quality job in [development host #310](https://github.com/danielbardsley/gptclaw/actions/runs/38812934170)
+passed. Protected plan/apply jobs were skipped. [Federation #214](https://github.com/danielbardsley/gptclaw/actions/runs/38812934311)
+was pending at the last observation. Final publication/CI remains a delivery gate.
 
-The first native harness attempts refused a wrong catalogue ID, then failed cold isolated toolchain construction before an app started. The harness was corrected to the released `fastify` ID and to reverify/reuse existing matching images. Failed task-owned source/receipt stages remain ignored and private until scoped cleanup.
+## Actual private rollout and recovery
 
-The full final frontend/browser rerun passed after a project-header assertion was
-scoped to the project table: accessible service headers legitimately add their own
-row headers. Captures are in ignored `.dashboard-qa/dsh009-final/` at
-1440/1280/768/390 px, with 720 CSS px exercising desktop 200% layout reflow.
-This does not substitute for actual owner browser zoom acceptance.
+The original read-only dashboard was `35507309…` with stable provider 1.14.0.
+Approved rollout upgraded the owned stable launcher/ingress through a disposable
+API peer, then activated immutable controls releases using provider 1.15.0.
+All ten pre-existing managed container IDs/states and the original private Serve
+handlers remained unchanged through the observed upgrades.
 
-Before activation, a new transport regression reproduced that parsing/reserializing
-at the frontend erased duplicate keys before the controller could reject them
-(unexpected HTTP 200 versus expected 400 in the Unix-socket fixture). The frontend
-now forwards the original bounded bytes; duplicate-key, malformed and invalid-UTF8
-inputs reach the strict authoritative parser unchanged. The complete frozen local
-frontend tests (21), typecheck, production build, HTTP/socket and browser checks
-passed after this correction. No new dependency or request route was introduced.
+Current implementation checkpoint:
 
-## Review and staged rollout proposal
+- Controls release: `2964bf4fbb58a074073d8e460c7a63cbce4a130a90f861cf0c5334e6fe86784d`.
+- Compatible read-only rollback: `1352b0951772d58cdb19cd964d4dcaafcb99712bf6684d8be4339d5ba84a3bbb`.
+- Frozen provider: `234f928b41d91a3bff55cb9c0af13111936f6a2ffd6c5b6308e8c41d3598b3a8`.
 
-Implementation draft [PR #86](https://github.com/danielbardsley/gptclaw/pull/86)
-includes the planning package from #85. Initial dashboard CI failed only at the
-browser project-header assertion described above. At revision
-`7e295ded15215dedd06a61c21a2fb5303e2dbccd`, corrected
-[dashboard CI #100](https://github.com/danielbardsley/gptclaw/actions/runs/38797555283)
-and [application CI #203](https://github.com/danielbardsley/gptclaw/actions/runs/38797555161)
-passed. Dashboard logs explicitly record 21 lifecycle tests, 13 controller tests,
-11 installer tests, and full frontend/browser acceptance.
-[Development-host CI #302](https://github.com/danielbardsley/gptclaw/actions/runs/38797555071)
-and [federation CI #206](https://github.com/danielbardsley/gptclaw/actions/runs/38797555227)
-also passed at that revision. These were PR quality checks, not infrastructure
-apply or runtime deployment evidence. Subsequent frontend transport, optional
-native-harness and documentation edits need their publication/CI checkpoint.
+Real activation exposed and corrected four integration issues: Next removes the
+public base path before invoking route handlers; frontend JSON reserialization
+erased duplicate keys; two-CPU concurrent inspection needed finite loaded-read
+headroom; and published schema-7 APIs incorrectly entered a group-only docs branch.
+The resulting gates use strict raw JSON, an exact internal-route normalization,
+two incremental capability readers with a twelve-second deadline, and controls-only
+status readers (two/eight seconds). Private transport/browser write deadlines are
+30/35 seconds. Health freshness, native lifecycle deadlines, capacities and leases
+remain unchanged. A fresh intent includes its server preflight time; older/missing
+snapshots cannot revoke that proof, while newer changed generation or expiry does.
+Submission still rechecks source/runtime identity before dispatch.
 
-The pre-rollout dashboard was release
-`355073098b3f810379b1e3a90f0e8a71edb74b3caf1fd98e7e44acf2e9a915de`:
-status and links enabled, controls absent; both owned services were observed active.
-The stable installed CLI reports 1.14.0; the implementation provider is 1.15.0.
-Immutable assets have been staged, without activation, for:
+API Pause `5bbacc84eafb4948b7d5bef0833a5983` froze the existing instance, then
+retained an honest unknown/guard because real Podman reports `Paused=true` and
+`Running=false` while systemd stays active. Corrected provider/observer checks and
+fixtures now recognize that state. The unknown blocked both managed rollback and
+the stable CLI's conflicting restart. The exact operation was explicitly reconciled,
+and a separate reviewed Resume returned the same instance ready. It was not replayed.
 
-- Controls candidate: `90520b389e487fcce01110e8e13c58f58bfed5ab2e3cce378215fdf99b8ced04`.
-- Compatible read-only rollback: `ee3bb086e44d04aac9505f623dfc625207ccdce385363e0d766a700635745b31`.
+An actual compatible read-only rollback also passed. New writes were disabled,
+the controller retired, and API/peer instance identities and operation evidence
+were retained. An unavailable Stop response for UUID
+`1fd5587004804828b763999213b831ab` had no controller record, native journal or guard
+after controller retirement, proving it was never admitted and could no longer run.
+Only its task-owned observation client was then retired. Controls were restored
+through the reviewed manager for remaining acceptance; no native mutation was retried.
+Persistent-note rollback evidence is still pending.
 
-These replace the earlier unactivated 7cfb24c6/7af4d32f candidates after the
-frontend transport correction. Both retain the same frozen provider
-`c91b4a26c7909e75d3fbe451c1784f5b09d8730c86c62bdc0a0e8a3fcdcef206`.
+## Actual Metro evidence
 
-The project owner explicitly approved private rollout and fixture acceptance after
-the remaining checks pass, including disposable single/group/DB fixtures and the
-retained synthetic Metro fixtures `mob001-accept-one` and `mob001-accept-two`.
-Read-only inspection found both named canonical checkouts clean on their existing
-Metro contract branches. Their old sessions are expired/stopped; acceptance will
-use fresh finite sessions through the reviewed provider, without extending an old
-lease. Readback found the named fixtures' 8443/8444 listeners absent; the existing
-443 dashboard/projects and separate 8445 handler remain intact, with Funnel off.
-The [exact operator handoff](operator-plan.md) prepares scoped additions/removal
-through the existing operator path; no Tailscale mutation has been executed.
+The owner-approved retained synthetic roots are `mob001-accept-one` and
+`mob001-accept-two`. Both began clean; their prior leases were expired/stopped.
+Fresh finite sessions reached loopback protocol readiness. The existing SSM operator
+added only private 8443/8444 handlers to owned proxies 18601/18603. Independent readback
+proved exact additions, unchanged 443/8445 handlers and Funnel off; both actual
+private route/protocol observations became ready. [Operator handoff](operator-plan.md).
 
-After final verification, use the frozen
-candidate provider to start an explicitly owned disposable fixture and upgrade the
-verified stable launcher/ingress first. This briefly restarts the shared loopback
-router; it must preserve all project processes and private Serve handlers. Then
-activate the candidate dashboard, observe its three owned services and restricted
-mounts, and run acceptance only against specifically owned synthetic fixtures.
-For rollback, disable new submissions, let active operations finish, explicitly
-reconcile unknown outcomes and resume/stop paused fixtures as intended, then activate
-the compatible read-only release. Preserve runtime data and operation evidence.
-Detailed commands and refusal conditions are in the dashboard runbook. These are
-proposed effects, not executed rollout evidence or new authorization.
+On the original test lease, these dashboard operations passed:
 
-### First approved private activation and route correction
+| Operation | ID | Actual result |
+|---|---|---|
+| Start no-op | `b42ced7bf3454839a919c786ec05f2e3` | Same Metro generation and expiry. |
+| Restart METRO | `b2ebf5e1399c45169b112c96405333a0` | New generation; identical absolute expiry/transport. |
+| Restart project | `902d2e88d6b34dc9823f1196a6b9894d` | New generation; identical absolute expiry/transport. |
+| Stop on a separate finite generation | `c9d7f4ca80bf4c7f94a652ae6e3bb9f4` | Stopped; owned SDK/audit/network absent and proxy released. |
 
-All four workflows passed on `8cb6e0aee4329eef92d8fa7505d5e71502c8ac72`:
-[dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38803942019),
-[application](https://github.com/danielbardsley/gptclaw/actions/runs/38803942009),
-[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38803941881)
-and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38803941933).
-The application workflow's first mobile job timed out downloading pnpm during
-bootstrap; rerunning only that failed job at the same revision passed. No project
-test failed in that attempt and no package pin changed.
+The other session generation/expiry and backend peer identity/readiness stayed
+unchanged. The original leases expired normally without extension. The separate
+finite generation used for the remaining Stop test did not renew either old lease.
+Both fixtures are now inactive, and owned handles/proxies are absent. The existing
+operator has been asked to remove only temporary handlers 8443/8444; independent
+baseline restoration is pending. This establishes host/private Metro control behavior,
+not physical phone, Expo Go or native client acceptance from other initiatives.
 
-After those checks, the approved disposable API peer started through provider
-1.15.0. The owned stable launcher/ingress upgraded to the exact frozen provider.
-Candidate `90520b38…` activated with all three services active; real private HTTPS
-snapshot and secure session requests passed. All ten pre-existing managed
-container IDs/states and the Serve baseline digest remained unchanged.
+## Remaining private evidence and delivery
 
-The first dashboard intent was refused before operation admission: Next removes
-`/dashboard` from the request URL before invoking an application route handler.
-The additional handler boundary had required the public path and returned 405.
-New writes were disabled through the reviewed manager. The correction restores
-only the selected handler's exact internal path before validation; query, malformed
-path, origin, cookie, CSRF and body checks remain enforced. The new regression
-sends a POST through the actual production Next server and Unix socket to a
-non-mutating controller stub. Frozen frontend tests (21), typecheck, build,
-real HTTP/socket and full synthetic browser acceptance passed after correction.
-The first harness rerun required its old read-only method test to supply valid
-write headers now that controls are enabled; the second complete run passed.
-Corrected immutable assets are staged; their publication/CI and activation are
-pending. No successful dashboard lifecycle operation is claimed yet.
+Fresh disposable sources exist for single API, single WEB, ephemeral WEB/API,
+API/DB, WEB/API/DB and an API isolation peer under task-owned `dsh009-ctl-f6a20747-*`
+roots. Both persistent databases initialized successfully using the reviewed API
+component dependency-install prerequisite. A failed first initialization retained
+its allocation and resumed with the same initialization ID; no reset or reallocation
+was used. Full deployed profile operations and persistent-note evidence remain pending.
 
-Both named Metro fixtures now have fresh finite running sessions and verified
-loopback protocol observations. Their private routes remain pending the existing
-SSM operator's exact handoff; this does not establish private Metro readiness.
-Fresh API/DB initialization retained a blocked allocation receipt when API
-preparation used an unselected image. Diagnosis identified the supported
-component dependency-install prerequisite; preparation and same-ID initialization
-recovery are in progress. No reset, source change or data deletion was used.
+The real browser successfully displayed/focused the confirmation. Its first Cancel
+assertion incorrectly required the initiating button even when a newer snapshot
+disabled it; the implementation's documented result-region focus fallback was used.
+The task-owned browser assertion now permits either valid destination. A final real
+narrow/focus run and actual owner acceptance are pending. A copy-only correction
+replaces the misleading release-specific unavailable message with a neutral message;
+its pinned offline production build passed, with final installation pending.
 
-Live lifecycle/rollback acceptance, final corrected-head CI, owner desktop/mobile
-acceptance and review/merge remain pending. Generated logs/captures stay in ignored
-task output; no credentials, environment dumps, source payloads or database
-contents are retained in this evidence. Existing user services/data have not been
-mutated for acceptance.
-
-
-### Live capability timing correction
-
-The corrected Next release `0cf6e4b…` activated with status/links/controls enabled.
-Real private intent admission passed. All ten negative HTTPS checks passed with
-unchanged peer identity: missing/foreign Origin, missing cookie/CSRF, duplicate
-keys, invalid UTF-8, malformed JSON, extra command field, command component and
-oversized body. Start operation `52bdd143687d437da29760fdd4c2d80d` and ready Start
-no-op `81ebd3a69920420fbd99fc68f14a9620` both completed successfully through the
-actual controller/systemd/rootless path. The following Pause intent was refused
-before admission because capability inspection exceeded its four-second budget.
-
-Read-only timing on the actual two-CPU host reproduced four concurrent isolated
-capability reads taking 4.92–5.84 seconds, despite a single direct read taking 1.65
-seconds. The UI cache consequently reported unavailable capabilities for valid
-running projects. New writes were disabled again while correcting that read
-budget to eight seconds for cache collection and submission preflight. The
-regression covers valid six-second reads and continued fail-closed timeout
-handling; no lifecycle deadline, worker count or service resource limit changes.
-Fourteen focused controller tests pass. Corrected staging/live evidence and
-final corrected-head CI remain pending.
-
-Both fresh persistent fixture databases now initialized successfully through the
-reviewed dependency/install and database interfaces. The first retained its exact
-initialization operation ID `519d8c208d11441db73f4e5881776b76` throughout recovery;
-no reallocation, reset or credential inspection was used. The required setup is
-API component dependency preparation before initial database migration. Named
-Metro sessions remain finite and protocol-ready, with private routes pending the
-existing operator; their backends and all unrelated services are preserved.
-
-
-The first eight-second release preserved the running peer and API instances, but
-another Pause intent was refused before admission. Service counters showed no OOM,
-restart or memory-limit event. Further read-only inspection found cache entries
-aging while the entire collection window completed. Collection now uses two
-background readers and publishes each completed row immediately, with a two-second
-rest between windows. This preserves finite reads and fail-closed preflight while
-avoiding delay behind an unrelated project. A blocked-reader regression verifies
-that the healthy row becomes visible before the slow reader completes. Live
-reverification and final-head checks remain pending; no Pause success is claimed.
-
-
-Incremental collection made the peer's capabilities available, but the live
-browser flow remained disabled because its service status was unknown. A direct
-read-only observer trace identified a separate schema-7 bug: published single
-TypeScript APIs entered the group-only docs-link branch and raised `KeyError`
-for absent `components`. A new complete ready-runtime regression reproduced that
-exact failure before correction. The docs target now uses the single project
-receipt/root for schemas 2 and 7, retaining schema 7's `/api/docs` path. Existing
-status freshness/deadline semantics are unchanged. New writes are disabled until
-the corrected release is verified. The first live browser attempt was stopped
-as an owned test container after an unbounded missing-element wait; its replacement
-has finite locator/failure deadlines. The operation ledger independently confirms
-that no browser mutation was admitted: only the two successful API Start records
-exist. No browser acceptance is claimed from that attempt.
-
-
-After the single API docs correction, complete observation (11), status (8) and
-installer (11) suites passed. The controller rerun exposed a test-client race:
-a server can reject invalid headers before the body finishes sending. Its helper
-now reads and asserts the actual HTTP refusal even after `BrokenPipeError`, and
-always closes the socket; no refusal is inferred from a disconnect. The complete
-15-case controller rerun passed after that test-only correction. Updated exact-head
-CI and deployed verification remain pending.
-
-
-With the route bug corrected, two concurrent actual isolated observations proved
-both owned APIs ready in 3.32/3.51 seconds. The deployed collector's four-reader,
-four-second budget still timed out alongside the new control reads. The manager
-now supplies a controls-only collector flag selecting two status readers and an
-eight-second deadline. Read-only defaults and 30-second health freshness remain
-unchanged. Collector (7), status (8), installer (11) and controller (15) suites
-passed; installer assertions also cover flag removal on compatible rollback.
-Live browser and lifecycle rechecks remain pending. No service readiness or
-browser acceptance is inferred from these unit tests.
-
-
-### Fresh confirmation, real pause state and operator readback
-
-The real browser received a successful typed intent, then its confirmation was
-cleared by a stale snapshot older than the just-completed preflight. Intent replies
-now include the server preflight timestamp; the UI preserves that proof until
-expiry or newer changed-generation evidence. Submission still revalidates source,
-ownership and generation. Frozen frontend tests (21), typecheck, build, actual
-HTTP/socket and synthetic browser checks passed, including older-stale-snapshot
-preservation and subsequent-generation invalidation. Fifteen controller tests also
-pass with the explicit 60-second timestamp/expiry contract.
-
-Actual API Pause `5bbacc84eafb4948b7d5bef0833a5983` froze the retained instance
-`a6dec55bb7b6c9e3644a256afbc19d270fc2cd2d34820e9a81c5e5f3df00b722`.
-Its post-check correctly retained an unknown result/guard after encountering a
-native interpretation bug: this Podman reports `Paused=true, Running=false` while
-the owned systemd unit remains active. Provider and observer checks now recognize
-that frozen active state; fake/native adapters now model real systemd semantics.
-Explicit reconciliation and resume are required before another Pause. No replay,
-blind unpause, data deletion or success claim was used. Live unknown-state rollback
-and CLI contention refusal evidence is being retained before recovery.
-
-The project owner supplied existing-operator readback for the approved 8443/8444
-private Metro listeners. Independent readback verified exactly those additions,
-unchanged 443/8445 handlers and Funnel off. Reviewed route ownership recording was
-idempotent against the existing approved plans. Both named finite generations now
-report actual private route/protocol readiness; this is no phone/client claim.
-Their lifecycle/isolation proof and later operator removal remain pending.
-
-
-The exact unknown Pause was explicitly reconciled through the corrected immutable
-provider, retaining the frozen container identity. A separate reviewed Resume then
-returned that same instance ready. The failed Pause checkpoint and reconciliation
-are retained; it was not replayed. A subsequent live Pause will use a new intent/ID.
-
-The finite Metro acceptance attempt exhausted only its non-mutating preflight wait;
-no Metro operation was admitted. A direct validated capability read succeeded in
-5.30 seconds, while isolated reads under combined load exceeded eight seconds.
-The bounded control preflight now permits twelve seconds; the private transport
-and browser submission deadlines are 30/35 seconds so discovery and revalidation
-can complete without dropping a valid request prematurely. The 60-second intent,
-absolute Metro lease, operation deadlines, capacities and strict target checks are
-unchanged. Fifteen controller tests and the complete frozen frontend (21),
-typecheck/build, real HTTP/socket and browser gate passed after this adjustment.
-An additional post-effect write-failure test passed: completed replacement remains
-unknown/guarded when journal completion cannot persist, a new mutation is refused,
-and explicit reconciliation preserves the new instance without replay.
+Keep final-head CI, actual lifecycle/data/rollback, owner acceptance and merge distinct.
+Generated logs/captures and operation metadata remain in ignored/private task output;
+no credentials, authentication material, environment dumps or real datasets appear
+in this record. Only synthetic fixtures were mutated; unrelated project identities,
+data, handlers and access remain protected.

@@ -58,7 +58,7 @@ export default function ControlPanel({raw,projectKey,projectId,name,status,serve
   const recent=[...(controls?.recent || []),...localResults].sort((a,b)=>b.updated_at-a.updated_at).filter((item,index,items)=>items.findIndex(other=>other.operation_id===item.operation_id)===index).slice(0,5);
   const blocking=recent.find(active);
   const busy=working || Boolean(pending) || Boolean(blocking) || Boolean(status?.operation_busy);
-  const general=!controls ? 'Controls unavailable for this release.' : !controls.enabled ? 'New actions are disabled. Existing results remain available.' : stale ? 'Controls unavailable while observations are stale.' : caps?.reason ? reason(caps.reason) : status?.state==='unknown' ? 'Controls unavailable while runtime state is unknown.' : blocking?.state==='unknown' ? reason('control-recovery') : busy ? 'A project operation is in progress.' : '';
+  const general=!controls ? 'New actions are unavailable.' : !controls.enabled ? 'New actions are disabled. Existing results remain available.' : stale ? 'Controls unavailable while observations are stale.' : caps?.reason ? reason(caps.reason) : status?.state==='unknown' ? 'Controls unavailable while runtime state is unknown.' : blocking?.state==='unknown' ? reason('control-recovery') : busy ? 'A project operation is in progress.' : '';
   useEffect(()=>{try{const id=sessionStorage.getItem(storageKey);if(id && /^[0-9a-f]{32}$/.test(id))setPending(id);}catch{/* Server records remain authoritative. */}},[storageKey]);
   useEffect(()=>{
     if(!pending)return;
