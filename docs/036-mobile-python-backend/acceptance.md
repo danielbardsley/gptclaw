@@ -128,3 +128,7 @@ a runtime receipt belonging to another canonical root, before rewriting a bindin
 The 11-test focused rerun passed, including preserved binding bytes on refusal.
 A targeted receipt test also passed for invented components, wrong versions and
 fractional/boolean schema values; valid historical receipts remain supported.
+
+Historical-provider rejection now uses a SHA-256-pinned copy of the real v6
+validator from `cce6476`, so shallow CI checkouts do not need a local `main`
+branch. The targeted historical-validator test passed with the committed fixture.

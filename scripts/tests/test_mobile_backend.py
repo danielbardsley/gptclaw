@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Offline bound-mobile and API-only lifecycle/ownership regression scenarios."""
 import copy
-import subprocess
+import hashlib
 import types
 from pathlib import Path
 import sys
@@ -89,7 +89,9 @@ class MobileBackend(unittest.TestCase):
         self.assertEqual((self.mobile/mb.CONFIG).read_bytes(),before)
 
     def test_historical_validator_refuses_both_new_contracts(self):
-        source=subprocess.run(['git','show','main:scripts/project_manifest.py'],cwd=a.REPO,capture_output=True,text=True,check=True).stdout
+        raw=(Path(__file__).parent/'fixtures/project_manifest_v6.py').read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),'7cbc6685b15e863ab86a1afaef66aa5eaa5519f8f8a71a6f98a9ba579ae8b45f')
+        source=raw.decode()
         old=types.ModuleType('old_manifest');old.__file__=str(a.REPO/'scripts/project_manifest.py')
         exec(compile(source,'baseline project_manifest.py','exec'),old.__dict__)
         for root in (self.backend,self.mobile):
