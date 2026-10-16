@@ -46,7 +46,7 @@ This task does not authorize installing a new private release or public exposure
 - [x] Add initialization unit tests and browser persistence/system/storage/contrast regressions.
 - [x] Finish frozen build/typecheck/tests, browser assertions and source comparison.
 - [ ] Complete broad repository checks (runner interrupted; continuation in progress).
-- [ ] Deliver reviewable Git changes; record CI separately from local evidence.
+- [x] Deliver reviewable Git changes in [PR #88](https://github.com/danielbardsley/gptclaw/pull/88); CI remains pending.
 
 No CI, installed-release or project-owner acceptance is claimed by local fixtures.
 
@@ -71,6 +71,10 @@ No dependency or lockfile changes.
   The Python runner was terminated with signal 15 before its completion/cleanup;
   no successful full-runner exit is claimed. The exact labeled task container
   was independently inspected and removed, preserving unrelated containers.
+- Production-build smoke `/tmp/gptclaw-dark-smoke.py`: passed with exit 0.
+  DOM-ready theme, explicit light over dark OS, Space/Enter activation, title/pressed
+  state, retained focus, 44 px mobile target and no page errors passed. The
+  loopback-only task container was removed by the successful runner.
 - Focused inventory tests: 13 passed. Diff whitespace, changed documentation
   relative links, browser-script syntax and repository-checker shell syntax passed.
 - Full offline repository checker was terminated with signal 15 after 15 passing

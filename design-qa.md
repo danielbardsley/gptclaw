@@ -51,7 +51,10 @@ updates, denied-storage session choice, retained row disclosure/focus through
 snapshot polling, and all existing status/link/control regressions. Dark bounds
 checks passed 1440/1280/768/390/720 CSS px, including narrow 44 px target checks.
 Existing keyboard skip/disclosure, reduced-motion and 200% equivalent reflow
-checks passed. Main-page uncaught error list was empty; expected synthetic HTTP
+checks passed. A separate successful production-build smoke verified Space/Enter
+theme activation, retained focus and correct theme at DOM ready, including a
+saved light preference overriding a dark system; its runner exited 0 and removed
+its task-owned loopback container. Main-page uncaught error list was empty; expected synthetic HTTP
 failure scenarios remain part of the regression suite. This is local browser
 acceptance, not installed-dashboard or project-owner acceptance.
 
