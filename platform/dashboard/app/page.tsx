@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import ThemeToggle from './ThemeToggle.tsx';
 import ProjectRow from './ProjectRow.tsx';
 import type { Snapshot } from '../lib/inventory.ts';
 
@@ -41,7 +42,7 @@ export default function Dashboard() {
   const observation = !snapshot && !failed ? 'Loading inventory…' : stale && hasInventory ? 'Inventory stale · collector unavailable' : unavailable ? 'Inventory unavailable' : snapshot?.truncated ? 'Partial inventory · scan limit reached' : snapshot && !snapshot.complete ? 'Partial inventory · some entries unavailable' : 'Inventory current';
   return <>
     <a className="skip" href="#projects">Skip to projects</a>
-    <header className="site-header"><div className="brand"><span aria-hidden="true" className="mark">G</span><span>GptClaw</span><span className="brand-divider" aria-hidden="true">/</span><span className="environment"><span className="environment-dot" aria-hidden="true"/>Development</span></div><span className="private"><span className="private-dot" aria-hidden="true"/>Private · Tailscale</span></header>
+    <header className="site-header"><div className="brand"><span aria-hidden="true" className="mark">G</span><span>GptClaw</span><span className="brand-divider" aria-hidden="true">/</span><span className="environment"><span className="environment-dot" aria-hidden="true"/>Development</span></div><div className="header-actions"><span className="private"><span className="private-dot" aria-hidden="true"/>Private · Tailscale</span><ThemeToggle/></div></header>
     <main>
       <div className="heading"><div><p className="eyebrow">Workspace</p><h1>Projects</h1><p className="intro">Your development projects, in one place.</p></div><div className="managed-tile"><strong>{hasInventory ? snapshot!.rows.length : '—'}</strong><span>{stale && hasInventory ? 'Last-known managed' : snapshot && !snapshot.complete && hasInventory ? 'Projects shown' : 'Managed projects'}</span></div></div>
       {snapshot?.diagnostics.length ? <details className="diagnostics"><summary>{snapshot.diagnostics.length} inventory diagnostics</summary><ul>{snapshot.diagnostics.map((d,index) => <li key={index}>{label(d.code)}</li>)}</ul></details> : null}
