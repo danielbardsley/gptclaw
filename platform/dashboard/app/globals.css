@@ -213,6 +213,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
 .lifecycle-toolbar h3{margin:0;font-size:14px}.lifecycle-toolbar h3 span{margin-left:8px}
 .project-actions{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px}.control-action{display:flex;flex-direction:column;gap:5px;max-width:180px}
 .lifecycle-panel button{font:inherit;font-size:13px;min-height:34px;border:1px solid var(--control-line);border-radius:7px;padding:6px 12px;background:var(--paper);color:var(--ink);cursor:pointer}
+.lifecycle-action-button{display:inline-flex;align-items:center;justify-content:center;gap:6px}.control-icon{flex:none}
 .lifecycle-panel button:hover:enabled{background:var(--chip)}.lifecycle-panel button:disabled{cursor:default;color:var(--secondary);background:var(--chip);border-color:var(--disabled-line)}
 .control-note,.control-reason{color:var(--secondary);font-size:12px;line-height:1.5}.control-note{margin:0;padding:0 18px 12px}.control-reason{max-width:180px;overflow-wrap:anywhere}
 .control-confirm{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;padding:14px 18px;border-top:1px solid var(--red);background:var(--confirm-bg);font-size:14px}

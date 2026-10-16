@@ -41,3 +41,11 @@ No remote task control is present in the planned product. Read-only metrics,
 metadata and destinations remain available beneath the control panel. Reference
 mock data, unsupported service graphs and successful animations are not evidence
 of any current runtime capability or product acceptance.
+
+## Lifecycle icon follow-up
+
+The project toolbar and individual restart buttons use the reference's play, square,
+circular-arrow, cube and pause SVG symbols. Start and Resume share the play symbol.
+Icons inherit the button color, remain decorative to assistive technology, and retain
+visible action labels and complete project/component accessible names. Responsive
+wrapping and existing touch targets remain part of the browser verification.

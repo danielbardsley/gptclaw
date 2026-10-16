@@ -5,6 +5,19 @@ import { metroView } from '../lib/metro.ts';
 import { duration, statusFreshness, type ProjectStatus } from '../lib/status.ts';
 type Intent = {intent_id:string;generation:string;prepared_at:number;expires_at:number;impact:string;name:string;action:Action;component:Component|null};
 type Auth = {csrf:string;acquiredAt:number};
+const actionIcons:Record<Action,{path:string;filled:boolean}>={
+  start:{path:'M5 3.2v9.6l7.6-4.8z',filled:true},
+  stop:{path:'M4 4h8v8H4z',filled:true},
+  restart:{path:'M13 8a5 5 0 1 1-1.6-3.7M13 2.5v3h-3',filled:false},
+  rebuild:{path:'M2.5 5.2L8 2.3l5.5 2.9v5.6L8 13.7l-5.5-2.9zM2.5 5.2L8 8.1l5.5-2.9M8 8.1v5.6',filled:false},
+  pause:{path:'M4.5 3.5h2.4v9H4.5zM9.1 3.5h2.4v9H9.1z',filled:true},
+  resume:{path:'M5 3.2v9.6l7.6-4.8z',filled:true},
+};
+function ActionIcon({action}:{action:Action}) {
+  const icon=actionIcons[action];
+  return <svg className="control-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill={icon.filled ? 'currentColor' : 'none'} stroke={icon.filled ? 'none' : 'currentColor'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={icon.path}/></svg>;
+}
+
 let authentication: Promise<Auth> | null = null;
 const label=(value:string)=>value.charAt(0).toUpperCase()+value.slice(1).replaceAll('-',' ');
 const active=(operation:Operation)=>['accepted','running','unknown'].includes(operation.state);
@@ -124,7 +137,7 @@ export default function ControlPanel({raw,projectKey,projectId,name,status,serve
     const capability=caps?.actions.find(item=>item.action===action && item.component===component);
     const disabled=Boolean(general) || Boolean(intent) || !capability?.enabled;
     const text=component ? 'Restart '+component.toUpperCase() : label(action);
-    return <span className="control-action" key={action+(component || '')}><button type="button" disabled={disabled} aria-label={`${text}${component ? '' : ' entire project'} for ${name}`} aria-describedby={capability?.reason ? `reason-${projectKey}-${component || 'project'}-${action}` : `control-note-${projectKey}`} onClick={event=>void request(action,component,event)}>{text}</button>{capability?.reason ? <span className="control-reason" id={`reason-${projectKey}-${component || 'project'}-${action}`}>{reason(capability.reason)}</span> : null}</span>;
+    return <span className="control-action" key={action+(component || '')}><button className="lifecycle-action-button" type="button" disabled={disabled} aria-label={`${text}${component ? '' : ' entire project'} for ${name}`} aria-describedby={capability?.reason ? `reason-${projectKey}-${component || 'project'}-${action}` : `control-note-${projectKey}`} onClick={event=>void request(action,component,event)}><ActionIcon action={action}/><span>{text}</span></button>{capability?.reason ? <span className="control-reason" id={`reason-${projectKey}-${component || 'project'}-${action}`}>{reason(capability.reason)}</span> : null}</span>;
   };
   return <section className="lifecycle-panel" aria-label={`Lifecycle controls for ${name}`}>
     <div className="lifecycle-toolbar"><h3>Lifecycle <span className="secondary">Entire project</span></h3><div className="project-actions">{actions.map(action=>button(action,null))}</div></div>

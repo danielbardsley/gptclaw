@@ -335,6 +335,17 @@ const { chromium } = require('playwright-core');
   assert.equal(submissions.length,0);
   assert.ok(await panel.getByRole('button',{name:'Pause entire project for Controls fixture',exact:true}).isDisabled());
   const restartApi=panel.getByRole('button',{name:'Restart API for Controls fixture',exact:true});
+  // Decorative reference icons must preserve each action's readable/accessibility label.
+  for(const action of ['Start','Stop','Restart','Rebuild','Pause','Resume']) {
+    const button=panel.getByRole('button',{name:`${action} entire project for Controls fixture`,exact:true});
+    assert.equal(await button.innerText(),action);
+    const icon=button.locator('svg[aria-hidden="true"][focusable="false"]');
+    assert.equal(await icon.count(),1);
+    assert.equal(await icon.getAttribute('viewBox'),'0 0 16 16');
+    const bounds=await icon.boundingBox();assert.equal(bounds.width,16);assert.equal(bounds.height,16);
+  }
+  assert.equal(await restartApi.locator('svg[aria-hidden="true"]').count(),1);
+
   await restartApi.click();
   const confirm=page.getByRole('button',{name:'Confirm restart',exact:true});await confirm.waitFor();
   assert.equal(submissions.length,0);
@@ -342,6 +353,13 @@ const { chromium } = require('playwright-core');
   // Hover must preserve readable text for both neutral Cancel and destructive Confirm.
   for(const appearance of ['light','dark']) {
     if(appearance==='dark') await themeToggle.click();
+    const iconColors=await panel.locator('.lifecycle-action-button').evaluateAll(buttons=>buttons.map(button=>{
+      const icon=button.querySelector('svg'),buttonColor=getComputedStyle(button).color;
+      const style=getComputedStyle(icon);
+      return {matches:style.fill===buttonColor || style.stroke===buttonColor,width:icon.getBoundingClientRect().width};
+    }));
+    assert.ok(iconColors.length>=6 && iconColors.every(icon=>icon.matches&&icon.width===16),`Icons lost theme color or size in ${appearance}`);
+
     for(const button of [panel.getByRole('button',{name:'Cancel',exact:true}),confirm]) {
       await button.hover();
       const ratio=await button.evaluate(element=>{
