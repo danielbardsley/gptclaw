@@ -31,7 +31,10 @@ The existing dashboard Content Security Policy is sufficient and unchanged.
 
 Rollback is a targeted revert of this frontend follow-up. Browser preference is
 non-sensitive presentation state and does not affect runtime or server state.
-This task does not authorize installing a new private release or public exposure.
+The initial code pass did not include private installation. The project owner’s
+follow-up that the change was not visible in the app requested making this exact
+change available on the existing private dashboard; the rollout below uses the
+reviewed lifecycle. No public exposure or infrastructure change is included.
 
 ## Acceptance and tasks
 
@@ -85,6 +88,50 @@ No dependency or lockfile changes.
 
 The repository checker command was
 `PATH="$PWD/.venv-manifest/bin:$PATH" ./scripts/check-repository.sh`.
-Terraform and deployed-dashboard checks were not run: this change affects only
-frontend presentation and synthetic verification. No private rollout, public
-exposure, runtime action or owner acceptance was performed.
+At the initial implementation checkpoint, Terraform and deployed-dashboard checks
+were not run; no private rollout or owner acceptance was claimed. The subsequent
+private rollout and actual browser evidence are recorded below. Terraform and
+public exposure remain outside this frontend change.
+
+## Private installation — October 16 follow-up
+
+The project owner reported “I dont see it in the ap;p”. The existing installed
+release still served the old frontend. The source revision was
+`cbd9882bf37b5083c2945a0b892808df6a47f4e0`; the exact
+[dashboard CI run](https://github.com/danielbardsley/gptclaw/actions/runs/38963140159)
+passed its offline security/behavior and complete frontend/browser acceptance jobs.
+Other repository workflows are separate; canceled/pending checks do not establish
+those broader gates. The PR remains unmerged and owner visual acceptance is pending.
+
+The live release changed during initial inspection. It was re-read and reconciled
+before activation; both prior frontends lacked the dark-mode toggle. The prepared
+candidate was checked independently for the theme HTML before installation.
+
+- Prior immutable rollback release:
+  `ff2dfeb37d00d8025836a88e2a3b500321daff3d1dbcd1dbaab6aad0b291b334`.
+- Prepared and installed release:
+  `7732e4423c0791280c7473bf0b8e5129198d1b4706a8a61fc1a7f1bf10cf57f8`.
+- Existing provider remained exactly
+  `234f928b41d91a3bff55cb9c0af13111936f6a2ffd6c5b6308e8c41d3598b3a8`;
+  image, origin, port, links/status/controls settings and interpreter were retained.
+
+Executed with `.venv-manifest/bin/python -B scripts/manage_dashboard.py`:
+`prepare --with-links --with-controls`, then `disable-controls`, then
+`start --release 7732e4423c0791280c7473bf0b8e5129198d1b4706a8a61fc1a7f1bf10cf57f8`.
+The manager’s ownership, idle-operation and provider-compatibility gates passed.
+Status confirmed the exact candidate and all three dashboard services active.
+The prior release remains available through the reviewed disable-submissions,
+idle/recovery and rollback procedure. No project lifecycle action, route change,
+infrastructure operation or data migration was performed.
+
+Actual private HTTPS browser verification used the existing isolated browser
+image and `/tmp/gptclaw-dark-design/private-check.cjs` with non-read requests blocked.
+It exited 0: dashboard, health and snapshot returned 200; theme toggle, reload
+persistence, 390 px bounds/44 px target and keyboard activation passed. Mutation
+requests: 0. Page errors: 0. Header-only screenshot:
+`.dashboard-qa/dark-mode/private-dark-header.png`. The browser preference was in an
+isolated test context, so the owner’s own browser choice was not changed.
+
+The project owner can refresh
+[the private dashboard](https://forge-dev-01-4.tail8c3304.ts.net/dashboard/)
+and use the header toggle beside “Private · Tailscale”.

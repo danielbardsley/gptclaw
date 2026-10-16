@@ -74,3 +74,14 @@ runner exit is claimed.
 - [x] Verify desktop/narrow bounds, storage/system behavior and contrast.
 
 Follow-up polish: none required for this scoped theme change.
+
+## Installed private dashboard follow-up
+
+After the owner requested the change be visible in the app, release
+`7732e4423c0791280c7473bf0b8e5129198d1b4706a8a61fc1a7f1bf10cf57f8`
+was activated through the reviewed dashboard manager. Actual private HTTPS
+verification exited 0 for toggle, saved preference, 390 px bounds/target and
+keyboard activation, with health/snapshot 200, zero mutation requests and zero
+page errors. Header evidence: `.dashboard-qa/dark-mode/private-dark-header.png`.
+This supplements the synthetic visual comparison; project-owner acceptance
+remains pending. See the scoped dark-mode record for exact source, CI and rollback.
