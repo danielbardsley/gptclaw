@@ -184,7 +184,7 @@ def plan(root, apply=False, confirm_plan=None):
         import metro_spike
         metro_spike.require_operator()
         app.need(confirm_plan == key, 'conflict')
-        with app.locked('registry'):
+        with app.locked('registry',project_guard=False):
             # Re-read under lock; never record a stale config or lease.
             app.need(config() == current, 'conflict')
             validate_record({**proposal, 'plan_digest': key, 'recorded_at': time.time()})

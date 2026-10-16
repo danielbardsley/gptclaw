@@ -675,7 +675,7 @@ def dispatch(root, action, selected=None, operation_id=None, confirm=None):
     if action=='status' and contract['database'].get('storage')!=STORAGE:
         return {'project':slug,'state':'storage-upgrade-required','minimum_provider':'1.8.2','data_retained':True}
     require_storage(contract)
-    with a.locked(slug):
+    with a.locked(slug, project_guard=action!='status'):
         s=state(slug,root)
         if action=='status':
             return {'project':slug,'state':'uninitialized' if s is None else 'recovery-required' if s['blocked'] else 'ready' if ready(s,contract) else 'stopped',

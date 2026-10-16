@@ -283,7 +283,7 @@ class Broker:
         check((role in {'audit','create','enroll'}) == (repo_id is None),'credential-scope')
         permissions=dict(ROLES[role])
         if role=='provision' and name in workflow_names(self.profile):
-            with app.locked('credential-profile'):
+            with app.locked('credential-profile',project_guard=False):
                 current=profile()
                 check(current['app_id']==self.profile['app_id'] and current['installation_id']==self.profile['installation_id'] and name in workflow_names(current),'credential-disabled')
                 self.profile=current
@@ -353,7 +353,7 @@ class Broker:
         finally:token.close()
     def project_token(self, root, role):
         check(role in {'git','pr'},'credential-scope')
-        with app.locked('credential-profile'):
+        with app.locked('credential-profile',project_guard=False):
             current=profile()
             check(current['app_id']==self.profile['app_id'] and current['installation_id']==self.profile['installation_id'])
             self.profile=current
@@ -379,7 +379,7 @@ class Broker:
         check(binding['operation_id']==operation and binding['repository_id']==receipt['repository_id']
               and binding['name']==value['repository'] and binding['app_id']==self.profile['app_id']
               and binding['installation_id']==self.profile['installation_id'],'credential-policy')
-        with app.locked('credential-profile'):
+        with app.locked('credential-profile',project_guard=False):
             current=profile()
             check(current==self.profile,'credential-recovery');self.identity()
             entry={'state':'requested','repository_id':binding['repository_id'],
@@ -400,7 +400,7 @@ def configure(app_id,installation_id,key_file,bootstrap_ids,repository_selection
         'account':repos.ACCOUNT,'app_id':app_id,'installation_id':installation_id,
         'key_file':str(app.safe(Path(key_file).absolute())),'bootstrap_repository_ids':sorted(bootstrap_ids),
         'policy':'unprotected-private-dev','active':False,'creation_verified':False})
-    with app.locked('credential-profile'):
+    with app.locked('credential-profile',project_guard=False):
         check(configured() is None,'conflict')
         result=Broker(value).doctor()
         private_directory(location());app.save(location()/'profile.json',value)
@@ -409,7 +409,7 @@ def configure(app_id,installation_id,key_file,bootstrap_ids,repository_selection
 
 def set_installation_policy(repository_selection):
     # Explicit owner action, never inferred from a changed GitHub installation.
-    with app.locked('credential-profile'):
+    with app.locked('credential-profile',project_guard=False):
         old=profile();check(not old['active'],'credential-disabled')
         value=profile({**old,'schema_version':2,'repository_selection':repository_selection})
         result=Broker(value).doctor()
@@ -464,7 +464,7 @@ def upgrade_registered_helpers(roots=None):
 
 def set_workflow_policy(names):
     """Apply only an explicit owner-selected named policy after exact grant readback."""
-    with app.locked('credential-profile'):
+    with app.locked('credential-profile',project_guard=False):
         old=profile();check(not old['active'],'credential-disabled')
         base={k:v for k,v in old.items() if k not in {'workflow_repositories','workflow_verified'}}
         names=sorted(names)
@@ -482,7 +482,7 @@ def set_workflow_policy(names):
 
 def verify_workflow_publication(receipt):
     name=receipt['plan']['repository']
-    with app.locked('credential-profile'):
+    with app.locked('credential-profile',project_guard=False):
         current=profile()
         if name not in workflow_names(current):return
         provider=receipt.get('credential_provider',{})
@@ -493,7 +493,7 @@ def verify_workflow_publication(receipt):
 
 
 def set_active(active):
-    with app.locked('credential-profile'):
+    with app.locked('credential-profile',project_guard=False):
         value=profile()
         if active:
             Broker(value).doctor();check(value['creation_verified'],'credential-recovery')
@@ -503,7 +503,7 @@ def set_active(active):
 
 
 def rotate(key_file):
-    with app.locked('credential-profile'):
+    with app.locked('credential-profile',project_guard=False):
         old=profile();candidate={**old,'key_file':str(app.safe(Path(key_file).absolute()))}
         check(candidate['key_file']!=old['key_file'])
         result=Broker(candidate).doctor()
@@ -524,7 +524,7 @@ def disable(root):
 
 def enable(root):
     initial=bound(root,False)
-    with app.locked('credential-profile'),app.locked('credential-'+str(initial['repository_id'])):
+    with app.locked('credential-profile',project_guard=False),app.locked('credential-'+str(initial['repository_id'])):
         value=bound(root,False);current=profile();b=Broker(current);b.identity()
         with b.lease('git',value['repository_id'],value['name']) as token:
             actual=token.request('GET','/repos/'+repos.ACCOUNT+'/'+value['name'])
@@ -668,7 +668,7 @@ def create(name,directory=None,canary=False,template=None,version=None):
     result['ongoing_git_access']='configured-github-app-helper';result['pending']=['initial PR review/merge','starter quality/runtime checks']+([] if broker.profile['active'] else ['activate reviewed credential profile'])
     repos.persist(result)
     if canary:
-        with app.locked('credential-profile'):
+        with app.locked('credential-profile',project_guard=False):
             current=profile();check(current['app_id']==broker.profile['app_id'] and current['installation_id']==broker.profile['installation_id'])
             current['creation_verified']=True;app.save(location()/'profile.json',current)
     verify_workflow_publication(result)
@@ -689,7 +689,7 @@ def resume(operation,repo_id=None):
     enroll(receipt['plan']['destination']);result['ongoing_git_access']='configured-github-app-helper'
     result['pending']=['initial PR review/merge','starter quality/runtime checks']+([] if broker.profile['active'] else ['activate reviewed credential profile']);repos.persist(result)
     if provider and provider.get('canary'):
-        with app.locked('credential-profile'):
+        with app.locked('credential-profile',project_guard=False):
             current=profile();check(current['app_id']==broker.profile['app_id'] and current['installation_id']==broker.profile['installation_id'])
             current['creation_verified']=True;app.save(location()/'profile.json',current)
     verify_workflow_publication(result)

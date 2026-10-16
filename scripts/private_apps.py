@@ -20,7 +20,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.14.0'
+VERSION = '1.15.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -34,6 +34,14 @@ CPU = '1'
 PIDS = 256
 DEADLINE = 120
 MESSAGES = {
+ 'control-unsupported': 'This lifecycle action is unavailable for the selected profile or component.',
+ 'control-state': 'The selected runtime is not in a state that permits this action.',
+ 'control-paused': 'Resume or stop the paused project first.',
+ 'control-dependency': 'A required service is not ready; inspect dependencies before explicit recovery.',
+ 'control-recovery': 'An interrupted lifecycle operation requires explicit reconciliation before another write.',
+ 'control-expired': 'The existing Metro session authorization has expired or has insufficient time remaining.',
+ 'control-changed': 'The project, source or runtime changed; review a new action confirmation.',
+ 'control-capacity': 'The bounded lifecycle capacity was reached; inspect retained operations or build sources.',
  'metro-capacity': 'Owned Metro runtime retention reached its bounded capacity; inspect metro prune and remove only confirmed inactive generated copies. Source and unknown files are preserved.',
  'metro-prune-recovery': 'An owned Metro copy changed during cleanup; retain the prune-GENERATION staging directory and reconcile its identity before retrying. Canonical source is unchanged.',
  'metro-metadata-recovery': 'A Metro opt-in publication needs scoped reconciliation; inspect its owned metadata record and retained previous file before retrying.',
@@ -110,6 +118,9 @@ def save(path, value):
   with os.fdopen(fd, 'w') as out:
    json.dump(value, out, sort_keys=True, indent=2); out.write('\n'); out.flush(); os.fsync(out.fileno())
   os.replace(temp, path)
+  directory_fd=os.open(path.parent,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+  try:os.fsync(directory_fd)
+  finally:os.close(directory_fd)
  finally:
   if temp.exists(): temp.unlink()
 
@@ -120,7 +131,12 @@ def ensure_store():
 
 
 @contextlib.contextmanager
-def locked(name):
+def locked(name, *, project_guard=True):
+ import project_controls as controls
+ if controls.HELD.get() == name:
+  if project_guard:controls.check_guard(name)
+  yield
+  return
  ensure_store()
  path = STORE / (name + '.lock'); safe(path)
  fd = os.open(path, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
@@ -129,6 +145,7 @@ def locked(name):
   need(stat.S_ISREG(info.st_mode) and info.st_uid == os.getuid() and info.st_nlink == 1, 'path')
   try: fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
   except BlockingIOError: raise AppError('busy') from None
+  if project_guard:controls.check_guard(name)
   yield
  finally: os.close(fd)
 
@@ -210,10 +227,10 @@ def valid_state(s):
   except ValueError:raise AppError('conflict') from None
   need(api_url.scheme=='http' and api_url.hostname=='api' and api_url.username is None and api_url.password is None and not api_url.query and not api_url.fragment)
   need(type(api_port) is int and 1024<=api_port<=65535 and re.fullmatch(r'/[A-Za-z0-9._/-]*',api_url.path) and not any(p in {'.','..'} for p in api_url.path.split('/')))
- need(s.get('phase') in {'preparing','starting','ready','stopped','failed'})
+ need(s.get('phase') in {'preparing','starting','ready','stopped','failed','paused','pausing','resuming'})
  need(type(s.get('health_ready')) is bool)
  if 'toolchain_hash' in s:need(isinstance(s['toolchain_hash'],str) and re.fullmatch(r'[0-9a-f]{64}',s['toolchain_hash']))
- need(s.get('operation') in {'start','stop','restart','test','deps','build','format','lint','typecheck','security','verify'})
+ need(s.get('operation') in {'start','stop','restart','test','deps','build','format','lint','typecheck','security','verify','rebuild','pause','resume'})
  need(isinstance(s.get('operation_id'),str) and re.fullmatch(r'(?:prototype-)?[0-9a-f]{32}',s['operation_id']))
  need(s.get('error') is None or s['error'] in MESSAGES)
  need(s.get('operation_result') is None or s['operation_result'] in {'running','passed','failed','unknown'})
@@ -274,7 +291,7 @@ def available(port):
 def reserve(root, contract):
  need(contract['schema_version'] not in (5,6,9), 'mobile-unsupported')
  slug = contract['project']['id']
- with locked('registry'):
+ with locked('registry',project_guard=False):
   s = state_for(slug)
   if s:
    need(s['schema_version']==1 and s['root'] == str(root))
@@ -461,7 +478,7 @@ def inspect_service(s, contract):
   need(image==s['image'],'conflict')
   binding=obj.get('HostConfig',{}).get('PortBindings',{}).get(str(contract['service']['internal_port'])+'/tcp',[])
   need(binding == [{'HostIp':'127.0.0.1','HostPort':str(s['port'])}])
- return active, healthy(s,contract) if active else False
+ return active, healthy(s,contract) if active and not obj.get('State',{}).get('Paused',False) else False
 
 
 def write_unit(s, text):
@@ -541,6 +558,8 @@ def stop(root, take_lock=True):
   path=unit_path(s)
   if path.exists():verify_unit(s)
   container=object_owned('container',s['name'],s['token'])
+  if container and json_command(['podman','container','inspect',s['name']])[0].get('State',{}).get('Paused'):
+   command(['podman','unpause',s['name']],timeout=30)
   changed=path.exists() or container or s['phase']!='stopped'
   s.update(phase='stopped',health_ready=False,operation='stop',operation_result='running',operation_id=uuid.uuid4().hex)
   save(STORE/(slug+'.json'),s) # Revoke ingress mapping first.
@@ -562,6 +581,7 @@ def restart(root):
  root,contract=target(root);slug=contract['project']['id']
  with locked(slug):
   before=state_for(slug)
+  need(not before or before['phase'] not in {'paused','pausing','resuming'},'control-paused')
   stopped=stop(root,take_lock=False)
   started=start(root,take_lock=False)
   s=state_for(slug);s.update(operation='restart',operation_id=uuid.uuid4().hex)
@@ -580,7 +600,7 @@ def status(root):
  need(s['root']==str(root));active,ready=inspect_service(s,contract)
  busy=object_owned('container',s['name']+'-job',s['token'])
  return {'project':slug,'operation_id':s['operation_id'],'last_operation':s['operation'],
-         'state':'ready' if active and ready and s['phase']=='ready' and s['health_ready'] else 'unpublished' if active and ready else 'starting' if active else s['phase'] if s['phase'] in ('failed','preparing','starting') else 'stopped',
+         'state':'paused' if s['phase']=='paused' else 'ready' if active and ready and s['phase']=='ready' and s['health_ready'] else 'unpublished' if active and ready else 'starting' if active else s['phase'] if s['phase'] in ('failed','preparing','starting') else 'stopped',
          'health':'ready' if ready else 'unhealthy' if active else 'unknown',
          'port':s['port'],'route':route_info(slug),'last_error':s.get('error'),'operation_busy':busy,'operation_result':s.get('operation_result')}
 
@@ -670,7 +690,7 @@ NoNewPrivileges=true
 [Install]
 WantedBy=default.target
 '''
- with locked('ingress'):
+ with locked('ingress',project_guard=False):
   meta=read_json(STORE/'ingress-owner.json')
   # ingress-owner is not an app record; states() excludes it below.
   if path.exists():
@@ -705,7 +725,7 @@ WantedBy=default.target
 
 def provider_bundle():
  paths=[Path('scripts')/n for n in ['private_apps.py','private_ingress.py','project_manifest.py','project_dependencies.py','project_toolchains.py','gptclawctl.py','gptclawctl','project_repositories.py','repository_askpass.py','repository_credentials.py','repository_credential_helper.py','repository-credential-helper']]
- paths += [Path('scripts/project_worktrees.py'),Path('scripts/mobile_backend.py'),Path('schemas/project/v8.schema.json'),Path('schemas/project/v9.schema.json')]
+ paths += [Path('scripts/dashboard_controls.py'),Path('scripts/project_controls.py'),Path('scripts/project_worktrees.py'),Path('scripts/mobile_backend.py'),Path('schemas/project/v8.schema.json'),Path('schemas/project/v9.schema.json')]
  paths += [Path('scripts/project_mobile.py'), Path('scripts/expo_go.py'), Path('scripts/dashboard_go.py'), Path('config/mobile/expo-go-v1.json'), Path('scripts/metro_contract.py'), Path('scripts/metro_state.py'), Path('scripts/metro_protocol.py'), Path('scripts/metro_proxy.py'), Path('scripts/metro_routes.py'), Path('scripts/metro_retention.py'), Path('scripts/metro_sessions.py'), Path('scripts/metro_spike.py'), Path('scripts/metro_security.py'), Path('config/metro/runtime-security-v1.json'), Path('config/mobile/v1.json'), Path('schemas/project/v5.schema.json'), Path('schemas/project/v6.schema.json')]
  paths += [Path('scripts/dashboard_inventory.py'), Path('scripts/dashboard_collector.py'), Path('scripts/dashboard_observation.py'), Path('scripts/dashboard_status.py'), Path('scripts/dashboard_metro.py'), Path('scripts/dashboard_links.py')]
  paths += [Path('config/project-dependencies/v1.json'),Path('schemas/project-dependencies/v1.schema.json')]

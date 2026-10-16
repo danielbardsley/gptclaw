@@ -138,7 +138,7 @@ def slots():
 
 def reserve(root,identity):
     # Sticky project origins are never silently recycled while Serve config may remain.
-    with app.locked('registry'):
+    with app.locked('registry',project_guard=False):
         values=slots();project=identity['project']
         if project in values:
             item=values[project];app.need(item['root']==str(root) and item['canonical_key']==identity['key'],'conflict')
@@ -249,7 +249,7 @@ def revoke(policy_digest,apply=False):
     app.need(digest(security.read_policy(app.REPO))==policy_digest,'conflict')
     result={'policy_digest':policy_digest,'state':'revocation-planned','changed':False}
     if not apply:return result
-    with app.locked('registry'):
+    with app.locked('registry',project_guard=False):
         if path.exists():return {**result,'state':'revoked'}
         path.parent.mkdir(parents=True,mode=0o700,exist_ok=True)
         app.save(path,{'schema_version':1,'policy_digest':policy_digest,'revoked_at':time.time(),'reason':'owner-revocation'})
@@ -278,7 +278,7 @@ def lifetime(source,seconds=None):
     return maximum if seconds is None else seconds
 
 
-def start(root,no_route=False,ttl_seconds=None,expected_generation=None,transport=None):
+def start(root,no_route=False,ttl_seconds=None,expected_generation=None,transport=None,lease_expiry=None):
     spike.require_operator();root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported')
     app.need(transport in {None,'https','tailnet-http'},'invalid')
     seconds=lifetime(source,ttl_seconds)
@@ -286,6 +286,8 @@ def start(root,no_route=False,ttl_seconds=None,expected_generation=None,transpor
     with app.locked(project):
         require_idle(root,project);contract.inputs(root)
         old=load(project,root)
+        if lease_expiry is not None:
+            app.need(type(lease_expiry) in (int,float) and old is not None and time.time()<lease_expiry<=old['expires_at'],'control-expired')
         selected_transport=transport or ('tailnet-http' if old and old['origin'].startswith('http://') else 'https')
         if expected_generation is not None:
             app.need(isinstance(expected_generation,str) and states.HEX32.fullmatch(expected_generation)
@@ -311,7 +313,7 @@ def start(root,no_route=False,ttl_seconds=None,expected_generation=None,transpor
         input_files=hashes(root);image=observed['receipt']['image'];token=uuid.uuid4().hex;generation=uuid.uuid4().hex
         metro,proxy,tls=reserve(root,identity)
         origin=('http' if selected_transport=='tailnet-http' else 'https')+'://'+app.node_identity()+':'+str(tls)
-        now=time.time();expiry=min(now+seconds,security.timestamp(policy['expires_at']))
+        now=time.time();expiry=min(now+seconds,security.timestamp(policy['expires_at']),lease_expiry if lease_expiry is not None else now+seconds)
         value={'schema_version':2 if selected_transport=='tailnet-http' else 1,
                **({'transport':'private-tailnet-http'} if selected_transport=='tailnet-http' else {}),
                'adapter':'metro-v1','project':project,'root':str(root),'canonical_key':identity['key'],

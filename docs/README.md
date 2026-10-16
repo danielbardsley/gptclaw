@@ -254,6 +254,13 @@ dispositions independently of feature implementation status.
   [Tasks](036-mobile-python-backend/tasks.md) ·
   [Acceptance](036-mobile-python-backend/acceptance.md)
 
+- **037 — Dashboard constrained controls (DSH-009), implementation in progress:**
+  [Specification](037-dashboard-constrained-controls/spec.md) ·
+  [Technical design](037-dashboard-constrained-controls/technical-design.md) ·
+  [Tasks](037-dashboard-constrained-controls/tasks.md) ·
+  [Visual reference](037-dashboard-constrained-controls/reference.md) ·
+  [Acceptance tracking](037-dashboard-constrained-controls/acceptance.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in

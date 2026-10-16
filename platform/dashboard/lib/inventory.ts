@@ -1,3 +1,4 @@
+import type { Controls } from './control-types.ts';
 import type { ProjectLink } from './links.ts';
 import type { ProjectStatus } from './status.ts';
 
@@ -6,7 +7,7 @@ export type ProjectRow = {
   location: string; manifest_version: number; runtime_support: string;
   identity_state: string; owner: string | null; repository: string | null;
   documentation: { readme: string; index: string };
-  inventory_freshness?: string; status?: ProjectStatus; links?: ProjectLink[];
+  inventory_freshness?: string; controls?: Controls; status?: ProjectStatus; links?: ProjectLink[];
 };
 export type Snapshot = {
   schema_version: number; server_time?: number;

@@ -13,12 +13,18 @@ def main(argv=None):
  parser.add_argument('--version',dest='provider_version',action='store_true')
  sub=parser.add_subparsers(dest='action')
  new=sub.add_parser('new');new.add_argument('slug');new.add_argument('--directory');new.add_argument('--template');new.add_argument('--template-version');new.add_argument('--local-only',action='store_true');new.add_argument('--plan',action='store_true',help='Preview local or activated-profile GitHub creation without publishing source')
- for name in ['validate','start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','hooks']:
+ for name in ['validate','start','stop','restart','rebuild','pause','resume','status','observe','logs','test','build','format','lint','typecheck','security','verify','hooks']:
   p=sub.add_parser(name);p.add_argument('--project-root',required=True)
+  if name=='restart':p.add_argument('--component',choices=['web','api','db','metro'])
   if name in {'logs','test','build','format','lint','typecheck','security','verify'}:p.add_argument('--component',choices=['web','api','db'] if name=='logs' else ['web','api'])
   if name in {'start','restart'}:p.add_argument('--metro-transport',choices=['https','tailnet-http'],help='Explicit native Metro transport; HTTP remains inside the development tailnet.')
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
+ control=sub.add_parser('control',help='Typed lifecycle capabilities and explicit interrupted-operation reconciliation')
+ control_actions=control.add_subparsers(dest='control_action',required=True)
+ for name in ['capabilities','reconcile']:
+  p=control_actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True)
+  if name=='reconcile':p.add_argument('--operation-id',required=True);p.add_argument('--confirm',required=True)
  backend=sub.add_parser('backend',help='Explicit Python mobile development binding')
  backend_actions=backend.add_subparsers(dest='backend_action',required=True)
  for name in ['bind','inspect']:
@@ -118,7 +124,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['backend','metro','worktrees','db','new','validate','start','stop','restart','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'backend_actions':['bind','inspect'],'backend_contract_schemas':[1],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6,9],'metro_session_schemas':[1,2],'metro_control_schemas':[2,3],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[1],'project_manifest_schemas':[1,2,3,4,5,6,7,8,9],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6,7,8,9],'toolchain_schemas':[1,2],'template_catalogue_schema':7,'receipt_schema':1,'group_receipt_schema':4,'group_receipt_schemas':[2,3,4],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':5,'credential_profile_schemas':[1,2,3,4,5],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['control','backend','metro','worktrees','db','new','validate','start','stop','restart','rebuild','pause','resume','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'lifecycle_control_schema':1,'lifecycle_actions':['start','stop','restart','rebuild','pause','resume'],'component_restart':['web','api','db','metro'],'backend_actions':['bind','inspect'],'backend_contract_schemas':[1],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6,9],'metro_session_schemas':[1,2],'metro_control_schemas':[2,3],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[1],'project_manifest_schemas':[1,2,3,4,5,6,7,8,9],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6,7,8,9],'toolchain_schemas':[1,2],'template_catalogue_schema':7,'receipt_schema':1,'group_receipt_schema':4,'group_receipt_schemas':[2,3,4],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':5,'credential_profile_schemas':[1,2,3,4,5],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -185,6 +191,13 @@ def main(argv=None):
     result=worktrees.handoff(*common,args.owner,args.generation,checks,args.remaining,args.published,args.pr)
    elif action=='resume':result=worktrees.resume(*common,args.owner,args.generation,args.target_owner)
    else:result=worktrees.cleanup(*common,args.owner,args.generation,args.head,args.apply)
+  elif args.action=='control':
+   import project_controls as controls
+   result=controls.capabilities(args.project_root) if args.control_action=='capabilities' else __import__('dashboard_controls').reconcile_operation(args.project_root,args.operation_id,args.confirm)
+  elif args.action in {'rebuild','pause','resume'} or args.action=='restart' and getattr(args,'component',None) is not None:
+   import project_controls as controls
+   app.need(getattr(args,'metro_transport',None) is None,'invalid')
+   result=controls.execute(args.project_root,args.action,getattr(args,'component',None))
   elif args.action in {'start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','deps','toolchain','db','hooks'} and app.target(args.project_root)[1]['schema_version'] in (5,6,9):
    import project_mobile as mobile
    result=mobile.dispatch(args)

@@ -151,13 +151,18 @@ const { chromium } = require('playwright-core');
     await appLink.click();assert.equal(await toggle.getAttribute('aria-expanded'),'true');
   }
   await page.screenshot({path:'/checks/output/dashboard-refined-details.png',fullPage:true});
-  for(const width of [1280,768,390,720]) {
+  for(const width of [1440,1280,768,390,720]) {
     await page.setViewportSize({width,height:width===720?450:900});
     const bounds=await page.evaluate(()=>({viewport:innerWidth,document:document.documentElement.scrollWidth,overview:document.querySelector('.overview').getBoundingClientRect(),buttons:[...document.querySelectorAll('.project-row button,.project-row a')].map(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height}))}));
     assert.ok(bounds.document<=width+1,'Document overflow at '+width+': '+bounds.document);
+    const pills=await page.locator('.project-row .link-pill').evaluateAll(elements=>elements.map(element=>({height:element.getBoundingClientRect().height,font:getComputedStyle(element).fontSize,padding:getComputedStyle(element).padding,enabled:element.tagName==='A'})));
+    assert.ok(pills.some(pill=>pill.enabled)&&pills.some(pill=>!pill.enabled),'Mixed available/unavailable quick links required');
+    assert.ok(Math.max(...pills.map(pill=>pill.height))-Math.min(...pills.map(pill=>pill.height))<=1,'Quick-link heights differ at '+width);
+    assert.equal(new Set(pills.map(pill=>pill.font)).size,1,'Quick-link fonts differ at '+width);
+    assert.equal(new Set(pills.map(pill=>pill.padding)).size,1,'Quick-link padding differs at '+width);
     assert.ok(bounds.buttons.every(button=>button.width>= (width<=768?44:24) && button.height>= (width<=768?44:24)),'Small primary targets at '+width);
     assert.equal(await page.getByRole('columnheader',{name:'Project',exact:true}).count(),1);
-    assert.equal(await page.getByRole('rowheader').count(),6);
+    assert.equal(await page.locator('.project-name[role="rowheader"]').count(),6);
     if(width===390)await page.screenshot({path:'/checks/output/dashboard-refined-mobile.png',fullPage:true});
   }
   // 720 CSS px represents a 1440 px desktop at 200% layout zoom.
@@ -242,6 +247,84 @@ const { chromium } = require('playwright-core');
   await page.getByText('Metro observation unavailable',{exact:true}).waitFor();
   assert.equal(await page.getByRole('region',{name:'Metro session observations'}).count(),0);
   assert.equal(await page.evaluate(()=>localStorage.length),0);
+  // DSH-009 uses synthetic operation endpoints: no live runtime write here.
+  const controlNow=Date.now()/1000;
+  layout.rows=[{...fixture.rows[0],key:'c'.repeat(32),id:'controls-fixture',name:'Controls fixture',kind:'group',components:['api','db','web'],manifest_version:4,
+    inventory_freshness:'current',identity_state:'valid',runtime_support:'supported',links:[],
+    status:{...component,last_success_at:controlNow,observed_at:controlNow,components:Object.fromEntries(['api','db','web'].map(name=>[name,{...component,last_success_at:controlNow,observed_at:controlNow}])),publication:{state:'unavailable',origin:null},provider_version:'1.15.0'},
+    controls:{schema_version:1,enabled:true,capabilities:{schema_version:1,generation:'d'.repeat(64),observed_at:controlNow,actions:[
+      ...['start','stop','restart','rebuild','pause','resume'].map(action=>({action,component:null,enabled:!['pause','resume'].includes(action),reason:['pause','resume'].includes(action)?'control-unsupported':null})),
+      ...['api','db','web'].map(component=>({action:'restart',component,enabled:true,reason:null}))]},recent:[],retention_days:7}}];
+  layout.server_time=controlNow;layout.freshness='current';layout.complete=true;
+  const submissions=[];let latestOperation=null;let operationDone=false;let lostResponse=false;let intentScope=null;
+  await page.route('**/dashboard/api/control-session/',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({schema_version:1,csrf:'e'.repeat(64),expires_at:controlNow+900})}));
+  await page.route('**/dashboard/api/control-intents/',async route=>{
+    intentScope=route.request().postDataJSON();
+    return route.fulfill({contentType:'application/json',body:JSON.stringify({...intentScope,intent_id:'f'.repeat(32),generation:layout.rows[0].controls.capabilities.generation,prepared_at:controlNow,expires_at:controlNow+60,name:'Controls fixture',impact:'Interrupt selected service. Database records retained; sibling services stay running.'})});
+  });
+  await page.route('**/dashboard/api/operations/',async route=>{
+    const data=route.request().postDataJSON();submissions.push({...intentScope,...data});
+    latestOperation={schema_version:1,operation_id:data.idempotency_key,project_key:'c'.repeat(32),project:'controls-fixture',name:'Controls fixture',action:intentScope.action,component:intentScope.component,state:'running',stage:'start',stage_component:intentScope.component,reason:null,observed_at:null,created_at:controlNow,updated_at:controlNow};
+    if(lostResponse)return route.abort();
+    return route.fulfill({status:202,contentType:'application/json',body:JSON.stringify(latestOperation)});
+  });
+  await page.route(/\/dashboard\/api\/operations\/[0-9a-f]{32}\/$/,route=>route.fulfill({status:latestOperation?200:404,contentType:'application/json',body:JSON.stringify(latestOperation?{...latestOperation,state:operationDone?'succeeded':'running',stage:operationDone?'completed':'start',observed_at:operationDone?controlNow:null}:{error:'unknown-operation'})}));
+  await page.reload();await page.getByRole('button',{name:'Service details for Controls fixture'}).click();
+  const panel=page.getByRole('region',{name:'Lifecycle controls for Controls fixture'});
+  await panel.waitFor();
+  assert.equal(submissions.length,0);
+  assert.ok(await panel.getByRole('button',{name:'Pause entire project for Controls fixture',exact:true}).isDisabled());
+  const restartApi=panel.getByRole('button',{name:'Restart API for Controls fixture',exact:true});
+  await restartApi.click();
+  const confirm=page.getByRole('button',{name:'Confirm restart',exact:true});await confirm.waitFor();
+  assert.equal(submissions.length,0);
+  assert.equal(await confirm.evaluate(element=>element===document.activeElement),true);
+  // Hover must preserve readable text for both neutral Cancel and destructive Confirm.
+  for(const button of [panel.getByRole('button',{name:'Cancel',exact:true}),confirm]) {
+    await button.hover();
+    const ratio=await button.evaluate(element=>{
+      const luminance=color=>color.match(/[\d.]+/g).slice(0,3).map(Number).map(value=>{
+        value/=255;return value<=.04045?value/12.92:((value+.055)/1.055)**2.4;
+      }).reduce((sum,value,index)=>sum+value*[.2126,.7152,.0722][index],0);
+      const style=getComputedStyle(element),a=luminance(style.color),b=luminance(style.backgroundColor);
+      return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+    });
+    assert.ok(ratio>=4.5,'Confirmation button loses text contrast on hover: '+ratio);
+  }
+  layout.rows[0].controls.capabilities.observed_at=controlNow-60;
+  await panel.getByText('Controls unavailable while observations are stale.',{exact:true}).waitFor({timeout:8000});
+  assert.equal(await confirm.count(),1,'an older stale snapshot revoked a freshly validated intent');
+  assert.equal(submissions.length,0);
+  layout.rows[0].controls.capabilities.observed_at=controlNow;
+  await panel.getByText('Controls unavailable while observations are stale.',{exact:true}).waitFor({state:'hidden',timeout:8000});
+  await panel.getByRole('button',{name:'Cancel',exact:true}).click();
+  assert.equal(submissions.length,0);assert.equal(await restartApi.evaluate(element=>element===document.activeElement),true);
+  await restartApi.click();await confirm.click();
+  await panel.getByText(/Restart API: Running/).waitFor();
+  assert.equal(submissions.length,1);assert.equal(submissions[0].component,'api');
+  assert.ok(await panel.getByRole('button',{name:'Restart entire project for Controls fixture',exact:true}).isDisabled());
+  operationDone=true;
+  await panel.getByText(/Restart API: Succeeded/).waitFor({timeout:15000});
+  assert.equal(submissions.length,1);
+  assert.equal(layout.rows[0].status.components.api.restart_count,0);
+  lostResponse=true;operationDone=true;
+  await panel.getByRole('button',{name:'Restart DB for Controls fixture',exact:true}).click();await confirm.click();
+  await panel.getByText(/Restart DB: Succeeded/).waitFor({timeout:15000});
+  assert.equal(submissions.length,2);assert.equal(submissions[1].component,'db');
+  await restartApi.click();await confirm.waitFor();
+  layout.rows[0].controls.capabilities.generation='a'.repeat(64);
+  await panel.getByText('Confirmation expired or project changed. Select the action again.',{exact:true}).waitFor({timeout:8000});
+  assert.equal(await confirm.count(),0);assert.equal(submissions.length,2);
+  for(const width of [1440,1280,768,390,720]){
+    await page.setViewportSize({width,height:width===720?450:1000});
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`controls overflow at ${width}`);
+    if(width<=768){const bounds=await restartApi.boundingBox();assert.ok(bounds.height>=44);}
+    await page.screenshot({path:`/checks/output/dashboard-controls-${width}.png`,fullPage:true});
+  }
+  layout.rows[0].controls.capabilities.observed_at=controlNow-60;
+  await panel.getByText('Controls unavailable while observations are stale.',{exact:true}).waitFor({timeout:8000});
+  assert.ok(await restartApi.isDisabled());assert.equal(submissions.length,2);
+  console.log('PASS: lifecycle reference panel, scoped confirmation/cancel/focus, disabled profile controls, single component dispatch, busy state, lost-response recovery without replay, changed-generation invalidation, unchanged metrics and responsive controls');
   assert.deepEqual(errors, []);
   console.log('PASS: reference density and responsive bounds, disclosure refresh/focus, safe compact links, readable contrast, reduced motion, long metadata and omitted unsupported controls');
   console.log('PASS: real inventory render, semantic table, keyboard skip navigation, safe text, metadata gaps, empty/partial/stale/outage/recovery UI; accessible component status, zero/null metrics and stale health; validated navigation and local preview expiry');

@@ -3,6 +3,7 @@ import type { ProjectRow as Row } from '../lib/inventory.ts';
 import StatusPanel, { StatusSummary } from './StatusPanel.tsx';
 import ProjectLinks from './ProjectLinks.tsx';
 import MetroPanel, { MetroSummary } from './MetroPanel.tsx';
+import ControlPanel from './ControlPanel.tsx';
 import ExpoGoPanel from './ExpoGoPanel.tsx';
 const label = (value: string) => value.charAt(0).toUpperCase() + value.slice(1).replaceAll('-', ' ');
 const date = (value: number | null | undefined) => value == null ? 'Not observed' : new Date(value * 1000).toLocaleString();
@@ -30,6 +31,7 @@ export default function ProjectRow({ row, showStatus, showLinks, serverTime, ela
       <td role="cell" className="disclosure-cell"><button className="disclosure" type="button" aria-label={`Service details for ${row.name}`} aria-expanded={open} aria-controls={detailId} onClick={() => setOpen(value => !value)}><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none"><path d="m6 4 4 4-4 4" stroke="currentColor" strokeWidth="1.6"/></svg></button></td>
     </tr>
     <tr role="row" className="project-detail" id={detailId} hidden={!open}><td role="cell" colSpan={6 + Number(showStatus) + Number(showLinks)}>{open ? <div className="project-detail-content" role="region" aria-labelledby={headingId}>
+      <ControlPanel raw={row.controls} projectKey={row.key} projectId={row.id} name={row.name} status={row.status} serverTime={serverTime} elapsed={elapsed} forced={forced}/>
       <div className="detail-panels">
         <section className="detail-panel"><h3>Service details</h3><dl className="project-metadata">
           {showStatus ? <><dt>Status</dt><dd>{row.kind === 'mobile' ? <MetroSummary status={row.status} project={row.id} version={row.manifest_version} serverTime={serverTime} elapsed={elapsed} forced={forced}/> : <StatusSummary status={row.status} serverTime={serverTime} elapsed={elapsed} forced={forced}/>}</dd></> : null}

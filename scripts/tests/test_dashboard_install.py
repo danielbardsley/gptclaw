@@ -41,6 +41,10 @@ class ReleaseTests(unittest.TestCase):
         for target, name, value in [(app,'command',command),(app,'provider_bundle',lambda:app.STORE/'providers'/('1'*64)),
                                     (app,'node_identity',lambda:'forge-dev.example.ts.net'),(app,'available',lambda _:True)]:
             mock=patch.object(target,name,value);mock.start();self.addCleanup(mock.stop)
+        app.STORE.mkdir()
+        launcher=app.STORE/'providers'/('1'*64)/'scripts/gptclawctl'
+        (app.STORE/'gptclawctl').symlink_to(launcher)
+        app.save(app.STORE/'ingress-owner.json',{'launcher':str(launcher)})
 
     def test_prepare_activate_reprepare_stop_and_previous_release(self):
         first=manager.prepare()
@@ -109,6 +113,46 @@ class ReleaseTests(unittest.TestCase):
         (self.frontend/'escape').symlink_to(self.base/'outside')
         with self.assertRaises(app.AppError):manager.prepare()
         self.assertFalse(manager.PLATFORM.exists())
+
+    def test_controls_are_default_off_and_release_flag_freezes_service(self):
+        plain=manager.prepare();active=manager.prepare(with_controls=True)
+        self.assertNotEqual(plain,active)
+        manager.activate(active)
+        owner=manager.owner();self.assertTrue(owner['controls_enabled'])
+        self.assertIn(' --controls', (manager.USER_UNITS/manager.COLLECTOR_UNIT).read_text())
+        unit=manager.USER_UNITS/manager.CONTROL_UNIT
+        self.assertIn('--enabled',unit.read_text())
+        frontend=(manager.QUADLETS/'gptclaw-dashboard.container').read_text()
+        self.assertIn('DASHBOARD_CONTROLS=1',frontend)
+        self.assertNotIn('/run/podman',frontend)
+        manager.disable_controls()
+        self.assertTrue((manager.PLATFORM/'controls/v1/disabled').exists())
+        manager.activate(plain)
+        self.assertFalse(manager.owner()['controls_enabled']);self.assertFalse(unit.exists())
+        self.assertNotIn(' --controls', (manager.USER_UNITS/manager.COLLECTOR_UNIT).read_text())
+        self.assertIn('DASHBOARD_CONTROLS=0',(manager.QUADLETS/'gptclaw-dashboard.container').read_text())
+
+    def test_unknown_active_operations_refuse_rollback_without_discard(self):
+        active=manager.prepare(with_controls=True);manager.activate(active)
+        path=manager.PLATFORM/'controls/v1'/('a'*32+'.json')
+        app.save(path,{'schema_version':1,'operation_id':'a'*32,'state':'unknown','action':'restart','component':'web','reason':'control-recovery'})
+        self.calls.clear()
+        with self.assertRaises(app.AppError):manager.activate(manager.prepare())
+        self.assertTrue(path.exists())
+        self.assertFalse(any('stop' in args for args in self.calls))
+        manager.disable_controls()
+        self.assertTrue(path.exists())
+
+    def test_old_stable_provider_refuses_controls_before_service_changes(self):
+        active=manager.prepare(with_controls=True)
+        link=app.STORE/'gptclawctl';link.unlink()
+        link.symlink_to(app.STORE/'providers'/('2'*64)/'scripts/gptclawctl')
+        self.calls.clear()
+        with self.assertRaises(app.AppError) as error:manager.activate(active)
+        self.assertEqual(error.exception.code,'control-unsupported')
+        self.assertEqual(self.calls,[]);self.assertIsNone(manager.owner())
+        manager.activate(manager.prepare())
+        self.assertFalse(manager.owner()['controls_enabled'])
 
 
 class SocketRecoveryTests(unittest.TestCase):

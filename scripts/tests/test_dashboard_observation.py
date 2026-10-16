@@ -71,6 +71,24 @@ class ObservationTests(unittest.TestCase):
           'Config':{'Labels':{app.LABEL:s['token']},'Env':['SYNTHETIC_SECRET=do-not-project']},
           'HostConfig':{'PortBindings':{}},'Mounts':[{'Source':'synthetic-private-path'}]}
 
+    def test_published_single_typescript_api_keeps_health_and_docs_route(self):
+        root=self.root('typescript-api','fastify');s,_=self.runtime(root);self.active(s)
+        result=observation.project(root)
+        self.assertEqual(result['state'],'ready')
+        self.assertEqual(result['health'],'healthy')
+        self.assertEqual(result['routes']['docs_path'],'/projects/typescript-api/api/docs')
+        self.assertIsNone(result['routes']['app_path'])
+        self.assertFalse(any(argv[:2]==['podman','run'] for argv in self.calls))
+
+    def test_paused_podman_container_retains_active_unit_without_running_flag(self):
+        root=self.root('paused-web');s,_=self.runtime(root);self.active(s,ready=False)
+        s.update(phase='paused',health_ready=False);app.save(app.STORE/(s['id']+'.json'),s)
+        self.objects[s['name']]['State'].update(Running=False,Paused=True)
+        result=observation.project(root)
+        self.assertEqual(result['state'],'paused')
+        self.assertEqual(result['components']['web']['state'],'paused')
+        self.assertEqual(result['publication']['state'],'unavailable')
+
 
     def test_native_projection_is_readonly_and_has_no_http_components_or_routes(self):
         import metro_sessions

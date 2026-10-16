@@ -17,7 +17,7 @@ import private_apps as app
 from dashboard_inventory import identity, open_directory
 
 SCHEMA_VERSION = 1
-STATE_MAP = {'ready':'ready','stopped':'stopped','preparing':'starting','starting':'starting',
+STATE_MAP = {'paused':'paused','pausing':'starting','resuming':'starting','ready':'ready','stopped':'stopped','preparing':'starting','starting':'starting',
              'failed':'failed','degraded':'degraded','unhealthy':'degraded','unpublished':'degraded',
              'recovery-required':'degraded','uninitialized':'stopped'}
 HEALTH_MAP = {'ready':'healthy','unhealthy':'unhealthy','unknown':'unknown'}
@@ -86,9 +86,9 @@ def component(root, contract, *, now):
     app.need(not active or obj is not None,'conflict')
     if obj is not None:
         app.need(type(obj.get('State',{}).get('Running')) is bool,'conflict')
-        app.need(obj['State']['Running']==active,'conflict')
+        app.need((obj['State']['Running'] or obj['State'].get('Paused') is True)==active,'conflict')
     busy=app.object_owned('container',receipt['name']+'-job',receipt['token'])
-    provider_state=('ready' if active and ready else 'unhealthy' if active else receipt['phase'])
+    provider_state=('paused' if obj and obj.get('State',{}).get('Paused') else 'ready' if active and ready else 'unhealthy' if active else receipt['phase'])
     inconsistent = not active and receipt['phase']=='ready'
     if inconsistent: provider_state='resource-unavailable'
     return {'state':STATE_MAP.get(provider_state,'unknown'),'provider_state':provider_state,
@@ -128,7 +128,7 @@ def database(root, contract, *, now):
 
 
 READ_LOCK = threading.Lock()
-INSPECT_FORMAT = '[{"Id":{{json .ID}},"Image":{{json .Image}},"ImageName":{{json .ImageName}},"RestartCount":{{json .RestartCount}},"State":{"Running":{{json .State.Running}},"StartedAt":{{json .State.StartedAt}}},"Config":{"Labels":{{json .Config.Labels}}},"HostConfig":{"PortBindings":{{json .HostConfig.PortBindings}}}}]'
+INSPECT_FORMAT = '[{"Id":{{json .ID}},"Image":{{json .Image}},"ImageName":{{json .ImageName}},"RestartCount":{{json .RestartCount}},"State":{"Running":{{json .State.Running}},"Paused":{{json .State.Paused}},"StartedAt":{{json .State.StartedAt}}},"Config":{"Labels":{{json .Config.Labels}}},"HostConfig":{"PortBindings":{{json .HostConfig.PortBindings}}}}]'
 
 
 @contextlib.contextmanager
@@ -310,9 +310,10 @@ def route_descriptor(root, contract, result):
     # This is the fixed docs capability of the already validated supported
     # adapter, never a browser/manifest-supplied destination or path crawl.
     if result['publication']['state']=='published':
-        target=root if contract['schema_version']==2 else root/contract['components']['api']['root']
+        single=contract['schema_version'] in (2,7)
+        target=root if single else root/contract['components']['api']['root']
         from project_groups import identity as group_identity
-        name=slug if contract['schema_version']==2 else group_identity(slug,'api')
+        name=slug if single else group_identity(slug,'api')
         receipt=app.state_for(name)
         if receipt and receipt['root']==str(target):
             opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),app.NoRedirect())

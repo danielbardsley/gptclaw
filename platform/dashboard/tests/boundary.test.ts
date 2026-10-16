@@ -20,3 +20,16 @@ test('a user can navigate from an external link without opening cross-origin API
   assert.equal(allowedRequest(request('GET', origin+'/dashboard/', navigation), origin), null);
   assert.equal(allowedRequest(request('GET', origin+'/dashboard/api/snapshot/', navigation), origin), 403);
 });
+
+test('controls enable only exact typed same-origin JSON writes',()=>{
+  const headers={origin,'sec-fetch-site':'same-origin','content-type':'application/json'};
+  const write=request('POST',origin+'/dashboard/api/control-intents/',headers);
+  assert.equal(allowedRequest(write,origin,false),405);
+  assert.equal(allowedRequest(write,origin,true),null);
+  for(const path of ['/dashboard/api/snapshot/','/dashboard/shell/','/dashboard/api/operations/?root=/etc'])assert.notEqual(allowedRequest(request('POST',origin+path,headers),origin,true),null);
+  for(const extra of [{origin:''},{origin:'https://attacker.example'},{'sec-fetch-site':'cross-site'},{'content-type':'text/plain'}])assert.equal(allowedRequest(request('POST',write.url,{...headers,...extra}),origin,true),403);
+  assert.equal(allowedRequest(request('GET',origin+'/dashboard/api/control-session/',{'sec-fetch-site':'cross-site'}),origin,true),403);
+  assert.equal(allowedRequest(request('GET',origin+'/dashboard/api/control-session/',{'sec-fetch-site':'same-origin'}),origin,true),null);
+  assert.equal(allowedRequest(request('GET',origin+'/dashboard/api/operations/'+'a'.repeat(32)+'/',{'sec-fetch-site':'same-origin'}),origin,true),null);
+  assert.equal(allowedRequest(request('GET',origin+'/dashboard/api/operations/not-an-id/',{'sec-fetch-site':'same-origin'}),origin,true),404);
+});
