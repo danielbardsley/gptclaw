@@ -45,7 +45,7 @@ This task does not authorize installing a new private release or public exposure
 - [x] Implement scoped theme tokens, pre-paint initialization and header toggle.
 - [x] Add initialization unit tests and browser persistence/system/storage/contrast regressions.
 - [x] Finish frozen build/typecheck/tests, browser assertions and source comparison.
-- [ ] Complete broad repository checks (runner interrupted; continuation in progress).
+- [ ] Complete broad repository checks (both local attempts terminated; CI pending).
 - [x] Deliver reviewable Git changes in [PR #88](https://github.com/danielbardsley/gptclaw/pull/88); CI remains pending.
 
 No CI, installed-release or project-owner acceptance is claimed by local fixtures.
@@ -78,8 +78,8 @@ No dependency or lockfile changes.
 - Focused inventory tests: 13 passed. Diff whitespace, changed documentation
   relative links, browser-script syntax and repository-checker shell syntax passed.
 - Full offline repository checker was terminated with signal 15 after 15 passing
-  suites; no assertion failure was reported. Remaining-suite continuation is
-  tracked separately. Full CI remains required.
+  suites; no assertion failure was reported. Remaining-suite continuation also ended with signal 15 after additional
+  passing suites; no completed full offline gate is claimed. Full CI remains required.
 - [Design QA](../../design-qa.md) passed the scoped visual comparison. Local PNGs
   remain under `.dashboard-qa/dark-mode/` and contain only synthetic fixture data.
 
