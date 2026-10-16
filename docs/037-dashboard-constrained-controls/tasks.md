@@ -106,7 +106,7 @@ Maps CTL-007 → AC-001/005/007. Depends on TASK-037-007.
 - [x] On owned synthetic single web/API, ephemeral group, web/API/DB, API/DB and Metro fixtures, execute applicable project actions and each individual restart; capture before/after sibling identities and real readiness/route evidence.
 - [x] Verify actual DB record/volume retention, ephemeral API warning/loss, dependency/DB failure recovery and Metro/backend independence; prove stateless freeze/unfreeze and DB/Metro unsupported refusals.
 - [x] Verify lost response/reload reconciliation, default-off/disable behavior and recovery-first rollback with real owned receipts and no unrelated changes.
-- [ ] Project owner checks desktop/narrow/keyboard/actual zoom and confirms usability/design/results; record actual owner acceptance separately from automation.
+- [x] Project owner checks desktop/narrow/keyboard/actual zoom and confirms usability/design/results; the superseding recheck was accepted in full on October 16 UTC.
 - [ ] Finish evidence, reviewable implementation PR and merge; update index/catalogue Delivered only when all required criteria pass. Preserve explicit remote-task exclusion and deferred profile capabilities.
 - [ ] Remove only task-owned disposable fixtures through reviewed lifecycle, retain required evidence, and hand over Git state/remaining work.
 
@@ -116,9 +116,9 @@ TASK-037-008. Planning/implementation/CI/rollout/owner acceptance remain distinc
 ## Current handover
 
 Implementation and both owner-requested visual corrections are published in
-[draft PR #86](https://github.com/danielbardsley/gptclaw/pull/86) on
-`codex/dsh-009-controls`. All four CI workflows passed implementation revision
-`4ced498`. The local broad gate passed 888 cases/46 suites with its mixed-worktree
+[PR #86](https://github.com/danielbardsley/gptclaw/pull/86) on
+`codex/dsh-009-controls`. All four CI workflows passed evidence checkpoint
+`1911452`; this subsequent acceptance update requires its applicable checks. The local broad gate passed 888 cases/46 suites with its mixed-worktree
 scope recorded separately from exact CI in [acceptance](acceptance.md).
 
 All five actual private application matrices and the managed Metro matrix passed.
@@ -132,13 +132,14 @@ source/manifest/lock hashes; runtime admission fingerprinting remains strict.
 Actual persistent-note read-only rollback retained instances, database identity,
 note and 51 operation records, then restored controls and stopped the fixture.
 The final controls/rollback releases and exact provider are recorded in acceptance.
-All five fixture runtime sets are absent. The isolation peer remains ready only for
-the owner's recheck. Ten pre-existing runtime IDs/states and 443/8445 handlers are
+All five fixture runtime sets are absent. After full owner usability acceptance,
+the reviewed CLI stopped the isolation peer; its passed receipt is recorded in acceptance. Ten pre-existing runtime IDs/states and 443/8445 handlers are
 unchanged; both Metro fixtures are inactive with no owned handles/proxies.
 
 Hover and quick-link sizing corrections passed pinned frontend and actual private
-browser checks and are installed. Owner desktop/mobile/keyboard/actual-zoom recheck
-remains open; the feedback reports were not acceptance. The existing SSM operator
-must still remove only temporary 8443/8444 handlers. Then finish peer cleanup, final
-evidence publication/CI and review/merge. Keep the catalogue In progress until merged
-implementation and all required acceptance pass. Remote task opening remains excluded.
+browser checks and are installed. The project owner accepted all requested checks,
+including desktop/mobile, keyboard, actual 200% zoom and Restart API → Cancel.
+The existing SSM operator must still remove only temporary 8443/8444 handlers.
+Then finish final evidence publication and review/merge. Keep the catalogue In
+progress until merged implementation and all required acceptance pass. Remote
+task opening remains excluded.

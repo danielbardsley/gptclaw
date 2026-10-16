@@ -1,10 +1,10 @@
 # SPEC-037 acceptance evidence
 
-- **Status:** Technical acceptance passed; owner acceptance, cleanup and delivery pending
+- **Status:** Technical and owner usability acceptance passed; operator cleanup and delivery pending
 - **Owner:** Project owner
-- **Date:** 2026-10-15 UTC
+- **Date:** 2026-10-16 UTC
 - **Specification:** [SPEC-037](spec.md) · **Design:** [TDD-037](technical-design.md) · **Tasks:** [TASKS-037](tasks.md)
-- **Implementation:** [Draft PR #86](https://github.com/danielbardsley/gptclaw/pull/86), branch `codex/dsh-009-controls`
+- **Implementation:** [PR #86](https://github.com/danielbardsley/gptclaw/pull/86), branch `codex/dsh-009-controls`
 
 Implementation, PR publication and private rollout/fixture acceptance were separately
 authorized. Remote task opening remains excluded. Owner usability acceptance,
@@ -19,8 +19,8 @@ review/merge and catalogue delivery remain separate gates.
 | AC-003 | Deployed independent WEB/API/DB/Metro restarts preserved siblings, persistent notes/storage identity and the isolation peer. Ephemeral API warning/loss and Metro lease/backend independence passed; dependency/DB-failure recovery tests passed. | None for technical isolation/data acceptance. |
 | AC-004 | Strict socket/frontend and ten actual HTTPS adversarial cases passed. Final installed frontend has only read-only immutable assets and socket-directory mounts. | None for the technical boundary. |
 | AC-005 | Contention, idempotency, timeout, worker/controller death, storage and retention tests passed. Actual unknown Pause, lost admission response, disconnected rebuild client and browser receipt reload were resolved without replay. | None for technical recovery acceptance. |
-| AC-006 | Synthetic reference/viewport/focus/contrast/response-loss regressions passed. Real private confirmation/Cancel, reload recovery and both owner-requested visual corrections passed browser checks. | Owner desktop/mobile/keyboard/actual-zoom recheck remains open. Feedback is not acceptance. |
-| AC-007 | Local/focused/frontend checks, exact implementation CI, all deployed fixture matrices, persistent-note rollback and deployment/isolation audit passed. | Final evidence publication/CI, owner acceptance, operator route cleanup, peer cleanup, review/merge and delivery records. |
+| AC-006 | Synthetic reference/viewport/focus/contrast/response-loss regressions passed. Real private confirmation/Cancel, reload recovery and both owner-requested visual corrections passed browser checks. | None. The project owner accepted all requested checks after both corrections. |
+| AC-007 | Local/focused/frontend checks, exact implementation CI, all deployed fixture matrices, persistent-note rollback and deployment/isolation audit passed. | Operator route cleanup, review/merge and final delivery records. Subsequent documentation changes require their applicable checks. |
 
 ## Local and CI verification
 
@@ -45,8 +45,10 @@ All four applicable workflows passed implementation revision `4ced498`:
 [application](https://github.com/danielbardsley/gptclaw/actions/runs/38823534635),
 [development host](https://github.com/danielbardsley/gptclaw/actions/runs/38823534623)
 and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38823534621).
-All four also passed `66ef219` before the sizing correction. Final documentation
-publication/CI is a separate remaining delivery gate.
+All four also passed `66ef219` before the sizing correction. All four final-head
+workflows passed evidence checkpoint `1911452`: dashboard (38825155832), application
+(38825155870), development host (38825155846), federation (38825155860). These
+results precede the subsequent owner-acceptance documentation update.
 
 ## Actual private fixture matrix
 
@@ -154,9 +156,21 @@ The project owner requested two corrections; both are implemented and installed:
 - Confirmation hover: the shared neutral hover rule washed out the red confirmation button while leaving white text. Explicit neutral Cancel and dark-red Confirm states passed real private contrast checks (15.11:1 and 7.19:1).
 - Quick-link sizing: mobile CSS gave only clickable anchors a 44 px minimum while unavailable spans retained 24 px. All quick-link pills now share mobile minimum dimensions. The full frontend gate and real read-only Fieldnotes API/Mobile checks passed equal heights/fonts/padding at 1440/1280/768/390/720 CSS px: 24 px desktop, 44 px mobile, no overflow and zero mutation requests. Only the two requested rows' link regions were captured.
 
-Neither feedback report constitutes owner acceptance. A fresh recheck covering both
-corrections, desktop/mobile, keyboard and actual 200% zoom has been requested.
-After that check, stop the retained synthetic peer through the reviewed lifecycle.
-Finish scoped operator cleanup, final evidence publication/CI and review/merge before
-marking DSH-009 Delivered. Catalogue status remains In progress. Generated evidence
-is task-private/ignored; no credentials, environment dumps or real datasets are committed.
+On October 16 UTC, the project owner answered **“Accept — all checks completed”**
+to the superseding recheck covering both corrections, desktop/mobile, keyboard,
+actual 200% zoom and the Restart API → Cancel flow. This is owner-reported usability
+acceptance, distinct from automated browser evidence, and supersedes the earlier
+limited phone sizing confirmation.
+
+After acceptance, the reviewed stable provider 1.15.0 stopped the retained synthetic
+peer `dsh009-ctl-f6a20747-peer` once. Receipt
+`1fbaef3f239a48a4b2b416751b8401e6` passed with `state=stopped`,
+`changed=true`, and source retained; subsequent status confirmed stopped, no busy
+operation and the same passed operation ID. Scoped native inspection found no peer
+container, and its private publication returned 404. This CLI cleanup is additional to the
+51 successful dashboard operations above.
+
+Scoped operator removal of temporary 8443/8444 handlers and review/merge remain
+open. Keep catalogue status In progress until merged implementation and required
+acceptance pass. Generated evidence is task-private/ignored; no credentials,
+environment dumps or real datasets are committed.
