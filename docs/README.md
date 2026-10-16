@@ -254,7 +254,7 @@ dispositions independently of feature implementation status.
   [Tasks](036-mobile-python-backend/tasks.md) ·
   [Acceptance](036-mobile-python-backend/acceptance.md)
 
-- **037 — Dashboard constrained controls (DSH-009), implementation in progress:**
+- **037 — Dashboard constrained controls (DSH-009), delivered and accepted:**
   [Specification](037-dashboard-constrained-controls/spec.md) ·
   [Technical design](037-dashboard-constrained-controls/technical-design.md) ·
   [Tasks](037-dashboard-constrained-controls/tasks.md) ·

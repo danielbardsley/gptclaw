@@ -1,8 +1,8 @@
 # TDD-037: Typed dashboard lifecycle operations
 
-- **Status:** Approved for implementation — work in progress
+- **Status:** Delivered and accepted
 - **Owner:** Project owner
-- **Date:** 2026-10-15 (America/New_York)
+- **Date:** 2026-10-16 (America/New_York)
 - **Specification:** [SPEC-037](spec.md) · **Tasks:** [TASKS-037](tasks.md)
 - **Visual target:** [Reference mapping](reference.md)
 

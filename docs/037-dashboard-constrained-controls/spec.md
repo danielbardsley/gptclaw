@@ -1,8 +1,8 @@
 # SPEC-037: Dashboard constrained controls
 
-- **Status:** Approved for implementation — work in progress
+- **Status:** Delivered and accepted
 - **Owner:** Project owner
-- **Date:** 2026-10-15 (America/New_York)
+- **Date:** 2026-10-16 (America/New_York)
 - **Feature:** DSH-009, runtime extensions needed for component restart and project controls
 - **Design:** [TDD-037](technical-design.md) · **Tasks:** [TASKS-037](tasks.md)
 - **Visual reference:** [Reference mapping and captures](reference.md)
