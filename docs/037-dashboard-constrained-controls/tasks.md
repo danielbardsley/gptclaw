@@ -1,8 +1,8 @@
 # TASKS-037: Dashboard constrained controls
 
-- **Status:** Implementation authorized — work in progress
+- **Status:** Delivered and accepted
 - **Owner:** Project owner
-- **Date:** 2026-10-15 (America/New_York)
+- **Date:** 2026-10-16 (America/New_York)
 - **Specification:** [SPEC-037](spec.md) · **Design:** [TDD-037](technical-design.md)
 - **Visual reference:** [Reference mapping](reference.md)
 
@@ -85,7 +85,7 @@ can proceed against frozen contracts while backend tests run, but must remain di
 - [x] Run frozen frontend install/test/typecheck/build through existing pinned rootless tools; retain existing snapshot/status/link/Metro/security regressions.
 - [x] Capture deterministic synthetic reference comparisons at 1440/1280/768/390 px and 200% reflow; verify keyboard/confirmation/refresh/focus/targets/contrast and no document overflow.
 - [x] Verify failed/stale/conflicted/unsupported/read-only/controller-unavailable presentation and no mutations from reads/navigation/disclosure; inspect resulting routes and restricted mounts.
-- [ ] Obtain applicable final-head CI and record local results separately. Create acceptance.md mapping each AC to actual evidence/pending status; do not claim live/owner acceptance from fixtures.
+- [x] Obtain applicable final-head CI and record local results separately. Create acceptance.md mapping each AC to actual evidence/pending status; do not claim live/owner acceptance from fixtures.
 
 Maps CTL-001–007 → AC-001–007. Depends on TASK-037-003–006. No Terraform or host
 package installation is expected; inspect actual changed scope if that assumption changes.
@@ -107,39 +107,30 @@ Maps CTL-007 → AC-001/005/007. Depends on TASK-037-007.
 - [x] Verify actual DB record/volume retention, ephemeral API warning/loss, dependency/DB failure recovery and Metro/backend independence; prove stateless freeze/unfreeze and DB/Metro unsupported refusals.
 - [x] Verify lost response/reload reconciliation, default-off/disable behavior and recovery-first rollback with real owned receipts and no unrelated changes.
 - [x] Project owner checks desktop/narrow/keyboard/actual zoom and confirms usability/design/results; the superseding recheck was accepted in full on October 16 UTC.
-- [ ] Finish evidence, reviewable implementation PR and merge; update index/catalogue Delivered only when all required criteria pass. Preserve explicit remote-task exclusion and deferred profile capabilities.
-- [ ] Remove only task-owned disposable fixtures through reviewed lifecycle, retain required evidence, and hand over Git state/remaining work.
+- [x] Finish evidence, reviewable implementation PR and merge; update index/catalogue Delivered only when all required criteria pass. Preserve explicit remote-task exclusion and deferred profile capabilities.
+- [x] Remove only task-owned disposable fixtures through reviewed lifecycle, retain required evidence, and hand over Git state/remaining work.
 
 Maps CTL-001–007 → AC-007 plus live portions of AC-002/003/005/006. Depends on
 TASK-037-008. Planning/implementation/CI/rollout/owner acceptance remain distinct.
 
-## Current handover
+## Delivery handover
 
-Implementation and both owner-requested visual corrections are published in
-[PR #86](https://github.com/danielbardsley/gptclaw/pull/86) on
-`codex/dsh-009-controls`. All four CI workflows passed evidence checkpoint
-`1911452`; this subsequent acceptance update requires its applicable checks. The local broad gate passed 888 cases/46 suites with its mixed-worktree
-scope recorded separately from exact CI in [acceptance](acceptance.md).
+[PR #86](https://github.com/danielbardsley/gptclaw/pull/86) merged as
+`6db3521cd1e4898a5ed67c8bd99368776e375d73` after explicit owner authorization.
+All four workflows passed its final head `a0af597`; the local broad gate's
+888 cases/46 suites remain separately classified as mixed-worktree evidence.
+[Acceptance](acceptance.md) maps every AC to local, CI, deployed and owner evidence.
 
-All five actual private application matrices and the managed Metro matrix passed.
-Readback verified 51 distinct successful dashboard operation receipts: 45 canonical
-application operations, four Metro operations and rollback-fixture Start/Stop.
-Persistent notes/storage identity, sibling instances, stateless freeze/resume,
-warned ephemeral API loss and running/stopped rebuild behavior passed. The exact
-Next-generated declaration change is recorded separately from unchanged application
-source/manifest/lock hashes; runtime admission fingerprinting remains strict.
+All five actual application matrices, managed Metro controls and persistent-note
+read-only rollback passed. The project owner accepted both visual corrections and
+all desktop/mobile/keyboard/actual-zoom/Cancel-flow checks. All synthetic application
+runtime sets, including the isolation peer, are stopped; both Metro fixtures are
+inactive with no owned handles/proxies. Synthetic source/data and operation evidence
+are deliberately retained, without deleting persistent volumes or user work.
 
-Actual persistent-note read-only rollback retained instances, database identity,
-note and 51 operation records, then restored controls and stopped the fixture.
-The final controls/rollback releases and exact provider are recorded in acceptance.
-All five fixture runtime sets are absent. After full owner usability acceptance,
-the reviewed CLI stopped the isolation peer; its passed receipt is recorded in acceptance. Ten pre-existing runtime IDs/states and 443/8445 handlers are
-unchanged; both Metro fixtures are inactive with no owned handles/proxies.
-
-Hover and quick-link sizing corrections passed pinned frontend and actual private
-browser checks and are installed. The project owner accepted all requested checks,
-including desktop/mobile, keyboard, actual 200% zoom and Restart API → Cancel.
-The existing SSM operator must still remove only temporary 8443/8444 handlers.
-Then finish final evidence publication and review/merge. Keep the catalogue In
-progress until merged implementation and all required acceptance pass. Remote
-task opening remains excluded.
+The existing operator removed only 8443/8444. Independent readback restored the exact
+original Serve digest, preserved 443/8445 and confirmed Funnel off. The installed
+controls release remains active; documentation closure performs no runtime rollout.
+Remote task opening is excluded; DB-group/Metro pause/resume and Metro rebuild remain
+deferred. No DSH-009 acceptance work remains; the delivery-record PR completes the
+normal documentation workflow.

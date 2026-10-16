@@ -1,6 +1,6 @@
 # SPEC-037 acceptance evidence
 
-- **Status:** Technical and owner usability acceptance passed; operator cleanup and delivery pending
+- **Status:** Delivered and accepted — all AC-001–007 passed
 - **Owner:** Project owner
 - **Date:** 2026-10-16 UTC
 - **Specification:** [SPEC-037](spec.md) · **Design:** [TDD-037](technical-design.md) · **Tasks:** [TASKS-037](tasks.md)
@@ -20,7 +20,7 @@ review/merge and catalogue delivery remain separate gates.
 | AC-004 | Strict socket/frontend and ten actual HTTPS adversarial cases passed. Final installed frontend has only read-only immutable assets and socket-directory mounts. | None for the technical boundary. |
 | AC-005 | Contention, idempotency, timeout, worker/controller death, storage and retention tests passed. Actual unknown Pause, lost admission response, disconnected rebuild client and browser receipt reload were resolved without replay. | None for technical recovery acceptance. |
 | AC-006 | Synthetic reference/viewport/focus/contrast/response-loss regressions passed. Real private confirmation/Cancel, reload recovery and both owner-requested visual corrections passed browser checks. | None. The project owner accepted all requested checks after both corrections. |
-| AC-007 | Local/focused/frontend checks, exact implementation CI, all deployed fixture matrices, persistent-note rollback and deployment/isolation audit passed. | Operator route cleanup, review/merge and final delivery records. Subsequent documentation changes require their applicable checks. |
+| AC-007 | Local/focused/frontend checks, exact implementation CI, all deployed fixture matrices, persistent-note rollback and deployment/isolation audit passed. | None for implementation acceptance. PR #86 merged; owner acceptance and scoped cleanup are complete. Delivery-record documentation follows its normal PR checks. |
 
 ## Local and CI verification
 
@@ -137,11 +137,10 @@ not renew either old lease. Final readback proved both fixtures inactive, owned
 handles absent, proxies free and retained Git sources clean. This is host/private
 Metro evidence, not physical Expo Go/native-client acceptance from other initiatives.
 
-The existing operator still needs to remove only 8443/8444 and return readback per
-the [operator handoff](operator-plan.md). The expected restored baseline digest is
-`e2260ad525b61b5f15e51d20e38f3074fda6e555458eb6a939fb827725b33e0a`.
-Current readback still matches the exact approved additions, with Funnel off.
-Forge has not administered Tailscale or removed unrelated handlers.
+The existing operator removed only 8443/8444 per the [operator handoff](operator-plan.md).
+Independent readback restored the exact baseline digest
+`e2260ad525b61b5f15e51d20e38f3074fda6e555458eb6a939fb827725b33e0a`,
+with unchanged 443/8445 handlers and Funnel off. Forge did not administer Tailscale.
 
 ## Presentation and owner acceptance
 
@@ -170,7 +169,20 @@ operation and the same passed operation ID. Scoped native inspection found no pe
 container, and its private publication returned 404. This CLI cleanup is additional to the
 51 successful dashboard operations above.
 
-Scoped operator removal of temporary 8443/8444 handlers and review/merge remain
-open. Keep catalogue status In progress until merged implementation and required
-acceptance pass. Generated evidence is task-private/ignored; no credentials,
-environment dumps or real datasets are committed.
+## Delivery closure
+
+The project owner explicitly approved merge and documentation delivery closure.
+After independent route-baseline verification, implementation PR #86 merged as
+`6db3521cd1e4898a5ed67c8bd99368776e375d73`. All four workflows passed final
+head `a0af597`: [dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/38841481754),
+[application](https://github.com/danielbardsley/gptclaw/actions/runs/38841481731),
+[development host](https://github.com/danielbardsley/gptclaw/actions/runs/38841481659)
+and [federation](https://github.com/danielbardsley/gptclaw/actions/runs/38841481664).
+All executed jobs passed; protected remote plan/apply jobs were skipped.
+
+Final installed-state readback confirms the same corrected controls release and
+all three dashboard services active. No new runtime deployment accompanied this
+documentation closure. Required evidence, synthetic sources and persistent data
+are retained; no fixture runtime remains intentionally running. Generated evidence
+is task-private/ignored; no credentials, environment dumps or real datasets are
+committed. DSH-009 is Delivered within its explicit bounded scope.

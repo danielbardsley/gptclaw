@@ -1,6 +1,6 @@
 # DSH-009 private Metro acceptance operator handoff
 
-- **Status:** Approved additions executed by existing operator and independently verified; removal pending
+- **Status:** Complete — additions and scoped removal executed by existing operator; exact baseline independently restored
 - **Owner:** Project owner / existing SSM operator
 - **Scope:** `mob001-accept-one` and `mob001-accept-two` acceptance only
 - **Related:** [Specification](spec.md), [acceptance](acceptance.md), [Metro runbook](../../runbooks/manage-metro.md)
@@ -69,3 +69,12 @@ tailscale serve status --json
 Independent readback must restore the baseline digest above. Preserve all existing
 443/8445 handlers, project source/data, policy and operation evidence. Unknown or
 changed ownership blocks removal; never reset Serve or remove an unrelated route.
+
+## Completed removal evidence
+
+The operator returned removal readback; independent `tailscale serve status --json`
+matched baseline digest
+`e2260ad525b61b5f15e51d20e38f3074fda6e555458eb6a939fb827725b33e0a`.
+Only 443/8445 remain, with original handlers/protocols and Funnel off. Both Metro
+fixtures were already inactive, with owned handles absent and proxies released.
+No operator cleanup remains for DSH-009.
