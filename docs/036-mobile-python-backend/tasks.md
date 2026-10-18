@@ -61,6 +61,23 @@ Date: 2026-10-15 (America/New_York).
 
 ## Current handover
 
+October 18 acceptance continuation: the project owner requested completion and
+confirmed the same Android/Expo Go matrix. Current installed binding/parity and
+12 isolated mobile/backend regressions pass. Fresh native quality and both bundle
+exports pass; private HTTPS CRUD/validation/pagination pass. A disposable staged
+restore invocation failed, then a fresh diagnostic restore and the complete
+recovery/migration/v1-client rerun passed; the original failure remains recorded.
+Compatible-provider rollback/roll-forward, API/DB component restarts and separate
+API source reload retained saved host markers and Metro isolation. The owner
+confirmed current QR launch, native CRUD/relaunch/deletion and offline uncertain
+save/draft recovery with no duplicate plus blank-title validation. Physical
+accessibility also has an owner-reported pass. The first outage response cannot
+establish stopped-backend behavior because its timing is unknown; the owner
+deferred a new coordinated check until later. Remaining phone
+outage/restart-readback/pagination/docs/screenshots, Metro restart and final
+disposition/owner acceptance remain pending. See the
+[current evidence](acceptance-2026-10-18.md); T9/T10 remain open.
+
 Implementation and local verification are complete on the isolated
 `codex/mobile-python-backend-spec` branch for PR #83. Exact API/DB-only and native
 notes starters, binding, versioned lifecycle/snapshot integration, native UI/client,
