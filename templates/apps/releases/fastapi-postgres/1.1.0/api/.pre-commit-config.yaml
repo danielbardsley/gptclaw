@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: python-quality
+        name: Managed Python quality checks
+        entry: .venv/bin/python scripts/quality.py verify
+        language: system
+        pass_filenames: false
+        always_run: true

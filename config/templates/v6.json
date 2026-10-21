@@ -118,6 +118,199 @@
         }
       ],
       "digest": "8b2b93e951e3c9143bc51b94900480820596c5dc33c7a4f95a11ba4e3269fbcb"
+    },
+    {
+      "id": "fastify",
+      "version": "1.1.0",
+      "description": "Private stateless TypeScript/Fastify API; migrations deferred",
+      "kind": "api",
+      "provider": "fastify-v1",
+      "manifest_schema": 7,
+      "catalogue_schema": 6,
+      "stack": [
+        "TypeScript",
+        "Fastify",
+        "OpenAPI"
+      ],
+      "toolchain": {
+        "schema_version": 1,
+        "profile": "node-pnpm",
+        "profile_version": 1,
+        "versions": {
+          "node": "24.21.0",
+          "pnpm": "12.10.1"
+        }
+      },
+      "data": "ephemeral",
+      "exposure": "private",
+      "substitutions": [
+        "project-id",
+        "project-name",
+        "base-path"
+      ],
+      "files": [
+        {
+          "source": ".dockerignore",
+          "output": ".dockerignore",
+          "sha256": "ffc195930e3b5679c1da32ee10f538607d8b82533687328752bd082f1932c9a3"
+        },
+        {
+          "source": ".github/dependabot.yml",
+          "output": ".github/dependabot.yml",
+          "sha256": "32700bff2e45e68d72a1951d6b44c96eea9c32fcd810749988446b8815766507"
+        },
+        {
+          "source": ".github/workflows/quality.yml",
+          "output": ".github/workflows/quality.yml",
+          "sha256": "f244a9f38545ec8effc2e48f5e222cf272d05b0920a4fe74958a7bf9c61e7877"
+        },
+        {
+          "source": ".gitignore",
+          "output": ".gitignore",
+          "sha256": "c111196e30b535bb75a713912d1dcaedefe6469712d4b88f14720de008322ee2"
+        },
+        {
+          "source": "AGENTS.md.template",
+          "output": "AGENTS.md",
+          "sha256": "d77c6a0a3b4d3eaa70bbb08ac10bce293d8422b745dc96d6f69392eb8be183e5"
+        },
+        {
+          "source": "Containerfile",
+          "output": "Containerfile",
+          "sha256": "b2e8105ff4c1f5cc3eeb03b9c5867bd384f5a3b1f620b663326eedd2c4c8a4f6"
+        },
+        {
+          "source": "README.md",
+          "output": "README.md",
+          "sha256": "ddbba8bf04ad8ca77fe9e49d548599f84aaa41014608da19e049a38c3317a68e"
+        },
+        {
+          "source": "checks/Browser.Containerfile",
+          "output": "checks/Browser.Containerfile",
+          "sha256": "6e28c3e0b7799a512bdccb7b08c2718508edfed8313845a909263186793936a1"
+        },
+        {
+          "source": "checks/acquire-browser.py",
+          "output": "checks/acquire-browser.py",
+          "sha256": "ed2d91e56332784baf12210b225506d4ef84023047742e0e42d6c79d9dab1e02"
+        },
+        {
+          "source": "checks/axe-LICENSE",
+          "output": "checks/axe-LICENSE",
+          "sha256": "af175b9d96ee93c21a036152e1b905b0b95304d4ae8c2c921c7609100ba8df7e"
+        },
+        {
+          "source": "checks/axe-provenance.json",
+          "output": "checks/axe-provenance.json",
+          "sha256": "9372379b881adb8300e018bd29d277008f265426eea6f447f9b9ebcdefb2b640"
+        },
+        {
+          "source": "checks/axe.min.js",
+          "output": "checks/axe.min.js",
+          "sha256": "20c09fe157a8a34a30e241aaa1fcdade657734f08ab379ecfbeb7d45cc46e878"
+        },
+        {
+          "source": "checks/browser.cjs",
+          "output": "checks/browser.cjs",
+          "sha256": "a635fa8e298aa9582c051420e5d7308bce3b3790dcbd24b857e38928067c5e3c"
+        },
+        {
+          "source": "checks/browser.json",
+          "output": "checks/browser.json",
+          "sha256": "25c1648672ee3ea1fbcebf796f64dde41bbf6774a128adce495160960787468a"
+        },
+        {
+          "source": "checks/gptclaw_quality.py",
+          "output": "checks/gptclaw_quality.py",
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
+        },
+        {
+          "source": "checks/toolchain-node/Containerfile",
+          "output": "checks/toolchain-node/Containerfile",
+          "sha256": "e5cd7670b43c0115a1193ac5f6ac19b5c2f39db03502123fcd8a4797652f1c3b"
+        },
+        {
+          "source": "checks/toolchain-node/install-pnpm.cjs",
+          "output": "checks/toolchain-node/install-pnpm.cjs",
+          "sha256": "43e29b1a2b518dbc37fc691f97852ec740db8eb4154b62c6d3bb816acd2b7640"
+        },
+        {
+          "source": "checks/toolchain-node/profile.json",
+          "output": "checks/toolchain-node/profile.json",
+          "sha256": "405e536e1b506787c5649164a25ff4101650f5ff8db7cddd2aca1dd0452c8608"
+        },
+        {
+          "source": "contract/openapi.json",
+          "output": "contract/openapi.json",
+          "sha256": "cae20eda6d44b2a816d5a8c036cc418ce875da92e5ffb296732275ffae9e53cc"
+        },
+        {
+          "source": "docs/quality.md",
+          "output": "docs/quality.md",
+          "sha256": "6c88b3de3ad372631b5f873c7b43bf428375b80aaa6c84f513abf7c7c00c82cf"
+        },
+        {
+          "source": "eslint.config.js",
+          "output": "eslint.config.js",
+          "sha256": "6fa7c9d8fa75628456b92de0abb604d5af3f56fd2bfb1867f4c88e697baad836"
+        },
+        {
+          "source": "package.json",
+          "output": "package.json",
+          "sha256": "b43d9d8b89743deb95e8d6a81e271c9768dfed265624099430d8f2427ab3d663"
+        },
+        {
+          "source": "pnpm-lock.yaml",
+          "output": "pnpm-lock.yaml",
+          "sha256": "45761829458944ea6e7cae6be00c1b4b55b37be402a24bfd7ecb6d1460472fba"
+        },
+        {
+          "source": "pnpm-workspace.yaml",
+          "output": "pnpm-workspace.yaml",
+          "sha256": "185021bac428281a21e476e8f0b2ad440916d0534f065fbd2a8b3d1213811f07"
+        },
+        {
+          "source": "quality.json",
+          "output": "quality.json",
+          "sha256": "557d63b13c1f6345764e51fbb09498d0e5d348933abc431abda05bdcdfd864bf"
+        },
+        {
+          "source": "scripts/preflight.ts",
+          "output": "scripts/preflight.ts",
+          "sha256": "0bcf5c951479e27eb785951b8359f6dd4c07db3fe73ed00d62c67b45fb3c96c0"
+        },
+        {
+          "source": "src/app.ts",
+          "output": "src/app.ts",
+          "sha256": "7a6d3a8d0d2e83c36855adf3205568fa0d176bcc5380c7312e2b31b361458184"
+        },
+        {
+          "source": "src/server.ts",
+          "output": "src/server.ts",
+          "sha256": "e9c0e4d0ebb4128dae63de50f30b8b255064cebc1589bef302b4646f254c5760"
+        },
+        {
+          "source": "src/service.ts",
+          "output": "src/service.ts",
+          "sha256": "4ed1799018f1974ad2d71be2c69e72d84bf4a1095e4fe12f1dff28710e8c8c12"
+        },
+        {
+          "source": "src/settings.ts",
+          "output": "src/settings.ts",
+          "sha256": "a8148039c44c8b212128a07a54863cbd2d17d011272e55a9fb8fe0ae336fefda"
+        },
+        {
+          "source": "tests/api.test.ts",
+          "output": "tests/api.test.ts",
+          "sha256": "7e0b5811323c9d73610c9c80ab0113774984166e03a617b7c77fb3380d808539"
+        },
+        {
+          "source": "tsconfig.json",
+          "output": "tsconfig.json",
+          "sha256": "f3e66dc9ac8c7207f0f33f6eb875f699ab7850af2924cb99f6d62b33b2e91ae7"
+        }
+      ],
+      "digest": "b6dee5e57f9498bd53df3cdfa54761c5a3fbb62c4e2ea70b0e06d87943695441"
     }
   ]
 }

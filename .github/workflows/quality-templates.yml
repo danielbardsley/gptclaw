@@ -1,0 +1,115 @@
+{
+  "name": "Quality template matrix",
+  "on": {
+    "pull_request": {
+      "paths": [
+        "templates/**",
+        "scripts/**",
+        "config/**",
+        "schemas/**",
+        ".github/workflows/quality-templates.yml"
+      ]
+    },
+    "push": {
+      "branches": [
+        "main"
+      ],
+      "paths": [
+        "templates/**",
+        "scripts/**",
+        "config/**",
+        "schemas/**",
+        ".github/workflows/quality-templates.yml"
+      ]
+    },
+    "schedule": [
+      {
+        "cron": "17 6 * * 1"
+      }
+    ],
+    "workflow_dispatch": {}
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "concurrency": {
+    "group": "quality-templates-${{ github.ref }}",
+    "cancel-in-progress": true
+  },
+  "jobs": {
+    "metadata": {
+      "runs-on": "ubuntu-24.04",
+      "timeout-minutes": 15,
+      "steps": [
+        {
+          "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "with": {
+            "persist-credentials": false,
+            "fetch-depth": 0
+          }
+        },
+        {
+          "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "with": {
+            "python-version": "3.12"
+          }
+        },
+        {
+          "name": "Prepare isolated manifest environment",
+          "run": "python3 scripts/setup-project-manifest.py --venv .venv-manifest"
+        },
+        {
+          "name": "Quality negative cases and exact-release generation",
+          "run": ".venv-manifest/bin/python scripts/tests/test_project_quality.py\n.venv-manifest/bin/python scripts/quality_templates.py\n.venv-manifest/bin/python scripts/check-template-releases.py --baseline \"${{ github.event.pull_request.base.sha || github.event.before || github.sha }}\""
+        },
+        {
+          "name": "Discover every supported exact quality release",
+          "id": "matrix",
+          "run": ".venv-manifest/bin/python scripts/quality_templates.py --list --github-output \"$GITHUB_OUTPUT\""
+        }
+      ],
+      "outputs": {
+        "matrix": "${{ steps.matrix.outputs.matrix }}"
+      }
+    },
+    "generated": {
+      "runs-on": "ubuntu-24.04",
+      "timeout-minutes": 45,
+      "strategy": {
+        "fail-fast": false,
+        "max-parallel": 3,
+        "matrix": "${{ fromJSON(needs.metadata.outputs.matrix) }}"
+      },
+      "steps": [
+        {
+          "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "with": {
+            "persist-credentials": false,
+            "fetch-depth": 0
+          }
+        },
+        {
+          "uses": "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "with": {
+            "python-version": "3.12"
+          }
+        },
+        {
+          "name": "Prepare isolated manifest environment",
+          "run": "python3 scripts/setup-project-manifest.py --venv .venv-manifest"
+        },
+        {
+          "name": "Exact generated release container checks",
+          "env": {
+            "TEMPLATE": "${{ matrix.template }}",
+            "VERSION": "${{ matrix.version }}"
+          },
+          "run": ".venv-manifest/bin/python scripts/quality_templates.py --template \"$TEMPLATE\" --version \"$VERSION\" --execute --engine docker"
+        }
+      ],
+      "needs": [
+        "metadata"
+      ]
+    }
+  }
+}
