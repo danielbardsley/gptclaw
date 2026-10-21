@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Behavioral QLT gates: real failure cases, source safety and generated metadata."""
 import copy
+import contextlib
+import io
 import datetime as dt
 import hashlib
 import importlib.util
@@ -71,6 +73,18 @@ class QualityTests(unittest.TestCase):
         for change in changes:
             broken=copy.deepcopy(value);change(broken)
             with self.assertRaises(q.GateError):q.workflow_policy(broken)
+
+    def test_generated_cache_identity_covers_native_and_component_recipes(self):
+        for path in (ROOT/'templates/apps/releases').glob('*/1.1.0/quality.json'):
+            config=q.config(path.parent)
+            workflow=q.read_json(path.parent/'.github/workflows/quality.yml')
+            cache=next(x for x in workflow['jobs']['quality']['steps'] if x.get('uses','').startswith('actions/cache@'))
+            key=cache['with']['key']
+            self.assertIn("'quality.json'",key)
+            self.assertIn("'**/checks/toolchain*/**'",key)
+            for component in config['components'].values():
+                recipe=q.relative(path.parent,component['recipe'])
+                self.assertIn(recipe,list(path.parent.glob('**/checks/toolchain*/**/Containerfile')))
 
     def test_updater_coverage_cap_and_registry_faults(self):
         root=ROOT/'templates/apps/releases/notes/1.1.0'; c=q.config(root)
@@ -144,6 +158,65 @@ class QualityTests(unittest.TestCase):
         with self.assertRaises(q.GateError):q.release_notes(self.root,value)
         self.assertEqual(git('rev-parse','HEAD'),target);self.assertEqual(git('tag'),'')
 
+
+    def notes_fixture(self):
+        def git(*args):
+            return subprocess.check_output(['git','-C',str(self.root),*args],text=True,stderr=subprocess.DEVNULL).strip()
+        git('init','-q');git('config','user.name','Fixture');git('config','user.email','fixture@example.invalid')
+        self.put('README.md','synthetic');git('add','.');git('commit','-qm','base');base=git('rev-parse','HEAD')
+        self.put('acceptance.md','Status: accepted\n');git('add','.');git('commit','-qm','accepted');target=git('rev-parse','HEAD')
+        value={'product':'Synthetic','version':'1.0.0','audience':'Developers','baseline':base,'target':target,'changes':[{'commit':target,'status':'accepted','category':'Compatibility and migration','summary':'Retain the previous client after an additive migration.','evidence':'acceptance.md'}]}
+        return git,value
+
+    def test_notes_invalid_ranges_evidence_and_duplicate_claims_fail(self):
+        git,value=self.notes_fixture()
+        mutations=[lambda v:v.update(baseline='main'),lambda v:v.update(target='f'*40),
+                   lambda v:v.update(baseline=value['target'],target=value['baseline']),
+                   lambda v:v['changes'][0].update(evidence='missing.md'),
+                   lambda v:v['changes'][0].update(commit=value['baseline']),
+                   lambda v:v['changes'].append(copy.deepcopy(v['changes'][0]))]
+        for mutate in mutations:
+            broken=copy.deepcopy(value);mutate(broken)
+            with self.assertRaises(q.GateError):q.release_notes(self.root,broken)
+        self.assertEqual(git('rev-parse','HEAD'),value['target']);self.assertEqual(git('tag'),'')
+
+    def test_notes_rerun_is_idempotent_and_preserves_manual_edits(self):
+        git,value=self.notes_fixture();source=self.put('changes.json',value);output=self.root/'NOTES.md'
+        args=['release-notes','--root',str(self.root),'--input',str(source),'--output',str(output)]
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(q.main(args),0);first=output.read_bytes();self.assertEqual(q.main(args),0)
+            self.assertEqual(output.read_bytes(),first)
+            output.write_bytes(first+b'\nManual owner edit.\n');manual=output.read_bytes()
+            self.assertEqual(q.main(args),1);self.assertEqual(output.read_bytes(),manual)
+        self.assertEqual(git('rev-parse','HEAD'),value['target']);self.assertEqual(git('tag'),'')
+
+    def test_notes_canaries_and_unaccepted_target_evidence(self):
+        git,value=self.notes_fixture()
+        for summary in ['gh'+'p_'+'a'*30,'https://'+'fixture.example.ts.net/projects/x/','<script>act()</script>','[execute](command)']:
+            broken=copy.deepcopy(value);broken['changes'][0]['summary']=summary
+            with self.assertRaises(q.GateError):q.release_notes(self.root,broken)
+        self.put('pending.md','Status: pending\n');git('add','pending.md');git('commit','-qm','pending')
+        value['target']=git('rev-parse','HEAD');value['changes'][0].update(commit=value['target'],evidence='pending.md')
+        self.assertEqual(q.release_notes(self.root,value)['state'],'pending')
+
+    def test_each_performance_metric_enforces_absolute_and_relative_caps(self):
+        for name,unit in [('bundle_bytes','bytes'),('latency_ms','ms'),('startup_ms','ms'),('peak_memory_mib','MiB')]:
+            profile={'runner':'synthetic','toolchain':'pinned','workload':'bounded','cache':'warm'}
+            baseline={'profile':profile,'revision':'baseline','metrics':{name:100}}
+            sample={'profile':profile,'revision':'target','metrics':{name:110}}
+            budget={name:{'unit':unit,'absolute':120,'regression':.1}}
+            self.assertEqual(q.compare_performance(baseline,sample,budget)['state'],'passed')
+            sample['metrics'][name]=111
+            self.assertEqual(q.compare_performance(baseline,sample,budget)['state'],'failed')
+            sample['metrics'][name]=110;budget[name]['absolute']=109
+            self.assertEqual(q.compare_performance(baseline,sample,budget)['state'],'failed')
+
+    def test_command_failure_redacts_diagnostic_canaries(self):
+        secret='gh'+'p_'+'a'*30;origin='https://'+'fixture.example.ts.net/projects/x/'
+        with self.assertRaises(q.GateError) as error:
+            q.execute([sys.executable,'-c','import sys; print(sys.argv[1]); raise SystemExit(7)',secret+' '+origin],self.root)
+        self.assertNotIn(secret,str(error.exception));self.assertNotIn(origin,str(error.exception))
+        self.assertIn('[redacted]',str(error.exception));self.assertIn('[private origin]',str(error.exception))
 
     def test_smoke_checks_ownership_source_content_and_redirects(self):
         root=self.root;self.put('source.txt','one')

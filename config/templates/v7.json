@@ -846,7 +846,7 @@
         {
           "source": ".github/workflows/quality.yml",
           "output": ".github/workflows/quality.yml",
-          "sha256": "05b61cc5f079afaab347021316e8f50a6ed701bd4a4bdfb67871166f7898a94c"
+          "sha256": "f244a9f38545ec8effc2e48f5e222cf272d05b0920a4fe74958a7bf9c61e7877"
         },
         {
           "source": ".gitignore",
@@ -1139,7 +1139,7 @@
           "sha256": "9f4941592d46baa13fcc693fd492a2d5d7e9c1d77218ba952e753a83146ccdd7"
         }
       ],
-      "digest": "670b3f1d2219dd6c35f2a2a8349910889bb2a86dde95ae6b5a9db2cd3ef09614"
+      "digest": "c28f1f7a97eea3f20e8a67ef0baa5693c3e52b87d31cf68b1e8ee5601a456e46"
     },
     {
       "id": "expo-notes",
@@ -1181,7 +1181,7 @@
         {
           "source": ".github/workflows/quality.yml",
           "output": ".github/workflows/quality.yml",
-          "sha256": "05b61cc5f079afaab347021316e8f50a6ed701bd4a4bdfb67871166f7898a94c"
+          "sha256": "f244a9f38545ec8effc2e48f5e222cf272d05b0920a4fe74958a7bf9c61e7877"
         },
         {
           "source": ".gitignore",
@@ -1379,7 +1379,7 @@
           "sha256": "40b81e3f7cb8e75c8891214b2553f0b50211cda2657c649e50d87c56b625dbbc"
         }
       ],
-      "digest": "d68658d82df985b23361130a0ba9ba9e0ada0656c0edd1b7064e7f7370902409"
+      "digest": "56d98e82b27bcbeb57c1d58473d27fc74131f701d21bbe6b00e508c938628870"
     }
   ]
 }

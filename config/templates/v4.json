@@ -877,7 +877,7 @@
         {
           "source": ".github/workflows/quality.yml",
           "output": ".github/workflows/quality.yml",
-          "sha256": "05b61cc5f079afaab347021316e8f50a6ed701bd4a4bdfb67871166f7898a94c"
+          "sha256": "f244a9f38545ec8effc2e48f5e222cf272d05b0920a4fe74958a7bf9c61e7877"
         },
         {
           "source": ".gitignore",
@@ -1345,7 +1345,7 @@
           "sha256": "4f1f6cde254a5d5e6a4b7a03d1f56a45366427388e896a6ed06c253f02b31b10"
         }
       ],
-      "digest": "5bbc408e077a2fc27b9e30f2e8d188b19e287c9af5ce966b7444d46442e64605"
+      "digest": "8bd8e17afecc76c817b4681244ce04b45f2548fadca823049c95d96d18843336"
     }
   ]
 }
