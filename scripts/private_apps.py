@@ -20,7 +20,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.16.0'
+VERSION = '1.17.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -195,7 +195,7 @@ def target(root):
  result, contract, code = validate_project(root)
  need(code == 0, 'invalid')
  marker = read_json(root / '.gptclaw/template.json')
- need(marker == {'provider': 'expo-notes-v1' if contract['schema_version']==9 else 'fastapi-postgres-v1' if contract['schema_version']==8 else 'expo-v1' if contract['schema_version'] in (5,6,9) else 'notes-postgres-v1' if contract['schema_version'] == 4 else 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'fastify-v1' if contract['schema_version'] == 7 else 'nextjs-v1'}, 'invalid')
+ need(marker == {'provider': 'nextjs-static-v1' if contract['schema_version']==10 else 'expo-notes-v1' if contract['schema_version']==9 else 'fastapi-postgres-v1' if contract['schema_version']==8 else 'expo-v1' if contract['schema_version'] in (5,6,9) else 'notes-postgres-v1' if contract['schema_version'] == 4 else 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'fastify-v1' if contract['schema_version'] == 7 else 'nextjs-v1'}, 'invalid')
  import project_templates as templates
  templates.validate_provenance(root)
  need(not any((root/name).exists() for name in ['.env','.env.local','.env.development','.env.production','.npmrc','.ssh','.aws']),'invalid')
@@ -392,7 +392,7 @@ def prepare(s,contract,build):
  digest=dependency_digest(s)
  import project_python as py
  python_profile = py.is_python(s['root'])
- if s.get('prepared_digest')==digest and (Path(s['root'])/('.venv' if python_profile else 'node_modules')).is_dir() and (not build or s.get('build_digest')==digest):return
+ if contract['schema_version'] != 10 and s.get('prepared_digest')==digest and (Path(s['root'])/('.venv' if python_profile else 'node_modules')).is_dir() and (not build or s.get('build_digest')==digest):return
  before=deps.context(Path(s['root']))['hashes']
  if python_profile: py.install(s,Path(s['root']))
  else: run_in_app(s,['pnpm','install','--frozen-lockfile',*deps.INSTALL_FLAGS],read_only_dependency_files=True)
@@ -627,6 +627,7 @@ def quality_app(root, action='test'):
   need(s['phase'] not in ('preparing','starting') or s['unit_sha256']=='0'*64,'busy')
   active,_=inspect_service(s,contract) if unit_path(s).exists() else (False,False)
   need(action != 'format' or not active, 'busy')
+  need(not (contract['schema_version']==10 and active and action in ('build','verify')), 'busy')
   s.update(operation=action,operation_id=uuid.uuid4().hex,operation_result='running')
   save(STORE/(slug+'.json'),s)
   try:
@@ -635,7 +636,7 @@ def quality_app(root, action='test'):
    else:
     tools.assert_active(selected,s)
     need(s.get('prepared_digest')==dependency_digest(s),'busy')
-   run_in_app(s,contract['commands'][action],read_only_dependency_files=contract['schema_version'] in (2,7))
+   run_in_app(s,contract['commands'][action],read_only_dependency_files=contract['schema_version'] in (2,7,10))
   except AppError as error:
    s.update(operation_result='failed',error=error.code)
    if not active:s.update(phase='failed',health_ready=False)

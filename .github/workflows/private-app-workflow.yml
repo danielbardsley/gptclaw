@@ -3,6 +3,8 @@ on:
   pull_request:
     paths:
       - .github/workflows/private-app-workflow.yml
+      - docs/038-static-site-template/**
+      - runbooks/manage-static-sites.md
       - scripts/**
       - config/mobile/**
       - docs/036-mobile-python-backend/**
@@ -42,6 +44,8 @@ on:
     branches: [main]
     paths:
       - .github/workflows/private-app-workflow.yml
+      - docs/038-static-site-template/**
+      - runbooks/manage-static-sites.md
       - scripts/**
       - config/mobile/**
       - docs/036-mobile-python-backend/**
@@ -240,3 +244,18 @@ jobs:
         run: docker build -f templates/apps/releases/fastify/1.0.0/Containerfile -t gptclaw-fastify-compiled templates/apps/releases/fastify/1.0.0
       - name: Verify standalone image as its unprivileged user
         run: docker run --rm --cap-drop=all --security-opt=no-new-privileges --memory=1536m --cpus=1 --pids-limit=256 gptclaw-fastify-compiled pnpm verify
+
+  static-site:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
+      - run: .venv-manifest/bin/python scripts/tests/test_project_static.py
+      - run: docker build -t gptclaw-toolchain-ci -f templates/apps/node-toolchain/Containerfile templates/apps/node-toolchain
+      - run: .venv-manifest/bin/python scripts/tests/check_static_template.py "$RUNNER_TEMP/gptclaw-static-template"

@@ -86,7 +86,7 @@ def strict_json(raw):
 
 def capabilities():
     return {'provider': 'gptclawctl', 'project_manifest_schemas': list(range(1, 10)),
-            'runtime_manifest_schemas': [1, 2, 3, 4, 6, 7, 8, 9], 'metro_session_schemas': [1]}
+            'runtime_manifest_schemas': [1, 2, 3, 4, 6, 7, 8, 9, 10], 'metro_session_schemas': [1]}
 
 
 def capability_job(root):

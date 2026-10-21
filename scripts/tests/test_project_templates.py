@@ -27,7 +27,7 @@ class Tests(unittest.TestCase):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         self.base=Path(temp.name);self.repo=self.base/'repo';self.repo.mkdir()
         for rel in ['config/metro','config/mobile','config/databases','config/templates','schemas/templates','config/toolchains','schemas/toolchains','config/project-dependencies','schemas/project-dependencies','schemas/project','templates/apps/releases','templates/apps/node-toolchain','templates/apps/python-toolchain']:
-            shutil.copytree(app.REPO/rel,self.repo/rel,ignore=shutil.ignore_patterns('.venv','.gptclaw-cache','.gptclaw-build','coverage','.expo','.cache','node_modules','__pycache__'))
+            shutil.copytree(app.REPO/rel,self.repo/rel,ignore=shutil.ignore_patterns('.venv','.gptclaw-cache','.gptclaw-build','coverage','.expo','.cache','.local','.next','out','.static-build','node_modules','__pycache__'))
         helper=Path('templates/apps/start-development-postgres.sh');(self.repo/helper).parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(app.REPO/helper,self.repo/helper)
         shutil.copytree(app.REPO/'scripts',self.repo/'scripts',ignore=shutil.ignore_patterns('__pycache__'))
         self.projects=self.base/'projects';self.projects.mkdir()
@@ -50,7 +50,7 @@ class Tests(unittest.TestCase):
     def test_cli_discovery_and_exact_pair(self):
         output=io.StringIO()
         with contextlib.redirect_stdout(output):self.assertEqual(cli.main(['templates','list']),0)
-        self.assertEqual(json.loads(output.getvalue())['schema_version'],7)
+        self.assertEqual(json.loads(output.getvalue())['schema_version'],8)
         with self.assertRaises(app.AppError):app.create('bad',template='nextjs')
         self.assertFalse((self.projects/'bad').exists())
     def test_unknown_range_and_mismatched_selection(self):

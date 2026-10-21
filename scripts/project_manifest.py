@@ -27,7 +27,7 @@ MESSAGES = {
     'yaml_feature': 'Aliases, anchors, explicit tags and merge keys are unsupported.',
     'document': 'Provide exactly one mapping document.',
     'mapping_key': 'Mapping keys must be unique strings.',
-    'version': 'Use a supported integer schema_version: 1 (web), 2 (API), 3 (ephemeral group), 4 (persistent group), 5 (mobile source), 6 (mobile Metro opt-in), 7 (TypeScript API), 8 (Python API/DB), or 9 (bound mobile).',
+    'version': 'Use a supported integer schema_version: 1 (web), 2 (API), 3 (ephemeral group), 4 (persistent group), 5 (mobile source), 6 (mobile Metro opt-in), 7 (TypeScript API), 8 (Python API/DB), 9 (bound mobile), or 10 (static web).',
     'field_required': 'A required field is missing.',
     'field_unknown': 'This object contains unsupported fields.',
     'field_type': 'The field has the wrong type.',
@@ -220,7 +220,7 @@ def validate_project(project_root, *, directory_fd=None):
             return failure('setup', 2)
         document = parse_manifest(read_manifest(project_root, directory_fd))
         version = document.get('schema_version')
-        if type(version) is not int or version not in (1, 2, 3, 4, 5, 6, 7, 8, 9):
+        if type(version) is not int or version not in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10):
             result, contract, code = failure('version')
             result['errors'][0]['path'] = '/schema_version'
             return result, contract, code
@@ -279,6 +279,8 @@ def validate_project(project_root, *, directory_fd=None):
                 if not project_mobile.manifest_config(project_root, document, directory_fd):
                     errors.append(diagnostic('field_value', '/mobile/app_config'))
             else:
+                if version == 10 and document['service']['health']['path'] != '/projects/'+document['project']['id']+'/_gptclaw/ready':
+                    errors.append(diagnostic('field_value', '/service/health/path'))
                 health = document['service']['health']['path']
                 if any(segment in ('.', '..') for segment in health.split('/')):
                     errors.append(diagnostic('field_value', '/service/health/path'))

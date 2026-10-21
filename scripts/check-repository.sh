@@ -261,6 +261,10 @@ if ! python3 -B scripts/tests/test_dashboard_controls.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_project_static.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/tests/test_project_smoke.py; then
   status=1
 fi

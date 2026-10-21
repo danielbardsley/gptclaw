@@ -26,11 +26,12 @@ def matrix():
     result = []
     for (name, version), (release, contents) in sorted(releases.items()):
         quality = 'quality.json' in contents
+        static = release['provider'] == 'nextjs-static-v1'
         if version == newest[name]:
-            app.need(quality, 'template-policy')
+            app.need(quality or static, 'template-policy')
         result.append({'id': name, 'version': version, 'digest': release['digest'],
-                       'provider': release['provider'], 'checks': 'full' if quality else 'historical-generation',
-                       'reason': 'Current quality-enabled release' if quality else 'Superseded exact release; preserve integrity and generation compatibility',
+                       'provider': release['provider'], 'checks': 'full' if quality else 'static' if static else 'historical-generation',
+                       'reason': 'Current quality-enabled release' if quality else 'Static adapter uses its export/browser/negative-check helper' if static else 'Superseded exact release; preserve integrity and generation compatibility',
                        'native_device': 'pending separate physical acceptance' if 'expo' in name else 'not applicable'})
     return result
 
@@ -47,7 +48,17 @@ def run(selected, engine, execute=False):
             slug = 'quality-'+cell['id'][:20]+'-'+cell['version'].replace('.', '-')
             root = Path(app.create(slug, template=cell['id'], template_version=cell['version'])['root'])
             report = {**cell, 'generation': 'passed', 'runtime': 'not run', 'cleanup': 'owned temporary fixture'}
-            if cell['checks'] == 'full':
+            if cell['checks'] == 'static':
+                app.target(root)
+                app.need(all((root/p).is_file() for p in ('scripts/build.mjs', 'scripts/check-output.mjs', 'scripts/browser.mjs', '.github/workflows/quality.yml')), 'template-policy')
+                report['metadata'] = 'passed'
+                if execute:
+                    image = 'gptclaw-static-quality-' + token
+                    subprocess.run([engine, 'build', '-t', image, '-f', str(app.REPO/'templates/apps/node-toolchain/Containerfile'), str(app.REPO/'templates/apps/node-toolchain')], check=True, timeout=900)
+                    subprocess.run([sys.executable, str(app.REPO/'scripts/tests/check_static_template.py'), str(base/'static-execution'), '--engine', engine, '--image', image, '--template-version', cell['version']], check=True, timeout=2400)
+                    report['runtime'] = 'passed'
+                    report['negative_checks'] = 'Static helper: format/lint/types, references, accessibility, budgets, unsupported server APIs and interruption refusal'
+            elif cell['checks'] == 'full':
                 spec = importlib.util.spec_from_file_location('quality_fixture_'+uuid.uuid4().hex, root/'checks/gptclaw_quality.py')
                 module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
                 c = module.config(root)
@@ -145,7 +156,7 @@ def main():
     app.need(bool(cells), 'template-policy')
     if args.list:
         if args.github_output:
-            payload={'include':[{'template':v['id'],'version':v['version']} for v in cells if v['checks']=='full']}
+            payload={'include':[{'template':v['id'],'version':v['version']} for v in cells if v['checks'] in {'full','static'}]}
             with args.github_output.open('a') as output: output.write('matrix='+json.dumps(payload,separators=(',',':'))+'\n')
         print(json.dumps(cells, indent=2)); return
     result = run(cells, args.engine, args.execute)
