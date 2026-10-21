@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+.static-build
+.gptclaw-cache
+.git
+.env*
+.npmrc
+.cache
+.local

@@ -1,6 +1,6 @@
 # SPEC-038 — Static site template (TPL-005)
 
-Status: Draft. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Approved for implementation; implementation in progress. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Technical design](technical-design.md) · [Tasks](tasks.md) ·
 [Catalogue](../platform/features.md) · [Architecture](../platform/architecture.md)
 
@@ -14,9 +14,10 @@ accessible pages, working links and bounded asset sizes before sharing privately
 
 The project owner requested this planning set and explicitly selected Next.js
 static export using the existing stack. That framework choice is recorded;
-the remaining scope, budgets and design are proposed for review. Specification
-approval and implementation authorization are pending. This request authorizes
-planning and its review PR, not implementation, runtime changes or deployment.
+the project owner subsequently instructed “Ok, lets implement the spec.” This
+approves the bounded scope, budgets and explicit rebuild/downtime design and
+authorizes implementation and necessary reversible verification. PR review, merge
+and owner acceptance remain distinct; public exposure and production are excluded.
 
 ## Scope and baseline
 

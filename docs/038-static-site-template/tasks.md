@@ -1,6 +1,6 @@
 # TASKS-038 — Static site template
 
-Status: Draft planning complete; approval and implementation pending.
+Status: Implementation authorized and in progress.
 Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Technical design](technical-design.md)
 

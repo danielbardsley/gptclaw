@@ -1,0 +1,25 @@
+name: Static site quality
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: docker build -t static-quality -f Containerfile .
+      - run: docker run --rm --entrypoint pnpm static-quality format
+      - run: docker run --rm --entrypoint pnpm static-quality lint
+      - run: docker run --rm --entrypoint pnpm static-quality typecheck
+      - run: docker run --rm --entrypoint pnpm static-quality test
+      - run: docker run --rm --entrypoint pnpm static-quality links
+      - run: docker run --rm --entrypoint pnpm static-quality security
+      - run: docker build -t static-browser -f checks/Browser.Containerfile checks
+      - run: |
+          docker create --name static-source static-quality
+          mkdir generated
+          docker cp static-source:/workspace/. generated/
+          docker rm static-source
+          docker run --rm --volume "$PWD/generated:/workspace:rw" --workdir /workspace --env GPTCLAW_PROJECT_ID=local-static static-browser node scripts/browser.mjs

@@ -24,7 +24,7 @@ OWNER = ContextVar('lifecycle_operation', default=None)
 HELD = ContextVar('lifecycle_project_lock', default=None)
 RECONCILING = ContextVar('lifecycle_reconciling', default=False)
 EXCLUDED = {'.git', 'node_modules', '.venv', '.next', '.gptclaw-cache', '.cache',
-            '__pycache__', '.pytest_cache', '.mypy_cache', '.ruff_cache', 'dist', 'coverage', '.coverage'}
+            'out', '.static-build', '__pycache__', '.pytest_cache', '.mypy_cache', '.ruff_cache', 'dist', 'coverage', '.coverage'}
 MAX_SOURCE = 64 * 1024 * 1024
 MAX_FILES = 10000
 SECRET_NAMES = {'.aws', '.ssh', '.secrets', '.netrc', '.npmrc', '.pypirc', 'auth.json', 'id_rsa', 'id_ed25519'}
@@ -175,7 +175,7 @@ def inspect_component(root, contract):
 
 def inspect(root, *, include_source=True):
     root, value = app.target(root)
-    app.need(value['schema_version'] in (1, 2, 3, 4, 6, 7, 8, 9), 'invalid')
+    app.need(value['schema_version'] in (1, 2, 3, 4, 6, 7, 8, 9, 10), 'invalid')
     parent, rows = runtime_rows(root, value)
     info = root.stat(follow_symlinks=False)
     source = source_files(root) if include_source else {}
@@ -533,6 +533,8 @@ def execute(root, action, component=None, *, expected=None, operation_id=None, s
                 if starting:
                     stage('start', 'metro')
                     metro.start(root, ttl_seconds=ttl, transport='tailnet-http' if old['origin'].startswith('http://') else 'https', lease_expiry=old['expires_at'])
+            elif value['schema_version']==10 and (action=='rebuild' or action=='restart' and component):
+                __import__('project_static').rebuild(root, value, rows, stage, restart=action=='restart')
             elif component:
                 restart_selected(root, value, parent, rows, component, stage)
             elif action in {'pause', 'resume'}:

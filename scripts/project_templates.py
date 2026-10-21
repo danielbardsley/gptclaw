@@ -76,6 +76,11 @@ def catalogue():
         extension=data(bound_path)
         check(not list(deps.StrictValidator(data(app().REPO/'schemas/templates/v7.schema.json')).iter_errors(extension)))
         value={**value,'schema_version':7,'releases':[*value['releases'],*extension['releases']]}
+    static_path = app().REPO/'config/templates/v8.json'
+    if static_path.exists() or static_path.is_symlink():
+        extension=data(static_path)
+        check(not list(deps.StrictValidator(data(app().REPO/'schemas/templates/v8.schema.json')).iter_errors(extension)))
+        value={**value,'schema_version':8,'releases':[*value['releases'],*extension['releases']]}
     releases = {}
     _, profiles = tools.registry()
     for release in value['releases']:
@@ -117,6 +122,14 @@ def catalogue():
             mobile.validate_package(deps.json_data(contents['package.json']))
             check(release['mobile_profile_digest']==hashlib.sha256(json.dumps(mobile.profile(),sort_keys=True,separators=(',',':')).encode()).hexdigest())
             releases[key] = (release, contents); continue
+        if release['provider'] == 'nextjs-static-v1':
+            check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','AGENTS.md','README.md','app/page.tsx','scripts/serve.mjs','scripts/build.mjs','Containerfile'} <= outputs)
+            package = deps.json_data(contents['package.json'])
+            policy, _ = deps.policy(); deps.validate_package(package, policy)
+            check(package['packageManager']=='pnpm@'+declaration['versions']['pnpm'])
+            for name,constraint in package.get('engines',{}).items():
+                check(tools.satisfies(declaration['versions'][name],constraint))
+            releases[key]=(release,contents);continue
         if release['provider'] == 'fastify-v1':
             check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','AGENTS.md','README.md','src/app.ts','src/server.ts','tests/api.test.ts','Containerfile'} <= outputs)
             package = deps.json_data(contents['package.json'])
@@ -226,6 +239,8 @@ def _generate(path, slug, release, contents):
             config = deps.json_data(contents['app.json'])
             config['expo'].update(mobile.identities(slug))
             (stage/'app.json').write_text(json.dumps(config,indent=2)+'\n')
+        if release['provider'] == 'nextjs-static-v1':
+            contract = __import__('project_static').contract(slug)
         if release['provider'] == 'fastify-v1':
             from project_fastify import contract as fastify_contract
             contract = fastify_contract(slug)
@@ -275,6 +290,8 @@ def bundle_paths():
         paths += [Path('scripts/project_fastify.py'),Path('config/templates/v6.json'),Path('schemas/templates/v6.schema.json'),Path('schemas/project/v7.schema.json')]
     if (app().REPO/'config/templates/v7.json').exists():
         paths += [Path('config/templates/v7.json'),Path('schemas/templates/v7.schema.json')]
+    if (app().REPO/'config/templates/v8.json').exists():
+        paths += [Path(p) for p in ('scripts/project_static.py','config/templates/v8.json','schemas/templates/v8.schema.json','schemas/project/v10.schema.json')]
     for release in value['releases']:
         base = Path('templates/apps/releases')/release['id']/release['version']
         paths += [base/item['source'] for item in release['files']]
