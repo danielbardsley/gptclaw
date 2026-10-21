@@ -189,8 +189,9 @@ capabilities; those are not prerequisites for creating the first applications.
 
 The project owner selected mobile delivery planning on October 13. Follow the
 [mobile sequence](sequence-mobile.md) to reuse the delivered backend/platform
-while extending native contracts. MOB-001 is now selected for
-[SPEC-031](../031-expo-project-creation/spec.md); other entries retain their own status. Sequencing does not authorize implementation,
+while extending native contracts. Android creation, private Metro/Go and the Python backend slice are delivered.
+The next selected planning requirement is [SPEC-049](../049-android-installable-builds/spec.md):
+Android development and standalone preview builds (MOB-004 with required MOB-005/006 slices). Sequencing does not authorize implementation,
 account changes or publication.
 
 | ID | Feature | Priority | Status | Intended outcome |
@@ -198,13 +199,13 @@ account changes or publication.
 | MOB-001 | Expo project creation | 4 | Delivered | [SPEC-031](../031-expo-project-creation/spec.md) delivers repeatable native source creation through the exact catalogue, mobile manifest/provider, pinned tools/dependencies, quality/bundle checks and private repository workflow. Implementation merged in [PR #73](https://github.com/danielbardsley/gptclaw/pull/73) as `f40a7f3`; local/CI/installed/private rollout and rollback passed. Project owner confirmed dashboard links/runtime messaging and source creation/edit/check acceptance October 13. [Evidence](../031-expo-project-creation/acceptance.md). Metro/device access, backend binding and signed builds remain follow-ups. |
 | MOB-002 | Physical-device development | 4 | Delivered | [SPEC-033](../033-private-metro-sessions/spec.md), [merged PR #78](https://github.com/danielbardsley/gptclaw/pull/78) and [acceptance](../033-private-metro-sessions/acceptance.md). Bounded rootless Metro, private transport, exact security/ownership and independent lifecycle/readiness/recovery are merged and installed. Android 11 / Expo Go 57.0.9 physical acceptance and final operator listener cleanup/readback pass. Both temporary runtimes/listeners are absent; source/history, existing HTTPS routes and apps/data are preserved. iOS remains unsupported/follow-up. |
 | MOB-003 | Expo Go workflow | 4 | Delivered | [SPEC-034](../034-expo-go-workflow/spec.md), [merged PR #78](https://github.com/danielbardsley/gptclaw/pull/78) and [acceptance](../034-expo-go-workflow/acceptance.md). Read-only eligibility/launch and minimum dashboard Open/copy/local QR are merged and installed. Two-project Android native edit/reload, failure/reconnect/expiry and final owned-listener cleanup pass. Client/SDK/profile freshness is enforced. iOS, signed development builds, account setup and backend CRUD remain separately scoped follow-ups. |
-| MOB-004 | Development builds | 4 | Candidate | Create and install the project's own signed Expo development client, with reviewed EAS account/signing custody, native-module compatibility and private Metro/API access. |
-| MOB-005 | Environment profiles | 4 | Candidate | Separate local/development/preview/production API bindings, app identities, builds and update channels. Client configuration is public; server, EAS and signing credentials have scoped storage/handoff and never enter bundles. |
-| MOB-006 | EAS Build and Submit | 5 | Candidate | Record reproducible build inputs and external job/artifact provenance, signed development/internal-preview binaries and authorized install access; deliver store testing/submission/release as separately gated slices. |
+| MOB-004 | Development builds | 4 | Draft | [SPEC-049](../049-android-installable-builds/spec.md) selects Android development-client installation, followed by a standalone preview APK. Planning only; approval/implementation remain pending. iOS remains Candidate. Create and install the project's own signed Expo development client, with reviewed EAS account/signing custody, native-module compatibility and private Metro/API access. |
+| MOB-005 | Environment profiles | 4 | Draft | [SPEC-049](../049-android-installable-builds/spec.md) selects development/preview Android identities and private API bindings; the development binding foundation is delivered by SPEC-036. Full local/production profiles and update channels remain Candidate. Separate local/development/preview/production API bindings, app identities, builds and update channels. Client configuration is public; server, EAS and signing credentials have scoped storage/handoff and never enter bundles. |
+| MOB-006 | EAS Build and Submit | 5 | Draft | [SPEC-049](../049-android-installable-builds/spec.md) selects Android development/internal-preview builds and authenticated installation access. Account, signing and budget choices remain open; store submission, iOS and release remain Candidate. Record reproducible build inputs and external job/artifact provenance, signed development/internal-preview binaries and authorized install access; deliver store testing/submission/release as separately gated slices. |
 | MOB-007 | EAS Update policy | 5 | Candidate | Define channels, runtime compatibility, rollout, rollback, and owner approval for updates. |
 | MOB-008 | Universal web preview | 4 | Candidate | Export or serve the Expo web target through the same private preview model when appropriate. |
 | MOB-009 | Device and release dashboard state | 5 | Candidate | Show distinct Metro/backend/build states, safe launch/install links, freshness, channels and native release versions through reviewed adapters; do not infer a device is online or model installed apps as HTTP containers. |
-| MOB-010 | Mobile backend integration | 4 | Delivered | [SPEC-036](../036-mobile-python-backend/spec.md) delivers the selected Android-first Python/FastAPI + PostgreSQL notes integration, merged in [PR #83](https://github.com/danielbardsley/gptclaw/pull/83). Automated/host migration, persistence, rollback and quality evidence plus owner-reported native CRUD/offline/accessibility passes are recorded. The project owner accepted and closed this slice October 21 with explicit remaining manual-evidence waivers in [the closeout](../036-mobile-python-backend/closeout-2026-10-21.md), carried by [PR #91](https://github.com/danielbardsley/gptclaw/pull/91). Trial runtimes are stopped and source/data retained; exact private-listener removal remains an operator follow-up. Broader integration, iOS and signed builds remain separately scoped. |
+| MOB-010 | Mobile backend integration | 4 | Delivered | [SPEC-036](../036-mobile-python-backend/spec.md) delivers the selected Android-first Python/FastAPI + PostgreSQL notes integration, merged in [PR #83](https://github.com/danielbardsley/gptclaw/pull/83). Automated/host migration, persistence, rollback and quality evidence plus owner-reported native CRUD/offline/accessibility passes are recorded. The project owner accepted and closed this slice October 21 with explicit remaining manual-evidence waivers in [the closeout](../036-mobile-python-backend/closeout-2026-10-21.md), carried by [PR #91](https://github.com/danielbardsley/gptclaw/pull/91). Trial runtimes are stopped and source/data retained; owner-supplied final Serve evidence confirms temporary-listener removal and preserved HTTPS routes. Broader integration, iOS and signed builds remain separately scoped. |
 | MOB-011 | Native application acceptance tests | 4 | Candidate | Pinned native component and device/end-to-end checks for iOS/Android, API CRUD/persistence, app relaunch, offline/reconnect, accessibility and build/update compatibility; record physical-device acceptance separately from web tests. |
 
 ## 12. Secrets, data, and security
@@ -282,42 +283,34 @@ account changes or publication.
 
 ## 17. Suggested specification sequence
 
-**Current owner selection (confirmed October 9, 2026, America/New_York):**
-Create, run, open and iterate on one private application, then run a second
-application independently on the same EC2 host. A second EC2 instance is not
-part of this milestone. PRJ-001's manifest is Delivered; rootless tooling and
-the host profile are Deployed, with remaining acceptance tracked separately.
-Independent SSM recovery and a small container smoke test have passed.
+**Current planning selection — October 21, 2026 (America/New_York):**
+[SPEC-049 — Installable Android builds](../049-android-installable-builds/spec.md)
+selects MOB-004 with necessary development/preview MOB-005/006 slices. The outcome
+is the app's own installed development client, then an APK that cold-launches with
+Expo Go absent and Metro stopped while using the existing private backend.
+Specification approval and implementation/external-operation authorization remain pending.
 
-[SPEC-018](../018-first-private-application/spec.md) planning merged in PR #38;
-Daniel then authorized implementation. Its initial PRJ-002/TPL-001/RUN-001–005/
-NET-101–103 slices are merged in [PR #40](https://github.com/danielbardsley/gptclaw/pull/40).
-Both desktop pages/counters, automatic source updates and first-app source-retaining
-stop/start are confirmed. The provider 1.0.1 port-reuse repair and final live evidence
-merged in [PR #43](https://github.com/danielbardsley/gptclaw/pull/43); its three CI
-workflows passed. This initial private-app slice is Delivered; broader features
-remain scoped by their own specifications.
-The earlier SPEC-017 acceptance-only draft was closed unmerged; the existing
-host acceptance records remain authoritative and their unrun checks stay pending.
+The original SPEC-018 private-app milestone is delivered. Repository automation,
+Python/PostgreSQL, templates and dashboard controls now have delivered slices;
+Android M1 is owner-accepted under [SPEC-036 closeout](../036-mobile-python-backend/closeout-2026-10-21.md),
+including explicit manual-evidence waivers. Do not reopen those tasks or claim
+waived checks ran. QLT-001–010 implementation merged in PR #95 and task records
+closed through PR #96; remaining rollout/adoption/acceptance evidence stays in
+SPEC-039–048. TPL-005 is delivered through SPEC-038. These are reusable foundations,
+not new prerequisites to implement again.
 
-Recommended sequence, subject to owner scope review:
+Recommended sequence:
 
-1. **Build the first real application:** use the accepted single-web CLI/template
-   workflow on this host. Two-app operation, automatic source updates and scoped
-   stop/start/source retention are proven; keep measuring actual app feedback
-   times as project size grows. No new dashboard or host tool installation is a
-   prerequisite.
-2. **Make real project delivery routine:** add PRJ-004/005's scoped repository
-   creation/credentials when manual setup becomes the next bottleneck; extend
-   QLT-001/002/004/009 for standard checks, PR CI and generated-template regression
-   tests. Reuse existing branch/guidance conventions before building a larger
-   orchestration system. Fit broad manifest commands through reviewed schema work.
-3. **Add data and secrets when the first real app needs them:** scope SEC-001,
-   RUN-011/012, backups and migration checks together. Until then, manifest v1
-   supports ephemeral application data; source retention is a different promise.
-4. **Expand only against demonstrated demand:** API/Python/Expo templates,
-   dashboards, capacity/cache automation, public previews, Slack and production
-   pipelines follow their own reviewed scopes.
+1. **Installable Android apps:** review SPEC-049, select app/device/account/signing
+   custody/budget, deliver development and standalone internal-preview APKs, and
+   record real installation/recovery evidence. No new AWS infrastructure is needed.
+2. **Controlled updates and release visibility when needed:** select MOB-007 and
+   useful MOB-009 slices after binary/runtime identities are proven. Full dashboard
+   build controls and general secret/job managers are not installation prerequisites.
+3. **Product production delivery:** once audience and availability needs are known,
+   select PRD-001 and the required isolated AWS API/database, authentication, secrets,
+   recovery and promotion slices; authorize store testing/submission separately.
+   Private app installs do not establish production readiness.
 
 Keep operational obligations visible alongside app work: resolve the five host
 source-channel exceptions before November 1, record overdue backup retention
