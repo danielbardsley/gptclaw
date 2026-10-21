@@ -1,6 +1,6 @@
 # TDD-049 — Android installable builds
 
-Status: Draft proposal. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Specification approved; Fieldnotes selected. Exact tooling/interfaces remain subject to validation. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
 
 ## Approach and boundaries
@@ -84,7 +84,8 @@ Production authentication, disaster recovery and store release remain excluded.
 | AB-004 | Bundled preview and physical scenarios | T2,T5,T6 | AC-004, AC-006 |
 | AB-005 | Durable job receipt and replacement recovery | T3,T6 | AC-005, AC-006 |
 
-App/account/device/custody/budget decisions belong to the project owner. Exact
+The project owner selected Fieldnotes on October 21. Remaining account/device/
+custody/budget decisions belong to the project owner. Exact
 version pins, native test module and adapter command/receipt shape belong to the
 specification author for review before implementation; no proposed command is an
 installed capability. General dashboard automation is a later MOB-009 slice.

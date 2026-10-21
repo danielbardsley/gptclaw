@@ -1,6 +1,6 @@
 # TASKS-049 — Android installable builds
 
-Status: Draft planning; implementation not authorized. Owner: Project owner.
+Status: Specification approved; Fieldnotes selected; build preparation in progress, external-operation decisions pending. Owner: Project owner.
 Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md)
 
@@ -11,10 +11,15 @@ Date: 2026-10-21 (America/New_York).
   SPEC-036 waivers and closed tasks. Draft linked spec/design/tasks.
 - [ ] P2 — Review app/device/account/custody/budget choices with project owner;
   validate exact tool/native-module matrix and proposed adapter/receipt interfaces.
-- [ ] P3 — Record specification approval and implementation authorization separately.
-  Current authorization covers roadmap updates and requirement selection only.
+- [x] P3 — Project owner reviewed and approved SPEC-049 on October 21 and selected
+  Fieldnotes. Reversible build preparation proceeds under that approval; external
+  account/signing/build/budget and runtime scope remain gated by concrete choices.
+  No repeat specification or app-selection approval is required.
 
-## Implementation after P2/P3
+## Implementation and external-operation gates
+
+Offline preparation can proceed under P3. Resolve applicable P2 choices before
+external account/signing/build actions; record exact versions before dependency changes.
 
 - [ ] T1 — Record concrete account/signing/upload/artifact/budget dispositions and
   exact reviewed source/backend/device inputs before any external job. AB-001/AB-002;
@@ -39,7 +44,9 @@ Date: 2026-10-21 (America/New_York).
 
 ## Current handover
 
-Planning branch contains documentation only. No EAS account, key, build submission,
-installation, runtime, AWS or production action has been performed. Next action is
-P2/P3 against the concrete draft. Prior mobile and quality task closures stand;
+Planning branch contains documentation only. Fieldnotes source guidance and its
+clean Git state were inspected; its current app/package inputs were read without
+credentials. No EAS account, key, build submission, installation, runtime, AWS or
+production action has been performed. Next action is the remaining P2 account,
+signing, budget and device decisions and exact tool/interface validation. Prior mobile and quality task closures stand;
 this initiative adds binary-specific evidence rather than reopening those tasks.

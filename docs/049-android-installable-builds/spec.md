@@ -1,6 +1,6 @@
 # SPEC-049 — Installable Android development and preview builds
 
-- **Status:** Draft; selected for planning, specification approval and implementation authorization pending.
+- **Status:** Approved; Fieldnotes selected. Reversible build preparation may proceed; external account/signing/build operations await the concrete decisions below.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Features:** MOB-004, initial Android development/preview slices of MOB-005/006;
@@ -16,9 +16,11 @@ stopped, using the selected private Python API/PostgreSQL backend over Tailscale
 Repeat the build/install from recorded reviewed inputs. A signed native build is
 separate from the existing quality command that validates JavaScript/assets.
 
-The project owner requested roadmap reconciliation and selection of the next
-requirement. This draft proposes Android first; it does not authorize external
-build jobs, account changes, signing setup, paid usage or runtime operations.
+The project owner reviewed and approved this specification on October 21 and
+selected Fieldnotes. Proceed with reversible build preparation for the existing
+Fieldnotes mobile/API projects. External build jobs, account changes, signing
+setup, paid usage and runtime operations still depend on the concrete account,
+custody, budget and operational scope recorded before those actions.
 
 Reuse delivered creation/Metro/Go and the Android M1 backend slice accepted in
 [SPEC-036 closeout](../036-mobile-python-backend/closeout-2026-10-21.md), including
@@ -98,8 +100,13 @@ failures, provider rollback and owned-fixture cleanup.
 
 ## Decisions and completion
 
-The project owner must select the existing app (Fieldnotes is proposed, not assumed),
-test device, Expo account/project, signing custodian and budget before external work.
+The selected app is Fieldnotes: `danielbardsley/fieldnotes-mobile`, with its existing
+independent Fieldnotes Python API/PostgreSQL backend. Both canonical repositories
+and existing data are retained. The mobile checkout was clean when inspected for
+this approval; no EAS configuration was found among its inspected project files.
+Confirm the acceptance device (previously Android 11), Expo account/project,
+signing custodian and budget before external work. These remaining decisions
+do not reopen specification approval or the Fieldnotes selection.
 The specification author must validate exact EAS/native tool versions and the
 selected native-module test before implementation; no EAS CLI is assumed installed.
 Planning and offline design refinement can proceed without these account actions.

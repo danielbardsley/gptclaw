@@ -322,9 +322,10 @@ successful full rerun. Python remains the application backend default.
 
 The next selected planning requirement is [SPEC-049](../049-android-installable-builds/spec.md):
 Android development-client installation, followed by a standalone preview APK
-with Metro stopped (MOB-004 with necessary MOB-005/006 slices). The draft includes
-account/signing/upload boundaries and physical binary acceptance. Approval and
-implementation/external-operation authorization remain pending. Reuse merged
+with Metro stopped (MOB-004 with necessary MOB-005/006 slices). The project owner
+approved this scope and selected Fieldnotes on October 21. Reversible build
+preparation proceeds; account/signing/budget and operational choices remain
+necessary before dependent external actions. Reuse merged
 QLT-001–010 source contracts; their outstanding rollout/adoption observations
 remain separate and task closure is preserved. This acceptance does not
 establish iOS, signed-build or production readiness. Fastify remains optional.

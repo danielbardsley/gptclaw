@@ -332,15 +332,15 @@ interfaces; existing accepted slices remain valid. QLT-010 stays optional.
 
 ## Next selected mobile requirement
 
-- **049 — Installable Android development and preview builds (MOB-004 with MOB-005/006 slices), Draft:**
+- **049 — Installable Android development and preview builds (MOB-004 with MOB-005/006 slices), Approved for Fieldnotes:**
   [Specification](049-android-installable-builds/spec.md) ·
   [Technical design](049-android-installable-builds/technical-design.md) ·
   [Tasks](049-android-installable-builds/tasks.md)
 
-Planning selects the app's own development client and a standalone preview APK
-that works with Metro stopped and the private backend reachable. App/account/
-signing/budget decisions, specification approval and implementation authorization
-remain pending. Android M1 is already owner-accepted under SPEC-036 with recorded
+The project owner approved Fieldnotes as the selected app for its own development
+client and a standalone preview APK that works with Metro stopped and the private
+backend reachable. Reversible build preparation proceeds; account/signing/budget
+and operational decisions remain necessary before dependent external actions. Android M1 is already owner-accepted under SPEC-036 with recorded
 waivers; production AWS hosting and store release remain later scopes.
 
 ## Current application milestone
