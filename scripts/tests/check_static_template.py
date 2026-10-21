@@ -46,6 +46,7 @@ def main():
         ('lint','app/page.tsx',lambda s:s+'\nconst unused = 1;\n'),
         ('typecheck','lib/site.ts',lambda s:s.replace('return `/projects/${slug}`;', 'return 42;')),
         ('links','out/index.html',lambda s:s+'<a href="/projects/static-check/broken/">Broken</a>'),
+        ('links','out/index.html',lambda s:s+'<img src="/projects/static-check/absent.png" alt="Synthetic" />'),
         ('links','out/index.html',lambda s:s+'<a href="/projects/static-check/guide/getting-started/#absent">Broken</a>'),
     ]:
         path=root/name;original=path.read_text()

@@ -45,7 +45,7 @@ Owner: Project owner. Date: 2026-10-21 (America/New_York).
   interrupted/failed export tests. Confirm source edits invalidate build readiness.
   Record exact revisions/results and review implementation PR with actual CI.
   Depends on T3–T5. Covers STATIC-001,004,006; AC-001, AC-004, AC-006.
-- [ ] T7: Under scoped live-fixture authorization, create two named private static
+- [x] T7: Under scoped live-fixture authorization, create two named private static
   sites using the reviewed provider. Exercise HTTPS pages/assets/navigation/404,
   edit/rebuild, failure/repair, restart and scoped stop/source retention while the
   independent site remains available. Record budgets, build/start timings,
@@ -62,9 +62,11 @@ Owner: Project owner. Date: 2026-10-21 (America/New_York).
 ## Current handover
 
 The static release, adapter/contracts, private lifecycle integration, generated
-quality/browser/CI gates and runbook are implemented. Focused static (7 tests) and
-manifest (28 tests) suites pass. The actual export passes authoring tests, links,
-budgets, browser/accessibility/no-JS/navigation and the advisory check. Broader
-repository, generated defect/container and two-project managed acceptance checks
-are running. See [acceptance](acceptance.md). PR review/merge, final CI and manual
-project-owner acceptance remain separate pending gates.
+quality/browser/CI gates and runbook are implemented. Seven focused static tests
+and 28 manifest tests pass. Generated quality/negative cases, corrected compiled
+image, actual two-project private lifecycle, interruption refusal and final
+installed release identity are verified. The project owner confirmed manual UI
+acceptance. See [acceptance](acceptance.md) for operation IDs, timings, budgets,
+resource observations, failures/corrections and retained fixtures. Stable broad
+repository and final CI results, PR review and merge remain pending. Both private
+previews are ready; the unrelated original checkout is unchanged.

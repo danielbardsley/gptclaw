@@ -1,7 +1,7 @@
 # SPEC-038 — Static site acceptance evidence
 
-Status: Verification in progress; not Delivered. Owner: Project owner.
-Date: 2026-10-21 (America/New_York).
+Status: Implementation and live/owner checks verified; broad checks/CI pending.
+Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md) ·
 [Runbook](../../runbooks/manage-static-sites.md) ·
 [Implementation PR #92](https://github.com/danielbardsley/gptclaw/pull/92)
@@ -10,76 +10,132 @@ Date: 2026-10-21 (America/New_York).
 
 | Criterion | State | Evidence and remaining action |
 |---|---|---|
-| AC-001 | pending | Seven static generation/snapshot/inventory tests pass; release immutability passes against merged main `ba06d66`. Complete the stable full repository and CI runs. |
-| AC-002 | pending | Frozen restore, format/lint/typecheck, three generated behavior/negative tests, real export and no-JS browser content pass. Complete generated unsupported-feature and compiled-image checks. |
-| AC-003 | pending | Exported browser navigation/refresh/404 and HTTP escape/MIME/HEAD tests pass. Two actual private previews are under lifecycle verification. |
-| AC-004 | pending | Seven offline adapter tests cover generation, strict contracts, cache invalidation, failure state and snapshot packaging. Complete real edit/rebuild, failure recovery and independent-service/stop-retention scenarios. |
-| AC-005 | pending | Automated axe WCAG A/AA, internal references and asset-budget checks pass. Deliberate generated defects are running; project owner confirmed keyboard/focus/200%-zoom UI acceptance in this chat. |
-| AC-006 | pending | Generated quality/advisory and exported browser checks pass. Final generated image, broad checks, CI, timings/resource observations and owner acceptance remain pending. |
+| AC-001 | pending | Seven offline static generation/contract/snapshot/inventory tests pass. Release immutability passes against `ba06d66`; default and historical releases are retained. Stable full repository and CI runs are still running. |
+| AC-002 | passed | Frozen restore, check-only format/lint, strict types, three generated tests, real static export and no-JS browser content pass. The generated unsupported-cookie fixture fails build and cannot start stale output. The corrected compiled image serves pages/health/assets as uid 1000. |
+| AC-003 | passed | Actual private HTTPS browser navigation/refresh/404 and HTTP escape/symlink/MIME/HEAD tests pass. Both sites' home, nested page, local SVG and health return 200. Unexpected HTTP errors and network failures fail browser checks. |
+| AC-004 | passed | Both managed sites passed readiness. First-site managed test, edited-content rebuild, deliberate failed rebuild, exact-operation reconciliation, repair/rebuild, start, restart, stop/source retention and start passed. The second private site remained available throughout. An actual interrupted export in an independent fixture had no completion marker and startup refused it. |
+| AC-005 | passed | Automated axe WCAG A/AA, reference crawler and budgets pass. Missing-alt, missing-route/image/fragment, formatting, lint/type and over-budget defects are rejected. The project owner explicitly confirmed manual navigation, keyboard focus and 200% zoom at desktop/narrow widths. |
+| AC-006 | pending | Local generated/compiled-image checks, budget measurements, runtime observations, verified instructions and owner UI acceptance pass. Stable full repository and final CI outcomes remain pending; implementation is not merged. |
 
-## Verification so far
+## Revision and local verification
 
-Implementation checkpoint `a9a9192`, merged with reviewed main `ba06d66` in
-`6ba0143`; final test/documentation follow-ups will be recorded separately.
-Synthetic data only, as forge in rootless containers. No AWS, HCP, production,
-public exposure, credentials, host package or Tailscale Serve/Funnel configuration change. The managed
-lifecycle refreshed its owned private ingress provider snapshot through its
-existing reviewed interface.
+Initial implementation `a9a9192` was merged with reviewed main `ba06d66` in
+`6ba0143`. Final packaging and inventory validation are at `c530b7c`; the remaining
+follow-up adds the explicit broken-image CI case and this evidence. The new
+unmerged release digest is
+`e82772bc0c1d461edb6bb1a569bd3e893983cde9f73019a36574ba32c6d00060`.
 
-Executed locally:
+Synthetic data only, as forge. No AWS, HCP, production, public exposure, credentials,
+host package or Tailscale Serve/Funnel configuration change occurred. Managed
+start reconciled its owned private ingress provider snapshot through the existing
+reviewed interface. The installed snapshot resolves the final exact release.
+The original `codex/dashboard-dark-mode` checkout remains clean and unchanged.
 
-- `python scripts/tests/test_project_static.py`: 7 passed.
-- `python scripts/tests/test_project_manifest.py`: 28 passed after updating the
-  formerly unsupported v10 case to v11.
-- `python scripts/check-template-releases.py --baseline ba06d66`: passed; main
-  advanced during this task, so its reviewed Python 1.0.1 releases were merged
-  before establishing the new baseline. Historical releases were preserved.
-- In the existing exact Node 24.21.0 / pnpm 12.10.1 container with 1 CPU,
-  1536 MiB and 256 PIDs: frozen restore, check-only format, lint, strict typecheck,
-  three behavior/negative tests, static build, links/budgets and security passed.
-  Advisory result: no known vulnerabilities found.
-- In the pinned Playwright image: exported navigation/refresh, axe WCAG A/AA,
-  no-JavaScript content, skip-link keyboard behavior, actual 404 and narrow 200%
-  text-size reflow checks passed. This is automated evidence, not owner acceptance.
-- Export: 997,951 raw bytes total; per-page first-load JavaScript 176,338 gzip
-  bytes, CSS 697 gzip bytes, HTML at most 7,554 raw bytes, local media 212 bytes.
-  No external runtime references were found. All proposed budgets pass.
-- `git diff --check`, staged whitespace check and shell syntax check passed.
+Executed locally with the existing isolated Python environment:
 
-The first staged build failed because Turbopack refused the dependency symlink;
-webpack mode resolved it. Another build correctly refused source changes made
-while it was running; the stable-source rerun passed. Browser network checks were
-adjusted to ignore expected `net::ERR_ABORTED` navigation/prefetch cancellation
-while rejecting other failures and unexpected HTTP errors.
+- `python scripts/tests/test_project_static.py`: 7 passed, including strict
+  generation, source-cache invalidation, failed rebuild receipt, snapshot parity,
+  supported web inventory and private app-route projection.
+- `python scripts/tests/test_project_manifest.py`: 28 passed after moving the
+  formerly unsupported v10 fixture to v11.
+- `python scripts/check-template-releases.py --baseline ba06d66`: passed.
+  Main's reviewed Python 1.0.1 patch releases were merged before this baseline.
+- Existing pinned Node 24.21.0 / pnpm 12.10.1 container: frozen restore,
+  format/lint/typecheck, three behavior/negative tests, static build,
+  references/budgets and security passed. Advisory result: no known vulnerabilities.
+- `python scripts/tests/check_static_template.py <owned-fixture> --engine podman
+  --image localhost/gptclaw-node:24.21.0-pnpm12.10.1`: generation, frozen restore,
+  generated gates, formatting/lint/type/reference defects, missing-alt browser
+  refusal, unsupported cookies/build refusal and repaired export/browser passed.
+  Its initial compiled-image step failed due to the missing profile; that specific
+  step was corrected and rerun successfully, followed by an unprivileged image
+  smoke test. This is not presented as an uninterrupted passing script run.
+- Pinned Playwright image, both locally served export and the actual private
+  second site: navigation/refresh, axe WCAG A/AA, no-JavaScript content, skip-link
+  keyboard behavior, true 404 and narrow 200% text-size reflow passed. Manual
+  owner confirmation independently covers the requested UI/zoom acceptance.
+- Independent task-owned fixture: `timeout --signal=TERM --kill-after=2 2 node
+  scripts/build.mjs` interrupted export; no completion marker remained and
+  `node scripts/serve.mjs` refused startup. No managed worker was killed.
+- Corrected compiled image `4b06be37f148`: uid 1000; home, nested page,
+  readiness and SVG HTTP checks passed on an ephemeral loopback port. Its owned
+  smoke container was then stopped; no shared image/storage pruning occurred.
+- Broken exported image reference was injected in the disposable generated
+  fixture, rejected by the crawler, and the original file restored.
+- `git diff --check`, staged whitespace and `bash -n scripts/check-repository.sh`
+  passed. Documentation relative-link and final Git checks are recorded at delivery.
 
-An initial broad repository run overlapped release authoring and reported hash
-mismatches. A fixture also needed new output-directory exclusions. These are not
-passing broad-check evidence; a stable rerun is required. Terraform checks are
-not applicable because no infrastructure source changed.
+A clean final worktree is running `./scripts/check-repository.sh` with the prepared
+manifest environment. An earlier run overlapped release authoring and reported
+hash mismatches; its remaining suites are not a substitute for the stable run.
+Copied-repository fixtures now exclude static output/staging directories. Local
+Terraform checks are not applicable because infrastructure source is unchanged.
+Existing CI still runs its configured broader gates.
 
-## Private fixtures and remaining work
+## Private runtime evidence
 
-The exact local-only source projects are `static-accept-one` and
-`static-accept-two` under `/srv/forge/projects/`. Their loopback allocations are
-18111 and 18112. Existing private ingress reports configured URLs; actual HTTPS
-and lifecycle checks are still being recorded. One start returned busy after
-its runtime activation during shared ingress reconciliation; observe its exact
-state rather than resubmitting blindly.
+Both retained exact-source fixtures are ready:
 
-The first creation attempt omitted `--local-only` and was refused by the existing
-workflow credential policy before repository creation. The corrected local-only
-commands created both fixtures; no policy/credential scope was broadened.
+- [static-accept-one](https://forge-dev-01-4.tail8c3304.ts.net/projects/static-accept-one/),
+  source `/srv/forge/projects/static-accept-one`, loopback port 18111.
+- [static-accept-two](https://forge-dev-01-4.tail8c3304.ts.net/projects/static-accept-two/),
+  source `/srv/forge/projects/static-accept-two`, loopback port 18112.
 
-Retain both synthetic sources and owned runtime receipts. Do not remove unrelated
-projects, snapshots or shared storage. Final implementation merge, final-head CI
-and manual project-owner acceptance remain pending. The intentional guide pages
-and leaf icon demonstrate the starter; downstream product adaptation must replace
-or explicitly justify them against its own spec, with dependent links/tests updated.
+First-site operation evidence (seconds include validation and dependency/build
+work, not only HTTP readiness):
 
-The project owner confirmed manual UI acceptance of the private second site after
-checking navigation, keyboard focus and 200% zoom at desktop/narrow widths.
-An independent interrupted-export fixture was terminated after two seconds; it
-had no completion marker and startup refused it. The generated compiled-image
-check found a missing pnpm profile copy; the reviewed exact Node profile is now
-bundled with the installer and validated against the registry. This changes the
-unmerged new release's build packaging, not its rendered UI or serving behavior.
+| Action | Operation / result | Seconds |
+|---|---|---:|
+| Cold start | `a0f9d2801bad478381cf1723fc15734a`, ready | 237.953 |
+| Managed test | `963f9665f9864d84a00faefe5214eced`, passed | 21.183 |
+| Edited source rebuild | `dcf67cbadab6487b889e1259aae07618`, succeeded; changed text observed over HTTPS | 197.228 |
+| Deliberately invalid source rebuild | `1dfa2f593262458cb1a4ca4f787b4d85`, failed and exact guard reconciled; route unavailable, second site healthy | 102.192 |
+| Repaired rebuild while stopped | `5dffe2f18baa4ebc851218053841524f`, succeeded and remained stopped | 120.657 |
+| Start after repair | `2990fbdf8b464b4785b5b15d10230569`, ready | 145.634 |
+| Restart | `dd1959dd6f934936ad75d65e8bc0f703`, real stop/start transitions, ready | 177.608 |
+| Stop | `05dbb7f1fca545f99e643db08e6a7e03`, route removed and source bytes retained | 20.149 |
+| Start after stop | `4a1862f3edca4a64ad0168595ac4d449`, ready on retained port | 128.214 |
+
+The second site's start returned busy after runtime activation during shared
+router reconciliation; status confirmed the same operation
+`6fb81e2f562246138e663ef71c2a0522` ready with no active job. Both private HTTPS
+routes passed, without blindly submitting a duplicate start. A later ready
+start reconciled the final provider snapshot and returned `changed: false`.
+
+Actual private second export: 998,755 raw bytes total. Maximum per-page assets:
+176,357 gzip JS bytes; 697 gzip CSS bytes; 7,650 raw HTML bytes; 212 local-media
+bytes. No external runtime references. All budgets pass. An idle observation was
+39.79 MB memory, 0.16% CPU and 24 PIDs; inspected limits were 1,610,612,736 bytes,
+256 PIDs and 100000/100000 CPU quota/period (one CPU). Health reached readiness
+within the existing post-service-start deadline. Overall cold-start/build timings
+above include frozen acquisition/export and are not claimed to fit that health-only
+deadline.
+
+The two synthetic fixtures were generated from the draft release. After correcting
+build packaging, exactly `Containerfile` and the new `checks/node-profile.json`
+were refreshed to the final unmerged inventory; all starter bytes were verified.
+Earlier draft receipts are retained as `.gptclaw/template-release.draft.json`;
+current receipts identify the final digest. Runtime source/output and the
+manually accepted UI did not change during that packaging refresh.
+
+## Failures, retention and remaining delivery
+
+Turbopack initially refused the staged dependency symlink; pinned webpack mode
+resolved it. A separate build correctly rejected a concurrent source edit; the
+stable-source rerun passed. Browser checks exclude expected `net::ERR_ABORTED`
+navigation/prefetch cancellation and still reject other failures/unexpected HTTP
+errors. The compiled-image profile omission was fixed with the exact reviewed
+profile and registry-equality validation; standalone image verification then passed.
+
+The first fixture creation omitted `--local-only` and was refused by workflow
+credential policy before repository creation. Corrected local-only commands
+created both fixtures; no permission scope was broadened.
+
+Retain both fixture sources/receipts and private previews for review. Owned ephemeral
+smoke containers were stopped. No unrelated project or published release was
+modified. The guide pages and leaf icon intentionally demonstrate this template;
+product adaptation must replace or justify them and update dependent links/tests.
+
+Remaining: stable broad-check results, final CI, PR review and merge. UI acceptance
+is complete; it does not imply implementation merge. Do not mark TPL-005 Delivered
+until implementation is merged and all remaining criteria pass.

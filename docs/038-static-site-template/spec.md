@@ -1,6 +1,6 @@
 # SPEC-038 — Static site template (TPL-005)
 
-Status: Approved for implementation; implementation in progress. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Implemented in review; broad verification and merge pending. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Technical design](technical-design.md) · [Tasks](tasks.md) ·
 [Catalogue](../platform/features.md) · [Architecture](../platform/architecture.md)
 
