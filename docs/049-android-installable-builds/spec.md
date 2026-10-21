@@ -104,8 +104,11 @@ The selected app is Fieldnotes: `danielbardsley/fieldnotes-mobile`, with its exi
 independent Fieldnotes Python API/PostgreSQL backend. Both canonical repositories
 and existing data are retained. The mobile checkout was clean when inspected for
 this approval; no EAS configuration was found among its inspected project files.
-Confirm the acceptance device (previously Android 11), Expo account/project,
-signing custodian and budget before external work. These remaining decisions
+The project owner selected the `bardsley` Expo account and Expo-managed Android
+signing keys in this chat. No account credentials were requested or inspected.
+The exact Expo project/link, key backup/rotation/access disposition, acceptance
+device (previously Android 11) and build budget remain to be confirmed before
+external work. Free-only builds are recommended; paid usage is not authorized. These remaining decisions
 do not reopen specification approval or the Fieldnotes selection.
 The specification author must validate exact EAS/native tool versions and the
 selected native-module test before implementation; no EAS CLI is assumed installed.

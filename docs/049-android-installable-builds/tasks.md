@@ -47,6 +47,8 @@ external account/signing/build actions; record exact versions before dependency 
 Planning branch contains documentation only. Fieldnotes source guidance and its
 clean Git state were inspected; its current app/package inputs were read without
 credentials. No EAS account, key, build submission, installation, runtime, AWS or
-production action has been performed. Next action is the remaining P2 account,
-signing, budget and device decisions and exact tool/interface validation. Prior mobile and quality task closures stand;
+production action has been performed. The owner selected Expo account `bardsley` and Expo-managed Android signing keys.
+Next action is the remaining P2 exact project/key custody details, budget and
+device decisions and exact tool/interface validation. Free-only builds are
+recommended; no paid budget or external job has been authorized. Prior mobile and quality task closures stand;
 this initiative adds binary-specific evidence rather than reopening those tasks.
