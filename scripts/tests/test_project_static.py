@@ -81,6 +81,20 @@ class Tests(unittest.TestCase):
         (self.root/'app/page.tsx').write_text('changed')
         self.assertNotEqual(before,controls.source_files(self.root))
 
+    def test_inventory_and_private_app_projection(self):
+        import dashboard_inventory as inventory
+        import dashboard_observation as observation
+        caps={'provider':'gptclawctl','project_manifest_schemas':[10],'runtime_manifest_schemas':[10]}
+        scan=inventory.Scanner(self.projects,capabilities=caps).scan()
+        self.assertTrue(scan['complete'])
+        self.assertEqual(len(scan['rows']),1)
+        row=scan['rows'][0]
+        self.assertEqual(row['kind'],'web')
+        self.assertEqual(row['runtime_support'],'supported')
+        descriptor=observation.route_descriptor(self.root,self.contract,{'publication':{'state':'published'}})
+        self.assertEqual(descriptor['app_path'],'/projects/static-one/')
+        self.assertIsNone(descriptor['docs_path'])
+
     def test_bundle_includes_contract_and_release(self):
         paths=templates.bundle_paths()
         for name in ['scripts/project_static.py','schemas/project/v10.schema.json','config/templates/v8.json','schemas/templates/v8.schema.json','templates/apps/releases/nextjs-static/1.0.0/scripts/serve.mjs']:

@@ -123,7 +123,7 @@ def catalogue():
             check(release['mobile_profile_digest']==hashlib.sha256(json.dumps(mobile.profile(),sort_keys=True,separators=(',',':')).encode()).hexdigest())
             releases[key] = (release, contents); continue
         if release['provider'] == 'nextjs-static-v1':
-            check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','AGENTS.md','README.md','app/page.tsx','scripts/serve.mjs','scripts/build.mjs','Containerfile'} <= outputs)
+            check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','AGENTS.md','README.md','app/page.tsx','scripts/serve.mjs','scripts/build.mjs','checks/node-profile.json','Containerfile'} <= outputs)
             check(deps.json_data(contents['checks/node-profile.json']) == profiles[profile_key])
             package = deps.json_data(contents['package.json'])
             policy, _ = deps.policy(); deps.validate_package(package, policy)

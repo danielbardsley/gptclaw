@@ -62,7 +62,7 @@ Owner: Project owner. Date: 2026-10-21 (America/New_York).
 ## Current handover
 
 The static release, adapter/contracts, private lifecycle integration, generated
-quality/browser/CI gates and runbook are implemented. Focused static (6 tests) and
+quality/browser/CI gates and runbook are implemented. Focused static (7 tests) and
 manifest (28 tests) suites pass. The actual export passes authoring tests, links,
 budgets, browser/accessibility/no-JS/navigation and the advisory check. Broader
 repository, generated defect/container and two-project managed acceptance checks

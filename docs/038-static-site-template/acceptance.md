@@ -10,10 +10,10 @@ Date: 2026-10-21 (America/New_York).
 
 | Criterion | State | Evidence and remaining action |
 |---|---|---|
-| AC-001 | pending | Static generation/snapshot tests pass; release immutability passes against merged main `ba06d66`. Complete the stable full repository and CI runs. |
+| AC-001 | pending | Seven static generation/snapshot/inventory tests pass; release immutability passes against merged main `ba06d66`. Complete the stable full repository and CI runs. |
 | AC-002 | pending | Frozen restore, format/lint/typecheck, three generated behavior/negative tests, real export and no-JS browser content pass. Complete generated unsupported-feature and compiled-image checks. |
 | AC-003 | pending | Exported browser navigation/refresh/404 and HTTP escape/MIME/HEAD tests pass. Two actual private previews are under lifecycle verification. |
-| AC-004 | pending | Six offline adapter tests cover generation, strict contracts, cache invalidation, failure state and snapshot packaging. Complete real edit/rebuild, failure recovery and independent-service/stop-retention scenarios. |
+| AC-004 | pending | Seven offline adapter tests cover generation, strict contracts, cache invalidation, failure state and snapshot packaging. Complete real edit/rebuild, failure recovery and independent-service/stop-retention scenarios. |
 | AC-005 | pending | Automated axe WCAG A/AA, internal references and asset-budget checks pass. Deliberate generated defects are running; project owner confirmed keyboard/focus/200%-zoom UI acceptance in this chat. |
 | AC-006 | pending | Generated quality/advisory and exported browser checks pass. Final generated image, broad checks, CI, timings/resource observations and owner acceptance remain pending. |
 
@@ -28,7 +28,7 @@ existing reviewed interface.
 
 Executed locally:
 
-- `python scripts/tests/test_project_static.py`: 6 passed.
+- `python scripts/tests/test_project_static.py`: 7 passed.
 - `python scripts/tests/test_project_manifest.py`: 28 passed after updating the
   formerly unsupported v10 case to v11.
 - `python scripts/check-template-releases.py --baseline ba06d66`: passed; main
