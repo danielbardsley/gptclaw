@@ -1,6 +1,6 @@
 # TDD-038 — Next.js static export and private file preview
 
-Status: Implemented; verification in progress. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Delivered and verified. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
 
 ## Existing evidence and approach
@@ -137,4 +137,4 @@ The release identity, explicit rebuild/downtime and budgets are approved default
 Manifest v10 and catalogue v8 are allocated; exact check-tool versions are recorded
 in the generated package/lockfile. `verify` runs authoring/export/advisory checks in
 the existing Node profile; the required browser gate runs separately in the pinned
-browser image. See [acceptance](acceptance.md) for actual results and pending gates.
+browser image. See [acceptance](acceptance.md) for actual results and final closeout.
