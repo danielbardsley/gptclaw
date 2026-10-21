@@ -226,16 +226,16 @@ account changes or publication.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| QLT-001 | Standard quality commands | 2 | Candidate | Every generated project documents `format`, `lint`, `typecheck`, `test`, `build`, and `verify` commands. Manifest v1 declares only build/start/test; broader manifest command support requires a reviewed schema extension. SPEC-018 implements its initial build/test/typecheck workflow in the pinned container; broader standard commands remain future scope. |
-| QLT-002 | Pull-request workflow template | 3 | Candidate | Generated repositories get pinned actions, minimal permissions, caches, tests, scans, and artifacts. |
-| QLT-003 | Dependency automation | 3 | Candidate | Dependabot or an approved equivalent opens bounded, tested update pull requests for generated applications. GptClaw already has Actions/Terraform Dependabot configuration; app dependency coverage remains future work. |
-| QLT-004 | Preview smoke tests | 3 | Candidate | Verify the private URL, assets, health endpoint, and important journeys after each service update. |
-| QLT-005 | Accessibility baseline | 4 | Candidate | Generated web/mobile projects include keyboard, semantics, contrast, and automated accessibility checks. |
-| QLT-006 | Performance budgets | 4 | Candidate | Detect unacceptable bundle, response-time, memory, and startup regressions. |
-| QLT-007 | Database migration gates | 4 | Candidate | Test forward migration, backup prerequisites, destructive detection, and rollback/restore strategy. |
-| QLT-008 | Contract and API documentation | 4 | Candidate | Generate and validate OpenAPI or equivalent contracts where services cross boundaries. |
-| QLT-009 | Golden-template tests | 3 | Candidate | Continuously generate, build, run, route, and destroy sample projects from every supported template. |
-| QLT-010 | Release notes and changelog | 5 | Optional | Generate reviewed human-facing release summaries from accepted changes. |
+| QLT-001 | Standard quality commands | 2 | Draft | [Draft specification](../039-standard-quality-commands/spec.md). Every generated project documents `format`, `lint`, `typecheck`, `test`, `build`, and `verify` commands. Manifest v1 declares only build/start/test; broader manifest command support requires a reviewed schema extension. SPEC-018 implements its initial build/test/typecheck workflow in the pinned container; broader standard commands remain future scope. |
+| QLT-002 | Pull-request workflow template | 3 | Draft | [Draft specification](../040-pull-request-workflow-template/spec.md). Generated repositories get pinned actions, minimal permissions, caches, tests, scans, and artifacts. |
+| QLT-003 | Dependency automation | 3 | Draft | [Draft specification](../041-application-dependency-automation/spec.md). Dependabot or an approved equivalent opens bounded, tested update pull requests for generated applications. GptClaw already has Actions/Terraform Dependabot configuration; app dependency coverage remains future work. |
+| QLT-004 | Preview smoke tests | 3 | Draft | [Draft specification](../042-private-preview-smoke-tests/spec.md). Verify the private URL, assets, health endpoint, and important journeys after each service update. |
+| QLT-005 | Accessibility baseline | 4 | Draft | [Draft specification](../043-accessibility-baseline/spec.md). Generated web/mobile projects include keyboard, semantics, contrast, and automated accessibility checks. |
+| QLT-006 | Performance budgets | 4 | Draft | [Draft specification](../044-performance-budgets/spec.md). Detect unacceptable bundle, response-time, memory, and startup regressions. |
+| QLT-007 | Database migration gates | 4 | Draft | [Draft specification](../045-database-migration-gates/spec.md). Test forward migration, backup prerequisites, destructive detection, and rollback/restore strategy. |
+| QLT-008 | Contract and API documentation | 4 | Draft | [Draft specification](../046-api-contracts-and-documentation/spec.md). Generate and validate OpenAPI or equivalent contracts where services cross boundaries. |
+| QLT-009 | Golden-template tests | 3 | Draft | [Draft specification](../047-golden-template-tests/spec.md). Continuously generate, build, run, route, and destroy sample projects from every supported template. |
+| QLT-010 | Release notes and changelog | 5 | Draft | [Draft specification](../048-release-notes-and-changelog/spec.md). Optional; product adoption is not selected. Generate reviewed human-facing release summaries from accepted changes. |
 
 ## 14. Observability and operations
 

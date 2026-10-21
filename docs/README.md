@@ -261,6 +261,65 @@ dispositions independently of feature implementation status.
   [Visual reference](037-dashboard-constrained-controls/reference.md) ·
   [Acceptance tracking](037-dashboard-constrained-controls/acceptance.md)
 
+
+## Quality initiatives — draft plans
+
+These plans cover QLT-001–QLT-010; implementation and acceptance remain separate.
+Start with the shared command/CI contracts (QLT-001/002), then expand the existing
+template checks (QLT-009) alongside smoke and contract checks (QLT-004/008).
+Dependency, migration, accessibility and performance gates build on those
+interfaces; existing accepted slices remain valid. QLT-010 stays optional.
+
+- **039 — Standard quality commands (QLT-001), Draft:**
+  [Specification](039-standard-quality-commands/spec.md) ·
+  [Technical design](039-standard-quality-commands/technical-design.md) ·
+  [Tasks](039-standard-quality-commands/tasks.md)
+
+- **040 — Pull-request workflow template (QLT-002), Draft:**
+  [Specification](040-pull-request-workflow-template/spec.md) ·
+  [Technical design](040-pull-request-workflow-template/technical-design.md) ·
+  [Tasks](040-pull-request-workflow-template/tasks.md)
+
+- **041 — Dependency automation (QLT-003), Draft:**
+  [Specification](041-application-dependency-automation/spec.md) ·
+  [Technical design](041-application-dependency-automation/technical-design.md) ·
+  [Tasks](041-application-dependency-automation/tasks.md)
+
+- **042 — Preview smoke tests (QLT-004), Draft:**
+  [Specification](042-private-preview-smoke-tests/spec.md) ·
+  [Technical design](042-private-preview-smoke-tests/technical-design.md) ·
+  [Tasks](042-private-preview-smoke-tests/tasks.md)
+
+- **043 — Accessibility baseline (QLT-005), Draft:**
+  [Specification](043-accessibility-baseline/spec.md) ·
+  [Technical design](043-accessibility-baseline/technical-design.md) ·
+  [Tasks](043-accessibility-baseline/tasks.md)
+
+- **044 — Performance budgets (QLT-006), Draft:**
+  [Specification](044-performance-budgets/spec.md) ·
+  [Technical design](044-performance-budgets/technical-design.md) ·
+  [Tasks](044-performance-budgets/tasks.md)
+
+- **045 — Database migration gates (QLT-007), Draft:**
+  [Specification](045-database-migration-gates/spec.md) ·
+  [Technical design](045-database-migration-gates/technical-design.md) ·
+  [Tasks](045-database-migration-gates/tasks.md)
+
+- **046 — Contract and API documentation (QLT-008), Draft:**
+  [Specification](046-api-contracts-and-documentation/spec.md) ·
+  [Technical design](046-api-contracts-and-documentation/technical-design.md) ·
+  [Tasks](046-api-contracts-and-documentation/tasks.md)
+
+- **047 — Golden-template tests (QLT-009), Draft:**
+  [Specification](047-golden-template-tests/spec.md) ·
+  [Technical design](047-golden-template-tests/technical-design.md) ·
+  [Tasks](047-golden-template-tests/tasks.md)
+
+- **048 — Release notes and changelog (QLT-010), Draft (optional):**
+  [Specification](048-release-notes-and-changelog/spec.md) ·
+  [Technical design](048-release-notes-and-changelog/technical-design.md) ·
+  [Tasks](048-release-notes-and-changelog/tasks.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in
