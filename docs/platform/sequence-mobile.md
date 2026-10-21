@@ -316,8 +316,8 @@ accepted the Android-first slice and Android M1 with explicit remaining manual-
 evidence waivers in [the closeout](../036-mobile-python-backend/closeout-2026-10-21.md),
 carried by PR #91. Automated/host and owner-reported physical results remain
 distinct from waived device/screenshot checks. Both trial runtimes are stopped
-with source/data retained; the existing SSM operator has the exact private-listener
-removal follow-up. The initial restore failure remains documented despite the
+with source/data retained; owner-supplied final Serve JSON confirms the temporary
+private listener is removed and both HTTPS 443 handlers are preserved. The initial restore failure remains documented despite the
 successful full rerun. Python remains the application backend default.
 
 The next substantive mobile capability is the stage-5 development-build slice

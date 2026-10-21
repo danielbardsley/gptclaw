@@ -171,7 +171,7 @@ remaining requirements. The [closeout record](closeout-2026-10-21.md) accepts th
 Android-first slice and specifies which outstanding manual/device/screenshot
 gates are waived. This supersedes those remaining evidence conditions for this
 scope; it does not report them as executed or passed. Runtime/data disposition
-and the separate exact private-listener operator follow-up are recorded there.
+and the completed private-listener operator cleanup are recorded there.
 Android M1 is owner-accepted with these waivers; iOS and broader mobile/build/
 release capabilities retain their separate requirements.
 
