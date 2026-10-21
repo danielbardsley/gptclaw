@@ -1,0 +1,11 @@
+**/node_modules/
+**/.venv/
+**/.next/
+**/.gptclaw-cache/
+**/__pycache__/
+**/.coverage
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.env*
+checks/output/

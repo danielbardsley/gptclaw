@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import tomllib
 import unittest
 from unittest.mock import patch
 
@@ -218,6 +219,46 @@ class Tests(unittest.TestCase):
         module.verify_baseline('HEAD')
         self.catalogue['releases'][0]['description']='Changed old release';self.seal(self.catalogue['releases'][0]);self.write()
         with self.assertRaises(app.AppError):module.verify_baseline('HEAD')
+
+
+class PythonSecurityReleases(unittest.TestCase):
+    releases = ('fastapi', 'notes', 'notes-postgres', 'fastapi-postgres')
+
+    def test_patch_changes_only_certifi_and_keeps_every_other_released_asset(self):
+        for name in self.releases:
+            with self.subTest(template=name):
+                old, before = templates.resolve(name, '1.0.0')
+                new, after = templates.resolve(name, '1.0.1')
+                lock = 'uv.lock' if name == 'fastapi' else 'api/uv.lock'
+                self.assertEqual(set(before), set(after))
+                self.assertEqual([path for path in before if before[path] != after[path]], [lock])
+                original = tomllib.loads(before[lock].decode())
+                patched = tomllib.loads(after[lock].decode())
+                previous = {entry['name']: entry for entry in original.pop('package')}
+                current = {entry['name']: entry for entry in patched.pop('package')}
+                self.assertEqual(original, patched)
+                self.assertEqual(previous.keys(), current.keys())
+                self.assertEqual([key for key in previous if previous[key] != current[key]], ['certifi'])
+                self.assertEqual(previous['certifi']['version'], '2026.7.22')
+                self.assertEqual(current['certifi']['version'], '2026.10.19')
+                self.assertNotEqual(old['digest'], new['digest'])
+
+    def test_exact_patched_generation_is_offline_and_retains_legacy_provenance(self):
+        with tempfile.TemporaryDirectory(prefix='python-release-patch-') as directory:
+            base = Path(directory)
+            with patch.object(app, 'PROJECTS', base), patch.object(app, 'STORE', base/'runtime'), patch.object(app, 'UNITS', base/'units'), patch.object(app, 'command') as command:
+                for name in self.releases:
+                    with self.subTest(template=name):
+                        for version in ('1.0.0', '1.0.1'):
+                            root = Path(app.create(name+'-'+version.replace('.', '-'), template=name, template_version=version)['root'])
+                            templates.validate_provenance(root)
+                            provenance = json.loads((root/'.gptclaw/template-release.json').read_text())
+                            self.assertEqual((provenance['id'], provenance['version']), (name, version))
+                            lock = root/('uv.lock' if name == 'fastapi' else 'api/uv.lock')
+                            graph = tomllib.loads(lock.read_text())
+                            certifi = next(entry['version'] for entry in graph['package'] if entry['name'] == 'certifi')
+                            self.assertEqual(certifi, '2026.7.22' if version == '1.0.0' else '2026.10.19')
+                command.assert_not_called()
 
 
 if __name__=='__main__':unittest.main(verbosity=2)
