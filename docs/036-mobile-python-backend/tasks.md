@@ -1,6 +1,6 @@
 # TASKS-036 — Mobile Python backend integration
 
-Owner: Project owner. Status: Implementation merged; remaining native/final acceptance pending.
+Owner: Project owner. Status: Android-first scope accepted and closed October 21 with recorded manual-evidence waivers.
 Date: 2026-10-15 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md)
 
@@ -45,7 +45,7 @@ Date: 2026-10-15 (America/New_York).
   provider refusal and historical stack regressions. Check sanitization and generator
   reproducibility. Exact results and the corrected worktree timing-test rerun are
   recorded in acceptance.md; final remote CI remains T10. (AC-001–003,005–007)
-- [ ] T9: After scoped rollout, verify installed/source parity and current device/client
+- [x] T9 (closed by owner acceptance/waiver October 21; see closeout for the executed/waived split): After scoped rollout, verify installed/source parity and current device/client
   eligibility; execute physical Android CRUD, validation/pagination, saved-data
   persistence through reload/restarts/relaunch, offline/API/DB recovery, uncertain
   writes and independent-service isolation. Rehearse additive migration with retained
@@ -53,13 +53,24 @@ Date: 2026-10-15 (America/New_York).
   data/schema downgrade. Record screenshots and owner visual review plus physical
   keyboard/TalkBack/large-text/targets/contrast/reduced-motion checks. Stop owned trial
   runtimes/routes; record source/data retention disposition. (AC-002–007)
-- [ ] T10: Open review PR; record platform/generated CI, review, merge, installed rollout
+- [x] T10 (owner accepted and authorized closeout in PR #91): Open review PR; record platform/generated CI, review, merge, installed rollout
   and device/owner acceptance separately. Create sanitized acceptance evidence mapped
   to each criterion; update catalogue/M1 only on actual completion. Keep full environment,
   iOS, signed-build, offline-sync, production and broader native-test scope pending.
   (AC-008; all requirements)
 
 ## Current handover
+
+The project owner accepted this Android-first slice and instructed closeout on
+October 21. [Final disposition](closeout-2026-10-21.md) lists the exact manual
+evidence waivers and preserves all executed/failed test history. Both Fieldnotes
+trial runtimes are stopped; source/history, bindings, receipts and synthetic data
+are retained. The exact private 8445 listener removal remains an existing-SSM-
+operator follow-up, not an unresolved feature acceptance gate. MOB-010's selected
+slice and Android M1 are owner-accepted with waivers; broader mobile scope remains
+separate. PR #91 carries this closeout through the repository merge workflow.
+
+## Historical handover checkpoints
 
 October 18 acceptance continuation: the project owner requested completion and
 confirmed the same Android/Expo Go matrix. Current installed binding/parity and
@@ -127,3 +138,10 @@ into main.” All four workflows passed on final PR head `d206ef2` before
 The review/merge portion of T10 is complete. Remaining enumerated T9 device,
 recovery and accessibility checks and final integration acceptance stay open;
 MOB-010/M1 are not marked Delivered. Earlier pending-merge notes are historical.
+
+## Operational follow-up
+
+- [ ] O1 — Project owner / existing SSM operator: remove only the inactive owned
+  HTTP 8445 listener after exact-target readback, preserving all other handlers
+  and Funnel-off; independently verify removal. See the
+  [concrete closeout procedure](closeout-2026-10-21.md#remaining-operator-cleanup).

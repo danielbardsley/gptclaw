@@ -1,8 +1,12 @@
 # SPEC-036 acceptance continuation — October 18, 2026
 
-Owner: Project owner. Status: In progress; physical Android acceptance pending.
+Owner: Project owner. Historical status as of October 18: physical Android acceptance pending.
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md) ·
 [Historical evidence](acceptance.md)
+
+Superseding disposition: [October 21 owner acceptance and closeout](closeout-2026-10-21.md).
+The table and remaining-work section below preserve the October 18 checkpoint;
+unrun checks closed by the later owner waiver are not reclassified as passes.
 
 ## Current criterion mapping
 

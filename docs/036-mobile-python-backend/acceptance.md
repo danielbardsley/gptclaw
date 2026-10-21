@@ -1,11 +1,12 @@
 # SPEC-036 acceptance evidence
 
-Status: Implementation merged and preview deployed; remaining native/final acceptance pending.
+Status: Android-first scope accepted and closed by the project owner October 21, with recorded manual-evidence waivers.
 Owner: Project owner. Evidence date: 2026-10-15 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 [Review PR #83](https://github.com/danielbardsley/gptclaw/pull/83).
 
-Latest acceptance continuation: [October 18 checks](acceptance-2026-10-18.md).
+Current disposition: [October 21 owner closeout](closeout-2026-10-21.md).
+Executed acceptance continuation: [October 18 checks](acceptance-2026-10-18.md).
 That record distinguishes current host/container evidence, the failed restore
 invocation and pending physical-device checks. The criterion table below retains
 the original October 15 checkpoint; later sections supersede individual entries.
