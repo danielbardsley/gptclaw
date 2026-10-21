@@ -191,11 +191,15 @@ For an explicitly unpublished successor release only:
 
 ```bash
 python scripts/seal-quality-releases.py --version 1.1.0 --baseline origin/main
+git add config/templates templates/apps/releases scripts
 python scripts/check-template-releases.py --baseline origin/main
 ```
 
-The sealer refuses releases already in the baseline, prunes all development cache
-paths from its inventory and hashes source assets only. The canonical portable
+The sealer refuses releases already in the baseline, prunes development caches
+and generated binding/type/state files from its inventory, and hashes source
+assets only. The release checker also requires the exact declared bytes in the
+Git index, so ignored local files or partially staged changes cannot hide a
+missing asset in CI. The canonical portable
 runner lives in `scripts/project_quality_core.py` and browser source in
 `templates/quality/v1/browser.cjs`; the sealer copies it into
 the selected unpublished release. After merge, further changes require a new

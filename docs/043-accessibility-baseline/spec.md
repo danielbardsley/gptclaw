@@ -27,7 +27,8 @@ operation, real-user dataset or automatic adoption is included.
 ## Observed baseline and dependencies
 
 Dashboard and mobile initiatives contain scoped keyboard/native interaction evidence.
-SPEC-036 still records pending native/final acceptance. These records neither establish
+SPEC-036 is Android-owner-accepted with scoped manual-evidence waivers; those
+waivers do not establish a platform-wide accessibility baseline. These records neither establish
 a platform-wide baseline nor certify a generated product after its UI changes.
 
 Coordinate UI conventions with TPL-008, use QLT-001/002 for automated gates and

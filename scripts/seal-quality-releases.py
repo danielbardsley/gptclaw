@@ -11,7 +11,7 @@ sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import project_templates as templates
 
-EXCLUDE = {'.cache', '.expo', 'coverage', '.gptclaw-cache', 'node_modules', '.next', '.venv',
+EXCLUDE = {'.local', '.cache', '.expo', 'coverage', '.gptclaw-cache', 'node_modules', '.next', '.venv',
            '__pycache__', '.gptclaw-build', '.mypy_cache', '.pytest_cache', '.ruff_cache', 'dist'}
 
 
@@ -43,6 +43,8 @@ def seal(root, version, baseline):
                     if file.is_symlink():
                         raise ValueError('Symlink in unpublished release')
                     source = file.relative_to(base).as_posix()
+                    if source == 'src/config/backend.generated.ts':
+                        continue
                     records.append({'source': source, 'output': outputs.get(source, source), 'sha256': hashlib.sha256(file.read_bytes()).hexdigest()})
             release['files'] = sorted(records, key=lambda x:x['source'])
             release['digest'] = templates.digest({k:v for k,v in release.items() if k != 'digest'})

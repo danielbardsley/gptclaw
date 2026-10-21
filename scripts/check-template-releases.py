@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate bundled releases and refuse changes to an existing baseline release."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -15,6 +16,22 @@ def verify_baseline(baseline):
     commit = subprocess.run(['git','rev-parse','--verify',baseline+'^{commit}'], cwd=repo, capture_output=True, text=True, check=True).stdout.strip()
     exists = subprocess.run(['git','cat-file','-e',commit+':config/templates/v1.json'], cwd=repo, capture_output=True)
     current, releases = templates.catalogue()
+    indexed = subprocess.run(['git','ls-files','--stage','-z'],cwd=repo,capture_output=True,check=True).stdout
+    tracked = {}
+    for record in indexed.split(b'\0'):
+        if not record: continue
+        metadata, name = record.split(b'\t',1)
+        mode, blob, stage = metadata.split()
+        if stage == b'0': tracked[name.decode()] = blob.decode()
+    algorithm = subprocess.run(['git','rev-parse','--show-object-format'],cwd=repo,capture_output=True,text=True,check=True).stdout.strip()
+    templates.check(algorithm in {'sha1','sha256'})
+    for (name, version), (release, contents) in releases.items():
+        for item in release['files']:
+            rel = (Path('templates/apps/releases')/name/version/item['source']).as_posix()
+            content = contents[item['output']]
+            blob = hashlib.new(algorithm,b'blob '+str(len(content)).encode()+b'\0'+content).hexdigest()
+            # A clean local tree must prove that CI will receive these exact bytes.
+            templates.check(tracked.get(rel) == blob)
     if exists.returncode: return
     old = {'releases': []}
     for version in (1, 2, 3, 4, 5, 6, 7):

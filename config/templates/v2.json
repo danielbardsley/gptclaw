@@ -520,7 +520,7 @@
         {
           "source": "checks/gptclaw_quality.py",
           "output": "checks/gptclaw_quality.py",
-          "sha256": "4b21725131cbc669ee692065c9102cd1c25f4c85d710cc6f00736a89c077db9d"
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
         },
         {
           "source": "checks/toolchain-python/Containerfile",
@@ -673,7 +673,7 @@
           "sha256": "f9e423b5828011049b6cac14e9abb0689c01b193a6732887c9cd92e86274ffc7"
         }
       ],
-      "digest": "88cf8dfbe1bbaf2f80c29d4d59502d96b7ca0cde00575092898a3fdbdab75782"
+      "digest": "2446700d70bb56005a0cd0a61e4f3ef04759f87a075afe1ebabea755c08102d3"
     }
   ]
 }

@@ -28,7 +28,7 @@ import urllib.request
 import uuid
 
 VERBS = ('format', 'lint', 'typecheck', 'test', 'build', 'security', 'verify')
-IGNORE = {'.git', '.cache', 'node_modules', '.venv', '.next', '.expo', '.gptclaw-cache',
+IGNORE = {'.git', '.local', '.cache', 'node_modules', '.venv', '.next', '.expo', '.gptclaw-cache',
           '.gptclaw-build', 'dist', 'coverage', '__pycache__', '.mypy_cache', '.pytest_cache', '.ruff_cache'}
 SECRET = re.compile(r'(?:AKIA[A-Z0-9]{16}|gh[pousr]_[A-Za-z0-9_]{20,}|'
                     r'tskey-(?:auth|api)-[A-Za-z0-9-]{10,}|'
@@ -681,7 +681,7 @@ def main(argv=None):
                     else:
                         need(runner.browser_smoke(benchmark=True) is not None, 'No HTTP benchmark adapter')
                     observations.append(collect_performance(root))
-                result = observations[-1]
+                result = json.loads(json.dumps(observations[-1]))
                 for metric in ('startup_ms', 'latency_ms', 'peak_memory_mib'):
                     values = sorted(v['metrics'][metric] for v in observations if metric in v['metrics'])
                     need(len(values) == 5, 'Incomplete repeated performance samples')

@@ -466,7 +466,7 @@
         {
           "source": "checks/gptclaw_quality.py",
           "output": "checks/gptclaw_quality.py",
-          "sha256": "4b21725131cbc669ee692065c9102cd1c25f4c85d710cc6f00736a89c077db9d"
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
         },
         {
           "source": "checks/quality.cjs",
@@ -589,7 +589,7 @@
           "sha256": "40b81e3f7cb8e75c8891214b2553f0b50211cda2657c649e50d87c56b625dbbc"
         }
       ],
-      "digest": "bf71e0da13d770d46b529693097c29f58d37a2de2b42ce2924cb592d3fd87a7a"
+      "digest": "0e36adfb75ce16eda94cf4692aeb65102d394ce3d77363ec9f83957c435fcbf4"
     }
   ]
 }

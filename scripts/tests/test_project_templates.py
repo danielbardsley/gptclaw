@@ -221,6 +221,29 @@ class Tests(unittest.TestCase):
         with self.assertRaises(app.AppError):module.verify_baseline('HEAD')
 
 
+    def test_new_release_requires_tracked_exact_assets(self):
+        spec=importlib.util.spec_from_file_location('release_index_check',Path(__file__).resolve().parents[1]/'check-template-releases.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        def git(*args):return subprocess.run(['git',*args],cwd=self.repo,check=True,capture_output=True).stdout
+        git('init');git('add','.')
+        for release in templates.catalogue()[0]['releases']:
+            base=Path('templates/apps/releases')/release['id']/release['version']
+            git('add','--force','--',*[str(base/item['source']) for item in release['files']])
+        git('-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','-m','baseline')
+        baseline=git('rev-parse','HEAD').decode().strip()
+        release=copy.deepcopy(self.catalogue['releases'][0]);release['version']='2.0.0';self.seal(release)
+        base=self.repo/'templates/apps/releases/nextjs';shutil.copytree(base/'1.0.0',base/'2.0.0')
+        self.catalogue['releases'].append(release);self.write()
+        with self.assertRaises(app.AppError):module.verify_baseline(baseline)
+        git('add','.')
+        module.verify_baseline(baseline)
+        path=base/'2.0.0/README.md';path.write_text('Changed unstaged release source.\n')
+        import hashlib
+        next(item for item in release['files'] if item['source']=='README.md')['sha256']=hashlib.sha256(path.read_bytes()).hexdigest()
+        self.seal(release);self.write()
+        with self.assertRaises(app.AppError):module.verify_baseline(baseline)
+        git('add','.');module.verify_baseline(baseline)
+
+
 class PythonSecurityReleases(unittest.TestCase):
     releases = ('fastapi', 'notes', 'notes-postgres', 'fastapi-postgres')
 

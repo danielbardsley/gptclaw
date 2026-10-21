@@ -50,12 +50,14 @@ class Tests(unittest.TestCase):
         self.assertFalse(self.calls)
     def test_untrusted_asset_cannot_change_origin(self):
         original=self.open
-        def bad(url,timeout):
-            if url.endswith('/projects/one/'):return Response(b'<script src="https://example.invalid/steal"></script>')
-            return original(url,timeout)
-        with patch.object(self,'open',side_effect=bad):
-            with self.assertRaises(app.AppError):smoke.check(self.root)
-        self.assertFalse(any('example.invalid' in url for url in self.calls))
+        for path in ['https://example.invalid/steal','/projects/one/%2e%2e/two/asset.js']:
+            def bad(url,timeout):
+                if url.endswith('/projects/one/'):return Response(('<script src="'+path+'"></script>').encode())
+                return original(url,timeout)
+            self.calls.clear()
+            with patch.object(self,'open',side_effect=bad):
+                with self.assertRaises(app.AppError):smoke.check(self.root)
+            self.assertFalse(any('example.invalid' in url or '%2e' in url for url in self.calls))
     def test_changed_source_cannot_establish_current_acceptance(self):
         original=self.open
         def changed(url,timeout):
@@ -71,6 +73,26 @@ class Tests(unittest.TestCase):
     def test_post_start_requires_explicit_opt_in(self):
         with patch.object(smoke,'check') as check:
             self.assertIsNone(smoke.after_start(self.root));check.assert_not_called()
+
+    def test_observer_retries_transient_failure_and_stays_quiet_when_unchanged(self):
+        import io
+        output=io.StringIO();clock=[0.0]
+        def sleep(amount):clock[0]+=amount
+        with patch.object(smoke.time,'monotonic',side_effect=lambda:clock[0]),patch.object(smoke.time,'sleep',side_effect=sleep),patch.object(smoke,'check',side_effect=[app.AppError('health'),{'state':'passed','revision':'one'}]) as check,contextlib.redirect_stdout(output):
+            self.assertEqual(smoke.observe(self.root,2,.5),0)
+            self.assertEqual(check.call_count,2)
+        self.assertEqual(len(output.getvalue().splitlines()),1)
+
+    def test_single_failed_probe_returns_failure(self):
+        import io
+        with patch.object(smoke,'check',side_effect=app.AppError('health')),contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(smoke.observe(self.root,0),1)
+
+    def test_opt_in_preserves_unknown_metadata(self):
+        meta=self.root/'.gptclaw';meta.mkdir();path=meta/'quality-smoke.json';path.write_text('{"schema_version":99,"unknown":true}')
+        before=path.read_bytes()
+        with self.assertRaises(app.AppError):smoke.configure(self.root,True)
+        self.assertEqual(path.read_bytes(),before)
 
     def test_observer_rejects_unbounded_or_invalid_polling(self):
         for seconds,interval in [(28801,1),(1,.1),(-1,1)]:

@@ -159,11 +159,6 @@
           "sha256": "16b2368fd6d81695fcb9168f5dcc55ac963ba6e75584d1744ed51a85488dfb53"
         },
         {
-          "source": ".local/state/pnpm/pnpm-state.json",
-          "output": ".local/state/pnpm/pnpm-state.json",
-          "sha256": "17686ea399cd544de982bdd6af21c33848c1001a25e9a1f223cfd346fd8ab5a7"
-        },
-        {
           "source": ".prettierignore",
           "output": ".prettierignore",
           "sha256": "bd5f863f0e75e60e6d957821209ab41f7a8f76c6df093f4571a929bfccd0d453"
@@ -246,7 +241,7 @@
         {
           "source": "checks/gptclaw_quality.py",
           "output": "checks/gptclaw_quality.py",
-          "sha256": "4b21725131cbc669ee692065c9102cd1c25f4c85d710cc6f00736a89c077db9d"
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
         },
         {
           "source": "checks/toolchain-node/Containerfile",
@@ -309,7 +304,7 @@
           "sha256": "4f1f6cde254a5d5e6a4b7a03d1f56a45366427388e896a6ed06c253f02b31b10"
         }
       ],
-      "digest": "730404acbcdd77919059209c4e58196bb1d08e4fae15f59bd6a17e1fe9494261"
+      "digest": "796906f4fb321385e6db49b1944bae241b695bb48d26b47e4fab1971fc20ac45"
     }
   ]
 }

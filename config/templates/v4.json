@@ -1162,7 +1162,7 @@
         {
           "source": "checks/gptclaw_quality.py",
           "output": "checks/gptclaw_quality.py",
-          "sha256": "4b21725131cbc669ee692065c9102cd1c25f4c85d710cc6f00736a89c077db9d"
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
         },
         {
           "source": "checks/install-pnpm.cjs",
@@ -1255,11 +1255,6 @@
           "sha256": "aaee9dd9cc6a0963120a577dcfd0568a959f608388672ab8c9e02ae48c2760fc"
         },
         {
-          "source": "web/.local/state/pnpm/pnpm-state.json",
-          "output": "web/.local/state/pnpm/pnpm-state.json",
-          "sha256": "f7bb7447f0709d750f039b5ef285d2c96cc5ec79467b933d46fd7e16547949de"
-        },
-        {
           "source": "web/.prettierignore",
           "output": "web/.prettierignore",
           "sha256": "bd5f863f0e75e60e6d957821209ab41f7a8f76c6df093f4571a929bfccd0d453"
@@ -1350,7 +1345,7 @@
           "sha256": "4f1f6cde254a5d5e6a4b7a03d1f56a45366427388e896a6ed06c253f02b31b10"
         }
       ],
-      "digest": "3e522aed81834fe35b6f06feff69d709e3771e96abb736cb293ea2f6513e0ba3"
+      "digest": "5bbc408e077a2fc27b9e30f2e8d188b19e287c9af5ce966b7444d46442e64605"
     }
   ]
 }

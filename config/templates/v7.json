@@ -1076,7 +1076,7 @@
         {
           "source": "checks/gptclaw_quality.py",
           "output": "checks/gptclaw_quality.py",
-          "sha256": "4b21725131cbc669ee692065c9102cd1c25f4c85d710cc6f00736a89c077db9d"
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
         },
         {
           "source": "checks/migration-review.json",
@@ -1139,7 +1139,7 @@
           "sha256": "9f4941592d46baa13fcc693fd492a2d5d7e9c1d77218ba952e753a83146ccdd7"
         }
       ],
-      "digest": "7404852fcdf8729cc0e09151f5b8fa6fe30de1a987f2cfb753b8f6c9ad08606c"
+      "digest": "670b3f1d2219dd6c35f2a2a8349910889bb2a86dde95ae6b5a9db2cd3ef09614"
     },
     {
       "id": "expo-notes",
@@ -1241,7 +1241,7 @@
         {
           "source": "checks/gptclaw_quality.py",
           "output": "checks/gptclaw_quality.py",
-          "sha256": "4b21725131cbc669ee692065c9102cd1c25f4c85d710cc6f00736a89c077db9d"
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
         },
         {
           "source": "checks/quality.cjs",
@@ -1364,11 +1364,6 @@
           "sha256": "f98eacd1f876bd92052f3d0c7a676269e09cdbb275ec66ba86995d50e05c7905"
         },
         {
-          "source": "src/config/backend.generated.ts",
-          "output": "src/config/backend.generated.ts",
-          "sha256": "a2bdc97eca1e9c61eb1e13d339fac413ff6983970ca9d465144d77674720e6ed"
-        },
-        {
           "source": "tests/client.test.tsx",
           "output": "tests/client.test.tsx",
           "sha256": "64fb8736d9c8e12223b6078f848baf2245416b06375b8b33e37fed0d976fdf0e"
@@ -1384,7 +1379,7 @@
           "sha256": "40b81e3f7cb8e75c8891214b2553f0b50211cda2657c649e50d87c56b625dbbc"
         }
       ],
-      "digest": "46f86aab50ecd6f408d694e9173f1f5b2705e4b63ee772cde11eb8718fb15e70"
+      "digest": "d68658d82df985b23361130a0ba9ba9e0ada0656c0edd1b7064e7f7370902409"
     }
   ]
 }

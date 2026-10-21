@@ -63,7 +63,7 @@ def check(root, take_lock=True):
         app.need(bool(scripts), 'health')
         for path in scripts[:4]:
             parsed = urllib.parse.urlsplit(path)
-            app.need(not parsed.scheme and not parsed.netloc and not parsed.fragment and parsed.path.startswith(prefix+'/'), 'invalid')
+            app.need(not parsed.scheme and not parsed.netloc and not parsed.fragment and parsed.path.startswith(prefix+'/') and not any(part in {'.','..'} for part in urllib.parse.unquote(parsed.path).split('/')), 'invalid')
             fetch(app.INGRESS_PORT, parsed.path+('?' + parsed.query if parsed.query else ''), 'owned document asset')
         if api or contract['schema_version'] in (3, 4):
             path = '/api/v1/notes?limit=1' if contract['schema_version'] in (3, 4, 8) else '/api/v1/examples?limit=1'
@@ -78,7 +78,7 @@ def check(root, take_lock=True):
 
 
 def observe(root, seconds, interval=1):
-    """Bounded opt-in source observer; never starts/restarts/mutates a service."""
+    """Bounded opt-in source observer; retry readiness without runtime mutation."""
     app.need(type(seconds) is int and 0 <= seconds <= 28800, 'invalid')
     app.need(type(interval) in (int, float) and .5 <= interval <= 30, 'invalid')
     root, contract = app.target(root)
@@ -86,15 +86,19 @@ def observe(root, seconds, interval=1):
     q = core()
     try: q.config(root)
     except (q.GateError, OSError, ValueError): raise app.AppError('invalid') from None
-    last = None; latest = None; deadline = time.monotonic()+seconds
+    last = None; latest = None; pending = None; retry_until = 0
+    deadline = time.monotonic()+seconds
     while True:
-        signature = q.source_digest(Path(root))
+        signature = q.source_digest(root)
         if signature != last:
+            if signature != pending:
+                pending = signature; retry_until = min(deadline, time.monotonic()+45)
             try:
                 report = check(root)
             except (app.AppError, q.GateError, OSError, ValueError):
                 report = {'state': 'failed', 'revision': signature, 'error': 'Smoke did not establish acceptance; runtime/source are retained'}
-            print(json.dumps(report), flush=True);last = signature; latest = report
+            if report['state'] == 'passed' or time.monotonic() >= retry_until:
+                print(json.dumps(report), flush=True);last = signature; latest = report
         if time.monotonic() >= deadline:
             return 0 if latest and latest['state'] == 'passed' else 1
         time.sleep(min(interval, max(0, deadline-time.monotonic())))
@@ -103,11 +107,12 @@ def observe(root, seconds, interval=1):
 def configure(root, enabled):
     root, contract = app.target(root)
     app.need(type(enabled) is bool and (root/'quality.json').is_file(), 'invalid')
-    path = root/'.gptclaw/quality-smoke.json'
-    if path.exists() or path.is_symlink():
-        existing = app.read_json(path)
-        app.need(set(existing) == {'schema_version', 'project', 'enabled'} and type(existing['schema_version']) is int and existing['schema_version'] == 1 and existing['project'] == contract['project']['id'] and type(existing['enabled']) is bool, 'conflict')
-    app.save(path, {'schema_version': 1, 'project': contract['project']['id'], 'enabled': enabled})
+    with app.locked(contract['project']['id']):
+        path = root/'.gptclaw/quality-smoke.json'
+        if path.exists() or path.is_symlink():
+            existing = app.read_json(path)
+            app.need(set(existing) == {'schema_version', 'project', 'enabled'} and type(existing['schema_version']) is int and existing['schema_version'] == 1 and existing['project'] == contract['project']['id'] and type(existing['enabled']) is bool, 'conflict')
+        app.save(path, {'schema_version': 1, 'project': contract['project']['id'], 'enabled': enabled})
 
 
 def after_start(root):

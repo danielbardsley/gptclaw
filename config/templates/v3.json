@@ -1054,7 +1054,7 @@
         {
           "source": "checks/gptclaw_quality.py",
           "output": "checks/gptclaw_quality.py",
-          "sha256": "4b21725131cbc669ee692065c9102cd1c25f4c85d710cc6f00736a89c077db9d"
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
         },
         {
           "source": "checks/install-pnpm.cjs",
@@ -1105,11 +1105,6 @@
           "source": "web/.gitignore",
           "output": "web/.gitignore",
           "sha256": "aaee9dd9cc6a0963120a577dcfd0568a959f608388672ab8c9e02ae48c2760fc"
-        },
-        {
-          "source": "web/.local/state/pnpm/pnpm-state.json",
-          "output": "web/.local/state/pnpm/pnpm-state.json",
-          "sha256": "753c2173f8ce89a7402faa3f1cce6ca3d434d75165da6f80cccae5cbede141c3"
         },
         {
           "source": "web/.prettierignore",
@@ -1202,7 +1197,7 @@
           "sha256": "4f1f6cde254a5d5e6a4b7a03d1f56a45366427388e896a6ed06c253f02b31b10"
         }
       ],
-      "digest": "076ec3eee0ac26974f9d0978d87b18f8817731b177b90be15caa814a96af488a"
+      "digest": "112808db6cfcf857b7340cfcc1887271289d423c36975fa65667ae1014f83586"
     }
   ]
 }
