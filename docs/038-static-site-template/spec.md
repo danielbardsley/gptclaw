@@ -103,7 +103,7 @@ outside this initial slice. No application data migration is needed.
 
 Deliver through a reviewable implementation PR after scope approval and
 implementation authorization. The project owner owns those decisions and final
-acceptance. Add an acceptance record when verification begins; all criteria
-remain pending today. Mark Delivered only after merged implementation and all
+acceptance. Verification is tracked in [acceptance.md](acceptance.md); local, CI, private
+runtime and project-owner results remain distinct. Mark Delivered only after merged implementation and all
 required acceptance evidence. Private live fixtures and any later host/provider
 installation must use the applicable reviewed procedures and scoped authorization.

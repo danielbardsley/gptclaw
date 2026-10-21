@@ -10,15 +10,14 @@ Owner: Project owner. Date: 2026-10-21 (America/New_York).
   generation/runtime/toolchain sources; inspect main and preserve existing work.
   Record the project owner's Next.js static-export selection and draft linked
   requirements/design/tasks. No implementation authorization was supplied.
-- [ ] T2: Obtain planning review and implementation authorization; confirm proposed
-  budgets, release identity and explicit rebuild/downtime. At implementation,
-  recheck current schema/release/profile versions and allocate compatible new
-  contracts. Map adapter/generation/snapshot/control dispatch before editing.
+- [x] T2: The project owner approved the specification and authorized implementation
+  with “Ok, lets implement the spec.” Confirmed budgets, exact release and rebuild
+  downtime; allocated manifest v10 and catalogue v8 against the current contracts. Map adapter/generation/snapshot/control dispatch before editing.
   Covers STATIC-001; AC-001. Gate: authorized scope before T3–T7 implementation.
 
 ## Implementation order
 
-- [ ] T3: Implement exact immutable release, strict generation/contracts/provenance,
+- [x] T3: Implement exact immutable release, strict generation/contracts/provenance,
   complete static starter, prefix-aware file server, quality command interface,
   Containerfile and generated guidance/CI. Do not alter old releases/defaults.
   Include adaptation guidance identifying which demonstration pages/assets to
@@ -26,12 +25,12 @@ Owner: Project owner. Date: 2026-10-21 (America/New_York).
   pages are intentional; downstream product acceptance must review their removal
   or retention against that product's spec.
   Covers STATIC-001,002,003,005,006,007; AC-001, AC-002, AC-003, AC-005, AC-006.
-- [ ] T4: Integrate managed build/start/status/test/logs/restart/rebuild/stop,
+- [x] T4: Integrate managed build/start/status/test/logs/restart/rebuild/stop,
   completion/readiness and source-input invalidation; stop/build/start failures
   and interruption remain recoverable. Package adapter/contracts/assets in
   immutable snapshots and preserve locks/resources/private routing and unrelated
   adapters. Depends on T3. Covers STATIC-004; AC-004.
-- [ ] T5: Add meaningful output/protocol/reference/accessibility/budget checks in
+- [x] T5: Add meaningful output/protocol/reference/accessibility/budget checks in
   pinned containers. Test direct loads and client navigation, no-JS content,
   malformed/traversing paths, symlinks, HEAD/MIME/404 behavior, static-only build
   limitations and injected quality failures. Verify checker tools and exact
@@ -62,8 +61,10 @@ Owner: Project owner. Date: 2026-10-21 (America/New_York).
 
 ## Current handover
 
-This change contains planning documents plus index/catalogue links only.
-Next.js static export is the confirmed framework choice; all other design defaults
-remain proposed. Implementation, generated/live checks, CI acceptance and owner
-acceptance remain pending. The next action is project-owner review of this
-planning set, followed by explicit implementation authorization.
+The static release, adapter/contracts, private lifecycle integration, generated
+quality/browser/CI gates and runbook are implemented. Focused static (6 tests) and
+manifest (28 tests) suites pass. The actual export passes authoring tests, links,
+budgets, browser/accessibility/no-JS/navigation and the advisory check. Broader
+repository, generated defect/container and two-project managed acceptance checks
+are running. See [acceptance](acceptance.md). PR review/merge, final CI and manual
+project-owner acceptance remain separate pending gates.

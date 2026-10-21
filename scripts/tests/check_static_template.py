@@ -5,6 +5,9 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
+import urllib.request
+import uuid
 
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
@@ -68,6 +71,23 @@ def main():
     run([*common,browser,'node','scripts/browser.mjs'])
     # Compiled image can serve with only the published static export and its source identity.
     run(['build','--tag','gptclaw-static-compiled-check','--build-arg','PROJECT_ID=static-check','--file',str(root/'Containerfile'),str(root)],timeout=600)
+    name='gptclaw-static-image-'+uuid.uuid4().hex[:12]
+    try:
+        run(['run','--detach','--name',name,'--publish','127.0.0.1::3000','gptclaw-static-compiled-check'])
+        binding=run(['port',name,'3000/tcp']).stdout.strip()
+        assert binding.startswith('127.0.0.1:')
+        target='http://'+binding+'/projects/static-check/'
+        until=time.monotonic()+30
+        while True:
+            try:
+                with urllib.request.urlopen(target,timeout=2) as response:
+                    assert response.status==200 and b'A small beginning' in response.read()
+                break
+            except OSError:
+                if time.monotonic()>=until:raise
+                time.sleep(.25)
+    finally:
+        run(['stop','--time','10',name])
     print('Exact generation, frozen restore, quality, fault rejection, exported browser and compiled image checks passed.')
 
 

@@ -1,6 +1,6 @@
 # TDD-038 — Next.js static export and private file preview
 
-Status: Proposed. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Implemented; verification in progress. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
 
 ## Existing evidence and approach
@@ -22,7 +22,7 @@ current documentation alone does not establish compatibility. Use
 `trailingSlash: true`, local assets/system fonts and ordinary unoptimized images
 with dimensions. Avoid request-dependent routes and default image optimization.
 
-Add a distinct `nextjs-static-v1` adapter and `nextjs-static@1.0.0` catalogue
+The implementation adds manifest v10 and catalogue v8 with a distinct `nextjs-static-v1` adapter and `nextjs-static@1.0.0` catalogue
 entry; do not change `nextjs-v1` semantics. Keep project kind `web`, private
 exposure and ephemeral derived output. Allocate explicit new manifest/catalogue
 schema versions if existing strict contracts cannot express the adapter. Do not
@@ -42,7 +42,7 @@ loosen historical schemas or route all unknown providers to Next.js.
 
 ## Build and serving contract
 
-Propose `pnpm build` for validated export and `pnpm start` for a small Node file
+Use `pnpm build` for validated export and `pnpm start` for a small Node file
 server, using the existing Node container profile. Do not use `next start` or
 `next dev` for managed static acceptance. The server only reads a completed export
 root; it does not render React or load project source. Bind port 3000 inside the
@@ -54,7 +54,8 @@ inventory with the completed build. The server verifies completion and identity
 before readiness. Reserve a prefixed health endpoint outside authored page space;
 readiness must verify the expected exported entry and manifest, not merely that
 the server process is alive. Specify/test the exact endpoint and collision refusal
-when implementing the versioned contract.
+in the versioned contract: `/projects/<id>/_gptclaw/ready`, with
+exported `_gptclaw/` content rejected at build time.
 
 Strip exactly one validated prefix, decode paths safely, resolve files inside the
 export root and refuse traversal, dotfiles, directory listings and symlinks.
@@ -77,9 +78,11 @@ must not satisfy readiness for the failed revision. Repair then rebuild is the
 recovery path. No automatic stale-output fallback is promised.
 
 The existing `prepare()` build digest covers dependency inputs, not all source.
-For this adapter, hash the explicit source/config/public/lock/toolchain inputs
-(excluding generated output, caches, Git and credentials), or force export on
-start; implementation must prove source edits are not skipped. Record the
+This adapter forces export on every activation and records an explicit
+source/config/public/lock digest in the export completion record. Build staging
+uses Next.js webpack mode because the pinned Turbopack builder refuses the
+shared dependency symlink outside the staging root. Generated output, caches,
+Git and credentials are excluded. Tests prove source edits are not skipped. Record the
 successful source revision/digest. Ordinary restart must validate/rebuild changed
 inputs. Keep existing adapters' cache behavior unchanged.
 
@@ -129,8 +132,9 @@ in a later acceptance record. Keep local, CI and live/owner results separate.
 | STATIC-007 | Adaptation/runbook/example and acceptance record | T3,T7,T8 | AC-006 |
 
 Framework choice is settled by the project owner: Next.js static export.
-Remaining proposed defaults are the release identity, explicit rebuild with
-preview downtime, budgets and no CMS/backend. The project owner reviews these
-with the planning PR before implementation authorization. Exact new schema numbers
-and pinned check-tool versions are implementation decisions, resolved against
-current sources and verified in T2/T5; no existing contract version is reserved.
+The project owner authorized implementation of the bounded scope on October 21.
+The release identity, explicit rebuild/downtime and budgets are approved defaults.
+Manifest v10 and catalogue v8 are allocated; exact check-tool versions are recorded
+in the generated package/lockfile. `verify` runs authoring/export/advisory checks in
+the existing Node profile; the required browser gate runs separately in the pinned
+browser image. See [acceptance](acceptance.md) for actual results and pending gates.

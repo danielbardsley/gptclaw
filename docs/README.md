@@ -261,10 +261,11 @@ dispositions independently of feature implementation status.
   [Visual reference](037-dashboard-constrained-controls/reference.md) ·
   [Acceptance tracking](037-dashboard-constrained-controls/acceptance.md)
 
-- **038 — Static site template (TPL-005), draft:**
+- **038 — Static site template (TPL-005), implementation in review:**
   [Specification](038-static-site-template/spec.md) ·
   [Technical design](038-static-site-template/technical-design.md) ·
-  [Tasks](038-static-site-template/tasks.md)
+  [Tasks](038-static-site-template/tasks.md) ·
+  [Acceptance tracking](038-static-site-template/acceptance.md)
 
 ## Current application milestone
 
