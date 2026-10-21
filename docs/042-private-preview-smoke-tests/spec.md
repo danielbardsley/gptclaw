@@ -1,6 +1,6 @@
 # SPEC-042 — Preview smoke tests (QLT-004)
 
-- **Status:** Implementation authorized; review, merge and acceptance pending.
+- **Status:** Implemented — PR #95 merged; task records closed by project-owner request; remaining acceptance is tracked separately.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-004
@@ -20,7 +20,9 @@ process, so PID alone cannot identify the tested revision.
 
 The project owner authorized implementation of QLT-001–QLT-010 and necessary
 dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
-Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
+The initial overnight authorization covered pushing branches and opening PRs.
+The project owner subsequently authorized PR #95 merge and closure of all tasks
+on 2026-10-21; PR #95 is now merged. Deployment remains excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -90,8 +92,9 @@ Criterion-by-criterion results and remaining trials are recorded in [acceptance 
 Use owned isolated probes in generated checks, an explicit read-only private-ingress CLI, opt-in post-start evidence and a bounded source observer. Never start/stop/restart a service or recover data in response to a smoke failure.
 
 The project owner delegated reasonable implementation choices on 2026-10-21.
-This scope is authorized for source changes, synthetic tests and PR publication;
-merge and deployment are explicitly excluded.
+The initial scope authorized source changes, synthetic tests and PR publication.
+The project owner subsequently authorized merge and closure of all tasks; PR #95
+is merged. Deployment remains separately authorized.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

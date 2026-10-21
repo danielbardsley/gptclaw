@@ -1,8 +1,10 @@
 # Project quality gates
 
 QLT-001–QLT-010 add application quality tooling, not a runtime installation or
-production pipeline. Implementation is reviewed through the QLT PR; no merge or
-managed deployment is part of the overnight implementation authorization.
+production pipeline. [PR #95](https://github.com/danielbardsley/gptclaw/pull/95)
+merged on 2026-10-21 after the project owner authorized merge and closure of all
+task records. Pending acceptance observations remain in the initiative records.
+Managed rollout/deployment remains separately authorized.
 
 ## Select and inspect
 
