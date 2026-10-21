@@ -124,6 +124,7 @@ def catalogue():
             releases[key] = (release, contents); continue
         if release['provider'] == 'nextjs-static-v1':
             check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','AGENTS.md','README.md','app/page.tsx','scripts/serve.mjs','scripts/build.mjs','Containerfile'} <= outputs)
+            check(deps.json_data(contents['checks/node-profile.json']) == profiles[profile_key])
             package = deps.json_data(contents['package.json'])
             policy, _ = deps.policy(); deps.validate_package(package, policy)
             check(package['packageManager']=='pnpm@'+declaration['versions']['pnpm'])

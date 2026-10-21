@@ -14,7 +14,7 @@ Date: 2026-10-21 (America/New_York).
 | AC-002 | pending | Frozen restore, format/lint/typecheck, three generated behavior/negative tests, real export and no-JS browser content pass. Complete generated unsupported-feature and compiled-image checks. |
 | AC-003 | pending | Exported browser navigation/refresh/404 and HTTP escape/MIME/HEAD tests pass. Two actual private previews are under lifecycle verification. |
 | AC-004 | pending | Six offline adapter tests cover generation, strict contracts, cache invalidation, failure state and snapshot packaging. Complete real edit/rebuild, failure recovery and independent-service/stop-retention scenarios. |
-| AC-005 | pending | Automated axe WCAG A/AA, internal references and asset-budget checks pass. Deliberate generated defects are running; project-owner keyboard/focus/200%-zoom review remains pending. |
+| AC-005 | pending | Automated axe WCAG A/AA, internal references and asset-budget checks pass. Deliberate generated defects are running; project owner confirmed keyboard/focus/200%-zoom UI acceptance in this chat. |
 | AC-006 | pending | Generated quality/advisory and exported browser checks pass. Final generated image, broad checks, CI, timings/resource observations and owner acceptance remain pending. |
 
 ## Verification so far
@@ -22,7 +22,9 @@ Date: 2026-10-21 (America/New_York).
 Implementation checkpoint `a9a9192`, merged with reviewed main `ba06d66` in
 `6ba0143`; final test/documentation follow-ups will be recorded separately.
 Synthetic data only, as forge in rootless containers. No AWS, HCP, production,
-public exposure, credentials, host package or shared ingress configuration change.
+public exposure, credentials, host package or Tailscale Serve/Funnel configuration change. The managed
+lifecycle refreshed its owned private ingress provider snapshot through its
+existing reviewed interface.
 
 Executed locally:
 
@@ -73,3 +75,11 @@ projects, snapshots or shared storage. Final implementation merge, final-head CI
 and manual project-owner acceptance remain pending. The intentional guide pages
 and leaf icon demonstrate the starter; downstream product adaptation must replace
 or explicitly justify them against its own spec, with dependent links/tests updated.
+
+The project owner confirmed manual UI acceptance of the private second site after
+checking navigation, keyboard focus and 200% zoom at desktop/narrow widths.
+An independent interrupted-export fixture was terminated after two seconds; it
+had no completion marker and startup refused it. The generated compiled-image
+check found a missing pnpm profile copy; the reviewed exact Node profile is now
+bundled with the installer and validated against the registry. This changes the
+unmerged new release's build packaging, not its rendered UI or serving behavior.

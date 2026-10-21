@@ -67,6 +67,9 @@ def main():
         assert not (root/'out/.gptclaw-build.json').exists()
         run([*common,args.image,'pnpm','start'],ok=False)
     finally:page.write_text(original)
+    run([*common,args.image,'timeout','--signal=TERM','--kill-after=2','2','node','scripts/build.mjs'],ok=False)
+    assert not (root/'out/.gptclaw-build.json').exists()
+    run([*common,args.image,'pnpm','start'],ok=False)
     run([*common,args.image,'pnpm','build'])
     run([*common,browser,'node','scripts/browser.mjs'])
     # Compiled image can serve with only the published static export and its source identity.

@@ -59,7 +59,7 @@
         {
           "source": "Containerfile",
           "output": "Containerfile",
-          "sha256": "074350f6a7b1f98675748d41db7cc9c685c151f0c69bdb9a9cb0fe594a189bea"
+          "sha256": "bb16a9babe4afacfd3e26a21a5c213982ace7395dc27c84af4c2d90795bd1575"
         },
         {
           "source": "README.md",
@@ -100,6 +100,11 @@
           "source": "checks/install-pnpm.cjs",
           "output": "checks/install-pnpm.cjs",
           "sha256": "43e29b1a2b518dbc37fc691f97852ec740db8eb4154b62c6d3bb816acd2b7640"
+        },
+        {
+          "source": "checks/node-profile.json",
+          "output": "checks/node-profile.json",
+          "sha256": "c50d169092c31bffccf16bd922f218c4af61a27e2fe9981ab04bd5b4528c344a"
         },
         {
           "source": "eslint.config.js",
@@ -177,7 +182,7 @@
           "sha256": "4f1f6cde254a5d5e6a4b7a03d1f56a45366427388e896a6ed06c253f02b31b10"
         }
       ],
-      "digest": "6affdeedaeaf2f77e5bdf923622411110e9df0c421372c2ae8cec12590b0eeb8"
+      "digest": "e82772bc0c1d461edb6bb1a569bd3e893983cde9f73019a36574ba32c6d00060"
     }
   ]
 }
