@@ -14,6 +14,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import traceback
 import unittest
 from unittest.mock import patch
 
@@ -126,6 +127,22 @@ class Tests(unittest.TestCase):
                 return self.real_resolve('nextjs', '1.0.0')
             return self.real_resolve(template, version)
         p=patch.object(templates,'resolve',side_effect=legacy_default);p.start();self.addCleanup(p.stop)
+        real_run=repos.run
+        def observed_run(receipt, *args, **kwargs):
+            try:
+                return real_run(receipt, *args, **kwargs)
+            except app.AppError as error:
+                # Preserve safe fixture diagnostics that the production recovery
+                # boundary intentionally hides. Never print arguments or locals.
+                cause=error.__context__
+                frames=traceback.extract_tb(cause.__traceback__) if cause else []
+                print(json.dumps({'fixture_recovery': True,
+                    'intent': receipt.get('intent'), 'last_error': receipt.get('last_error'),
+                    'cause_type': type(cause).__name__,
+                    'cause_code': getattr(cause,'code',None),
+                    'frames': [{'file':Path(f.filename).name,'line':f.lineno,'function':f.name} for f in frames[-4:]]}),file=sys.stderr)
+                raise
+        p=patch.object(repos,'run',side_effect=observed_run);p.start();self.addCleanup(p.stop)
         self.real_git=repos.git
         p=patch.object(repos,'git',self.git);p.start();self.addCleanup(p.stop)
     def git(self,root,*args,api=None,input_bytes=None):
