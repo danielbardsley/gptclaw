@@ -49,6 +49,18 @@ clean Git state were inspected; its current app/package inputs were read without
 credentials. No EAS account, key, build submission, installation, runtime, AWS or
 production action has been performed. The owner selected Expo account `bardsley` and Expo-managed Android signing keys.
 Next action is the remaining P2 exact project/key custody details, budget and
-device decisions and exact tool/interface validation. Free-only builds are
-recommended; no paid budget or external job has been authorized. Prior mobile and quality task closures stand;
+device decisions and exact tool/interface validation. The owner subsequently instructed “start free”: free-only setup/builds are now
+authorized within the approved scope, with no paid upgrades/overages. Expo
+device authorization is pending; no external build has been submitted. Prior mobile and quality task closures stand;
 this initiative adds binary-specific evidence rather than reopening those tasks.
+
+## Free-only preparation checkpoint — October 21
+
+The owner authorized “start free.” [Fieldnotes PR #2](https://github.com/danielbardsley/fieldnotes-mobile/pull/2)
+contains the tested first-app input preparation. T1–T3 are partially implemented,
+not complete: authenticated project/quota/access/key disposition, managed job
+submission/recovery and signing-advisory acceptance remain pending. T4–T7 native
+installation/delivery acceptance remain unrun. See the
+[tooling and verification review](build-tool-review.md) for exact passed checks,
+patched tool inputs, remaining advisory causes and the bounded exception proposal.
+The existing source-only exception is not extended to signing by this checkpoint.

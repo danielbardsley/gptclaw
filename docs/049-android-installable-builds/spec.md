@@ -107,12 +107,18 @@ this approval; no EAS configuration was found among its inspected project files.
 The project owner selected the `bardsley` Expo account and Expo-managed Android
 signing keys in this chat. No account credentials were requested or inspected.
 The exact Expo project/link, key backup/rotation/access disposition, acceptance
-device (previously Android 11) and build budget remain to be confirmed before
-external work. Free-only builds are recommended; paid usage is not authorized. These remaining decisions
+device (previously Android 11) remain to be confirmed before external work.
+The owner authorized starting free-only on October 21. Use the available free
+Android allowance, one active medium-worker build at a time; no subscription
+upgrade, paid build, paid retry or overage is authorized. Stop on exhausted or
+unverifiable allowance rather than incurring a charge. These remaining decisions
 do not reopen specification approval or the Fieldnotes selection.
 The specification author must validate exact EAS/native tool versions and the
 selected native-module test before implementation; no EAS CLI is assumed installed.
 Planning and offline design refinement can proceed without these account actions.
+
+[Build-tool review](build-tool-review.md) records current preparation evidence and
+the proposed, unapproved native-build advisory exception.
 
 Deliver reviewed contracts/adapters, documented build/install/recovery interfaces,
 meaningful tests and an acceptance record. Mark only this Android slice Delivered
