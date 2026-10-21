@@ -1,6 +1,6 @@
 # TASKS-041 — Dependency automation
 
-Status: Implementation authorized; verification and acceptance tracked below. Owner: Project owner.
+Status: Complete — all task records closed at the project owner’s request; implementation merged; remaining acceptance recorded separately. Owner: Project owner.
 Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md)
 
@@ -11,7 +11,8 @@ Date: 2026-10-21 (America/New_York).
 - [x] P-02 — Draft requirements, measurable acceptance, design and ordered tasks
   for QLT-003; link the documentation index and mark the catalogue Draft.
 - [x] P-03 — Project owner authorized implementation, reasonable scope decisions,
-  tests and PR publication on 2026-10-21. Do not merge or deploy. Existing
+  tests and PR publication on 2026-10-21. The later request to merge and close
+  all tasks supersedes the initial merge exclusion; deployment remains excluded. Existing
   non-QLT capabilities are dependencies, not duplicate implementation tasks.
 
 Selected implementation defaults: Use weekly Dependabot with one open PR per ecosystem/component, conservative patch/minor grouping and explicit major/Expo/toolchain upgrade lanes. Do not enable auto-merge or add private registry credentials.
@@ -27,17 +28,23 @@ initiative, agree its version/capability contract before integration.
   Maps QLT-003-R01 to QLT-003-AC01; include the corresponding passing and
   failing acceptance scenarios before advancing.
 
-- [ ] T-02 — Implement grouping and compatibility policy with coupled and incompatible upgrade fixtures.
+- [x] T-02 — Implement grouping and compatibility policy with coupled and incompatible upgrade fixtures.
   Maps QLT-003-R02 to QLT-003-AC02; include the corresponding passing and
   failing acceptance scenarios before advancing.
+  Closeout: closed by project-owner direction on 2026-10-21; any unperformed
+  portions remain pending in acceptance.md.
 
-- [ ] T-04 — Document permissions and test failure diagnostics without adding private registry secrets.
+- [x] T-04 — Document permissions and test failure diagnostics without adding private registry secrets.
   Maps QLT-003-R04 to QLT-003-AC04; include the corresponding passing and
   failing acceptance scenarios before advancing.
+  Closeout: closed by project-owner direction on 2026-10-21; any unperformed
+  portions remain pending in acceptance.md.
 
-- [ ] T-03 — Test update PRs against frozen restore, quality, contract and template-specific gates.
+- [x] T-03 — Test update PRs against frozen restore, quality, contract and template-specific gates.
   Maps QLT-003-R03 to QLT-003-AC03; include the corresponding passing and
   failing acceptance scenarios before advancing.
+  Closeout: closed by project-owner direction on 2026-10-21; any unperformed
+  portions remain pending in acceptance.md.
 
 - [x] T-05 — Write the triage/adoption runbook and verify immutable template update workflow.
   Maps QLT-003-R05 to QLT-003-AC05; include the corresponding passing and
@@ -45,27 +52,34 @@ initiative, agree its version/capability contract before integration.
 
 ## Verification and delivery
 
-- [ ] T-06 — Run mapped focused tests, applicable generated-project gates and
+- [x] T-06 — Run mapped focused tests, applicable generated-project gates and
   repository checks described in the design; record exact commands, revisions,
   results, skipped layers and limitations. Verify all QLT-003-AC01–AC05 with actual
   evidence; pending private/native/operator trials remain visibly pending.
+  Closeout: closed by project-owner direction on 2026-10-21; any unperformed
+  portions remain pending in acceptance.md.
 - [x] T-07 — Push the implementation branch and open a reviewable PR with sanitized
-  evidence and known limitations. Do not merge, deploy or imply owner acceptance.
+  evidence and known limitations. Subsequent merge was explicitly authorized;
+  deployment and acceptance observations remain separate.
 
-Merge, rollout and owner/device acceptance are downstream review actions excluded
-from this implementation authorization, not tasks for the unattended run.
+PR merge and task closure were subsequently authorized by the project owner on
+2026-10-21. Rollout and unperformed acceptance trials remain separately tracked.
 
 ## Current handover
 
-Implementation is pushed in [draft PR #95](https://github.com/danielbardsley/gptclaw/pull/95).
-Eight new exact quality-enabled starter releases pass the local and CI matrix.
-The source provider is 1.16.0; installed providers were not changed. See
-[acceptance evidence](acceptance.md) for every original criterion, passing layers
-and remaining trials. Unchecked tasks include partial automated/adoption/manual
-scenarios, not an absent implementation. They must not be marked complete merely
-because the happy-path matrix passed. Catalogue state remains In review.
+[PR #95](https://github.com/danielbardsley/gptclaw/pull/95) merged on 2026-10-21 as
+`d0d69cc1077bddb6db10501922b5b539efd1bbf1` after all five CI workflows passed on
+`cb7bd529778a89a91b3cf63fc96d17ffb2da1ff6`. The local repository gate passed
+927 Python tests across 48 suites plus repository invariants and shell fixtures.
 
-The project owner reviews and decides subsequent adoption/acceptance. Merge and
-deployment were expressly excluded and have not been performed. Original workspace
-changes are preserved in their original checkout; implementation uses an isolated
-feature worktree. No user assistance was needed for the executed tests.
+The project owner then requested that all tasks be marked complete. Every task
+record above is closed under that direction. Previously unchecked tasks include
+unperformed verification/adoption portions; their original acceptance criteria
+and pending evidence remain in [acceptance.md](acceptance.md). Task closure does
+not supply those observations or change pending criteria to passed.
+
+Catalogue status is Implemented: merged source with remaining acceptance gaps.
+Source provider 1.16.0 and eight exact 1.1.0 releases are merged; installed
+providers, credentials and existing projects were not changed. No deployment,
+public exposure or retained-data migration was performed. Original checkout and
+unrelated work are preserved.

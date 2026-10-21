@@ -1,6 +1,6 @@
 # QLT-004 acceptance evidence
 
-Status: in review; automated implementation evidence recorded; full acceptance pending.
+Status: implemented and merged; task records closed by project-owner direction; remaining acceptance criteria retain their recorded states.
 Owner: Project owner. Evidence date: 2026-10-21 UTC.
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 [Implementation PR](https://github.com/danielbardsley/gptclaw/pull/95) · [Shared verification record](../039-standard-quality-commands/verification-2026-10-21.json)
@@ -9,8 +9,11 @@ Tested application code: `4f7d934788f757fbd241012a9ff9b0a3037ca396`.
 Credential fixture correction: `0627380d52cef1f99e9f27805e5d2c8c354dea37`.
 Generated cache keys and expanded negative tests were corrected at
 `3c29d3905536743483fae19ff6ee6d346fd3bdbc`; final CI is linked in the PR.
+PR #95 merged on 2026-10-21 as `d0d69cc1077bddb6db10501922b5b539efd1bbf1`. All five
+CI workflows passed at the reviewed implementation head. The project owner then
+requested all tasks be marked complete; this is recorded as task closure.
 A pending criterion can contain passing automated checks; its full original result
-has not been demonstrated. Neither this file nor the PR declares owner acceptance.
+has not been demonstrated. Existing pending states below are preserved.
 
 ## Criterion mapping
 
@@ -34,7 +37,7 @@ synthetic, task-owned fixtures. See the shared snapshot for exact commands and m
 review notes record the final full repository/CI outcome. Source bundles are not physical native acceptance.
 
 No managed provider installation, retained-data migration, production operation,
-public exposure, merge, tag or deployment was performed. Existing products and
+public exposure, tag or deployment was performed. The implementation PR has merged. Existing products and
 SPEC-036 owner evidence retain their own acceptance boundaries. Templates are
 reusable intentional fixtures; adopting products must review/remove demo content
 and recheck their actual API/UI/journeys under their own specification.
@@ -42,5 +45,5 @@ and recheck their actual API/UI/journeys under their own specification.
 Remaining acceptance layers above are explicit. No expired exception/quarantine
 can authorize a pass: this implementation provides no exception bypass. Historical
 release bytes are retained. Rollback/adoption procedure is in the
-[quality runbook](../../runbooks/manage-project-quality.md). The project owner
-reviews the draft PR in the morning; catalogue state stays In review.
+[quality runbook](../../runbooks/manage-project-quality.md). The project owner authorized merge and all task closure on 2026-10-21.
+Catalogue state is Implemented; full acceptance remains governed by the table above.
