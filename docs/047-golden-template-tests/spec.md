@@ -1,6 +1,6 @@
 # SPEC-047 — Golden-template tests (QLT-009)
 
-- **Status:** Draft for review; implementation not authorized by this planning request.
+- **Status:** Implementation authorized; review, merge and acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-009
@@ -20,9 +20,9 @@ Metro only when supported. Native device acceptance and real private ingress rem
 separate recorded trials. Retired releases retain integrity/generation checks and an
 explicit retirement decision.
 
-This request authorizes drafting the specification, design and tasks. Specification
-approval, implementation authorization, PR review/merge, rollout and acceptance remain
-separate. No infrastructure change, host installation, public exposure, production
+The project owner authorized implementation of QLT-001–QLT-010 and necessary
+dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
+Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -93,15 +93,11 @@ All criteria are pending; drafting does not establish implementation acceptance.
 
 ## Decisions and completion
 
-Project owner reviews the exact-release support matrix and explicit retirement policy
-before any currently supported release is excluded. New releases must pass before
-catalogue adoption; no moving latest selector or arbitrary target deletion is proposed.
+Discover the complete exact-release inventory dynamically. Run full quality/lifecycle/fault checks for quality-enabled releases; retain historical integrity/generation checks for superseded pre-quality releases. Use unique labels and owned cleanup, with no shared prune.
 
-This is a proposed default, not a recorded owner decision. The project owner reviews the
-open decision before dependent implementation; source discovery and planning review can
-proceed meanwhile. Implementation should recheck current source versions, supported
-templates and applicable guidance rather than assume this snapshot establishes installed
-capability.
+The project owner delegated reasonable implementation choices on 2026-10-21.
+This scope is authorized for source changes, synthetic tests and PR publication;
+merge and deployment are explicitly excluded.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

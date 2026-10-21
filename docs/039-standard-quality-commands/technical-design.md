@@ -1,6 +1,6 @@
 # TDD-039 — Standard quality commands
 
-Status: Draft proposal. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Implementation authorized; design updated with source changes. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
 
 ## Approach and boundaries
@@ -38,7 +38,7 @@ acceptance/delivery.
 | Requirement | Planned mechanism/component change | Task | Acceptance |
 |---|---|---|---|
 | QLT-001-R01 | Use stack-owned runners and a shared documented capability matrix, preserving existing security gates and avoiding recursive verify invocation. | T-01, T-06, T-07 | QLT-001-AC01 |
-| QLT-001-R02 | Extend bundled schemas, validator dispatch, generation and provider capability checks together, with no in-place v1 widening. | T-02, T-06, T-07 | QLT-001-AC02 |
+| QLT-001-R02 | Use strict quality.json v1 inspection and portable component command vectors; leave lifecycle manifest interpretation unchanged. | T-02, T-06, T-07 | QLT-001-AC02 |
 | QLT-001-R03 | Keep pinned stack-native configurations alongside template guidance; choose exact tool versions from reviewed source profiles rather than installing host tools. | T-03, T-06, T-07 | QLT-001-AC03 |
 | QLT-001-R04 | Reuse dependency and toolchain adapters; publish structured gate/status summaries and separate restore from check execution. | T-04, T-06, T-07 | QLT-001-AC04 |
 | QLT-001-R05 | Use SPEC-021 release/provenance validation and a per-component aggregation report. | T-05, T-06, T-07 | QLT-001-AC05 |
@@ -76,12 +76,21 @@ exposure, production operations and destructive retained-data changes need their
 concrete authorization and existing gates; a quality gate grants none. No prior scoped
 acceptance is broadened by this proposal.
 
-## Open decision
+## Implementation decisions
 
-Project owner reviews the initial supported-template matrix and command/schema proposal
-before implementation. Use existing API/mobile conventions where compatible; allocate
-any new schema versions at implementation time.
+Selected under the project owner’s 2026-10-21 delegation:
 
-Owner: project owner. Next action: review the proposed scope/defaults and resolve this
-decision before dependent implementation. Continue independent documentation and source
-review. Track implementation and acceptance independently of approval.
+Use quality.json v1 alongside existing lifecycle schemas. Ship eight exact 1.1.0 successors; source default is Next.js 1.1.0. Existing installed providers and explicit historical releases remain unchanged.
+
+Implementation, tests and PR publication are authorized. Merge, deployment and
+owner/client/device acceptance remain separate; no overnight answer is required.
+
+## Implementation interfaces
+
+The shared implementation uses [the portable runner](../../scripts/project_quality_core.py),
+[exact-release golden tests](../../scripts/quality_templates.py),
+[guarded source sealing](../../scripts/seal-quality-releases.py) and
+[the quality runbook](../../runbooks/manage-project-quality.md).
+The new exact 1.1.0 releases retain provider/lifecycle versions and historical
+release bytes. Existing runtime, dependency, database and contract capabilities
+are reused rather than duplicated as unrelated initiatives.

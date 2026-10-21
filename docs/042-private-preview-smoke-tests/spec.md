@@ -1,6 +1,6 @@
 # SPEC-042 — Preview smoke tests (QLT-004)
 
-- **Status:** Draft for review; implementation not authorized by this planning request.
+- **Status:** Implementation authorized; review, merge and acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-004
@@ -18,9 +18,9 @@ and a separately authorized private runner/operator for actual ingress. Capture 
 digest and operation/activation identity at start and end; source reloads may reuse a
 process, so PID alone cannot identify the tested revision.
 
-This request authorizes drafting the specification, design and tasks. Specification
-approval, implementation authorization, PR review/merge, rollout and acceptance remain
-separate. No infrastructure change, host installation, public exposure, production
+The project owner authorized implementation of QLT-001–QLT-010 and necessary
+dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
+Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -87,15 +87,11 @@ All criteria are pending; drafting does not establish implementation acceptance.
 
 ## Decisions and completion
 
-Project owner confirms the initial application journey and private acceptance target
-before execution. Proposed default checks are read-only; writing journeys require a
-named disposable synthetic dataset.
+Use owned isolated probes in generated checks, an explicit read-only private-ingress CLI, opt-in post-start evidence and a bounded source observer. Never start/stop/restart a service or recover data in response to a smoke failure.
 
-This is a proposed default, not a recorded owner decision. The project owner reviews the
-open decision before dependent implementation; source discovery and planning review can
-proceed meanwhile. Implementation should recheck current source versions, supported
-templates and applicable guidance rather than assume this snapshot establishes installed
-capability.
+The project owner delegated reasonable implementation choices on 2026-10-21.
+This scope is authorized for source changes, synthetic tests and PR publication;
+merge and deployment are explicitly excluded.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

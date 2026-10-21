@@ -1,6 +1,6 @@
 # SPEC-044 — Performance budgets (QLT-006)
 
-- **Status:** Draft for review; implementation not authorized by this planning request.
+- **Status:** Implementation authorized; review, merge and acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-006
@@ -19,9 +19,9 @@ followed by 200 bounded sequential requests, repeated three times; compare the m
 run p95. Record cache state, dataset and hardware. Use absolute caps alongside relative
 limits once calibrated; a missing baseline is inconclusive and cannot silently pass.
 
-This request authorizes drafting the specification, design and tasks. Specification
-approval, implementation authorization, PR review/merge, rollout and acceptance remain
-separate. No infrastructure change, host installation, public exposure, production
+The project owner authorized implementation of QLT-001–QLT-010 and necessary
+dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
+Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -84,16 +84,11 @@ All criteria are pending; drafting does not establish implementation acceptance.
 
 ## Decisions and completion
 
-Project owner reviews measured baselines and numeric thresholds on a named
-runner/profile before enforcement. Proposed regression limits are 10% bundle growth, 20%
-p95 latency growth, 20% peak memory growth and 20% readiness-time growth; absolute
-ceilings are calibrated during implementation, not asserted here.
+Enforce conservative per-template absolute development ceilings and provide profile-bound 10% bundle / 20% latency/startup/memory regression comparisons. Collect real samples; dedicated HTTP calibration repeats five independent starts with 30-second warmups. Native runtime performance remains a physical-device criterion.
 
-This is a proposed default, not a recorded owner decision. The project owner reviews the
-open decision before dependent implementation; source discovery and planning review can
-proceed meanwhile. Implementation should recheck current source versions, supported
-templates and applicable guidance rather than assume this snapshot establishes installed
-capability.
+The project owner delegated reasonable implementation choices on 2026-10-21.
+This scope is authorized for source changes, synthetic tests and PR publication;
+merge and deployment are explicitly excluded.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

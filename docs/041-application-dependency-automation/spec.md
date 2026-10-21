@@ -1,6 +1,6 @@
 # SPEC-041 — Dependency automation (QLT-003)
 
-- **Status:** Draft for review; implementation not authorized by this planning request.
+- **Status:** Implementation authorized; review, merge and acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-003
@@ -17,9 +17,9 @@ requiring a reviewed adapter, not permission to switch package managers. Review 
 runtime/profile changes and framework-coupled upgrades separately. Security updates use
 the same merge gates; no auto-merge is proposed.
 
-This request authorizes drafting the specification, design and tasks. Specification
-approval, implementation authorization, PR review/merge, rollout and acceptance remain
-separate. No infrastructure change, host installation, public exposure, production
+The project owner authorized implementation of QLT-001–QLT-010 and necessary
+dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
+Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -84,15 +84,11 @@ All criteria are pending; drafting does not establish implementation acceptance.
 
 ## Decisions and completion
 
-Propose Dependabot first, weekly checks and at most five open update PRs per repository.
-Project owner confirms ecosystem support, grouping and bot permissions; evaluate an
-alternative only for a demonstrated gap.
+Use weekly Dependabot with one open PR per ecosystem/component, conservative patch/minor grouping and explicit major/Expo/toolchain upgrade lanes. Do not enable auto-merge or add private registry credentials.
 
-This is a proposed default, not a recorded owner decision. The project owner reviews the
-open decision before dependent implementation; source discovery and planning review can
-proceed meanwhile. Implementation should recheck current source versions, supported
-templates and applicable guidance rather than assume this snapshot establishes installed
-capability.
+The project owner delegated reasonable implementation choices on 2026-10-21.
+This scope is authorized for source changes, synthetic tests and PR publication;
+merge and deployment are explicitly excluded.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

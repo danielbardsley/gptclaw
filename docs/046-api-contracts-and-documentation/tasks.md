@@ -1,6 +1,6 @@
 # TASKS-046 — Contract and API documentation
 
-Status: Draft plan; implementation and acceptance pending. Owner: Project owner.
+Status: Implementation authorized; verification and acceptance tracked below. Owner: Project owner.
 Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md)
 
@@ -10,13 +10,11 @@ Date: 2026-10-21 (America/New_York).
   capture observed baseline and dependencies in the specification.
 - [x] P-02 — Draft requirements, measurable acceptance, design and ordered tasks
   for QLT-008; link the documentation index and mark the catalogue Draft.
-- [ ] P-03 — Project owner reviews the proposed decision below, approves the
-  specification and separately authorizes the selected implementation scope.
-  This planning request already authorizes P-01/P-02; it grants no runtime action.
+- [x] P-03 — Project owner authorized implementation, reasonable scope decisions,
+  tests and PR publication on 2026-10-21. Do not merge or deploy. Existing
+  non-QLT capabilities are dependencies, not duplicate implementation tasks.
 
-Project owner confirms the initial OpenAPI compatibility policy and client-generation
-scope. Use the existing FastAPI notes client as the first end-to-end case; equivalents
-for non-HTTP protocols need a selected requirement before implementation.
+Selected implementation defaults: Export and compare deterministic API shapes, check local references and conservative compatibility changes, retain existing generated clients, and separately assert actual private prefixes/docs/assets. Reuse FastAPI/Fastify rather than introduce frameworks.
 
 ## Implementation
 
@@ -51,11 +49,11 @@ initiative, agree its version/capability contract before integration.
   repository checks described in the design; record exact commands, revisions,
   results, skipped layers and limitations. Verify all QLT-008-AC01–AC05 with actual
   evidence; pending private/native/operator trials remain visibly pending.
-- [ ] T-07 — Open/review the implementation PR, observe final-code CI, merge via
-  the repository workflow, and complete separately authorized rollout and owner
-  acceptance where applicable. Add sanitized criterion-by-criterion acceptance
-  evidence, update index/catalogue according to actual state, and clean up only
-  owned fixtures. A plan or CI-only result cannot establish runtime acceptance.
+- [ ] T-07 — Push the implementation branch and open a reviewable PR with sanitized
+  evidence and known limitations. Do not merge, deploy or imply owner acceptance.
+
+Merge, rollout and owner/device acceptance are downstream review actions excluded
+from this implementation authorization, not tasks for the unattended run.
 
 ## Current handover
 

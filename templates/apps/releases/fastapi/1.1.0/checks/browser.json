@@ -1,0 +1,9 @@
+{
+  "version": "1.64.0",
+  "image": "mcr.microsoft.com/playwright@sha256:bc72a8df40831ded821e3cbc79c318c21b44d6e51dff9fd89ace7a8249c5b462",
+  "artifact": {
+    "url": "https://registry.npmjs.org/playwright-core/-/playwright-core-1.64.0.tgz",
+    "integrity": "sha512-T9r+MZkTECl2+oUcZ26YgZzTrYidTsIhYYkJix+6iDOymOb1FB2RLLSOxRGnZGv5DStt+aduIVbt+E8WygXYpg=="
+  },
+  "documentation": "https://playwright.dev/docs/docker"
+}

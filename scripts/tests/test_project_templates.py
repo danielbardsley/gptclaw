@@ -118,7 +118,7 @@ class Tests(unittest.TestCase):
         self.assertFalse(list(self.projects.glob('.gptclaw-create-*')))
 
     def test_same_release_reproducible_and_source_edits_allowed(self):
-        one=self.new();two=self.new('beta',template='nextjs',template_version='1.0.0')
+        one=self.new();selected=templates.resolve()[0];two=self.new('beta',template=selected['id'],template_version=selected['version'])
         for p in one.rglob('*'):
             if p.is_file() and p.name!='project.yaml':self.assertEqual(p.read_bytes(),(two/p.relative_to(one)).read_bytes())
         normalized=[]
@@ -182,7 +182,7 @@ class Tests(unittest.TestCase):
         output=subprocess.run([sys.executable,str(bundle/'scripts/gptclawctl.py'),'templates','list'],check=True,capture_output=True,text=True)
         self.assertEqual(original,json.loads(output.stdout))
         env=os.environ.copy();env['PYTHONPATH']=str(bundle/'scripts')
-        code="import private_apps as a, pathlib, json; a.PROJECTS=pathlib.Path(__import__('sys').argv[1]); a.STORE=a.PROJECTS/'.gptclaw-runtime/v1'; print(json.dumps(a.create('snapshot',template='nextjs',template_version='1.0.0')))"
+        code="import private_apps as a, pathlib, json; a.PROJECTS=pathlib.Path(__import__('sys').argv[1]); a.STORE=a.PROJECTS/'.gptclaw-runtime/v1'; print(json.dumps(a.create('snapshot')))"
         subprocess.run([sys.executable,'-B','-c',code,str(self.projects)],env=env,check=True,capture_output=True)
         self.assertEqual((project/'README.md').read_bytes(),(self.projects/'snapshot/README.md').read_bytes())
         # A later source default does not rewrite a previously installed snapshot.

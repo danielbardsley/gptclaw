@@ -1,6 +1,6 @@
 # TDD-047 — Golden-template tests
 
-Status: Draft proposal. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Implementation authorized; design updated with source changes. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
 
 ## Approach and boundaries
@@ -80,12 +80,21 @@ exposure, production operations and destructive retained-data changes need their
 concrete authorization and existing gates; a quality gate grants none. No prior scoped
 acceptance is broadened by this proposal.
 
-## Open decision
+## Implementation decisions
 
-Project owner reviews the exact-release support matrix and explicit retirement policy
-before any currently supported release is excluded. New releases must pass before
-catalogue adoption; no moving latest selector or arbitrary target deletion is proposed.
+Selected under the project owner’s 2026-10-21 delegation:
 
-Owner: project owner. Next action: review the proposed scope/defaults and resolve this
-decision before dependent implementation. Continue independent documentation and source
-review. Track implementation and acceptance independently of approval.
+Discover the complete exact-release inventory dynamically. Run full quality/lifecycle/fault checks for quality-enabled releases; retain historical integrity/generation checks for superseded pre-quality releases. Use unique labels and owned cleanup, with no shared prune.
+
+Implementation, tests and PR publication are authorized. Merge, deployment and
+owner/client/device acceptance remain separate; no overnight answer is required.
+
+## Implementation interfaces
+
+The shared implementation uses [the portable runner](../../scripts/project_quality_core.py),
+[exact-release golden tests](../../scripts/quality_templates.py),
+[guarded source sealing](../../scripts/seal-quality-releases.py) and
+[the quality runbook](../../runbooks/manage-project-quality.md).
+The new exact 1.1.0 releases retain provider/lifecycle versions and historical
+release bytes. Existing runtime, dependency, database and contract capabilities
+are reused rather than duplicated as unrelated initiatives.

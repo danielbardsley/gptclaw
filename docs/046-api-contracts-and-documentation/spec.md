@@ -1,6 +1,6 @@
 # SPEC-046 — Contract and API documentation (QLT-008)
 
-- **Status:** Draft for review; implementation not authorized by this planning request.
+- **Status:** Implementation authorized; review, merge and acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-008
@@ -19,9 +19,9 @@ behavior. Never bake private origins, credentials or live data into schemas/exam
 version increment alone does not prove compatibility or authorize retirement of existing
 consumers.
 
-This request authorizes drafting the specification, design and tasks. Specification
-approval, implementation authorization, PR review/merge, rollout and acceptance remain
-separate. No infrastructure change, host installation, public exposure, production
+The project owner authorized implementation of QLT-001–QLT-010 and necessary
+dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
+Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -87,15 +87,11 @@ All criteria are pending; drafting does not establish implementation acceptance.
 
 ## Decisions and completion
 
-Project owner confirms the initial OpenAPI compatibility policy and client-generation
-scope. Use the existing FastAPI notes client as the first end-to-end case; equivalents
-for non-HTTP protocols need a selected requirement before implementation.
+Export and compare deterministic API shapes, check local references and conservative compatibility changes, retain existing generated clients, and separately assert actual private prefixes/docs/assets. Reuse FastAPI/Fastify rather than introduce frameworks.
 
-This is a proposed default, not a recorded owner decision. The project owner reviews the
-open decision before dependent implementation; source discovery and planning review can
-proceed meanwhile. Implementation should recheck current source versions, supported
-templates and applicable guidance rather than assume this snapshot establishes installed
-capability.
+The project owner delegated reasonable implementation choices on 2026-10-21.
+This scope is authorized for source changes, synthetic tests and PR publication;
+merge and deployment are explicitly excluded.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

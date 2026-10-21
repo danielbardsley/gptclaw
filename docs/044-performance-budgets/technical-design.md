@@ -1,6 +1,6 @@
 # TDD-044 — Performance budgets
 
-Status: Draft proposal. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Implementation authorized; design updated with source changes. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
 
 ## Approach and boundaries
@@ -76,13 +76,21 @@ exposure, production operations and destructive retained-data changes need their
 concrete authorization and existing gates; a quality gate grants none. No prior scoped
 acceptance is broadened by this proposal.
 
-## Open decision
+## Implementation decisions
 
-Project owner reviews measured baselines and numeric thresholds on a named
-runner/profile before enforcement. Proposed regression limits are 10% bundle growth, 20%
-p95 latency growth, 20% peak memory growth and 20% readiness-time growth; absolute
-ceilings are calibrated during implementation, not asserted here.
+Selected under the project owner’s 2026-10-21 delegation:
 
-Owner: project owner. Next action: review the proposed scope/defaults and resolve this
-decision before dependent implementation. Continue independent documentation and source
-review. Track implementation and acceptance independently of approval.
+Enforce conservative per-template absolute development ceilings and provide profile-bound 10% bundle / 20% latency/startup/memory regression comparisons. Collect real samples; dedicated HTTP calibration repeats five independent starts with 30-second warmups. Native runtime performance remains a physical-device criterion.
+
+Implementation, tests and PR publication are authorized. Merge, deployment and
+owner/client/device acceptance remain separate; no overnight answer is required.
+
+## Implementation interfaces
+
+The shared implementation uses [the portable runner](../../scripts/project_quality_core.py),
+[exact-release golden tests](../../scripts/quality_templates.py),
+[guarded source sealing](../../scripts/seal-quality-releases.py) and
+[the quality runbook](../../runbooks/manage-project-quality.md).
+The new exact 1.1.0 releases retain provider/lifecycle versions and historical
+release bytes. Existing runtime, dependency, database and contract capabilities
+are reused rather than duplicated as unrelated initiatives.

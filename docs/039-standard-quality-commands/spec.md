@@ -1,6 +1,6 @@
 # SPEC-039 — Standard quality commands (QLT-001)
 
-- **Status:** Draft for review; implementation not authorized by this planning request.
+- **Status:** Implementation authorized; review, merge and acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-001
@@ -19,9 +19,9 @@ format. Build may write ignored output. Mobile build means deterministic source/
 validation, not native signing. A check with no applicable meaning must be documented
 and reported as not applicable; it must not silently become a successful empty script.
 
-This request authorizes drafting the specification, design and tasks. Specification
-approval, implementation authorization, PR review/merge, rollout and acceptance remain
-separate. No infrastructure change, host installation, public exposure, production
+The project owner authorized implementation of QLT-001–QLT-010 and necessary
+dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
+Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -54,9 +54,9 @@ gates without rewriting source.
 
 ### QLT-001-R02 — Versioned discovery
 
-Declare quality command vectors through a reviewed versioned manifest contract where
-missing. Validation must remain offline and must not execute commands; existing schemas
-retain their behavior.
+Declare quality command vectors through the separate strict `quality.json` v1
+contract. Discovery stays offline and does not execute commands. Existing lifecycle
+schemas, providers and their supported command vectors retain their behavior.
 
 ### QLT-001-R03 — Coding standards
 
@@ -89,15 +89,11 @@ All criteria are pending; drafting does not establish implementation acceptance.
 
 ## Decisions and completion
 
-Project owner reviews the initial supported-template matrix and command/schema proposal
-before implementation. Use existing API/mobile conventions where compatible; allocate
-any new schema versions at implementation time.
+Use quality.json v1 alongside existing lifecycle schemas. Ship eight exact 1.1.0 successors; source default is Next.js 1.1.0. Existing installed providers and explicit historical releases remain unchanged.
 
-This is a proposed default, not a recorded owner decision. The project owner reviews the
-open decision before dependent implementation; source discovery and planning review can
-proceed meanwhile. Implementation should recheck current source versions, supported
-templates and applicable guidance rather than assume this snapshot establishes installed
-capability.
+The project owner delegated reasonable implementation choices on 2026-10-21.
+This scope is authorized for source changes, synthetic tests and PR publication;
+merge and deployment are explicitly excluded.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

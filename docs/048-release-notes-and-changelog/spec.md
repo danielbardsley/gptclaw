@@ -1,6 +1,6 @@
 # SPEC-048 — Release notes and changelog (QLT-010)
 
-- **Status:** Draft for review; optional capability, not selected for delivery.
+- **Status:** Implementation authorized; optional adoption, no release publication.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-010
@@ -19,9 +19,9 @@ flagged for review; no generated narrative can invent delivery. Organize useful 
 into additions, fixes, compatibility/migration and known limitations without requiring
 empty headings.
 
-This request authorizes drafting the specification, design and tasks. Specification
-approval, implementation authorization, PR review/merge, rollout and acceptance remain
-separate. No infrastructure change, host installation, public exposure, production
+The project owner authorized implementation of QLT-001–QLT-010 and necessary
+dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
+Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -86,15 +86,11 @@ All criteria are pending; drafting does not establish implementation acceptance.
 
 ## Decisions and completion
 
-Project owner selects a product, audience, accepted baseline/target and publication
-destination before enabling this optional capability. Proposed initial output is a local
-Markdown/PR draft; automatic publishing, tagging and promotion are excluded.
+Implement an optional local draft generator using immutable Git ranges and reviewed acceptance ledgers. Preserve manual drafts, flag unaccepted changes, and never tag, merge, promote or publish releases.
 
-This is a proposed default, not a recorded owner decision. The project owner reviews the
-open decision before dependent implementation; source discovery and planning review can
-proceed meanwhile. Implementation should recheck current source versions, supported
-templates and applicable guidance rather than assume this snapshot establishes installed
-capability.
+The project owner delegated reasonable implementation choices on 2026-10-21.
+This scope is authorized for source changes, synthetic tests and PR publication;
+merge and deployment are explicitly excluded.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

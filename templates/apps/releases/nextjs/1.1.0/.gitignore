@@ -1,0 +1,17 @@
+.next/
+node_modules/
+*.tsbuildinfo
+.env*
+!.env.example
+.gptclaw/local/
+.cache/
+.npmrc
+.local/
+
+.gptclaw-cache/
+
+.gptclaw-cache/
+__pycache__/
+dist/
+
+next-env.d.ts

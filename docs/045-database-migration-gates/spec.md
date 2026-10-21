@@ -1,6 +1,6 @@
 # SPEC-045 — Database migration gates (QLT-007)
 
-- **Status:** Draft for review; implementation not authorized by this planning request.
+- **Status:** Implementation authorized; review, merge and acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-007
@@ -19,9 +19,9 @@ Python means static detection is advisory, never proof of safety. Managed execut
 keeps SPEC-026 target/source/backup fingerprint checks and locks. New-empty
 initialization remains distinct from mutating existing data.
 
-This request authorizes drafting the specification, design and tasks. Specification
-approval, implementation authorization, PR review/merge, rollout and acceptance remain
-separate. No infrastructure change, host installation, public exposure, production
+The project owner authorized implementation of QLT-001–QLT-010 and necessary
+dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
+Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -89,15 +89,11 @@ All criteria are pending; drafting does not establish implementation acceptance.
 
 ## Decisions and completion
 
-Project owner confirms the initial PostgreSQL/Alembic matrix and migration-risk
-classification. Extend to other engines only after their own backup, restore and
-privilege contracts are reviewed.
+Reuse existing managed backup-bound plan/apply/role controls. Add fingerprinted risk review plus real isolated fresh/forward/failure/restore and retained-client trials. Do not introduce automatic managed migration, downgrade or retained-data reset.
 
-This is a proposed default, not a recorded owner decision. The project owner reviews the
-open decision before dependent implementation; source discovery and planning review can
-proceed meanwhile. Implementation should recheck current source versions, supported
-templates and applicable guidance rather than assume this snapshot establishes installed
-capability.
+The project owner delegated reasonable implementation choices on 2026-10-21.
+This scope is authorized for source changes, synthetic tests and PR publication;
+merge and deployment are explicitly excluded.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

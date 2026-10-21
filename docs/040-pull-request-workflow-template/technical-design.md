@@ -1,6 +1,6 @@
 # TDD-040 — Pull-request workflow template
 
-Status: Draft proposal. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Implementation authorized; design updated with source changes. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
 
 ## Approach and boundaries
@@ -75,12 +75,21 @@ exposure, production operations and destructive retained-data changes need their
 concrete authorization and existing gates; a quality gate grants none. No prior scoped
 acceptance is broadened by this proposal.
 
-## Open decision
+## Implementation decisions
 
-Project owner selects required status names and an initial scan policy during
-implementation planning. Proposed default is one stable required aggregate check;
-repository settings need explicit target authorization.
+Selected under the project owner’s 2026-10-21 delegation:
 
-Owner: project owner. Next action: review the proposed scope/defaults and resolve this
-decision before dependent implementation. Continue independent documentation and source
-review. Track implementation and acceptance independently of approval.
+Use read-only pull_request/main checks, a stable required aggregate, full action commit pins, per-ref/OS/architecture/lock/toolchain caches and report-only artifacts retained seven days. Keep repository settings and broad SEC features outside this change.
+
+Implementation, tests and PR publication are authorized. Merge, deployment and
+owner/client/device acceptance remain separate; no overnight answer is required.
+
+## Implementation interfaces
+
+The shared implementation uses [the portable runner](../../scripts/project_quality_core.py),
+[exact-release golden tests](../../scripts/quality_templates.py),
+[guarded source sealing](../../scripts/seal-quality-releases.py) and
+[the quality runbook](../../runbooks/manage-project-quality.md).
+The new exact 1.1.0 releases retain provider/lifecycle versions and historical
+release bytes. Existing runtime, dependency, database and contract capabilities
+are reused rather than duplicated as unrelated initiatives.

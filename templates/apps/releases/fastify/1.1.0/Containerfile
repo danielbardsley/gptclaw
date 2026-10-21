@@ -1,0 +1,11 @@
+FROM docker.io/library/node@sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd
+RUN npm install --global pnpm@12.10.1 && test "$(node --version)" = v24.21.0 && test "$(pnpm --version)" = 12.10.1
+WORKDIR /workspace
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile --ignore-scripts
+COPY . .
+RUN pnpm build && chown -R node:node /workspace
+ENV GPTCLAW_PROJECT_ID=local-api
+USER node
+EXPOSE 8000
+CMD ["node", "dist/server.js"]

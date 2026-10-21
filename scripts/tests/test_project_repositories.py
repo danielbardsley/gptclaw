@@ -135,7 +135,7 @@ class Tests(unittest.TestCase):
         with patch.object(repos,'git') as run,patch.object(app,'save') as write:
             value=self.new_plan();run.assert_not_called();write.assert_not_called()
         self.assertEqual(list(self.base.rglob('*')),before)
-        self.assertEqual(value['template'],templates.provenance(templates.resolve('nextjs','1.0.0')[0]))
+        self.assertEqual(value['template'],templates.provenance(templates.resolve()[0]))
         self.assertNotIn('secrets:read-metadata',value['capabilities'])
         self.assertTrue(all(method=='GET' for method,_,_ in self.api.calls))
     def test_local_invalid_input_before_api(self):

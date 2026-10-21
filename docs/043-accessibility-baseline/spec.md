@@ -1,6 +1,6 @@
 # SPEC-043 — Accessibility baseline (QLT-005)
 
-- **Status:** Draft for review; implementation not authorized by this planning request.
+- **Status:** Implementation authorized; review, merge and acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-005
@@ -19,9 +19,9 @@ keyboard operation without traps, and non-color-only status. Text contrast targe
 targets are 3:1. Include 200% zoom, narrow layout, reduced motion and enlarged native
 text. Automated success cannot replace manual assistive-technology evidence.
 
-This request authorizes drafting the specification, design and tasks. Specification
-approval, implementation authorization, PR review/merge, rollout and acceptance remain
-separate. No infrastructure change, host installation, public exposure, production
+The project owner authorized implementation of QLT-001–QLT-010 and necessary
+dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
+Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -85,16 +85,11 @@ All criteria are pending; drafting does not establish implementation acceptance.
 
 ## Decisions and completion
 
-Propose WCAG 2.2 AA as the web engineering target, with a documented applicable-criteria
-checklist rather than a certification claim. Project owner confirms
-browser/assistive-technology coverage; initial native acceptance is Android-first, with
-iOS explicitly pending until tested.
+Use bundled pinned axe for web journeys, existing native semantic interaction tests, visible focus and reduced-motion conventions. Keep manual keyboard/assistive-technology/device acceptance distinct and pending until actually performed.
 
-This is a proposed default, not a recorded owner decision. The project owner reviews the
-open decision before dependent implementation; source discovery and planning review can
-proceed meanwhile. Implementation should recheck current source versions, supported
-templates and applicable guidance rather than assume this snapshot establishes installed
-capability.
+The project owner delegated reasonable implementation choices on 2026-10-21.
+This scope is authorized for source changes, synthetic tests and PR publication;
+merge and deployment are explicitly excluded.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

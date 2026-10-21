@@ -1,6 +1,6 @@
 # SPEC-040 — Pull-request workflow template (QLT-002)
 
-- **Status:** Draft for review; implementation not authorized by this planning request.
+- **Status:** Implementation authorized; review, merge and acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Feature:** QLT-002
@@ -17,9 +17,9 @@ cannot produce a misleading required success. Source from an untrusted PR must n
 receive host, tailnet, production or repository-broker credentials. Branch protection
 changes and repository-wide scanner enablement are separate target-specific actions.
 
-This request authorizes drafting the specification, design and tasks. Specification
-approval, implementation authorization, PR review/merge, rollout and acceptance remain
-separate. No infrastructure change, host installation, public exposure, production
+The project owner authorized implementation of QLT-001–QLT-010 and necessary
+dependencies on 2026-10-21, with reasonable decisions delegated to the agent.
+Pushing branches and opening PRs are authorized; merging and deployment are excluded. No infrastructure change, host installation, public exposure, production
 operation, real-user dataset or automatic adoption is included.
 
 ## Observed baseline and dependencies
@@ -86,15 +86,11 @@ All criteria are pending; drafting does not establish implementation acceptance.
 
 ## Decisions and completion
 
-Project owner selects required status names and an initial scan policy during
-implementation planning. Proposed default is one stable required aggregate check;
-repository settings need explicit target authorization.
+Use read-only pull_request/main checks, a stable required aggregate, full action commit pins, per-ref/OS/architecture/lock/toolchain caches and report-only artifacts retained seven days. Keep repository settings and broad SEC features outside this change.
 
-This is a proposed default, not a recorded owner decision. The project owner reviews the
-open decision before dependent implementation; source discovery and planning review can
-proceed meanwhile. Implementation should recheck current source versions, supported
-templates and applicable guidance rather than assume this snapshot establishes installed
-capability.
+The project owner delegated reasonable implementation choices on 2026-10-21.
+This scope is authorized for source changes, synthetic tests and PR publication;
+merge and deployment are explicitly excluded.
 
 Completion requires the mapped tests, applicable CI/runtime/client evidence, reviewed
 implementation merge and project-owner acceptance. Record actual results in an

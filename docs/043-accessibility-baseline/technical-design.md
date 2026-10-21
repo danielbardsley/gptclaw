@@ -1,6 +1,6 @@
 # TDD-043 — Accessibility baseline
 
-Status: Draft proposal. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Implementation authorized; design updated with source changes. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
 
 ## Approach and boundaries
@@ -75,13 +75,21 @@ exposure, production operations and destructive retained-data changes need their
 concrete authorization and existing gates; a quality gate grants none. No prior scoped
 acceptance is broadened by this proposal.
 
-## Open decision
+## Implementation decisions
 
-Propose WCAG 2.2 AA as the web engineering target, with a documented applicable-criteria
-checklist rather than a certification claim. Project owner confirms
-browser/assistive-technology coverage; initial native acceptance is Android-first, with
-iOS explicitly pending until tested.
+Selected under the project owner’s 2026-10-21 delegation:
 
-Owner: project owner. Next action: review the proposed scope/defaults and resolve this
-decision before dependent implementation. Continue independent documentation and source
-review. Track implementation and acceptance independently of approval.
+Use bundled pinned axe for web journeys, existing native semantic interaction tests, visible focus and reduced-motion conventions. Keep manual keyboard/assistive-technology/device acceptance distinct and pending until actually performed.
+
+Implementation, tests and PR publication are authorized. Merge, deployment and
+owner/client/device acceptance remain separate; no overnight answer is required.
+
+## Implementation interfaces
+
+The shared implementation uses [the portable runner](../../scripts/project_quality_core.py),
+[exact-release golden tests](../../scripts/quality_templates.py),
+[guarded source sealing](../../scripts/seal-quality-releases.py) and
+[the quality runbook](../../runbooks/manage-project-quality.md).
+The new exact 1.1.0 releases retain provider/lifecycle versions and historical
+release bytes. Existing runtime, dependency, database and contract capabilities
+are reused rather than duplicated as unrelated initiatives.
