@@ -23,6 +23,7 @@ import private_apps as app
 import project_repositories as repos
 import repository_credentials as broker
 import repository_credential_helper as helper
+import project_templates as templates
 import gptclawctl as cli
 from test_project_repositories import FakeAPI
 
@@ -117,6 +118,14 @@ class Tests(unittest.TestCase):
         p=patch.object(broker,'root_transport',lambda value:self.factory);p.start();self.addCleanup(p.stop)
         self.production_access_request=broker.Access.request
         p=patch.object(broker.Access,'request',lambda token,*a,**k:self.factory.access(token,*a,**k));p.start();self.addCleanup(p.stop)
+        # Ordinary credential fixtures intentionally exercise the historical starter
+        # without workflow publication. New defaults retain their real grant gate.
+        self.real_resolve=templates.resolve
+        def legacy_default(template=None, version=None):
+            if template is None and version is None:
+                return self.real_resolve('nextjs', '1.0.0')
+            return self.real_resolve(template, version)
+        p=patch.object(templates,'resolve',side_effect=legacy_default);p.start();self.addCleanup(p.stop)
         self.real_git=repos.git
         p=patch.object(repos,'git',self.git);p.start();self.addCleanup(p.stop)
     def git(self,root,*args,api=None,input_bytes=None):
@@ -134,6 +143,14 @@ class Tests(unittest.TestCase):
         broker.create('baseline',str(self.projects/'baseline'),canary=True)
         self.factory.grants['workflows']='write'
         return broker.set_workflow_policy(names)
+    def test_current_default_requires_workflow_grant_before_remote_operation(self):
+        self.configure();before=copy.deepcopy(self.factory.root_calls)
+        with patch.object(templates,'resolve',self.real_resolve):
+            with self.assertRaises(app.AppError) as error:
+                broker.create('current',str(self.projects/'current'),canary=True)
+        self.assertEqual(error.exception.code,'credential-workflow-policy')
+        self.assertEqual(self.factory.root_calls,before);self.assertFalse(self.factory.repos)
+        self.assertFalse((self.projects/'current').exists())
     def test_workflow_preflight_precedes_any_remote_operation(self):
         self.configure();before=copy.deepcopy(self.factory.root_calls)
         with self.assertRaises(app.AppError) as error:
@@ -562,6 +579,7 @@ import private_apps as app
 app.PROJECTS=Path(PROJECTS);app.STORE=Path(STORE)
 import repository_credentials as broker
 import repository_credential_helper as helper
+import project_templates as templates
 class FixtureBroker:
  def project_token(self,root,role):
   return broker.Access('synthetic-native-git-wire', (dt.datetime.now(dt.timezone.utc)+dt.timedelta(minutes=59)).isoformat(), {'repository_id':101,'role':'git','permissions':broker.ROLES['git'],'expires_at':(dt.datetime.now(dt.timezone.utc)+dt.timedelta(minutes=59)).isoformat()})
