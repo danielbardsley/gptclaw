@@ -1,0 +1,1 @@
+"""Fastapi App Domain package."""
