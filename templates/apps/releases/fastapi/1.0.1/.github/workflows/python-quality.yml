@@ -1,0 +1,25 @@
+name: Python API quality
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build pinned Python and uv
+        run: docker build --tag fastapi-quality .
+      - name: Locked wheel-only dependencies and complete quality checks
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" --memory=1536m --cpus=1 --pids-limit=256 --cap-drop=all --security-opt=no-new-privileges \
+            --volume "$PWD:/workspace:rw" --workdir /workspace --env UV_PROJECT_ENVIRONMENT=/workspace/.venv --env UV_CACHE_DIR=/workspace/.gptclaw-cache/uv \
+            fastapi-quality uv sync --locked --all-groups --no-install-project --no-config --no-python-downloads --no-managed-python --no-build --keyring-provider=disabled --default-index=https://pypi.org/simple
+          docker run --rm --user "$(id -u):$(id -g)" --memory=1536m --cpus=1 --pids-limit=256 --cap-drop=all --security-opt=no-new-privileges \
+            --volume "$PWD:/workspace:rw" --workdir /workspace --env PYTHONPATH=/workspace/src --env PYTHONDONTWRITEBYTECODE=1 \
+            fastapi-quality /workspace/.venv/bin/python scripts/quality.py verify

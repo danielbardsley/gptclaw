@@ -1,0 +1,53 @@
+[project]
+name = "fastapi-app"
+version = "1.0.0"
+description = "Private typed FastAPI development starter"
+requires-python = "==3.13.*"
+dependencies = ["fastapi==0.143.0", "pydantic==2.14.0", "uvicorn==0.54.0"]
+
+[dependency-groups]
+dev = ["black==26.10.1", "isort==9.0.2", "ruff==0.17.0", "mypy==2.4.0", "bandit==1.9.4", "pip-audit==2.10.1", "pre-commit==4.6.2"]
+test = ["pytest==9.1.1", "coverage==7.16.2", "factory-boy==3.3.3", "httpx==0.28.1"]
+
+[tool.black]
+line-length = 79
+target-version = ["py313"]
+
+[tool.isort]
+profile = "black"
+line_length = 79
+
+[tool.ruff]
+line-length = 79
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "UP", "B", "ANN", "D"]
+ignore = ["D203", "D213", "E501"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+strict = true
+files = ["src", "scripts", "tests"]
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["factory", "factory.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "scripts"]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/fastapi_app"]
+omit = ["*/__init__.py"]
+
+[tool.coverage.report]
+show_missing = true
+
+[tool.coverage.json]
+output = ".gptclaw-cache/coverage.json"

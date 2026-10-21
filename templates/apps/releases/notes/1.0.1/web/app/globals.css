@@ -1,0 +1,17 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f4ef; color: #20332e; font-family: Arial, sans-serif; }
+main { max-width: 1120px; margin: 0 auto; padding: 48px 24px; }
+h1 { font-size: 48px; margin: 8px 0; letter-spacing: -2px; }
+h2 { font-size: 20px; margin: 0 0 24px; }
+header p { color: #52655e; } .eyebrow { font-size: 12px; letter-spacing: 2px; }
+.notice { padding: 16px 20px; border: 1px solid #d2dbc8; background: #edf1e5; border-radius: 10px; margin: 28px 0; font-size: 14px; line-height: 1.5; }
+.workspace { display: grid; grid-template-columns: 340px 1fr; gap: 24px; }
+section { background: white; border: 1px solid #d9dfda; border-radius: 14px; padding: 24px; min-width: 0; }
+button, input, textarea { font: inherit; } button { border: 1px solid #c4cfc7; border-radius: 7px; padding: 10px 14px; color: #20332e; background: white; cursor: pointer; }
+button:hover { background: #eef4ef; } button:disabled { opacity: .5; cursor: default; }
+:focus-visible { outline: 3px solid #507bca; outline-offset: 3px; }
+.list-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 24px; } .list-heading h2 { margin: 0; } h2 span { color: #67786b; font-size: 14px; }
+ul { padding: 0; margin: 0; list-style: none; } li button { width: 100%; text-align: left; margin-bottom: 10px; padding: 14px; overflow-wrap: anywhere; } li strong, li span { display: block; } li span { margin-top: 8px; color: #5b6b61; font-size: 13px; } .chosen { border-color: #345d4d; background: #eff5ef; }
+label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 8px; } input, textarea { display: block; width: 100%; padding: 12px; border: 1px solid #becbc1; border-radius: 7px; color: inherit; background: #fdfefd; margin-bottom: 20px; } textarea { resize: vertical; line-height: 1.6; }
+.count { text-align: right; color: #637368; font-size: 12px; } .actions, nav { display: flex; gap: 10px; margin-top: 20px; } .actions button[type=submit] { color: white; background: #285841; border-color: #285841; } .danger, [role=alert] { color: #953f30; } [role=alert] { line-height: 1.5; }
+@media (max-width: 720px) { main { padding: 28px 16px; } .workspace { grid-template-columns: 1fr; } section { padding: 20px; } }
