@@ -1,6 +1,6 @@
 # SPEC-038 — Static site acceptance evidence
 
-Status: Functional acceptance verified; final platform CI and merge pending.
+Status: Delivered and accepted; AC-001–AC-006 passed.
 Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md) ·
 [Runbook](../../runbooks/manage-static-sites.md) ·
@@ -15,7 +15,7 @@ Owner: Project owner. Date: 2026-10-21 (America/New_York).
 | AC-003 | passed | Actual private HTTPS browser navigation/refresh/404 and HTTP escape/symlink/MIME/HEAD tests pass. Both sites' home, nested page, local SVG and health return 200. Unexpected HTTP errors and network failures fail browser checks. |
 | AC-004 | passed | Both managed sites passed readiness. First-site managed test, edited-content rebuild, deliberate failed rebuild, exact-operation reconciliation, repair/rebuild, start, restart, stop/source retention and start passed. The second private site remained available throughout. An actual interrupted export in an independent fixture had no completion marker and startup refused it. |
 | AC-005 | passed | Automated axe WCAG A/AA, reference crawler and budgets pass. Missing-alt, missing-route/image/fragment, formatting, lint/type and over-budget defects are rejected. The project owner explicitly confirmed manual navigation, keyboard focus and 200% zoom at desktop/narrow widths. |
-| AC-006 | passed | Generated/compiled-image checks, budgets, runtime observations, verified instructions and owner UI acceptance pass. All eight application CI jobs, dashboard CI and complete host-quality CI passed on `10e9676`. The separately configured federation gate and implementation merge remain pending. |
+| AC-006 | passed | Generated/compiled-image checks, budgets, runtime observations, verified instructions and owner UI acceptance pass. All eight application CI jobs, dashboard CI and complete host-quality CI passed on `10e9676`. All five workflows subsequently passed on final combined head `959355c`, and implementation merged in PR #92. |
 
 ## Revision and local verification
 
@@ -133,7 +133,7 @@ Earlier draft receipts are retained as `.gptclaw/template-release.draft.json`;
 current receipts identify the final digest. Runtime source/output and the
 manually accepted UI did not change during that packaging refresh.
 
-## Failures, retention and remaining delivery
+## Failures and retained fixtures
 
 Turbopack initially refused the staged dependency symlink; pinned webpack mode
 resolved it. A separate build correctly rejected a concurrent source edit; the
@@ -151,7 +151,7 @@ smoke containers were stopped. No unrelated project or published release was
 modified. The guide pages and leaf icon intentionally demonstrate this template;
 product adaptation must replace or justify them and update dependent links/tests.
 
-## CI and review handover
+## Earlier CI handover
 
 Verified implementation revision: `10e96760ee0719e1729b28cc66f8c07fd761d21b`.
 The following checks ran on that exact revision:
@@ -163,13 +163,11 @@ The following checks ran on that exact revision:
 - [Host-quality workflow](https://github.com/danielbardsley/gptclaw/actions/runs/39548878036):
   passed, including the entire repository checker and Terraform format/validate/test.
 - [Federation workflow](https://github.com/danielbardsley/gptclaw/actions/runs/39548877935):
-  still in progress at this evidence update; do not infer its result from other runs.
+  was still in progress at the earlier evidence update; final results are below.
 
-This final evidence update changes documentation only. Its subsequent CI is
-separate from the verified implementation revision above. Remaining: the
-federation/final evidence CI gates, PR review and merge. Manual UI acceptance is
-complete; it does not imply merge or a broader owner disposition. Mark TPL-005
-Delivered only after merged implementation and the repository's remaining gates.
+The documentation-only head `195dda4` subsequently passed all four workflows.
+The final combined-head results and owner completion disposition are recorded
+below; earlier local limitations remain unchanged.
 
 ## Current-main integration
 
@@ -179,7 +177,7 @@ Before merging, current main `d0d69cc` introduced quality gates and provider
 all checks alongside static manifest v10/catalogue v8, and advances the combined
 provider to 1.17.0. Static template files and release identity are unchanged; the
 previous live evidence used provider 1.16.0 before this independent version
-allocation. Combined-head CI and merge are required before completion.
+allocation. Final combined-head CI, live confirmation and merge are recorded below.
 
 The first combined-head quality-matrix run rejected static discovery because the
 new matrix assumed every newest family had its shared quality.json contract.
@@ -187,3 +185,43 @@ Static now has an explicit matrix adapter that validates generated metadata and
 runs the existing full static helper, including browser and injected failures.
 Unknown newest adapters without a quality contract remain refused. The static
 release is included in the dynamic CI matrix; no release assets were changed.
+
+## Final delivery and owner disposition
+
+The project owner confirmed the manual UI checks, then instructed “thanks, merge
+it and mark the task complete.” All required criteria passed before implementation
+merged in [PR #92](https://github.com/danielbardsley/gptclaw/pull/92) at
+`0288de9fcc224892acc6756e1496331faac07657` on 2026-10-21. T1–T8 are complete
+and TPL-005 is Delivered.
+
+All five workflows passed on exact final head
+`959355ccb04717b10e2d607e78de042ec4b7a180`:
+
+- [Application workflow](https://github.com/danielbardsley/gptclaw/actions/runs/39605003000): all eight jobs passed.
+- [Quality template matrix](https://github.com/danielbardsley/gptclaw/actions/runs/39605002254): metadata and all nine generated-release jobs passed, including the static export/browser/negative-check adapter.
+- [Dashboard](https://github.com/danielbardsley/gptclaw/actions/runs/39605002480): passed.
+- [Development-host quality](https://github.com/danielbardsley/gptclaw/actions/runs/39605002183): full repository checker and Terraform format/validate/test passed.
+- [Federation quality](https://github.com/danielbardsley/gptclaw/actions/runs/39605002158): full repository checker and Terraform format/validate/test passed.
+
+Protected remote plan/apply jobs were skipped; no infrastructure deployment was
+performed. Local integration checks passed seven static tests, ten smoke tests,
+26 quality tests, 24 template tests, release immutability against `d0d69cc`,
+all 22 exact-release generations, metadata for all nine current releases, shell
+syntax and diff checks. This documentation-only completion update passed
+whitespace checks and all 316 relative-link checks; no additional Terraform or
+application rerun is required for these status/evidence edits.
+
+The reviewed managed start on ready `static-accept-two` returned `changed: false`
+in 7.268 seconds, retaining operation `6fb81e2f562246138e663ef71c2a0522`.
+The installed snapshot reports provider 1.17.0 with both smoke and static schema
+capabilities. Status confirmed both retained fixtures ready, no busy operation,
+and configured private routes. HTTPS home/nested pages and each manifest's
+`_gptclaw/ready` path returned 200; unknown paths returned 404 on both sites.
+An initial diagnostic mistakenly probed `/api/health/` and correctly received 404;
+the manifest-based checks above passed. No application source, export or UI was
+changed by the ready-state no-op. Earlier full lifecycle and manual UI evidence
+remain applicable to the unchanged exact static release.
+
+Retain both private previews and fixture sources/receipts. No remaining TPL-005
+implementation or acceptance work is pending. Public/production hosting and
+product-specific starter adaptation remain separately scoped.

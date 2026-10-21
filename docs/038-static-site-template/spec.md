@@ -1,6 +1,6 @@
 # SPEC-038 — Static site template (TPL-005)
 
-Status: Implementation verified in review; final CI gates and merge pending. Owner: Project owner. Date: 2026-10-21 (America/New_York).
+Status: Delivered and accepted. Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Technical design](technical-design.md) · [Tasks](tasks.md) ·
 [Catalogue](../platform/features.md) · [Architecture](../platform/architecture.md)
 
@@ -18,6 +18,9 @@ the project owner subsequently instructed “Ok, lets implement the spec.” Thi
 approves the bounded scope, budgets and explicit rebuild/downtime design and
 authorizes implementation and necessary reversible verification. PR review, merge
 and owner acceptance remain distinct; public exposure and production are excluded.
+The project owner subsequently accepted the UI and authorized merge and task
+completion. Implementation merged in [PR #92](https://github.com/danielbardsley/gptclaw/pull/92);
+all required criteria pass in the [acceptance record](acceptance.md).
 
 ## Scope and baseline
 

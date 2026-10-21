@@ -1,6 +1,6 @@
 # TASKS-038 — Static site template
 
-Status: Implementation authorized and in progress.
+Status: Complete; T1–T8 verified.
 Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Technical design](technical-design.md)
 
@@ -54,21 +54,24 @@ Owner: Project owner. Date: 2026-10-21 (America/New_York).
   scope. Add acceptance.md with passed/failed/pending criteria and evidence.
   Depends on T6 and reviewed runtime prerequisites. Covers STATIC-003–007;
   AC-003–006. Do not convert CI success into live or owner acceptance.
-- [ ] T8: Verify runbook/example/adaptation instructions, finalize acceptance and
+- [x] T8: Verify runbook/example/adaptation instructions, finalize acceptance and
   handover, complete PR review and merge through existing gates. Mark TPL-005
   Delivered only after merged implementation and every required criterion passes;
   record retained fixtures and follow-ups. Covers STATIC-007; AC-006.
 
-## Current handover
+## Completed handover
 
-The static release, adapter/contracts, private lifecycle integration, generated
-quality/browser/CI gates and runbook are implemented. Seven focused static tests
-and 28 manifest tests pass. Generated quality/negative cases, corrected compiled
-image, actual two-project private lifecycle, interruption refusal and final
-installed release identity are verified. The project owner confirmed manual UI
-acceptance. See [acceptance](acceptance.md) for operation IDs, timings, budgets,
-resource observations, failures/corrections and retained fixtures. Application, dashboard and host-quality CI pass on `10e9676`, including the full
-repository checker. The local Metro timing failure and unchanged 29-test rerun
-are recorded without claiming the interrupted local checker passed. Federation
-and evidence-update CI, PR review and merge remain pending. Both private
-previews are ready; the unrelated original checkout is unchanged.
+Implementation merged in [PR #92](https://github.com/danielbardsley/gptclaw/pull/92)
+at `0288de9fcc224892acc6756e1496331faac07657`, after all five workflows passed
+on final head `959355ccb04717b10e2d607e78de042ec4b7a180`. AC-001–AC-006 pass;
+the project owner accepted the UI and explicitly requested merge and completion.
+TPL-005 is Delivered. The combined provider is 1.17.0; all 22 exact releases pass
+local generation, and all nine current releases pass metadata checks. Focused
+static, smoke, quality and template tests pass. See [acceptance](acceptance.md)
+for local/CI/live evidence, the unchanged Metro timing rerun and limitations.
+
+Both private previews and their source/receipts are retained. A managed ready-state
+start under provider 1.17.0 returned `changed: false`; both projects remain ready
+with configured private routes. No further implementation or acceptance tasks
+remain for TPL-005. Public/production hosting and downstream product adaptation
+retain their separate scopes. The unrelated original checkout is unchanged.
