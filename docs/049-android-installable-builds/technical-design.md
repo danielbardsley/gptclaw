@@ -23,9 +23,9 @@ submission/status/install instructions separately rather than adding signing to 
 
 | Component | Proposed responsibility | Requirements |
 |---|---|---|
-| Mobile config/build adapter | Strict development/preview identity, API binding and native-runtime fingerprint; reject production selection. Keep private config ignored. | AB-001,003,004 |
-| Exact mobile tooling/release | Review and pin compatible EAS CLI, expo-dev-client and native test dependency in container/user scope; publish a new immutable release when reusable starter changes are required. | AB-002,003 |
-| EAS configuration/upload | Reviewed eas.json profiles and explicit upload inventory; exclude unrelated and server material before external submission. | AB-002,004 |
+| Mobile config/build adapter | Strict development/preview identity, API binding and native-runtime fingerprint; reject production selection. Keep private config ignored. | AB-001, AB-003, AB-004 |
+| Exact mobile tooling/release | Review and pin compatible EAS CLI, expo-dev-client and native test dependency in container/user scope; publish a new immutable release when reusable starter changes are required. | AB-002, AB-003 |
+| EAS configuration/upload | Reviewed eas.json profiles and explicit upload inventory; exclude unrelated and server material before external submission. | AB-002, AB-004 |
 | External-job receipt | App/profile/config/source identity, job/artifact status and integrity metadata in ignored task-owned state; bounded submission and recoverable observation. | AB-005 |
 | Runbook and acceptance | Account/signing handoff, authenticated installation, physical scenarios, replacement/recovery and retained-data cleanup. | AB-001–005 |
 
@@ -78,11 +78,11 @@ Production authentication, disaster recovery and store release remain excluded.
 
 | Requirement | Mechanism | Tasks | Acceptance |
 |---|---|---|---|
-| AB-001 | Strict variant/config admission | T1,T2,T6 | AC-001,006 |
-| AB-002 | Account/signing disposition and upload/access controls | T1,T3,T6 | AC-002,006 |
-| AB-003 | Native development profile and device trial | T2,T4,T6 | AC-003,006 |
-| AB-004 | Bundled preview and physical scenarios | T2,T5,T6 | AC-004,006 |
-| AB-005 | Durable job receipt and replacement recovery | T3,T6 | AC-005,006 |
+| AB-001 | Strict variant/config admission | T1,T2,T6 | AC-001, AC-006 |
+| AB-002 | Account/signing disposition and upload/access controls | T1,T3,T6 | AC-002, AC-006 |
+| AB-003 | Native development profile and device trial | T2,T4,T6 | AC-003, AC-006 |
+| AB-004 | Bundled preview and physical scenarios | T2,T5,T6 | AC-004, AC-006 |
+| AB-005 | Durable job receipt and replacement recovery | T3,T6 | AC-005, AC-006 |
 
 App/account/device/custody/budget decisions belong to the project owner. Exact
 version pins, native test module and adapter command/receipt shape belong to the
