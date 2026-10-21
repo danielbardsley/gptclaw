@@ -65,10 +65,11 @@ The project owner accepted this Android-first slice and instructed closeout on
 October 21. [Final disposition](closeout-2026-10-21.md) lists the exact manual
 evidence waivers and preserves all executed/failed test history. Both Fieldnotes
 trial runtimes are stopped; source/history, bindings, receipts and synthetic data
-are retained. The exact private 8445 listener removal remains an existing-SSM-
-operator follow-up, not an unresolved feature acceptance gate. MOB-010's selected
+are retained. The project owner completed private 8445 listener removal through
+the existing SSM operator path and supplied the final Serve JSON on October 21;
+8445 is absent and the two HTTPS 443 handlers remain. O1 is complete. MOB-010's selected
 slice and Android M1 are owner-accepted with waivers; broader mobile scope remains
-separate. PR #91 carries this closeout through the repository merge workflow.
+separate. PR #91 merged the acceptance closeout.
 
 ## Historical handover checkpoints
 
@@ -141,7 +142,11 @@ MOB-010/M1 are not marked Delivered. Earlier pending-merge notes are historical.
 
 ## Operational follow-up
 
-- [ ] O1 — Project owner / existing SSM operator: remove only the inactive owned
-  HTTP 8445 listener after exact-target readback, preserving all other handlers
-  and Funnel-off; independently verify removal. See the
-  [concrete closeout procedure](closeout-2026-10-21.md#remaining-operator-cleanup).
+- [x] O1 — Completed October 21 by the project owner through the existing SSM
+  operator path. The owner reported Serve stopped and supplied final
+  `tailscale serve status --json` output: only HTTPS TCP 443 remains, with
+  `/dashboard/` and `/projects/` proxy handlers unchanged; HTTP 8445 and any
+  Funnel-enablement entry are absent. This is owner-supplied command evidence,
+  not a forge-executed administrative change. See the
+  [cleanup completion evidence](closeout-2026-10-21.md#operator-cleanup-completed).
+  No outstanding tasks remain in this accepted SPEC-036 scope.
