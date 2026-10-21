@@ -1229,9 +1229,13 @@
   "matrix_command_note": "FAMILY ran separately for every one of the eight cell ids. RESULT/OWNED_FIXTURE/CALIBRATION are task-owned output/fixture placeholders; no retained application was targeted.",
   "repository_check": {
     "command": "PATH=/srv/forge/projects/gptclaw/.venv-manifest/bin:$PATH ./scripts/check-repository.sh",
-    "state": "in progress when this evidence snapshot was committed; final completion/result recorded in the linked PR review notes",
-    "source_changes_during_run": "Only credential fixture and expanded quality tests changed while early unrelated suites ran; relevant new tests run at their later suite positions.",
-    "final_result_location": "https://github.com/danielbardsley/gptclaw/pull/95"
+    "state": "passed",
+    "source_changes_during_run": "Started at 4f7d934; credential/default and cache fixture fixes completed before their relevant later suite positions. The diagnostic-only credential wrapper added after that suite was separately tested; final immutable CI outcomes are recorded in the PR.",
+    "final_result_location": "https://github.com/danielbardsley/gptclaw/pull/95",
+    "exit_code": 0,
+    "python_tests": 927,
+    "python_suites": 48,
+    "additional_checks": "repository invariants and isolated shell fixtures also passed"
   },
   "generation": {
     "state": "passed",
@@ -1273,8 +1277,8 @@
     }
   },
   "ci_final_code_matrix": {
-    "revision": "3c29d3905536743483fae19ff6ee6d346fd3bdbc",
-    "url": "https://github.com/danielbardsley/gptclaw/actions/runs/39564162283",
+    "revision": "f51c76cb2a25747f73ccd964de4fa41ae5676a38",
+    "url": "https://github.com/danielbardsley/gptclaw/actions/runs/39567685313",
     "result": "passed",
     "cells": 8,
     "metadata": "passed"
@@ -1284,5 +1288,25 @@
     "historical_assets_and_other_projects": "unchanged",
     "reusable_toolchain_images": "retained as caches",
     "isolated_generated_fixtures": "controller cleanup completed"
+  },
+  "ci_interim_credential_failures": [
+    {
+      "run": 39565792854,
+      "attempt": 1,
+      "case": "test_request_scope_is_enforced_before_http_transport",
+      "failure": "synthetic repository setup entered recovery before permission assertion"
+    },
+    {
+      "run": 39565792854,
+      "attempt": 2,
+      "case": "test_ambiguous_creation_operation_is_visible_without_token_values",
+      "failure": "synthetic repository resume entered recovery"
+    }
+  ],
+  "ci_interim_credential_outcome": "Both cases passed locally, the frozen-source full 60-test suite passed, and the f51c76c diagnostic CI run passed all offline suites. The two earlier CI setup errors remain unproven intermittent failures; safe diagnostics are retained.",
+  "ci_job_budget": {
+    "prior_minutes": 15,
+    "new_minutes": 25,
+    "reason": "f51c76c passed all offline tests, integrity, built app and dependency checks but exhausted the prior aggregate budget in the final real toolchain trial. Individual test timeouts and assertions were unchanged."
   }
 }

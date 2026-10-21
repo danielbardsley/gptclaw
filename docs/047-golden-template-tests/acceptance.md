@@ -24,12 +24,14 @@ has not been demonstrated. Neither this file nor the PR declares owner acceptanc
 
 ## Verification and delivery
 
+The full local repository gate passed 927 Python tests across 48 suites, plus
+repository invariants and isolated shell fixtures (exit status 0).
 The shared record contains each executed local cell's digest, source/toolchain,
 quality outcomes, injected-fault outcomes and performance measurements, plus the
 five-start calibration. CI matrix run 39561024843 passed metadata and all eight
 exact committed releases using Docker. Local cells used rootless Podman and
 synthetic, task-owned fixtures. See the shared snapshot for exact commands and matrix evidence; the linked PR
-review notes record the final full repository/CI outcome. source bundles are not physical native acceptance.
+review notes record the final full repository/CI outcome. Source bundles are not physical native acceptance.
 
 No managed provider installation, retained-data migration, production operation,
 public exposure, merge, tag or deployment was performed. Existing products and
