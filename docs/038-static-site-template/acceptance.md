@@ -1,6 +1,6 @@
 # SPEC-038 — Static site acceptance evidence
 
-Status: Implementation and live/owner checks verified; broad checks/CI pending.
+Status: Functional acceptance verified; final platform CI and merge pending.
 Owner: Project owner. Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md) ·
 [Runbook](../../runbooks/manage-static-sites.md) ·
@@ -10,12 +10,12 @@ Owner: Project owner. Date: 2026-10-21 (America/New_York).
 
 | Criterion | State | Evidence and remaining action |
 |---|---|---|
-| AC-001 | pending | Seven offline static generation/contract/snapshot/inventory tests pass. Release immutability passes against `ba06d66`; default and historical releases are retained. Stable full repository and CI runs are still running. |
+| AC-001 | passed | Seven offline static generation/contract/snapshot/inventory tests pass. Release immutability passes against `ba06d66`; default and historical releases are retained. The full repository checker passed in host-quality CI on `10e9676`. |
 | AC-002 | passed | Frozen restore, check-only format/lint, strict types, three generated tests, real static export and no-JS browser content pass. The generated unsupported-cookie fixture fails build and cannot start stale output. The corrected compiled image serves pages/health/assets as uid 1000. |
 | AC-003 | passed | Actual private HTTPS browser navigation/refresh/404 and HTTP escape/symlink/MIME/HEAD tests pass. Both sites' home, nested page, local SVG and health return 200. Unexpected HTTP errors and network failures fail browser checks. |
 | AC-004 | passed | Both managed sites passed readiness. First-site managed test, edited-content rebuild, deliberate failed rebuild, exact-operation reconciliation, repair/rebuild, start, restart, stop/source retention and start passed. The second private site remained available throughout. An actual interrupted export in an independent fixture had no completion marker and startup refused it. |
 | AC-005 | passed | Automated axe WCAG A/AA, reference crawler and budgets pass. Missing-alt, missing-route/image/fragment, formatting, lint/type and over-budget defects are rejected. The project owner explicitly confirmed manual navigation, keyboard focus and 200% zoom at desktop/narrow widths. |
-| AC-006 | pending | Local generated/compiled-image checks, budget measurements, runtime observations, verified instructions and owner UI acceptance pass. Stable full repository and final CI outcomes remain pending; implementation is not merged. |
+| AC-006 | passed | Generated/compiled-image checks, budgets, runtime observations, verified instructions and owner UI acceptance pass. All eight application CI jobs, dashboard CI and complete host-quality CI passed on `10e9676`. The separately configured federation gate and implementation merge remain pending. |
 
 ## Revision and local verification
 
@@ -63,14 +63,29 @@ Executed locally with the existing isolated Python environment:
 - Broken exported image reference was injected in the disposable generated
   fixture, rejected by the crawler, and the original file restored.
 - `git diff --check`, staged whitespace and `bash -n scripts/check-repository.sh`
-  passed. Documentation relative-link and final Git checks are recorded at delivery.
+  passed. All 272 relative documentation links passed; the final review worktree and
+  original checkout were clean at delivery.
 
-A clean final worktree is running `./scripts/check-repository.sh` with the prepared
-manifest environment. An earlier run overlapped release authoring and reported
-hash mismatches; its remaining suites are not a substitute for the stable run.
-Copied-repository fixtures now exclude static output/staging directories. Local
-Terraform checks are not applicable because infrastructure source is unchanged.
-Existing CI still runs its configured broader gates.
+The clean local `./scripts/check-repository.sh` run passed lifecycle (36),
+dependency (27), toolchain (31), catalogue (23), and other completed suites, but
+reported one existing Metro timing-test failure:
+`ProxyTests.test_expiry_closes_stalled_transfer` in `test_metro_proxy.py`. That
+fixture arms a 150 ms lease before its HTTP exchange; the host also logged event
+loop delays exceeding 150 ms. The isolated case passed unchanged (0.207 s), and
+the entire unchanged 29-test Metro proxy suite then passed (6.104 s). This is
+consistent with a scheduling-sensitive fixture, not evidence of a static-adapter
+regression; no Metro source or test was changed.
+
+The full repository checker independently passed on the identical committed
+revision in host-quality CI. The remaining duplicate local run was then explicitly
+interrupted to release its task-owned fixture resources. It is not claimed as a
+passing local full-script execution. The earlier authoring-time run, which
+reported release-hash mismatches during edits, was also stopped rather than
+claimed successful. Copied-repository fixtures exclude static output/staging.
+
+Local Terraform runs were unnecessary because infrastructure source is unchanged.
+Host-quality CI nevertheless passed Terraform formatting, validation and tests;
+its protected remote plan/apply jobs were skipped. No infrastructure was deployed.
 
 ## Private runtime evidence
 
@@ -136,6 +151,22 @@ smoke containers were stopped. No unrelated project or published release was
 modified. The guide pages and leaf icon intentionally demonstrate this template;
 product adaptation must replace or justify them and update dependent links/tests.
 
-Remaining: stable broad-check results, final CI, PR review and merge. UI acceptance
-is complete; it does not imply implementation merge. Do not mark TPL-005 Delivered
-until implementation is merged and all remaining criteria pass.
+## CI and review handover
+
+Verified implementation revision: `10e96760ee0719e1729b28cc66f8c07fd761d21b`.
+The following checks ran on that exact revision:
+
+- [Application workflow](https://github.com/danielbardsley/gptclaw/actions/runs/39548878091):
+  passed, all eight jobs including static-site, default template, APIs, mobile,
+  groups and database checks.
+- [Dashboard workflow](https://github.com/danielbardsley/gptclaw/actions/runs/39548877940): passed.
+- [Host-quality workflow](https://github.com/danielbardsley/gptclaw/actions/runs/39548878036):
+  passed, including the entire repository checker and Terraform format/validate/test.
+- [Federation workflow](https://github.com/danielbardsley/gptclaw/actions/runs/39548877935):
+  still in progress at this evidence update; do not infer its result from other runs.
+
+This final evidence update changes documentation only. Its subsequent CI is
+separate from the verified implementation revision above. Remaining: the
+federation/final evidence CI gates, PR review and merge. Manual UI acceptance is
+complete; it does not imply merge or a broader owner disposition. Mark TPL-005
+Delivered only after merged implementation and the repository's remaining gates.

@@ -39,7 +39,7 @@ Owner: Project owner. Date: 2026-10-21 (America/New_York).
 
 ## Verification and delivery
 
-- [ ] T6: Run repository checks, release-immutability checks and historical/default
+- [x] T6: Run repository checks, release-immutability checks and historical/default
   template regressions; prove source/snapshot generation parity and refusal paths.
   Run generated frozen restore/build/quality/security/container checks and
   interrupted/failed export tests. Confirm source edits invalidate build readiness.
@@ -67,6 +67,8 @@ and 28 manifest tests pass. Generated quality/negative cases, corrected compiled
 image, actual two-project private lifecycle, interruption refusal and final
 installed release identity are verified. The project owner confirmed manual UI
 acceptance. See [acceptance](acceptance.md) for operation IDs, timings, budgets,
-resource observations, failures/corrections and retained fixtures. Stable broad
-repository and final CI results, PR review and merge remain pending. Both private
+resource observations, failures/corrections and retained fixtures. Application, dashboard and host-quality CI pass on `10e9676`, including the full
+repository checker. The local Metro timing failure and unchanged 29-test rerun
+are recorded without claiming the interrupted local checker passed. Federation
+and evidence-update CI, PR review and merge remain pending. Both private
 previews are ready; the unrelated original checkout is unchanged.
