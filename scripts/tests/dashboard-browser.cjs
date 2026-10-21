@@ -3,7 +3,8 @@ const assert = require('node:assert/strict');
 const { chromium } = require('playwright-core');
 (async () => {
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   const origin = process.env.DASHBOARD_BROWSER_ORIGIN || 'http://127.0.0.1:18201';
@@ -184,6 +185,65 @@ const { chromium } = require('playwright-core');
     return [...document.querySelectorAll('.project-row .secondary,.status-badge,.link-pill,.destination-reason,.managed-tile span')].filter(el=>el.getBoundingClientRect().height).map(el=>{const a=luminance(getComputedStyle(el).color),b=luminance(background(el));return {text:el.textContent,ratio:(Math.max(a,b)+.05)/(Math.min(a,b)+.05)};});
   });
   assert.ok(contrast.every(item=>item.ratio>=4.5),JSON.stringify(contrast.filter(item=>item.ratio<4.5)));
+  // Theme is independent of snapshot refresh and preserves open disclosures.
+  const themeToggle=page.getByRole('button',{name:'Toggle dark mode',exact:true});
+  await page.emulateMedia({colorScheme:'light'});
+  await themeToggle.click();
+  assert.equal(await themeToggle.getAttribute('aria-pressed'),'true');
+  assert.equal(await page.locator('html').getAttribute('data-theme'),'dark');
+  assert.equal(await toggle.getAttribute('aria-expanded'),'true');
+  await page.waitForResponse(response=>response.url().includes('/dashboard/api/snapshot/'),{timeout:7000});
+  assert.equal(await themeToggle.getAttribute('aria-pressed'),'true');
+  assert.equal(await themeToggle.evaluate(el=>el===document.activeElement),true);
+  const darkContrast=await page.evaluate(()=>{
+    const luminance=s=>s.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0);
+    const background=el=>{for(let node=el;node;node=node.parentElement){const c=getComputedStyle(node).backgroundColor;if(c!=='rgba(0, 0, 0, 0)'&&c!=='transparent')return c;}return 'rgb(255,255,255)';};
+    return [...document.querySelectorAll('.secondary,.status-badge,.link-pill,.destination-reason,.managed-tile span,.runtime,.type-chip,.doc-chip,.mark,.theme-toggle,footer')].filter(el=>el.getBoundingClientRect().height).map(el=>{const a=luminance(getComputedStyle(el).color),b=luminance(background(el));return {text:el.textContent,ratio:(Math.max(a,b)+.05)/(Math.min(a,b)+.05)};});
+  });
+  assert.ok(darkContrast.every(item=>item.ratio>=4.5),JSON.stringify(darkContrast.filter(item=>item.ratio<4.5)));
+  for(const width of [1440,1280,768,390,720]) {
+    await page.setViewportSize({width,height:900});
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Dark overflow at '+width);
+    if(width<=768) assert.ok((await themeToggle.boundingBox()).width>=44);
+    if(width===1440||width===390) await page.screenshot({path:'/checks/output/dashboard-dark-'+width+'.png',fullPage:true});
+  }
+  await page.reload();
+  assert.equal(await page.locator('html').getAttribute('data-theme'),'dark');
+  await themeToggle.click();
+  await page.emulateMedia({colorScheme:'dark'});
+  await page.reload();
+  assert.equal(await page.locator('html').getAttribute('data-theme'),'light','Explicit light must override dark OS');
+  await page.evaluate(()=>{localStorage.removeItem('gptclaw-dashboard-theme');});
+  await page.reload();
+  await page.waitForFunction(()=>document.documentElement.dataset.theme==='dark');
+  await page.emulateMedia({colorScheme:'light'});
+  await page.waitForFunction(()=>document.documentElement.dataset.theme==='light');
+  const second=await page.context().newPage();
+  await second.goto(origin+'/dashboard/');
+  await second.getByRole('button',{name:'Toggle dark mode'}).click();
+  await page.waitForFunction(()=>document.documentElement.dataset.theme==='dark');
+  await second.getByRole('button',{name:'Toggle dark mode'}).click();
+  await page.waitForFunction(()=>document.documentElement.dataset.theme==='light');
+  await page.evaluate(()=>localStorage.removeItem('gptclaw-dashboard-theme'));
+  await second.close();
+  // Storage-denied contexts still allow a session choice through OS changes.
+  const blocked=await browser.newContext({colorScheme:'dark'});
+  await blocked.addInitScript(()=>{
+    Object.defineProperty(Storage.prototype,'getItem',{value(){throw new Error('storage denied');}});
+    Object.defineProperty(Storage.prototype,'setItem',{value(){throw new Error('storage denied');}});
+  });
+  const blockedPage=await blocked.newPage();
+  await blockedPage.goto(origin+'/dashboard/');
+  const blockedToggle=blockedPage.getByRole('button',{name:'Toggle dark mode'});
+  await blockedToggle.waitFor();
+  await blockedPage.waitForFunction(()=>document.querySelector('.theme-toggle')?.getAttribute('aria-pressed')==='true');
+  await blockedToggle.click();
+  await blockedPage.emulateMedia({colorScheme:'light'});
+  await blockedPage.emulateMedia({colorScheme:'dark'});
+  assert.equal(await blockedPage.locator('html').getAttribute('data-theme'),'light');
+  await blocked.close();
+  await page.setViewportSize({width:1440,height:900});
+  await toggle.click(); // Re-open after persistence reloads for remaining regressions.
   // Long source values may grow; none may break the document or lose full metadata.
   layout.rows[0].name='Long synthetic project '+ 'x'.repeat(180);
   layout.rows[0].owner='Recorded owner '+ 'y'.repeat(80);
@@ -280,17 +340,27 @@ const { chromium } = require('playwright-core');
   assert.equal(submissions.length,0);
   assert.equal(await confirm.evaluate(element=>element===document.activeElement),true);
   // Hover must preserve readable text for both neutral Cancel and destructive Confirm.
-  for(const button of [panel.getByRole('button',{name:'Cancel',exact:true}),confirm]) {
-    await button.hover();
-    const ratio=await button.evaluate(element=>{
-      const luminance=color=>color.match(/[\d.]+/g).slice(0,3).map(Number).map(value=>{
-        value/=255;return value<=.04045?value/12.92:((value+.055)/1.055)**2.4;
-      }).reduce((sum,value,index)=>sum+value*[.2126,.7152,.0722][index],0);
-      const style=getComputedStyle(element),a=luminance(style.color),b=luminance(style.backgroundColor);
-      return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);
-    });
-    assert.ok(ratio>=4.5,'Confirmation button loses text contrast on hover: '+ratio);
+  for(const appearance of ['light','dark']) {
+    if(appearance==='dark') await themeToggle.click();
+    for(const button of [panel.getByRole('button',{name:'Cancel',exact:true}),confirm]) {
+      await button.hover();
+      const ratio=await button.evaluate(element=>{
+        const luminance=color=>color.match(/[\d.]+/g).slice(0,3).map(Number).map(value=>{
+          value/=255;return value<=.04045?value/12.92:((value+.055)/1.055)**2.4;
+        }).reduce((sum,value,index)=>sum+value*[.2126,.7152,.0722][index],0);
+        const style=getComputedStyle(element),a=luminance(style.color),b=luminance(style.backgroundColor);
+        return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+      });
+      assert.ok(ratio>=4.5,'Confirmation button loses text contrast on hover: '+ratio);
+    }
   }
+  await page.setViewportSize({width:1440,height:1000});
+  await page.screenshot({path:'/checks/output/dashboard-confirm-dark.png',fullPage:true});
+  await page.setViewportSize({width:390,height:900});
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+  await page.screenshot({path:'/checks/output/dashboard-confirm-dark-mobile.png',fullPage:true});
+  await themeToggle.click();
+  await page.setViewportSize({width:1440,height:900});
   layout.rows[0].controls.capabilities.observed_at=controlNow-60;
   await panel.getByText('Controls unavailable while observations are stale.',{exact:true}).waitFor({timeout:8000});
   assert.equal(await confirm.count(),1,'an older stale snapshot revoked a freshly validated intent');
