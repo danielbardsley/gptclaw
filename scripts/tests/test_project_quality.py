@@ -30,6 +30,17 @@ class QualityTests(unittest.TestCase):
         path.write_text(json.dumps(content) if isinstance(content, (dict, list)) else content)
         return path
 
+    def test_matrix_routes_static_to_real_export_helper_and_rejects_unknown_adapter(self):
+        from unittest.mock import patch
+        matrix_spec = importlib.util.spec_from_file_location('quality_templates', ROOT/'scripts/quality_templates.py')
+        matrix = importlib.util.module_from_spec(matrix_spec); matrix_spec.loader.exec_module(matrix)
+        release = {'provider': 'nextjs-static-v1', 'digest': 'synthetic'}
+        with patch.object(matrix.templates, 'catalogue', return_value=({}, {('nextjs-static', '1.0.0'): (release, {})})):
+            self.assertEqual(matrix.matrix()[0]['checks'], 'static')
+        release['provider'] = 'unknown-v1'
+        with patch.object(matrix.templates, 'catalogue', return_value=({}, {('unknown', '1.0.0'): (release, {})})):
+            with self.assertRaises(matrix.app.AppError): matrix.matrix()
+
     def test_json_rejects_duplicates_nonfinite_oversize_and_symlink(self):
         for text in ['{"a":1,"a":2}', '{"a":NaN}', ' '* (q.MAX_FILE+1)]:
             with self.assertRaises((ValueError, q.GateError)): q.read_json(self.put('x.json', text))

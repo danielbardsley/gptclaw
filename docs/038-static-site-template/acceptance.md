@@ -180,3 +180,10 @@ all checks alongside static manifest v10/catalogue v8, and advances the combined
 provider to 1.17.0. Static template files and release identity are unchanged; the
 previous live evidence used provider 1.16.0 before this independent version
 allocation. Combined-head CI and merge are required before completion.
+
+The first combined-head quality-matrix run rejected static discovery because the
+new matrix assumed every newest family had its shared quality.json contract.
+Static now has an explicit matrix adapter that validates generated metadata and
+runs the existing full static helper, including browser and injected failures.
+Unknown newest adapters without a quality contract remain refused. The static
+release is included in the dynamic CI matrix; no release assets were changed.
