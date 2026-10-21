@@ -23,15 +23,15 @@ before edits. Follow the dependency order below, establishing trust and fixture
 ownership before target operations. Where an interface is shared with another QLT
 initiative, agree its version/capability contract before integration.
 
-- [ ] T-01 — Implement validated range selection, provenance and malformed/moving-range fixtures.
+- [x] T-01 — Implement validated range selection, provenance and malformed/moving-range fixtures.
   Maps QLT-010-R01 to QLT-010-AC01; include the corresponding passing and
   failing acceptance scenarios before advancing.
 
-- [ ] T-04 — Add sanitization, idempotence, instruction-as-data and manual-edit preservation tests.
+- [x] T-04 — Add sanitization, idempotence, instruction-as-data and manual-edit preservation tests.
   Maps QLT-010-R04 to QLT-010-AC04; include the corresponding passing and
   failing acceptance scenarios before advancing.
 
-- [ ] T-02 — Implement acceptance mapping and unsupported/contradictory-claim tests.
+- [x] T-02 — Implement acceptance mapping and unsupported/contradictory-claim tests.
   Maps QLT-010-R02 to QLT-010-AC02; include the corresponding passing and
   failing acceptance scenarios before advancing.
 
@@ -39,7 +39,7 @@ initiative, agree its version/capability contract before integration.
   Maps QLT-010-R03 to QLT-010-AC03; include the corresponding passing and
   failing acceptance scenarios before advancing.
 
-- [ ] T-05 — Document opt-in adoption, review/publication handoff and correction/rollback procedure.
+- [x] T-05 — Document opt-in adoption, review/publication handoff and correction/rollback procedure.
   Maps QLT-010-R05 to QLT-010-AC05; include the corresponding passing and
   failing acceptance scenarios before advancing.
 
@@ -49,7 +49,7 @@ initiative, agree its version/capability contract before integration.
   repository checks described in the design; record exact commands, revisions,
   results, skipped layers and limitations. Verify all QLT-010-AC01–AC05 with actual
   evidence; pending private/native/operator trials remain visibly pending.
-- [ ] T-07 — Push the implementation branch and open a reviewable PR with sanitized
+- [x] T-07 — Push the implementation branch and open a reviewable PR with sanitized
   evidence and known limitations. Do not merge, deploy or imply owner acceptance.
 
 Merge, rollout and owner/device acceptance are downstream review actions excluded
@@ -57,11 +57,15 @@ from this implementation authorization, not tasks for the unattended run.
 
 ## Current handover
 
-Completed: planning/source review and the three linked draft documents. No new
-implementation, container execution, CI run, deployment or acceptance is claimed. All
-implementation tasks remain unchecked. Existing supporting-slice results remain in their
-original initiative acceptance records.
+Implementation is pushed in [draft PR #95](https://github.com/danielbardsley/gptclaw/pull/95).
+Eight new exact quality-enabled starter releases pass the local and CI matrix.
+The source provider is 1.16.0; installed providers were not changed. See
+[acceptance evidence](acceptance.md) for every original criterion, passing layers
+and remaining trials. Unchecked tasks include partial automated/adoption/manual
+scenarios, not an absent implementation. They must not be marked complete merely
+because the happy-path matrix passed. Catalogue state remains In review.
 
-Next action: project owner reviews the proposed scope and decision; then an explicitly
-authorized implementation task can proceed using this traceability. This remains
-optional until a product and release audience are selected.
+The project owner reviews and decides subsequent adoption/acceptance. Merge and
+deployment were expressly excluded and have not been performed. Original workspace
+changes are preserved in their original checkout; implementation uses an isolated
+feature worktree. No user assistance was needed for the executed tests.

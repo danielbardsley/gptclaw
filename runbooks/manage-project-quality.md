@@ -15,6 +15,15 @@ catalogue until a separately authorized rollout. Explicit old release selection
 remains available.
 Do not replace `.gptclaw` provenance or persistent data to upgrade an application.
 
+Every new quality release, including the source default, publishes a GitHub
+workflow. Broker-backed creation therefore requires the existing exact named
+workflow policy and matching App/installation grant **before** remote creation.
+A profile approved only for starters without workflows remains blocked; this
+change does not broaden its grants. Follow the existing
+[workflow-authority procedure](manage-repository-credentials.md)
+when adopting a quality starter, or select an explicit historical release for
+its previous behavior. Local-only creation needs no GitHub workflow grant.
+
 Generated `quality.json` version 1 is a separate strict quality contract. It
 exposes format/lint/typecheck/test/build/security/verify vectors, component roots
 and pinned toolchain recipes without changing existing lifecycle schemas or

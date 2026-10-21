@@ -1,0 +1,44 @@
+# QLT-007 acceptance evidence
+
+Status: in review; automated implementation evidence recorded; full acceptance pending.
+Owner: Project owner. Evidence date: 2026-10-21 UTC.
+[Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
+[Implementation PR](https://github.com/danielbardsley/gptclaw/pull/95) · [Shared verification record](../039-standard-quality-commands/verification-2026-10-21.json)
+
+Tested application code: `4f7d934788f757fbd241012a9ff9b0a3037ca396`.
+Credential fixture correction: `0627380d52cef1f99e9f27805e5d2c8c354dea37`.
+Generated cache keys and expanded negative tests were corrected at
+`3c29d3905536743483fae19ff6ee6d346fd3bdbc`; final CI is linked in the PR.
+A pending criterion can contain passing automated checks; its full original result
+has not been demonstrated. Neither this file nor the PR declares owner acceptance.
+
+## Criterion mapping
+
+| Criterion | State | Evidence or limitation | Remaining action and owner |
+|---|---|---|---|
+| QLT-007-AC01 | pending | Both PostgreSQL releases pass fresh migration, additive forward row preservation and injected failing migration in local and CI fixtures. Dedicated duplicate/missing-head and data-loss fixtures remain pending. | Project owner selects the remaining adoption/manual trial after review; automated follow-up stays tracked here. |
+| QLT-007-AC02 | passed | Migration fingerprint/risk assessment rejects stale declarations, destructive and opaque cases. Static analysis is explicitly advisory and does not replace human review. | Project owner reviews evidence. |
+| QLT-007-AC03 | pending | Existing SPEC-026 target-bound backup/lock/role gates are reused and repository database suite covers regressions. No newly installed managed target or live plan/apply acceptance was performed. | Project owner selects the remaining adoption/manual trial after review; automated follow-up stays tracked here. |
+| QLT-007-AC04 | pending | Real disposable pg_dump restore verification and old-client recovery pass; intentionally failing upgrade is refused. New nontransactional interruption/reconciliation trial remains pending. | Project owner selects the remaining adoption/manual trial after review; automated follow-up stays tracked here. |
+| QLT-007-AC05 | passed | Retained v1 Node client passes before/after additive upgrade and after backup restore; runtime DDL is denied; isolated CI credentials and records are synthetic. | Project owner reviews evidence. |
+
+## Verification and delivery
+
+The shared record contains each executed local cell's digest, source/toolchain,
+quality outcomes, injected-fault outcomes and performance measurements, plus the
+five-start calibration. CI matrix run 39561024843 passed metadata and all eight
+exact committed releases using Docker. Local cells used rootless Podman and
+synthetic, task-owned fixtures. See the shared snapshot for exact commands and matrix evidence; the linked PR
+review notes record the final full repository/CI outcome. source bundles are not physical native acceptance.
+
+No managed provider installation, retained-data migration, production operation,
+public exposure, merge, tag or deployment was performed. Existing products and
+SPEC-036 owner evidence retain their own acceptance boundaries. Templates are
+reusable intentional fixtures; adopting products must review/remove demo content
+and recheck their actual API/UI/journeys under their own specification.
+
+Remaining acceptance layers above are explicit. No expired exception/quarantine
+can authorize a pass: this implementation provides no exception bypass. Historical
+release bytes are retained. Rollback/adoption procedure is in the
+[quality runbook](../../runbooks/manage-project-quality.md). The project owner
+reviews the draft PR in the morning; catalogue state stays In review.

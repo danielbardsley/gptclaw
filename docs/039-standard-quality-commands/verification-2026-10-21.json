@@ -1,0 +1,1288 @@
+{
+  "date": "2026-10-21",
+  "status": "automated checks passed; owner acceptance pending",
+  "code_revision": "4f7d934788f757fbd241012a9ff9b0a3037ca396",
+  "credential_fixture_revision": "0627380d52cef1f99e9f27805e5d2c8c354dea37",
+  "pull_request": "https://github.com/danielbardsley/gptclaw/pull/95",
+  "local_engine": "rootless Podman, task-owned synthetic fixtures",
+  "ci_engine": "Docker, ubuntu-24.04",
+  "ci_matrix": "https://github.com/danielbardsley/gptclaw/actions/runs/39561024843",
+  "cells": [
+    {
+      "id": "nextjs",
+      "version": "1.1.0",
+      "digest": "730404acbcdd77919059209c4e58196bb1d08e4fae15f59bd6a17e1fe9494261",
+      "provider": "nextjs-v1",
+      "generation": "passed",
+      "runtime": "passed",
+      "metadata": "passed",
+      "quality": {
+        "schema_version": 1,
+        "template": "nextjs@1.1.0",
+        "source": "f247639a865b0640abeb9d3909bfea48c3940a49be0a4d69cbaf6c7fd2656bf1",
+        "vantage": "generated-container",
+        "state": "passed",
+        "checks": [
+          {
+            "component": "app",
+            "gate": "lint",
+            "state": "passed",
+            "seconds": 10.664
+          },
+          {
+            "component": "app",
+            "gate": "typecheck",
+            "state": "passed",
+            "seconds": 31.055
+          },
+          {
+            "component": "app",
+            "gate": "test",
+            "state": "passed",
+            "seconds": 2.649
+          },
+          {
+            "component": "app",
+            "gate": "build",
+            "state": "passed",
+            "seconds": 83.932
+          },
+          {
+            "component": "app",
+            "gate": "security",
+            "state": "passed",
+            "seconds": 2.095
+          },
+          {
+            "gate": "isolated-browser-smoke",
+            "state": "passed",
+            "vantage": "isolated network",
+            "measurements": {
+              "startup_ms": 11234,
+              "latency_ms": 60.10521599999993,
+              "run_p95_ms": [
+                31.96427699999913,
+                60.10521599999993,
+                93.65690800000084
+              ],
+              "warmup_ms": 250,
+              "requests_per_run": 200,
+              "repetitions": 3,
+              "peak_memory_mib": 198.74609375
+            }
+          },
+          {
+            "gate": "performance-absolute",
+            "state": "passed",
+            "metrics": {
+              "bundle_bytes": 174619,
+              "latency_ms": 60.10521599999993,
+              "startup_ms": 11234,
+              "peak_memory_mib": 198.74609375
+            },
+            "relative_regressions": "matching calibrated baseline required separately"
+          }
+        ],
+        "recipes": {
+          "app": "e5cd7670b43c0115a1193ac5f6ac19b5c2f39db03502123fcd8a4797652f1c3b"
+        }
+      },
+      "measurements": {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "4d51b507d114d13a318f4f9e1860e864fc67f828a452bc6faf74610a2109c8c7",
+          "workload": "isolated one CPU/1536MiB; warm 250ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright single-service route",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "f247639a865b0640abeb9d3909bfea48c3940a49be0a4d69cbaf6c7fd2656bf1",
+        "metrics": {
+          "bundle_bytes": 174619,
+          "latency_ms": 60.10521599999993,
+          "startup_ms": 11234,
+          "peak_memory_mib": 198.74609375
+        }
+      },
+      "negative_checks": [
+        {
+          "component": "app",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "typecheck",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "build",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "format",
+          "behavior": "corrected formatting; semantic lint fault remains"
+        },
+        {
+          "component": "app",
+          "gate": "test",
+          "injected_fault": "rejected"
+        }
+      ]
+    },
+    {
+      "id": "fastapi",
+      "version": "1.1.0",
+      "digest": "88cf8dfbe1bbaf2f80c29d4d59502d96b7ca0cde00575092898a3fdbdab75782",
+      "provider": "fastapi-v1",
+      "generation": "passed",
+      "runtime": "passed",
+      "metadata": "passed",
+      "quality": {
+        "schema_version": 1,
+        "template": "fastapi@1.1.0",
+        "source": "9425795f7af93a2ce649d3776bb769562031c822aa29b29adf62f40921672d17",
+        "vantage": "generated-container",
+        "state": "passed",
+        "checks": [
+          {
+            "component": "app",
+            "gate": "lint",
+            "state": "passed",
+            "seconds": 19.252
+          },
+          {
+            "component": "app",
+            "gate": "typecheck",
+            "state": "passed",
+            "seconds": 46.681
+          },
+          {
+            "component": "app",
+            "gate": "test",
+            "state": "passed",
+            "seconds": 50.834
+          },
+          {
+            "component": "app",
+            "gate": "build",
+            "state": "passed",
+            "seconds": 8.737
+          },
+          {
+            "component": "app",
+            "gate": "security",
+            "state": "passed",
+            "seconds": 28.894
+          },
+          {
+            "component": "app",
+            "gate": "contract-drift",
+            "state": "passed"
+          },
+          {
+            "gate": "isolated-browser-smoke",
+            "state": "passed",
+            "vantage": "isolated network",
+            "measurements": {
+              "startup_ms": 10210,
+              "latency_ms": 48.04343700000027,
+              "run_p95_ms": [
+                42.470312000001286,
+                48.04343700000027,
+                81.02056900000025
+              ],
+              "warmup_ms": 250,
+              "requests_per_run": 200,
+              "repetitions": 3,
+              "peak_memory_mib": 60.171875
+            }
+          },
+          {
+            "gate": "performance-absolute",
+            "state": "passed",
+            "metrics": {
+              "latency_ms": 48.04343700000027,
+              "startup_ms": 10210,
+              "peak_memory_mib": 60.171875
+            },
+            "relative_regressions": "matching calibrated baseline required separately"
+          }
+        ],
+        "recipes": {
+          "app": "e5c078bd86dd02144bdda3bef05659c166185c98c91cc3a9d350063122273db2"
+        }
+      },
+      "measurements": {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "de05a80dacc4c3db996696dfbc0eaebe2952bdd7bd2620c60ea1ea09e89b4c0b",
+          "workload": "isolated one CPU/1536MiB; warm 250ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright single-service route",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "9425795f7af93a2ce649d3776bb769562031c822aa29b29adf62f40921672d17",
+        "metrics": {
+          "latency_ms": 48.04343700000027,
+          "startup_ms": 10210,
+          "peak_memory_mib": 60.171875
+        }
+      },
+      "negative_checks": [
+        {
+          "component": "app",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "typecheck",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "build",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "format",
+          "behavior": "corrected formatting; semantic lint fault remains"
+        },
+        {
+          "component": "app",
+          "gate": "test",
+          "injected_fault": "rejected"
+        }
+      ]
+    },
+    {
+      "id": "fastify",
+      "version": "1.1.0",
+      "digest": "7a90ed9da02bb2963e2da7f5d590dc7e0ee2b1623a8febf3b31c047b9d43d52f",
+      "provider": "fastify-v1",
+      "generation": "passed",
+      "runtime": "passed",
+      "metadata": "passed",
+      "quality": {
+        "schema_version": 1,
+        "template": "fastify@1.1.0",
+        "source": "a2e2a258647bbc5203adc4f66a9f45cd767ca27749e57a99fae18783605072a9",
+        "vantage": "generated-container",
+        "state": "passed",
+        "checks": [
+          {
+            "component": "app",
+            "gate": "lint",
+            "state": "passed",
+            "seconds": 7.893
+          },
+          {
+            "component": "app",
+            "gate": "typecheck",
+            "state": "passed",
+            "seconds": 21.399
+          },
+          {
+            "component": "app",
+            "gate": "test",
+            "state": "passed",
+            "seconds": 7.357
+          },
+          {
+            "component": "app",
+            "gate": "build",
+            "state": "passed",
+            "seconds": 18.067
+          },
+          {
+            "component": "app",
+            "gate": "security",
+            "state": "passed",
+            "seconds": 2.401
+          },
+          {
+            "component": "app",
+            "gate": "contract-drift",
+            "state": "passed"
+          },
+          {
+            "gate": "isolated-browser-smoke",
+            "state": "passed",
+            "vantage": "isolated network",
+            "measurements": {
+              "startup_ms": 10223,
+              "latency_ms": 14.562760000000708,
+              "run_p95_ms": [
+                13.265589000000546,
+                14.562760000000708,
+                21.075047000000268
+              ],
+              "warmup_ms": 250,
+              "requests_per_run": 200,
+              "repetitions": 3,
+              "peak_memory_mib": 149.92578125
+            }
+          },
+          {
+            "gate": "performance-absolute",
+            "state": "passed",
+            "metrics": {
+              "bundle_bytes": 2080,
+              "latency_ms": 14.562760000000708,
+              "startup_ms": 10223,
+              "peak_memory_mib": 149.92578125
+            },
+            "relative_regressions": "matching calibrated baseline required separately"
+          }
+        ],
+        "recipes": {
+          "app": "e5cd7670b43c0115a1193ac5f6ac19b5c2f39db03502123fcd8a4797652f1c3b"
+        }
+      },
+      "measurements": {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "3d2a5bb5f78a09dd257d8734ca400d2076618dff4611291aeba0b269326bd724",
+          "workload": "isolated one CPU/1536MiB; warm 250ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright single-service route",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "a2e2a258647bbc5203adc4f66a9f45cd767ca27749e57a99fae18783605072a9",
+        "metrics": {
+          "bundle_bytes": 2080,
+          "latency_ms": 14.562760000000708,
+          "startup_ms": 10223,
+          "peak_memory_mib": 149.92578125
+        }
+      },
+      "negative_checks": [
+        {
+          "component": "app",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "typecheck",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "build",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "format",
+          "behavior": "corrected formatting; semantic lint fault remains"
+        },
+        {
+          "component": "app",
+          "gate": "test",
+          "injected_fault": "rejected"
+        }
+      ]
+    },
+    {
+      "id": "notes",
+      "version": "1.1.0",
+      "digest": "076ec3eee0ac26974f9d0978d87b18f8817731b177b90be15caa814a96af488a",
+      "provider": "notes-v1",
+      "generation": "passed",
+      "runtime": "passed",
+      "metadata": "passed",
+      "quality": {
+        "schema_version": 1,
+        "template": "notes@1.1.0",
+        "source": "abfb33d222790ee0b808b1b444ee6f011ab69bc393869d7d680683791965e9e7",
+        "vantage": "generated-container",
+        "state": "passed",
+        "checks": [
+          {
+            "component": "web",
+            "gate": "lint",
+            "state": "passed",
+            "seconds": 10.863
+          },
+          {
+            "component": "web",
+            "gate": "typecheck",
+            "state": "passed",
+            "seconds": 21.249
+          },
+          {
+            "component": "web",
+            "gate": "test",
+            "state": "passed",
+            "seconds": 2.217
+          },
+          {
+            "component": "web",
+            "gate": "build",
+            "state": "passed",
+            "seconds": 93.856
+          },
+          {
+            "component": "web",
+            "gate": "security",
+            "state": "passed",
+            "seconds": 3.444
+          },
+          {
+            "component": "api",
+            "gate": "lint",
+            "state": "passed",
+            "seconds": 20.806
+          },
+          {
+            "component": "api",
+            "gate": "typecheck",
+            "state": "passed",
+            "seconds": 52.237
+          },
+          {
+            "component": "api",
+            "gate": "test",
+            "state": "passed",
+            "seconds": 44.064
+          },
+          {
+            "component": "api",
+            "gate": "build",
+            "state": "passed",
+            "seconds": 9.97
+          },
+          {
+            "component": "api",
+            "gate": "security",
+            "state": "passed",
+            "seconds": 25.483
+          },
+          {
+            "gate": "integration",
+            "state": "passed"
+          },
+          {
+            "component": "api",
+            "gate": "contract-drift",
+            "state": "passed"
+          },
+          {
+            "gate": "performance-absolute",
+            "state": "passed",
+            "metrics": {
+              "bundle_bytes": 175998,
+              "latency_ms": 402.0094489999974,
+              "startup_ms": 64414,
+              "peak_memory_mib": 683.875
+            },
+            "relative_regressions": "matching calibrated baseline required separately"
+          }
+        ],
+        "recipes": {
+          "web": "e5cd7670b43c0115a1193ac5f6ac19b5c2f39db03502123fcd8a4797652f1c3b",
+          "api": "e5c078bd86dd02144bdda3bef05659c166185c98c91cc3a9d350063122273db2"
+        }
+      },
+      "measurements": {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "219fdefd8756dd1eff95a7110ef1db7f2b6eb8233d4557020f4865c366f3a2ac",
+          "workload": "isolated one CPU/1536MiB; warm 250ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright group web route; preinitialized API/database",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "abfb33d222790ee0b808b1b444ee6f011ab69bc393869d7d680683791965e9e7",
+        "metrics": {
+          "bundle_bytes": 175998,
+          "latency_ms": 402.0094489999974,
+          "startup_ms": 64414,
+          "peak_memory_mib": 683.875
+        }
+      },
+      "negative_checks": [
+        {
+          "component": "web",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "web",
+          "gate": "typecheck",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "web",
+          "gate": "build",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "web",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "web",
+          "gate": "format",
+          "behavior": "corrected formatting; semantic lint fault remains"
+        },
+        {
+          "component": "web",
+          "gate": "test",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "typecheck",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "build",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "format",
+          "behavior": "corrected formatting; semantic lint fault remains"
+        },
+        {
+          "component": "api",
+          "gate": "test",
+          "injected_fault": "rejected"
+        }
+      ]
+    },
+    {
+      "id": "notes-postgres",
+      "version": "1.1.0",
+      "digest": "5bbc408e077a2fc27b9e30f2e8d188b19e287c9af5ce966b7444d46442e64605",
+      "provider": "notes-postgres-v1",
+      "generation": "passed",
+      "runtime": "passed",
+      "metadata": "passed",
+      "quality": {
+        "schema_version": 1,
+        "template": "notes-postgres@1.1.0",
+        "source": "e31d8e7bc2f74967c16d1e4c347bd417b860cc652acd2660a4a1c5dd7f529b27",
+        "vantage": "generated-container",
+        "state": "passed",
+        "checks": [
+          {
+            "component": "web",
+            "gate": "lint",
+            "state": "passed",
+            "seconds": 14.487
+          },
+          {
+            "component": "web",
+            "gate": "typecheck",
+            "state": "passed",
+            "seconds": 16.299
+          },
+          {
+            "component": "web",
+            "gate": "test",
+            "state": "passed",
+            "seconds": 1.693
+          },
+          {
+            "component": "web",
+            "gate": "build",
+            "state": "passed",
+            "seconds": 56.862
+          },
+          {
+            "component": "web",
+            "gate": "security",
+            "state": "passed",
+            "seconds": 1.644
+          },
+          {
+            "component": "api",
+            "gate": "lint",
+            "state": "passed",
+            "seconds": 12.927
+          },
+          {
+            "component": "api",
+            "gate": "typecheck",
+            "state": "passed",
+            "seconds": 50.693
+          },
+          {
+            "component": "api",
+            "gate": "build",
+            "state": "passed",
+            "seconds": 7.588
+          },
+          {
+            "component": "api",
+            "gate": "security",
+            "state": "passed",
+            "seconds": 15.766
+          },
+          {
+            "gate": "integration",
+            "state": "passed"
+          },
+          {
+            "component": "api",
+            "gate": "migration-review",
+            "state": "passed"
+          },
+          {
+            "component": "api",
+            "gate": "contract-drift",
+            "state": "passed"
+          },
+          {
+            "gate": "performance-absolute",
+            "state": "passed",
+            "metrics": {
+              "bundle_bytes": 176025,
+              "latency_ms": 122.58248200000526,
+              "startup_ms": 29230,
+              "peak_memory_mib": 989.42578125
+            },
+            "relative_regressions": "matching calibrated baseline required separately"
+          }
+        ],
+        "recipes": {
+          "web": "e5cd7670b43c0115a1193ac5f6ac19b5c2f39db03502123fcd8a4797652f1c3b",
+          "api": "e5c078bd86dd02144bdda3bef05659c166185c98c91cc3a9d350063122273db2"
+        }
+      },
+      "measurements": {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "274fad666c8beb286f64182f66693cd997207285b1fc28b23c40575c32dbdb88",
+          "workload": "isolated one CPU/1536MiB; warm 250ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright group web route; preinitialized API/database",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "e31d8e7bc2f74967c16d1e4c347bd417b860cc652acd2660a4a1c5dd7f529b27",
+        "metrics": {
+          "bundle_bytes": 176025,
+          "latency_ms": 122.58248200000526,
+          "startup_ms": 29230,
+          "peak_memory_mib": 989.42578125
+        }
+      },
+      "negative_checks": [
+        {
+          "component": "web",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "web",
+          "gate": "typecheck",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "web",
+          "gate": "build",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "web",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "web",
+          "gate": "format",
+          "behavior": "corrected formatting; semantic lint fault remains"
+        },
+        {
+          "component": "web",
+          "gate": "test",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "typecheck",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "build",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "format",
+          "behavior": "corrected formatting; semantic lint fault remains"
+        },
+        {
+          "component": "api",
+          "gate": "test",
+          "injected_fault": "rejected"
+        }
+      ]
+    },
+    {
+      "id": "fastapi-postgres",
+      "version": "1.1.0",
+      "digest": "7404852fcdf8729cc0e09151f5b8fa6fe30de1a987f2cfb753b8f6c9ad08606c",
+      "provider": "fastapi-postgres-v1",
+      "generation": "passed",
+      "runtime": "passed",
+      "metadata": "passed",
+      "quality": {
+        "schema_version": 1,
+        "template": "fastapi-postgres@1.1.0",
+        "source": "b1b529ab750f2976c0b6d59245cf4d78c0d50897040d2de9f275ed0c0687bd6b",
+        "vantage": "generated-container",
+        "state": "passed",
+        "checks": [
+          {
+            "component": "api",
+            "gate": "lint",
+            "state": "passed",
+            "seconds": 23.815
+          },
+          {
+            "component": "api",
+            "gate": "typecheck",
+            "state": "passed",
+            "seconds": 62.014
+          },
+          {
+            "component": "api",
+            "gate": "build",
+            "state": "passed",
+            "seconds": 16.48
+          },
+          {
+            "component": "api",
+            "gate": "security",
+            "state": "passed",
+            "seconds": 36.767
+          },
+          {
+            "gate": "integration",
+            "state": "passed"
+          },
+          {
+            "component": "api",
+            "gate": "migration-review",
+            "state": "passed"
+          },
+          {
+            "component": "api",
+            "gate": "contract-drift",
+            "state": "passed"
+          },
+          {
+            "gate": "performance-absolute",
+            "state": "passed",
+            "metrics": {
+              "latency_ms": 41.915468999999575,
+              "startup_ms": 15440,
+              "peak_memory_mib": 230.421875
+            },
+            "relative_regressions": "matching calibrated baseline required separately"
+          }
+        ],
+        "recipes": {
+          "api": "e5c078bd86dd02144bdda3bef05659c166185c98c91cc3a9d350063122273db2"
+        }
+      },
+      "measurements": {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "716aeea095c790b2679999108096aa2793f62fef19c3a51d39b41da3e958b9df",
+          "workload": "isolated one CPU/1536MiB; warm 250ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; retained Node notes client; preinitialized disposable PostgreSQL",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "b1b529ab750f2976c0b6d59245cf4d78c0d50897040d2de9f275ed0c0687bd6b",
+        "metrics": {
+          "latency_ms": 41.915468999999575,
+          "startup_ms": 15440,
+          "peak_memory_mib": 230.421875
+        }
+      },
+      "negative_checks": [
+        {
+          "component": "api",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "typecheck",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "build",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "api",
+          "gate": "format",
+          "behavior": "corrected formatting; semantic lint fault remains"
+        },
+        {
+          "component": "api",
+          "gate": "test",
+          "injected_fault": "rejected"
+        }
+      ]
+    },
+    {
+      "id": "expo-react-native",
+      "version": "1.1.0",
+      "digest": "bf71e0da13d770d46b529693097c29f58d37a2de2b42ce2924cb592d3fd87a7a",
+      "provider": "expo-v1",
+      "generation": "passed",
+      "runtime": "passed",
+      "metadata": "passed",
+      "quality": {
+        "schema_version": 1,
+        "template": "expo-react-native@1.1.0",
+        "source": "f0957696a00d47bbc45a95a91c72cc3ad3e4c1b7f4cd5756c96b130c9d3eeacd",
+        "vantage": "generated-container",
+        "state": "passed",
+        "checks": [
+          {
+            "component": "app",
+            "gate": "lint",
+            "state": "passed",
+            "seconds": 23.273
+          },
+          {
+            "component": "app",
+            "gate": "typecheck",
+            "state": "passed",
+            "seconds": 13.744
+          },
+          {
+            "component": "app",
+            "gate": "test",
+            "state": "passed",
+            "seconds": 43.568
+          },
+          {
+            "component": "app",
+            "gate": "build",
+            "state": "passed",
+            "seconds": 365.607
+          },
+          {
+            "component": "app",
+            "gate": "security",
+            "state": "passed",
+            "seconds": 4.245
+          },
+          {
+            "gate": "performance-absolute",
+            "state": "passed",
+            "metrics": {
+              "bundle_bytes": 2201312
+            },
+            "relative_regressions": "matching calibrated baseline required separately"
+          }
+        ],
+        "recipes": {
+          "app": "e5cd7670b43c0115a1193ac5f6ac19b5c2f39db03502123fcd8a4797652f1c3b"
+        }
+      },
+      "measurements": {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "340197bc5d3b186d7edcfb40f952eba0caa258db3662bef500f1d8ad451d7677",
+          "workload": "isolated one CPU/1536MiB; warm 0ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; build assets only",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "f0957696a00d47bbc45a95a91c72cc3ad3e4c1b7f4cd5756c96b130c9d3eeacd",
+        "metrics": {
+          "bundle_bytes": 2201312
+        }
+      },
+      "negative_checks": [
+        {
+          "component": "app",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "typecheck",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "build",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "format",
+          "behavior": "corrected formatting; semantic lint fault remains"
+        },
+        {
+          "component": "app",
+          "gate": "test",
+          "injected_fault": "rejected"
+        }
+      ]
+    },
+    {
+      "id": "expo-notes",
+      "version": "1.1.0",
+      "digest": "d68658d82df985b23361130a0ba9ba9e0ada0656c0edd1b7064e7f7370902409",
+      "provider": "expo-notes-v1",
+      "generation": "passed",
+      "runtime": "passed",
+      "metadata": "passed",
+      "quality": {
+        "schema_version": 1,
+        "template": "expo-notes@1.1.0",
+        "source": "cae9b0dc434fbb4fdddad6c3a4ba6bd35d83c860937d8af373fe35c69b60d348",
+        "vantage": "generated-container",
+        "state": "passed",
+        "checks": [
+          {
+            "component": "app",
+            "gate": "lint",
+            "state": "passed",
+            "seconds": 19.413
+          },
+          {
+            "component": "app",
+            "gate": "typecheck",
+            "state": "passed",
+            "seconds": 9.057
+          },
+          {
+            "component": "app",
+            "gate": "test",
+            "state": "passed",
+            "seconds": 34.558
+          },
+          {
+            "component": "app",
+            "gate": "build",
+            "state": "passed",
+            "seconds": 142.662
+          },
+          {
+            "component": "app",
+            "gate": "security",
+            "state": "passed",
+            "seconds": 1.561
+          },
+          {
+            "gate": "performance-absolute",
+            "state": "passed",
+            "metrics": {
+              "bundle_bytes": 2224006
+            },
+            "relative_regressions": "matching calibrated baseline required separately"
+          }
+        ],
+        "recipes": {
+          "app": "e5cd7670b43c0115a1193ac5f6ac19b5c2f39db03502123fcd8a4797652f1c3b"
+        }
+      },
+      "measurements": {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "63897594749eb0c4c7564a5a6f04f5808f80ee94fb3682237d283e0243ac37dd",
+          "workload": "isolated one CPU/1536MiB; warm 0ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; build assets only",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "cae9b0dc434fbb4fdddad6c3a4ba6bd35d83c860937d8af373fe35c69b60d348",
+        "metrics": {
+          "bundle_bytes": 2224006
+        }
+      },
+      "negative_checks": [
+        {
+          "component": "app",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "typecheck",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "build",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "lint",
+          "injected_fault": "rejected"
+        },
+        {
+          "component": "app",
+          "gate": "format",
+          "behavior": "corrected formatting; semantic lint fault remains"
+        },
+        {
+          "component": "app",
+          "gate": "test",
+          "injected_fault": "rejected"
+        }
+      ]
+    }
+  ],
+  "calibration": {
+    "state": "passed",
+    "vantage": "owned isolated local API fixture",
+    "controller_sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f",
+    "cold_starts": 5,
+    "sample": {
+      "profile": {
+        "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+        "toolchain": "de05a80dacc4c3db996696dfbc0eaebe2952bdd7bd2620c60ea1ea09e89b4c0b",
+        "workload": "isolated one CPU/1536MiB; warm 30000ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright single-service route; five independent starts, median aggregate",
+        "cache": "warm response; built gzip JS"
+      },
+      "revision": "6a1ce8999f5dbf80b0b44a03e7aa5ccf841126c3625ac71b8c9fae26b7f77210",
+      "metrics": {
+        "latency_ms": 18.122206000000006,
+        "startup_ms": 8783,
+        "peak_memory_mib": 59.8046875
+      }
+    },
+    "self_comparison": "passed",
+    "injected_latency_regression": "rejected",
+    "observations": [
+      {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "de05a80dacc4c3db996696dfbc0eaebe2952bdd7bd2620c60ea1ea09e89b4c0b",
+          "workload": "isolated one CPU/1536MiB; warm 30000ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright single-service route",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "6a1ce8999f5dbf80b0b44a03e7aa5ccf841126c3625ac71b8c9fae26b7f77210",
+        "metrics": {
+          "latency_ms": 18.122206000000006,
+          "startup_ms": 9936,
+          "peak_memory_mib": 59.8046875
+        }
+      },
+      {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "de05a80dacc4c3db996696dfbc0eaebe2952bdd7bd2620c60ea1ea09e89b4c0b",
+          "workload": "isolated one CPU/1536MiB; warm 30000ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright single-service route",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "6a1ce8999f5dbf80b0b44a03e7aa5ccf841126c3625ac71b8c9fae26b7f77210",
+        "metrics": {
+          "latency_ms": 17.82498000000487,
+          "startup_ms": 7857,
+          "peak_memory_mib": 60.43359375
+        }
+      },
+      {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "de05a80dacc4c3db996696dfbc0eaebe2952bdd7bd2620c60ea1ea09e89b4c0b",
+          "workload": "isolated one CPU/1536MiB; warm 30000ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright single-service route",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "6a1ce8999f5dbf80b0b44a03e7aa5ccf841126c3625ac71b8c9fae26b7f77210",
+        "metrics": {
+          "latency_ms": 23.03117100000236,
+          "startup_ms": 9849,
+          "peak_memory_mib": 59.8515625
+        }
+      },
+      {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "de05a80dacc4c3db996696dfbc0eaebe2952bdd7bd2620c60ea1ea09e89b4c0b",
+          "workload": "isolated one CPU/1536MiB; warm 30000ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright single-service route",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "6a1ce8999f5dbf80b0b44a03e7aa5ccf841126c3625ac71b8c9fae26b7f77210",
+        "metrics": {
+          "latency_ms": 18.299229000003834,
+          "startup_ms": 7923,
+          "peak_memory_mib": 59.59765625
+        }
+      },
+      {
+        "profile": {
+          "runner": "Linux/x86_64/Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+          "toolchain": "de05a80dacc4c3db996696dfbc0eaebe2952bdd7bd2620c60ea1ea09e89b4c0b",
+          "workload": "isolated one CPU/1536MiB; warm 30000ms; 3x200 sequential requests; median p95; API fixture allowance 1000/min; Playwright single-service route",
+          "cache": "warm response; built gzip JS"
+        },
+        "revision": "6a1ce8999f5dbf80b0b44a03e7aa5ccf841126c3625ac71b8c9fae26b7f77210",
+        "metrics": {
+          "latency_ms": 14.894403999998758,
+          "startup_ms": 8783,
+          "peak_memory_mib": 59.59765625
+        }
+      }
+    ],
+    "dispersion": {
+      "latency_ms": {
+        "min": 14.894403999998758,
+        "max": 23.03117100000236,
+        "mean": 18.434398000001966,
+        "population_stddev": 2.6133887707624943,
+        "coefficient_of_variation": 0.14176697122207166
+      },
+      "startup_ms": {
+        "min": 7857,
+        "max": 9936,
+        "mean": 8869.6,
+        "population_stddev": 897.2561730074639,
+        "coefficient_of_variation": 0.10116083848284746
+      },
+      "peak_memory_mib": {
+        "min": 59.59765625,
+        "max": 60.43359375,
+        "mean": 59.85703125,
+        "population_stddev": 0.3065109698026728,
+        "coefficient_of_variation": 0.00512071787393687
+      }
+    }
+  },
+  "limitations": [
+    "Local cells were executed during final release authoring; each records its actual source/catalogue digest. Two successful CI matrices verify all eight exact committed 4f7d934 and 0627380 releases. A subsequent generated cache-key correction at 3c29d39 includes quality.json and both native/component toolchain layouts; final CI is recorded in the PR review notes.",
+    "Expo notes first local test attempt timed out under concurrent build load. Unmodified isolated full rerun and committed CI cell passed; no timeout or assertions were weakened.",
+    "Historical releases have integrity and generation coverage, not retroactively added quality commands.",
+    "No managed provider installed, production service tested, migration performed on retained data, bot configured in an existing app, physical device tested, PR merged, tag created or deployment run.",
+    "No exception or quarantine bypass is implemented. Gate failures remain failures; requested expiry/adoption scenarios requiring such an interface are pending."
+  ],
+  "focused_tests": {
+    "quality": {
+      "command": "/srv/forge/projects/gptclaw/.venv-manifest/bin/python scripts/tests/test_project_quality.py",
+      "tests": 25,
+      "result": "passed",
+      "revision": "3c29d3905536743483fae19ff6ee6d346fd3bdbc"
+    },
+    "smoke": {
+      "command": "/srv/forge/projects/gptclaw/.venv-manifest/bin/python scripts/tests/test_project_smoke.py",
+      "tests": 10,
+      "result": "passed"
+    },
+    "templates": {
+      "command": "/srv/forge/projects/gptclaw/.venv-manifest/bin/python scripts/tests/test_project_templates.py",
+      "tests": 24,
+      "result": "passed"
+    }
+  },
+  "exact_commands": [
+    "/srv/forge/projects/gptclaw/.venv-manifest/bin/python scripts/quality_templates.py --template FAMILY --version 1.1.0 --execute --output RESULT.json",
+    "python3 checks/gptclaw_quality.py benchmark --root OWNED_FIXTURE --engine podman --output CALIBRATION.json",
+    "/srv/forge/projects/gptclaw/.venv-manifest/bin/python scripts/check-template-releases.py --baseline origin/main",
+    "git diff --check",
+    "git diff --cached --check",
+    "bash -n scripts/check-repository.sh"
+  ],
+  "matrix_command_note": "FAMILY ran separately for every one of the eight cell ids. RESULT/OWNED_FIXTURE/CALIBRATION are task-owned output/fixture placeholders; no retained application was targeted.",
+  "repository_check": {
+    "command": "PATH=/srv/forge/projects/gptclaw/.venv-manifest/bin:$PATH ./scripts/check-repository.sh",
+    "state": "in progress when this evidence snapshot was committed; final completion/result recorded in the linked PR review notes",
+    "source_changes_during_run": "Only credential fixture and expanded quality tests changed while early unrelated suites ran; relevant new tests run at their later suite positions.",
+    "final_result_location": "https://github.com/danielbardsley/gptclaw/pull/95"
+  },
+  "generation": {
+    "state": "passed",
+    "exact_releases": 21,
+    "current_quality_releases": 8,
+    "historical_integrity_generation_releases": 13,
+    "command": "/srv/forge/projects/gptclaw/.venv-manifest/bin/python scripts/quality_templates.py --output RESULT.json",
+    "revision": "0627380d52cef1f99e9f27805e5d2c8c354dea37"
+  },
+  "release_integrity": {
+    "state": "passed",
+    "command": "/srv/forge/projects/gptclaw/.venv-manifest/bin/python scripts/check-template-releases.py --baseline origin/main",
+    "checks": "catalogue hashes, exact Git-index bytes, baseline immutable releases",
+    "revision": "3c29d3905536743483fae19ff6ee6d346fd3bdbc",
+    "post_cleanup": "passed"
+  },
+  "documentation_links": {
+    "state": "passed",
+    "checked_relative_links": 235
+  },
+  "ci_additional_matrix": {
+    "revision": "0627380d52cef1f99e9f27805e5d2c8c354dea37",
+    "url": "https://github.com/danielbardsley/gptclaw/actions/runs/39562479463",
+    "result": "passed",
+    "cells": 8,
+    "metadata": "passed"
+  },
+  "cache_fix_revision": "3c29d3905536743483fae19ff6ee6d346fd3bdbc",
+  "interim_credential_run": {
+    "tests": 60,
+    "passed": 59,
+    "errors": 1,
+    "failed_case": "test_scoped_resume_retains_operation_and_one_pr",
+    "cause": "Release asset hash mismatch observed during concurrent catalogue resealing; fail-closed template-policy error.",
+    "isolated_stable_rerun": {
+      "command": "/srv/forge/projects/gptclaw/.venv-manifest/bin/python scripts/tests/test_repository_credentials.py -k scoped_resume -v",
+      "tests": 1,
+      "result": "passed"
+    }
+  },
+  "ci_final_code_matrix": {
+    "revision": "3c29d3905536743483fae19ff6ee6d346fd3bdbc",
+    "url": "https://github.com/danielbardsley/gptclaw/actions/runs/39564162283",
+    "result": "passed",
+    "cells": 8,
+    "metadata": "passed"
+  },
+  "cleanup": {
+    "ignored_authoring_cache_directories_removed": 19,
+    "historical_assets_and_other_projects": "unchanged",
+    "reusable_toolchain_images": "retained as caches",
+    "isolated_generated_fixtures": "controller cleanup completed"
+  }
+}

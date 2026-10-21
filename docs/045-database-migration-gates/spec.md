@@ -77,7 +77,7 @@ limitations.
 
 ## Acceptance criteria
 
-All criteria are pending; drafting does not establish implementation acceptance.
+Criterion-by-criterion results and remaining trials are recorded in [acceptance evidence](acceptance.md). Automated implementation does not establish full owner acceptance.
 
 | ID | Observable result and required evidence | Requirements |
 |---|---|---|
