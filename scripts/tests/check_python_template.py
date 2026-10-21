@@ -49,7 +49,7 @@ def main():
             for item in value:item['Labels']=item.get('Config',{}).get('Labels',{})
         return value
     app.command=command;app.json_command=inspect;app.object_owned=lambda *_:False;app.available=lambda _:True
-    root=Path(app.create('python-ci',template='fastapi',template_version='1.0.0')['root'])
+    root=Path(app.create('python-ci',template='fastapi',template_version='1.0.1')['root'])
     before=py.context(root)['hashes']
     assert tools.inspect(root)['state']=='unprepared'
     first=tools.prepare(root);reused=tools.prepare(root)
@@ -90,7 +90,7 @@ def main():
     deps.operate(root,'update','itsdangerous','2.1.2');assert py.context(root)['groups']['runtime']['itsdangerous']=='2.1.2'
     deps.operate(root,'update','itsdangerous','2.2.0')
     deps.operate(root,'remove','itsdangerous')
-    baseline=py.context(app.REPO/'templates/apps/releases/fastapi/1.0.0')
+    baseline=py.context(app.REPO/'templates/apps/releases/fastapi/1.0.1')
     assert py.context(root)['groups']==baseline['groups']
     hashes=py.context(root)['hashes'];deps.operate(root,'install');assert py.context(root)['hashes']==hashes
     app.run_in_app(state,contract['commands']['verify'],read_only_dependency_files=True)
