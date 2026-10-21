@@ -84,6 +84,14 @@ reviewed source changes; there is no automatic template migration command.
 
 ## Python-backed native notes
 
+The [October 21 certifi patch](../docs/021-template-catalogue/certifi-security-patch-2026-10-21.md)
+adds exact `fastapi`, `notes`, `notes-postgres` and `fastapi-postgres` releases
+at 1.0.1 with certifi 2026.10.19. Select these versions for new Python fixtures;
+their original 1.0.0 releases remain immutable and retain the reported advisory.
+An installed provider must bundle the new releases before it can create or
+validate their provenance. This maintenance does not install a provider or
+upgrade existing applications. The default Next.js selection is unchanged.
+
 SPEC-036 adds explicit `fastapi-postgres@1.0.0` and `expo-notes@1.0.0` catalogue-7
 releases. The Python backend has API/DB only; the native notebook uses a separately
 validated development binding. Neither changes the default selection or published
