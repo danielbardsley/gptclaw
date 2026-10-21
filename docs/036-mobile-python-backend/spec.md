@@ -1,6 +1,6 @@
 # SPEC-036 — Mobile integration with a Python backend
 
-- **Status:** Implementation merged; remaining native/final acceptance pending.
+- **Status:** Delivered Android-first scope; owner accepted October 21 with recorded manual-evidence waivers.
 - **Owner:** Project owner
 - **Date:** 2026-10-15 (America/New_York)
 - **Feature:** MOB-010; supporting development-only MOB-005, RUN-006/011,
@@ -164,11 +164,23 @@ backend shape honestly; broader dashboard controls/telemetry are excluded.
 
 ## Completion and ownership
 
+### October 21 owner acceptance disposition
+
+The project owner instructed “accept it and close out” after reviewing the
+remaining requirements. The [closeout record](closeout-2026-10-21.md) accepts this
+Android-first slice and specifies which outstanding manual/device/screenshot
+gates are waived. This supersedes those remaining evidence conditions for this
+scope; it does not report them as executed or passed. Runtime/data disposition
+and the completed private-listener operator cleanup are recorded there.
+Android M1 is owner-accepted with these waivers; iOS and broader mobile/build/
+release capabilities retain their separate requirements.
+
 Deliver implementation through the repository PR workflow after implementation
 authorization. Record local tests, generated CI, platform CI, merge, installed
 rollout, physical device and owner acceptance separately in an acceptance record
 when evidence exists. MOB-010 becomes Delivered only after merge and AC-001–008;
-MOB-005/011 retain their broader scope. The project owner reviews this plan and
+MOB-005/011 retain their broader scope. The October 21 disposition governs the
+explicitly waived portions of the original AC-001–008 completion gate. The project owner reviews this plan and
 accepts the final native experience. The implementation author selects compatible
 exact tool pins from existing reviewed profiles and verifies any new client tooling;
 no host installation or account changes are implied.

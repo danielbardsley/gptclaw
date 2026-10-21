@@ -1,7 +1,7 @@
 # Create and operate a private static site
 
 [SPEC-038](../docs/038-static-site-template/spec.md) adds the exact
-`nextjs-static@1.0.0` template and static web manifest v10 in provider 1.16.0.
+`nextjs-static@1.0.0` template and static web manifest v10 in provider 1.17.0.
 Use the reviewed Node/pnpm dependency/profile and existing private ingress.
 Older snapshots cannot recognize this adapter; inspect `gptclawctl --version`
 and use a compatible source runner/provider without rewriting old releases.

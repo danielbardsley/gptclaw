@@ -1,0 +1,4 @@
+node_modules/
+.next/
+.gptclaw-cache/
+next-env.d.ts

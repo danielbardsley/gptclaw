@@ -1,8 +1,12 @@
 # TDD-036 — Python-backed native notes
 
-Status: Implemented and merged; remaining native/final acceptance pending. Owner: Project owner.
+Status: Implemented and merged; Android-first scope accepted October 21 with recorded manual-evidence waivers. Owner: Project owner.
 Date: 2026-10-15 (America/New_York).
 [Specification](spec.md) · [Tasks](tasks.md)
+
+[Owner closeout](closeout-2026-10-21.md) supersedes the remaining acceptance
+gates for this selected scope. The architecture below retains its original
+requirements; waived tests are not represented as physical observations.
 
 ## Architecture and contracts
 

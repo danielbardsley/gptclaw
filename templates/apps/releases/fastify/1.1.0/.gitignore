@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.gptclaw-cache/
+.env*
+.cache/
+.local/
+
+.gptclaw-cache/
+__pycache__/
+dist/

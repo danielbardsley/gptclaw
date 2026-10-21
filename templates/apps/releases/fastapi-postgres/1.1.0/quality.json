@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "template": "fastapi-postgres@1.1.0",
+  "components": {
+    "api": {
+      "root": "api",
+      "stack": "python",
+      "recipe": "checks/toolchain-python/Containerfile",
+      "commands": {
+        "format": [
+          ".venv/bin/python",
+          "scripts/quality.py",
+          "format"
+        ],
+        "lint": [
+          ".venv/bin/python",
+          "scripts/quality.py",
+          "lint"
+        ],
+        "typecheck": [
+          ".venv/bin/python",
+          "scripts/quality.py",
+          "typecheck"
+        ],
+        "test": [
+          ".venv/bin/python",
+          "scripts/quality.py",
+          "test"
+        ],
+        "build": [
+          ".venv/bin/python",
+          "scripts/quality.py",
+          "build"
+        ],
+        "security": [
+          ".venv/bin/python",
+          "scripts/quality.py",
+          "security"
+        ],
+        "verify": [
+          ".venv/bin/python",
+          "scripts/quality.py",
+          "verify"
+        ]
+      }
+    }
+  },
+  "integration": "checks/verify.py",
+  "budgets": {
+    "latency_ms": {
+      "unit": "ms",
+      "absolute": 500,
+      "regression": 0.2
+    },
+    "startup_ms": {
+      "unit": "ms",
+      "absolute": 120000,
+      "regression": 0.2
+    },
+    "peak_memory_mib": {
+      "unit": "MiB",
+      "absolute": 2048,
+      "regression": 0.2
+    }
+  }
+}

@@ -86,7 +86,9 @@ permissions:
 jobs:
   template:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    # Exact-release inventory growth increases offline fixture work; keep a bounded
+    # aggregate budget for those checks plus the final real toolchain trials.
+    timeout-minutes: 25
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

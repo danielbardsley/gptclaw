@@ -235,7 +235,12 @@ def start(root, no_route=False, take_lock=True):
                 import project_toolchains as tools
                 tools.assert_active(tools.selection(path),a.state_for(component_target(path)[1]['project']['id']))
             if not no_route:a.ensure_ingress()
-            return {**status(root),'changed':False}
+            result={**status(root),'changed':False}
+            if not no_route:
+                import project_smoke
+                smoke=project_smoke.after_start(root)
+                if smoke is not None: result['smoke']=smoke
+            return result
         # Partial or interrupted groups must be reconciled by stop before another start.
         a.need(not any(c.get('active') for c in current.values()),'health')
         a.need(s['operation_result'] != 'running','busy')
@@ -265,6 +270,10 @@ def start(root, no_route=False, take_lock=True):
         result=status(root);result['changed']=True
         if no_route: result.pop('route',None)
         elif result['route']['state']!='configured':result['state']='operator-required'
+        if not no_route:
+            import project_smoke
+            smoke=project_smoke.after_start(root)
+            if smoke is not None: result['smoke']=smoke
         return result
 
 

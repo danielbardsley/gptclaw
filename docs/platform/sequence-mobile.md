@@ -2,7 +2,7 @@
 
 - **Status:** Proposed delivery order; planning only, not implementation authorization
 - **Owner:** Project owner
-- **Last updated:** 2026-10-13 (America/New_York)
+- **Last updated:** 2026-10-21 (America/New_York)
 - **Catalogue:** [Platform features](features.md)
 - **Related direction:** [Platform architecture](architecture.md) · [General sequence](sequence.md)
 
@@ -308,13 +308,22 @@ recorded shipped-client/SDK/native-validation gate. Backend binding/persistence,
 signed development clients, accounts, public exposure and full M1 remain separate
 MOB-004/005/010/011 work; this delivery adds none of them.
 
-**Next selected planning slice:** [SPEC-036](../036-mobile-python-backend/spec.md)
-proposes MOB-010 with Python/FastAPI and PostgreSQL, a new API/DB-only backend shape,
-explicit development binding and a polished native synthetic-notes experience.
-The project owner selected Python as the application backend default. Android
-CRUD, persistence, recovery and visual/accessibility acceptance close the remaining
-M1 integration gap when passed; implementation is authorized and in progress. Fastify's
-optional template work is separate and is not a mobile backend prerequisite.
+**Owner-accepted Android backend slice (October 21):**
+[SPEC-036](../036-mobile-python-backend/spec.md) implements MOB-010 with
+Python/FastAPI and PostgreSQL, API/DB-only lifecycle, explicit development binding
+and native synthetic notes. Implementation merged in PR #83. The project owner
+accepted the Android-first slice and Android M1 with explicit remaining manual-
+evidence waivers in [the closeout](../036-mobile-python-backend/closeout-2026-10-21.md),
+carried by PR #91. Automated/host and owner-reported physical results remain
+distinct from waived device/screenshot checks. Both trial runtimes are stopped
+with source/data retained; owner-supplied final Serve JSON confirms the temporary
+private listener is removed and both HTTPS 443 handlers are preserved. The initial restore failure remains documented despite the
+successful full rerun. Python remains the application backend default.
+
+The next substantive mobile capability is the stage-5 development-build slice
+(MOB-004 with required MOB-005/006 credential/environment/build prerequisites),
+subject to its own specification and authorization. This acceptance does not
+establish iOS, signed-build or production readiness. Fastify remains optional.
 
 **M1 spans stages 1–4 across compatible initiatives:** SPEC-031 begins with
 creation; subsequent TPL-004, MOB-002/005/010/011 slices add the private runtime,

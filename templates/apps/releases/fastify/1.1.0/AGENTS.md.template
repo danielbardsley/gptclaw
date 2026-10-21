@@ -1,0 +1,8 @@
+# TypeScript API project guidance
+
+Read the project specification, design and tasks before material implementation.
+Use the managed Node/pnpm profile and `gptclawctl` lifecycle/quality commands;
+keep services private. The starter contains deliberate synthetic examples: adapt
+routes, schemas, OpenAPI and tests to the product specification before acceptance.
+Do not introduce credentials, dotenv files, dependency hooks or persistent data
+without explicit approved scope. Preserve source and unrelated work.

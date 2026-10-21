@@ -170,3 +170,13 @@ separate from the verified implementation revision above. Remaining: the
 federation/final evidence CI gates, PR review and merge. Manual UI acceptance is
 complete; it does not imply merge or a broader owner disposition. Mark TPL-005
 Delivered only after merged implementation and the repository's remaining gates.
+
+## Current-main integration
+
+The project owner requested merge and task completion after manual UI acceptance.
+Before merging, current main `d0d69cc` introduced quality gates and provider
+1.16.0. Integration retains its smoke capability, quality/template releases and
+all checks alongside static manifest v10/catalogue v8, and advances the combined
+provider to 1.17.0. Static template files and release identity are unchanged; the
+previous live evidence used provider 1.16.0 before this independent version
+allocation. Combined-head CI and merge are required before completion.

@@ -119,12 +119,15 @@ def main(argv=None):
   if name=='resume':p.add_argument('--operation-id',required=True);p.add_argument('--confirm-repository-id',type=int)
   if name=='pull-request':
    p.add_argument('--head',required=True);p.add_argument('--title',required=True);p.add_argument('--body-file',required=True)
+ smoke=sub.add_parser('smoke',help='Read-only owned private-ingress quality checks')
+ smoke.add_argument('--project-root',required=True);smoke.add_argument('--watch-seconds',type=int,default=0);smoke.add_argument('--poll-seconds',type=float,default=1)
+ smoke_opt=smoke.add_mutually_exclusive_group();smoke_opt.add_argument('--enable-after-start',action='store_true');smoke_opt.add_argument('--disable-after-start',action='store_true')
  args=parser.parse_args(argv)
  began=time.monotonic()
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['control','backend','metro','worktrees','db','new','validate','start','stop','restart','rebuild','pause','resume','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'lifecycle_control_schema':1,'lifecycle_actions':['start','stop','restart','rebuild','pause','resume'],'component_restart':['web','api','db','metro'],'backend_actions':['bind','inspect'],'backend_contract_schemas':[1],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6,9],'metro_session_schemas':[1,2],'metro_control_schemas':[2,3],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[1],'project_manifest_schemas':[1,2,3,4,5,6,7,8,9,10],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6,7,8,9,10],'toolchain_schemas':[1,2],'template_catalogue_schema':8,'receipt_schema':1,'group_receipt_schema':4,'group_receipt_schemas':[2,3,4],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':5,'credential_profile_schemas':[1,2,3,4,5],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['smoke','control','backend','metro','worktrees','db','new','validate','start','stop','restart','rebuild','pause','resume','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'lifecycle_control_schema':1,'lifecycle_actions':['start','stop','restart','rebuild','pause','resume'],'component_restart':['web','api','db','metro'],'backend_actions':['bind','inspect'],'backend_contract_schemas':[1],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6,9],'metro_session_schemas':[1,2],'metro_control_schemas':[2,3],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[1],'project_manifest_schemas':[1,2,3,4,5,6,7,8,9,10],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6,7,8,9,10],'toolchain_schemas':[1,2],'template_catalogue_schema':8,'receipt_schema':1,'group_receipt_schema':4,'group_receipt_schemas':[2,3,4],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':5,'credential_profile_schemas':[1,2,3,4,5],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -147,6 +150,10 @@ def main(argv=None):
   if hasattr(args,'project_root') and args.action not in {'worktrees','credentials','repo','validate'}:
    from project_worktrees import guard
    guard(args.project_root)
+  if args.action=='smoke':
+   import project_smoke
+   if args.enable_after_start or args.disable_after_start: project_smoke.configure(args.project_root,args.enable_after_start)
+   return project_smoke.observe(args.project_root,args.watch_seconds,args.poll_seconds)
   if args.action=='go':
    import expo_go
    result=expo_go.inspect(args.project_root,args.platform,args.client_version,args.os_version) if args.go_action=='inspect' else expo_go.launch(args.project_root,args.platform,args.client_version,args.os_version,args.generation)

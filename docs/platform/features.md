@@ -1,7 +1,7 @@
 # GptClaw Platform Feature Catalogue
 
 - **Status:** Directional backlog; not a specification
-- **Last updated:** 2026-10-15 (America/New_York)
+- **Last updated:** 2026-10-21 (America/New_York)
 - **Architecture:** [GptClaw platform architecture](./architecture.md)
 - **Mobile delivery track:** [React Native / Expo sequence](./sequence-mobile.md)
 
@@ -204,7 +204,7 @@ account changes or publication.
 | MOB-007 | EAS Update policy | 5 | Candidate | Define channels, runtime compatibility, rollout, rollback, and owner approval for updates. |
 | MOB-008 | Universal web preview | 4 | Candidate | Export or serve the Expo web target through the same private preview model when appropriate. |
 | MOB-009 | Device and release dashboard state | 5 | Candidate | Show distinct Metro/backend/build states, safe launch/install links, freshness, channels and native release versions through reviewed adapters; do not infer a device is online or model installed apps as HTTP containers. |
-| MOB-010 | Mobile backend integration | 4 | Implemented | [SPEC-036](../036-mobile-python-backend/spec.md) Python/FastAPI + PostgreSQL native notes integration merged in [PR #83](https://github.com/danielbardsley/gptclaw/pull/83). Provider 1.14.0, API/DB-only lifecycle, explicit binding, typed contracts and the approved Android preview are implemented; final-head CI passed all four workflows. Basic Expo Go preview is owner-confirmed. Detailed native CRUD/recovery/accessibility and final integration acceptance remain pending; broader integration remains separately scoped. |
+| MOB-010 | Mobile backend integration | 4 | Delivered | [SPEC-036](../036-mobile-python-backend/spec.md) delivers the selected Android-first Python/FastAPI + PostgreSQL notes integration, merged in [PR #83](https://github.com/danielbardsley/gptclaw/pull/83). Automated/host migration, persistence, rollback and quality evidence plus owner-reported native CRUD/offline/accessibility passes are recorded. The project owner accepted and closed this slice October 21 with explicit remaining manual-evidence waivers in [the closeout](../036-mobile-python-backend/closeout-2026-10-21.md), carried by [PR #91](https://github.com/danielbardsley/gptclaw/pull/91). Trial runtimes are stopped and source/data retained; exact private-listener removal remains an operator follow-up. Broader integration, iOS and signed builds remain separately scoped. |
 | MOB-011 | Native application acceptance tests | 4 | Candidate | Pinned native component and device/end-to-end checks for iOS/Android, API CRUD/persistence, app relaunch, offline/reconnect, accessibility and build/update compatibility; record physical-device acceptance separately from web tests. |
 
 ## 12. Secrets, data, and security
@@ -226,16 +226,16 @@ account changes or publication.
 
 | ID | Feature | Priority | Status | Intended outcome |
 |---|---|---:|---|---|
-| QLT-001 | Standard quality commands | 2 | Candidate | Every generated project documents `format`, `lint`, `typecheck`, `test`, `build`, and `verify` commands. Manifest v1 declares only build/start/test; broader manifest command support requires a reviewed schema extension. SPEC-018 implements its initial build/test/typecheck workflow in the pinned container; broader standard commands remain future scope. |
-| QLT-002 | Pull-request workflow template | 3 | Candidate | Generated repositories get pinned actions, minimal permissions, caches, tests, scans, and artifacts. |
-| QLT-003 | Dependency automation | 3 | Candidate | Dependabot or an approved equivalent opens bounded, tested update pull requests for generated applications. GptClaw already has Actions/Terraform Dependabot configuration; app dependency coverage remains future work. |
-| QLT-004 | Preview smoke tests | 3 | Candidate | Verify the private URL, assets, health endpoint, and important journeys after each service update. |
-| QLT-005 | Accessibility baseline | 4 | Candidate | Generated web/mobile projects include keyboard, semantics, contrast, and automated accessibility checks. |
-| QLT-006 | Performance budgets | 4 | Candidate | Detect unacceptable bundle, response-time, memory, and startup regressions. |
-| QLT-007 | Database migration gates | 4 | Candidate | Test forward migration, backup prerequisites, destructive detection, and rollback/restore strategy. |
-| QLT-008 | Contract and API documentation | 4 | Candidate | Generate and validate OpenAPI or equivalent contracts where services cross boundaries. |
-| QLT-009 | Golden-template tests | 3 | Candidate | Continuously generate, build, run, route, and destroy sample projects from every supported template. |
-| QLT-010 | Release notes and changelog | 5 | Optional | Generate reviewed human-facing release summaries from accepted changes. |
+| QLT-001 | Standard quality commands | 2 | In review | [Specification](../039-standard-quality-commands/spec.md). Exact 1.1.0 successors expose format/lint/typecheck/test/build/security/verify through strict quality.json v1 and pinned containers. Lifecycle manifest meanings and installed providers remain unchanged; source default becomes Next.js 1.1.0. Review/merge and acceptance remain pending. |
+| QLT-002 | Pull-request workflow template | 3 | In review | [Specification](../040-pull-request-workflow-template/spec.md). Generated repositories get pinned actions, minimal permissions, caches, tests, scans, and artifacts. |
+| QLT-003 | Dependency automation | 3 | In review | [Specification](../041-application-dependency-automation/spec.md). Dependabot or an approved equivalent opens bounded, tested update pull requests for generated applications. New 1.1.0 releases include application/action coverage and cap validation; live bot adoption in existing app repositories remains pending. |
+| QLT-004 | Preview smoke tests | 3 | In review | [Specification](../042-private-preview-smoke-tests/spec.md). Source-provider opt-in post-start and bounded source-observer checks verify owned private ingress, assets, health and read-only journeys. Installed-provider rollout and independent private-client acceptance remain pending. |
+| QLT-005 | Accessibility baseline | 4 | In review | [Specification](../043-accessibility-baseline/spec.md). Generated web/mobile projects include keyboard, semantics, contrast, and automated accessibility checks. |
+| QLT-006 | Performance budgets | 4 | In review | [Specification](../044-performance-budgets/spec.md). Detect unacceptable bundle, response-time, memory, and startup regressions. |
+| QLT-007 | Database migration gates | 4 | In review | [Specification](../045-database-migration-gates/spec.md). Test forward migration, backup prerequisites, destructive detection, and rollback/restore strategy. |
+| QLT-008 | Contract and API documentation | 4 | In review | [Specification](../046-api-contracts-and-documentation/spec.md). Generate and validate OpenAPI or equivalent contracts where services cross boundaries. |
+| QLT-009 | Golden-template tests | 3 | In review | [Specification](../047-golden-template-tests/spec.md). Continuously generate, build, run, route, and destroy sample projects from every supported template. |
+| QLT-010 | Release notes and changelog | 5 | In review | [Specification](../048-release-notes-and-changelog/spec.md). Optional; product adoption is not selected. Generate reviewed human-facing release summaries from accepted changes. |
 
 ## 14. Observability and operations
 

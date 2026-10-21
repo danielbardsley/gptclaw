@@ -118,7 +118,7 @@ class Tests(unittest.TestCase):
         self.assertFalse(list(self.projects.glob('.gptclaw-create-*')))
 
     def test_same_release_reproducible_and_source_edits_allowed(self):
-        one=self.new();two=self.new('beta',template='nextjs',template_version='1.0.0')
+        one=self.new();selected=templates.resolve()[0];two=self.new('beta',template=selected['id'],template_version=selected['version'])
         for p in one.rglob('*'):
             if p.is_file() and p.name!='project.yaml':self.assertEqual(p.read_bytes(),(two/p.relative_to(one)).read_bytes())
         normalized=[]
@@ -182,7 +182,7 @@ class Tests(unittest.TestCase):
         output=subprocess.run([sys.executable,str(bundle/'scripts/gptclawctl.py'),'templates','list'],check=True,capture_output=True,text=True)
         self.assertEqual(original,json.loads(output.stdout))
         env=os.environ.copy();env['PYTHONPATH']=str(bundle/'scripts')
-        code="import private_apps as a, pathlib, json; a.PROJECTS=pathlib.Path(__import__('sys').argv[1]); a.STORE=a.PROJECTS/'.gptclaw-runtime/v1'; print(json.dumps(a.create('snapshot',template='nextjs',template_version='1.0.0')))"
+        code="import private_apps as a, pathlib, json; a.PROJECTS=pathlib.Path(__import__('sys').argv[1]); a.STORE=a.PROJECTS/'.gptclaw-runtime/v1'; print(json.dumps(a.create('snapshot')))"
         subprocess.run([sys.executable,'-B','-c',code,str(self.projects)],env=env,check=True,capture_output=True)
         self.assertEqual((project/'README.md').read_bytes(),(self.projects/'snapshot/README.md').read_bytes())
         # A later source default does not rewrite a previously installed snapshot.
@@ -219,6 +219,29 @@ class Tests(unittest.TestCase):
         module.verify_baseline('HEAD')
         self.catalogue['releases'][0]['description']='Changed old release';self.seal(self.catalogue['releases'][0]);self.write()
         with self.assertRaises(app.AppError):module.verify_baseline('HEAD')
+
+
+    def test_new_release_requires_tracked_exact_assets(self):
+        spec=importlib.util.spec_from_file_location('release_index_check',Path(__file__).resolve().parents[1]/'check-template-releases.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        def git(*args):return subprocess.run(['git',*args],cwd=self.repo,check=True,capture_output=True).stdout
+        git('init');git('add','.')
+        for release in templates.catalogue()[0]['releases']:
+            base=Path('templates/apps/releases')/release['id']/release['version']
+            git('add','--force','--',*[str(base/item['source']) for item in release['files']])
+        git('-c','user.name=Fixture','-c','user.email=fixture@example.invalid','commit','-m','baseline')
+        baseline=git('rev-parse','HEAD').decode().strip()
+        release=copy.deepcopy(self.catalogue['releases'][0]);release['version']='2.0.0';self.seal(release)
+        base=self.repo/'templates/apps/releases/nextjs';shutil.copytree(base/'1.0.0',base/'2.0.0')
+        self.catalogue['releases'].append(release);self.write()
+        with self.assertRaises(app.AppError):module.verify_baseline(baseline)
+        git('add','.')
+        module.verify_baseline(baseline)
+        path=base/'2.0.0/README.md';path.write_text('Changed unstaged release source.\n')
+        import hashlib
+        next(item for item in release['files'] if item['source']=='README.md')['sha256']=hashlib.sha256(path.read_bytes()).hexdigest()
+        self.seal(release);self.write()
+        with self.assertRaises(app.AppError):module.verify_baseline(baseline)
+        git('add','.');module.verify_baseline(baseline)
 
 
 class PythonSecurityReleases(unittest.TestCase):
