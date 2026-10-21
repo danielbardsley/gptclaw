@@ -20,10 +20,11 @@ def main():
     parser.add_argument('directory')
     parser.add_argument('--engine',choices=['podman','docker'],default='docker')
     parser.add_argument('--image',default='gptclaw-toolchain-ci')
+    parser.add_argument('--template-version',default='1.0.0')
     args=parser.parse_args()
     base=Path(args.directory).absolute();base.mkdir(mode=0o700)
     app.PROJECTS=base;app.STORE=base/'runtime'
-    root=Path(app.create('static-check',template='nextjs-static',template_version='1.0.0')['root'])
+    root=Path(app.create('static-check',template='nextjs-static',template_version=args.template_version)['root'])
     engine=[args.engine]
     if args.engine=='docker':
         config=base/'docker-config';config.mkdir(mode=0o700);(config/'config.json').write_text('{"auths":{}}\n')

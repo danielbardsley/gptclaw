@@ -55,7 +55,7 @@ def run(selected, engine, execute=False):
                 if execute:
                     image = 'gptclaw-static-quality-' + token
                     subprocess.run([engine, 'build', '-t', image, '-f', str(app.REPO/'templates/apps/node-toolchain/Containerfile'), str(app.REPO/'templates/apps/node-toolchain')], check=True, timeout=900)
-                    subprocess.run([sys.executable, str(app.REPO/'scripts/tests/check_static_template.py'), str(base/'static-execution'), '--engine', engine, '--image', image], check=True, timeout=2400)
+                    subprocess.run([sys.executable, str(app.REPO/'scripts/tests/check_static_template.py'), str(base/'static-execution'), '--engine', engine, '--image', image, '--template-version', cell['version']], check=True, timeout=2400)
                     report['runtime'] = 'passed'
                     report['negative_checks'] = 'Static helper: format/lint/types, references, accessibility, budgets, unsupported server APIs and interruption refusal'
             elif cell['checks'] == 'full':
