@@ -83,3 +83,48 @@ Fieldnotes build. Verify the host CLI session separately: browser sign-in alone
 is not evidence that the device grant has completed. The original October 21
 preparation observations remain historical. External build results will be
 recorded separately after project/access/quota checks and source inspection.
+
+## First external job — October 22
+
+The host device grant completed as `bardsley`; the owner then explicitly resumed
+free-only build submission after clarifying that device authorization happens on
+the Expo website. A fresh usage query reported account plan Free, Android 0/15 and
+total 0/30 used. This task enforces one active build despite any account-wide
+concurrency entitlements. No paid plan, upgrade or overage was selected.
+
+Created EAS project `aa3e7457-b41f-449b-9f66-ea95139c74e3`,
+[`@bardsley/fieldnotes-mobile`](https://expo.dev/accounts/bardsley/projects/fieldnotes-mobile).
+Set only its internal distribution privacy to PRIVATE, then independently read
+that value back. Authenticated-download behavior still needs artifact acceptance.
+The development environment had no Plain text or Sensitive EAS variables; only
+explicit EXPO_NO_DOTENV and EXPO_NO_TELEMETRY profile inputs were loaded.
+
+Signing custody: the project owner controls `bardsley`; Expo generates/stores the
+Android keystore remotely. No local key export/backup file is created for this
+private trial. Retain the remote key for same-identity replacement; rotation/export
+is a separate owner-directed procedure, never automatic on rebuild. Artifact
+retention will be recorded from the actual job expiration metadata. Android 11 is
+the existing accepted device baseline; installation observations remain separate.
+
+The installed provider validated the canonical Fieldnotes backend binding without
+starting or modifying the backend. Snapshot preparation used mobile source
+`e06625deb1a0624469cbd71db7d93c740f0f3b02`; development snapshot commit
+`8ecf61d5004ff14c2e5086e4bc4434862840335f` and config digest
+`f6751e3a2de80687c599632108ad9973c88ccf68dc181aca9c264f9cb129d7f0`.
+EAS archive inspection matched all 31 input-file hashes. EAS also generates its own
+shallow Git metadata: one snapshot commit, only the reviewed input tree, a local
+file:// origin, sample-only hooks and no symlinks. The product repository's history,
+authentication files, backend/database state and dependency cache are not uploaded.
+
+The first offline snapshot install lacked registry policy metadata and refused;
+a network-enabled, frozen, scripts-disabled container install then passed its
+supply-chain checks, reusing all 1,037 cached packages without tarball downloads.
+No admission rule was disabled.
+
+A fresh quota/privacy/no-active-jobs check preceded the persisted submission intent
+`43f8b362-9d57-43ca-86e9-840437c008c2`. Expo generated the development keystore in
+the cloud, accepted the 291 KB source archive and queued
+[development job d89b3748](https://expo.dev/accounts/bardsley/projects/fieldnotes-mobile/builds/d89b3748-fce7-4406-b51e-b9496e367d51).
+Its initial observed status was NEW. This is a submitted job, not a successful
+binary or physical install. Job metadata is retained outside source for resumption;
+unknown outcomes must be reconciled by the saved intent/job ID before retrying.
