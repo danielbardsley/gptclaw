@@ -1,6 +1,6 @@
 # SPEC-049 — Installable Android development and preview builds
 
-- **Status:** Approved; Fieldnotes selected. Reversible build preparation may proceed; external account/signing/build operations await the concrete decisions below.
+- **Status:** Approved; Fieldnotes selected. Free Fieldnotes cloud builds authorized; physical acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-21 (America/New_York)
 - **Features:** MOB-004, initial Android development/preview slices of MOB-005/006;
@@ -106,16 +106,20 @@ and existing data are retained. The mobile checkout was clean when inspected for
 this approval; no EAS configuration was found among its inspected project files.
 The project owner selected the `bardsley` Expo account and Expo-managed Android
 signing keys in this chat. No account credentials were requested or inspected.
-The exact Expo project/link, key backup/rotation/access disposition, acceptance
-device (previously Android 11) remain to be confirmed before external work.
+The selected Expo project is `aa3e7457-b41f-449b-9f66-ea95139c74e3`
+(`@bardsley/fieldnotes-mobile`), with PRIVATE internal artifact access. The owner
+controls remote signing keys; no local key export is selected, and same-identity
+replacement retains the existing remote key. Rotation/export is separately
+owner-directed. Android 11 remains the selected baseline; actual device
+installation observations and the native-capability check remain pending.
 The owner authorized starting free-only on October 21. Use the available free
 Android allowance, one active medium-worker build at a time; no subscription
 upgrade, paid build, paid retry or overage is authorized. Stop on exhausted or
-unverifiable allowance rather than incurring a charge. These remaining decisions
+unverifiable allowance rather than incurring a charge. These recorded decisions
 do not reopen specification approval or the Fieldnotes selection.
-The specification author must validate exact EAS/native tool versions and the
-selected native-module test before implementation; no EAS CLI is assumed installed.
-Planning and offline design refinement can proceed without these account actions.
+Exact installed EAS/native tool versions and archive provenance are recorded in
+the build-tool review. The native-module device observation remains an acceptance
+gate; local source checks and cloud compilation do not replace it.
 
 [Build-tool review](build-tool-review.md) records current preparation evidence and
 the scoped native-build advisory exception explicitly approved by the project
