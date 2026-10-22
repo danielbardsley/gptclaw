@@ -75,7 +75,9 @@ accessibility behavior has been observed. T6/T7 repeatability, merge and owner
 acceptance remain open. See [acceptance](acceptance.md) and the
 [tooling review](build-tool-review.md) for exact provenance and limitations.
 
-Installed provider 1.17.0 reports Fieldnotes API/database stopped. This read-only
-check did not mutate services, routes or data. Prior mobile/quality acceptance and
+The initial provider 1.17.0 read-only check found Fieldnotes API/database stopped.
+The owner subsequently requested startup: one start operation passed and an
+independent status confirmed both ready/healthy, with the private route configured.
+See acceptance for the operation receipt; physical phone access remains pending. Prior mobile/quality acceptance and
 waivers remain closed; SPEC-049 adds binary-specific evidence. No feature is
 marked Delivered from cloud-build success alone.

@@ -98,3 +98,17 @@ at 2026-10-22T19:39:50Z and is IN_QUEUE. Fresh preflight reported 14 free Androi
 builds remaining; remote preview signing-key generation succeeded. It is the only
 active job. No paid upgrade or usage was requested. AC-002–006 remain pending;
 cloud compilation does not establish phone behavior.
+
+
+## Authorized backend start — October 22
+
+While preview compilation continued, the project owner explicitly requested API
+startup. Installed provider 1.17.0 observed the canonical Fieldnotes API/database
+stopped with no busy operation and the existing private route configured. One
+parent-project start completed in 34.687 seconds, operation
+`cf54c29c876d4721b11307a9751abdcd`, result passed. Both API and database reported
+ready; an independent post-start status confirmed ready/healthy and no busy job.
+The existing private route remains configured. No migration, seed, reset, Metro
+startup or new exposure was requested. Runtime source/data and unrelated projects
+are preserved. This supersedes the earlier stopped observation; physical phone
+access and native CRUD acceptance remain unobserved.
