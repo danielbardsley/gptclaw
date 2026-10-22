@@ -128,3 +128,39 @@ the cloud, accepted the 291 KB source archive and queued
 Its initial observed status was NEW. This is a submitted job, not a successful
 binary or physical install. Job metadata is retained outside source for resumption;
 unknown outcomes must be reconciled by the saved intent/job ID before retrying.
+
+## Install-stage failure and verified correction — October 22
+
+The first development job spent about 20 minutes in queue, then failed in the
+Install dependencies phase with ERR_PNPM_IGNORED_BUILDS. Its frozen install and
+package-age/supply-chain checks had passed; pnpm then refused unrecorded skipped
+hooks for @parcel/watcher 2.6.0 and unrs-resolver 1.12.2. Initial source checks
+used --ignore-scripts and did not reproduce EAS's normal frozen install behavior.
+The uploader also omitted the committed workspace policy (which originally only
+specified the root package and minimumReleaseAge 1440).
+
+Fieldnotes commit `2cb3e0a8ea36d864799f0e1e0802ae5c4257d861` retains that package-age
+rule, explicitly sets allowBuilds false for those two packages and requires the
+exact workspace policy in uploads. No script is enabled, no version is changed
+and no strict admission rule is disabled. Fourteen local configuration/job/upload
+refusal tests plus lint passed. A fresh rootless `pnpm install --frozen-lockfile`
+without --ignore-scripts passed with the corrected policy, reusing all 1,037 cached
+packages. Android `expo prebuild --platform android --no-install` also passed in a
+separate disposable source copy; no Android SDK/JDK was installed and no local
+native compilation is claimed.
+
+Both corrected EAS archives match 34 reviewed files and isolated Git provenance.
+The development snapshot is `a1a11e8a1e398228ac16ed0e4b4b865dc7e089f2`; preview is
+`c6aa8fbc22820dd9bb56e199af8bc344f5191ed6`. The original failed job and source
+snapshots remain preserved; only their obsolete task-owned dependency copies were
+removed to reclaim root-disk headroom. The fresh install-check dependency copy was
+also removed after native generation completed. No user project data was deleted.
+
+The first job was independently reconciled to ERRORED before retrying. Fresh
+account checks still reported Free and all 15 Android builds available, so this
+install-stage failure did not reduce the observed allowance. A new persisted
+intent `21e3f300-98f1-4749-91c9-556ddd1a1853` submitted
+[corrected development job c789df30](https://expo.dev/accounts/bardsley/projects/fieldnotes-mobile/builds/c789df30-82ca-4849-ad8d-e1a2f1b4ebe5).
+It reused the existing remote keystore, uploaded 298 KB and entered IN_QUEUE.
+No duplicate retry, paid usage or second simultaneous job was submitted. The
+corrected preview is inspected but remains unsubmitted until development is terminal.

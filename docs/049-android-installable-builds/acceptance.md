@@ -1,6 +1,6 @@
 # SPEC-049 acceptance tracking
 
-Status: In progress; first free Android development job queued.
+Status: In progress; first install-stage failure corrected, second free Android development job queued.
 Owner: Project owner. Evidence date: October 22, 2026 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md) ·
 [Detailed execution/tooling review](build-tool-review.md)
@@ -73,3 +73,22 @@ quota/privacy/no-active-job check passes. Installation, private networking, rest
 persistence, accessibility, compatible corrective install and owner acceptance
 need actual phone observations. Keep source PR/review/merge, cloud build and these
 native gates separate. The catalogue is not Delivered from this tracking record.
+
+
+## Corrected development attempt
+
+The original d89b3748 job is ERRORED: strict pnpm install-hook admission failed
+after dependency resolution. It is retained as a failed invocation, not relabeled
+as passing. The exact standard install was reproduced successfully after adding
+explicit false decisions for two hooks and preserving the existing workspace
+package-age policy in uploads. Fourteen focused tests/lint and disposable Android
+native-project generation passed. See the detailed review for the source revision,
+normal install and retained original receipts. No new dependency scripts were enabled.
+
+The current source is `2cb3e0a8ea36d864799f0e1e0802ae5c4257d861`; corrected snapshot
+`a1a11e8a1e398228ac16ed0e4b4b865dc7e089f2` is submitted as
+[development c789df30](https://expo.dev/accounts/bardsley/projects/fieldnotes-mobile/builds/c789df30-82ca-4849-ad8d-e1a2f1b4ebe5),
+currently IN_QUEUE. Fresh preflight still reported 15 free Android builds available.
+The corrected preview snapshot `c6aa8fbc22820dd9bb56e199af8bc344f5191ed6` is prepared
+and inspected, with no cloud preview job yet. AC-002–006 remain pending; a successful
+local install/prebuild is not a signed binary or physical-device test.
