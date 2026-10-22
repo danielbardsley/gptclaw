@@ -1,6 +1,6 @@
 # SPEC-049 acceptance tracking
 
-Status: Both APKs built and inspected; owner verified phone installation, backend connection, CRUD and saved-note retention after relaunch; remaining native scenarios pending.
+Status: Fieldnotes preview accepted by project owner with explicit test-app waivers; wider engineering/delivery gates tracked separately.
 Owner: Project owner. Evidence date: October 22, 2026 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md) ·
 [Detailed execution/tooling review](build-tool-review.md)
@@ -12,9 +12,9 @@ Owner: Project owner. Evidence date: October 22, 2026 (America/New_York).
 | AC-001 | Passed locally | Separate development/preview identities and deterministic config; production, foreign/malformed API binding, invalid version/project inputs refused. Both corrected 34-file snapshots/archives match reviewed hashes. Historical source/provider behavior is unchanged; no installed provider or immutable starter edit. |
 | AC-002 | Pending | Owner approved bardsley/Fieldnotes, free-only builds, Expo-managed keys and the exact expiring exception. Free 0/15 Android allowance and PRIVATE project access readback passed before submission. Development key generated remotely; no local export. Development APK authenticated retrieval/identity/signing-block checks passed; anonymous artifact lookup denied. Preview inspection also passed; broader physical acceptance remains pending. |
 | AC-003 | Pending | Development native cloud compilation passed and APK retrieved. Phone installation/Metro/API/native-module checks remain unobserved. |
-| AC-004 | Pending | Preview cloud build and embedded-bundle/private-artifact checks passed. Owner reports phone app installed, working and connecting to backend. Owner additionally verified create/save, full close/reopen with saved note retained, edit/save and delete. Owner confirmed Tailscale-disconnect failure handling and saved notes loading after reconnect/refresh. Backend-restart persistence, uncertain-write and accessibility scenarios remain unrecorded. |
-| AC-005 | Pending | Four local quota/expiry/interruption/duplicate/terminal-state tests passed. Persisted real submission intent reconciles to the same existing remote job. Corrective-binary install/data preservation and a physical recovery drill remain pending. |
-| AC-006 | Pending | Source checks and CI passed; no repeated native build/install or owner acceptance is claimed. |
+| AC-004 | Accepted with owner waivers | Preview cloud build and embedded-bundle/private-artifact checks passed. Owner reports phone app installed, working and connecting to backend. Owner additionally verified create/save, full close/reopen with saved note retained, edit/save and delete. Owner confirmed Tailscale-disconnect failure handling and saved notes loading after reconnect/refresh. Backend-restart persistence, uncertain-write and accessibility checks are waived by the owner for this test app; skipped checks are not recorded as executed. |
+| AC-005 | Pending | Four local quota/expiry/interruption/duplicate/terminal-state tests passed. Persisted real submission intent reconciles to the same existing remote job. The owner waived the updated-APK/data-preservation drill for this test app. Other unobserved recovery evidence remains distinct from the passing synthetic tests. |
+| AC-006 | Pending | Source checks and CI passed. The owner accepted the Fieldnotes preview with listed waivers; repeated native build/install and broader initiative acceptance are not inferred. |
 
 ## Executed evidence
 
@@ -156,3 +156,19 @@ outage/reconnect behavior for AC-004. It does not establish uncertain-write
 reconciliation, backend-restart persistence, accessibility or the remaining
 development-client/corrective-install gates. No runtime mutation or new automated
 test was needed to record this report.
+
+
+## Owner acceptance and test-app waivers — October 22
+
+After confirming physical installation, backend connectivity, CRUD, saved-note
+retention after relaunch and outage/reconnect recovery, the project owner directed:
+“Skip those and just mark as verified. We don't need to do that for the test app.”
+The referenced remaining checks were backend-restart persistence, accessibility,
+uncertain-save recovery and installing an updated APK without losing data.
+
+Disposition: accept the installed Fieldnotes preview for this test-app trial,
+with these four checks explicitly waived by the project owner. Previously
+confirmed checks remain verified; waived checks remain unexecuted. Do not request
+these checks again for this trial. This does not extend the waiver to production,
+store release, other applications, development-client engineering checks or merge
+requirements, and does not extend the temporary build-tool exception expiry.

@@ -1,6 +1,6 @@
 # TASKS-049 — Android installable builds
 
-Status: Approved free Fieldnotes builds in progress; both APKs finished; owner reports phone install/backend connection; further acceptance pending. Owner: Project owner.
+Status: Both APKs finished; Fieldnotes preview accepted by owner with test-app waivers; wider engineering/delivery work remains tracked. Owner: Project owner.
 Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md)
 
@@ -37,9 +37,13 @@ external account/signing/build actions; record exact versions before dependency 
   duplicate refusal. AB-002/AB-005; AC-002/AC-005. Verify authenticated artifact access.
 - [ ] T4 — Build/install development client; verify owned private Metro/API access,
   edit/reload, selected native capability and rebuild requirement. AB-003; AC-003.
-- [ ] T5 — Build/install standalone preview; with Expo Go absent and owned Metro
+- [x] T5 — Build/install standalone preview; with Expo Go absent and owned Metro
   stopped, run physical CRUD/relaunch/persistence/outage/reconnect/uncertain-write/
   accessibility checks. AB-004; AC-004. Retain synthetic data and unrelated services.
+  Accepted for the Fieldnotes test-app trial with owner-confirmed installation,
+  backend connectivity, CRUD/relaunch and outage/reconnect. Owner explicitly waived
+  backend-restart persistence, uncertain-save recovery and accessibility; see
+  acceptance for limits. Waived checks were not executed.
 - [ ] T6 — Repeat from recorded inputs; exercise interrupted-job and compatible
   corrective-build recovery. Run affected repository/project checks and record exact
   local/CI/remote-build/physical/owner results and limitations. AB-001–AB-005; AC-001–AC-006 (repeatability: AC-006).
@@ -73,9 +77,10 @@ preview completion, embedded bundle and authenticated-only artifact access now v
 separate: the owner reports phone installation, working launch and backend connectivity.
 The owner also verified phone create/save, full close/reopen with the note retained,
 edit/save and delete. The owner also confirmed Tailscale-disconnect failure handling and notes loading
-after reconnect/refresh. Metro/native-module, backend-restart persistence,
-uncertain-write recovery and accessibility scenarios remain unrecorded. T6/T7 repeatability, merge and owner
-acceptance remain open. See [acceptance](acceptance.md) and the
+after reconnect/refresh. The owner accepted the preview and waived backend-restart
+persistence, uncertain-save recovery, accessibility and updated-APK data-preservation
+testing for this test app. No further owner testing of these scenarios is requested.
+Metro/native-module and wider T6/T7 repeatability/merge work remain separate. See [acceptance](acceptance.md) and the
 [tooling review](build-tool-review.md) for exact provenance and limitations.
 
 The initial provider 1.17.0 read-only check found Fieldnotes API/database stopped.
