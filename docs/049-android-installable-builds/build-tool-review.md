@@ -163,4 +163,20 @@ intent `21e3f300-98f1-4749-91c9-556ddd1a1853` submitted
 [corrected development job c789df30](https://expo.dev/accounts/bardsley/projects/fieldnotes-mobile/builds/c789df30-82ca-4849-ad8d-e1a2f1b4ebe5).
 It reused the existing remote keystore, uploaded 298 KB and entered IN_QUEUE.
 No duplicate retry, paid usage or second simultaneous job was submitted. The
-corrected preview is inspected but remains unsubmitted until development is terminal.
+corrected preview was retained until development became terminal.
+
+
+## Development APK completed; preview submitted — October 22
+
+Development c789df30 finished successfully at 19:37:51Z. Corrected-source CI
+[39836656002](https://github.com/danielbardsley/fieldnotes-mobile/actions/runs/39836656002)
+passed. The official EAS downloader retrieved the private APK using the approved
+session; anonymous artifact lookup was denied. Package, manifest, DEX and APK
+signing-block checks passed; the digest/size are recorded in [acceptance](acceptance.md).
+No cryptographic or physical-device acceptance is inferred from ZIP inspection.
+
+Fresh preflight verified Free, PRIVATE access, no active job and 14 remaining free
+Android builds. Persisted intent `b0384859-8177-4362-a0c6-a467ce216dfa` submitted
+[preview d580a4b0](https://expo.dev/accounts/bardsley/projects/fieldnotes-mobile/builds/d580a4b0-09df-4cd1-bc67-43d8f8b30c71)
+at 19:39:50Z. Expo generated its separate remote signing key. The job is queued;
+no paid usage, parallel submission or artifact-access weakening was requested.

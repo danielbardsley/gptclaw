@@ -1,6 +1,6 @@
 # TASKS-049 — Android installable builds
 
-Status: Specification approved; Fieldnotes selected; build preparation in progress, external-operation decisions pending. Owner: Project owner.
+Status: Approved free Fieldnotes builds in progress; development APK finished, preview queued, phone acceptance pending. Owner: Project owner.
 Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md)
 
@@ -47,58 +47,35 @@ external account/signing/build actions; record exact versions before dependency 
   workflow, update catalogue for only accepted scope, and clean up only owned active
   fixtures after recording source/data/key retention. No automatic production release.
 
-## Current handover
+## Current handover — October 22
 
-Planning branch contains documentation only. Fieldnotes source guidance and its
-clean Git state were inspected; its current app/package inputs were read without
-credentials. No EAS account, key, build submission, installation, runtime, AWS or
-production action has been performed. The owner selected Expo account `bardsley` and Expo-managed Android signing keys.
-Next action is the remaining P2 exact project/key custody details, budget and
-device decisions and exact tool/interface validation. The owner subsequently instructed “start free”: free-only setup/builds are now
-authorized within the approved scope, with no paid upgrades/overages. Expo
-device authorization is pending; no external build has been submitted. Prior mobile and quality task closures stand;
-this initiative adds binary-specific evidence rather than reopening those tasks.
+The owner approved Fieldnotes, Expo account `bardsley`, Expo-managed Android keys,
+free-only builds and the exact temporary native-tool exception through October 28
+midnight Eastern. Authentication and PRIVATE internal-artifact access are verified.
+No repeat approval is needed for this scope; paid usage, production and store
+submission remain outside it.
 
-## Free-only preparation checkpoint — October 21
+Fieldnotes PR #2 implements deterministic upload/configuration and durable job
+receipts with tested quota/expiry/duplicate/unknown-outcome refusals. The first
+cloud attempt failed strict dependency-install admission. The correction preserves
+package-age checks and explicitly refuses two install hooks; fresh normal frozen
+installation, disposable Android native generation and corrected-source CI passed.
 
-The owner authorized “start free.” [Fieldnotes PR #2](https://github.com/danielbardsley/fieldnotes-mobile/pull/2)
-contains the tested first-app input preparation. T1–T3 are partially implemented,
-not complete: authenticated project/quota/access/key disposition, managed job
-submission/recovery and signing-advisory acceptance remain pending. T4–T7 native
-installation/delivery acceptance remain unrun. See the
-[tooling and verification review](build-tool-review.md) for exact passed checks,
-patched tool inputs, remaining advisory causes and the bounded exception proposal.
-The existing source-only exception is not extended to signing by this checkpoint.
+Development job `c789df30-82ca-4849-ad8d-e1a2f1b4ebe5` is FINISHED. Official
+authenticated APK retrieval and package/manifest/DEX/signing-block checks passed;
+anonymous artifact lookup was denied. Preview job
+`d580a4b0-09df-4cd1-bc67-43d8f8b30c71` is queued after a fresh preflight showing
+14 free Android builds remaining. Preserve its intent and reconcile before any
+retry. No simultaneous or paid build was submitted.
 
+T3 has implemented/tested submission recovery and development artifact access;
+preview completion/access remain to verify. T4/T5 cloud and physical gates are
+separate: neither phone installation nor Metro/API/native-module/CRUD/recovery/
+accessibility behavior has been observed. T6/T7 repeatability, merge and owner
+acceptance remain open. See [acceptance](acceptance.md) and the
+[tooling review](build-tool-review.md) for exact provenance and limitations.
 
-## Authorized continuation — October 22
-
-The project owner reports Expo sign-in, explicitly approves the proposed
-temporary exception, and instructs continuation with the free Fieldnotes build.
-Keep its exact scope and October 28 midnight Eastern expiry unchanged. Do not
-request approval again for these decisions; verify host authentication, selected
-project, authenticated artifact access and available free quota before upload.
-No paid upgrade/overage, production or store action is authorized.
-
-## Submitted development build and prepared preview — October 22
-
-Host authentication as `bardsley` completed. The owner clarified the browser/device
-flow and then explicitly resumed the free build. EAS reports Free, Android 0/15
-used before submission; the selected project is
-`aa3e7457-b41f-449b-9f66-ea95139c74e3`, with PRIVATE internal-build access verified.
-Expo generated the development signing key in the cloud. No key export or paid
-usage was requested.
-
-Development job `d89b3748-fce7-4406-b51e-b9496e367d51` is submitted and observed
-IN_QUEUE. The standalone preview snapshot and its exact 31-file archive are
-verified; no second cloud job is submitted while development is active. Source
-revision remains `e06625d`; later support-only commit `83f9a49` adds four passing
-quota/expiry/duplicate/interruption/terminal-state tests. Actual development job
-reconciliation through that tested helper returned the existing job ID, without
-resubmitting. Local lint and existing Git-dependent isolation checks passed;
-new-head CI remains distinct from the earlier passing `e06625d` workflow.
-
-Installed runtime provider 1.17.0 reports the named Fieldnotes API/DB stopped,
-consistent with closeout. This was a read-only operation; no backend, Metro,
-route, database or unrelated service mutation was performed. Phone installation
-and native behavior are still unobserved.
+Installed provider 1.17.0 reports Fieldnotes API/database stopped. This read-only
+check did not mutate services, routes or data. Prior mobile/quality acceptance and
+waivers remain closed; SPEC-049 adds binary-specific evidence. No feature is
+marked Delivered from cloud-build success alone.
