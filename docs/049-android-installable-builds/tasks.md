@@ -64,3 +64,13 @@ installation/delivery acceptance remain unrun. See the
 [tooling and verification review](build-tool-review.md) for exact passed checks,
 patched tool inputs, remaining advisory causes and the bounded exception proposal.
 The existing source-only exception is not extended to signing by this checkpoint.
+
+
+## Authorized continuation — October 22
+
+The project owner reports Expo sign-in, explicitly approves the proposed
+temporary exception, and instructs continuation with the free Fieldnotes build.
+Keep its exact scope and October 28 midnight Eastern expiry unchanged. Do not
+request approval again for these decisions; verify host authentication, selected
+project, authenticated artifact access and available free quota before upload.
+No paid upgrade/overage, production or store action is authorized.

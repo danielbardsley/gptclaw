@@ -118,7 +118,8 @@ selected native-module test before implementation; no EAS CLI is assumed install
 Planning and offline design refinement can proceed without these account actions.
 
 [Build-tool review](build-tool-review.md) records current preparation evidence and
-the proposed, unapproved native-build advisory exception.
+the scoped native-build advisory exception explicitly approved by the project
+owner on October 22, expiring October 28 at midnight Eastern.
 
 Deliver reviewed contracts/adapters, documented build/install/recovery interfaces,
 meaningful tests and an acceptance record. Mark only this Android slice Delivered

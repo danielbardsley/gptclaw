@@ -1,7 +1,7 @@
 # Fieldnotes Android build-tool review — October 21, 2026
 
-Owner: Project owner. Status: preparation verified; exception proposal below is
-not approved. [Specification](spec.md) · [Tasks](tasks.md)
+Owner: Project owner. Status: temporary native-build exception approved October 22
+for the exact scope and unchanged October 28 expiry below. [Specification](spec.md) · [Tasks](tasks.md)
 
 ## Observed preparation
 
@@ -54,7 +54,7 @@ scope is `source-check-and-export`, expiring 2026-10-28T04:00:00Z. The node-forg
 reason explicitly says “No signing or release verification in this source-only
 adapter.” That earlier exception does not approve this new signing workflow.
 
-## Proposed temporary exception — decision pending
+## Temporary exception — owner approved October 22
 
 | Field | Proposed disposition |
 |---|---|
@@ -66,8 +66,20 @@ adapter.” That earlier exception does not approve this new signing workflow.
 | Expiry | 2026-10-28T04:00:00Z (October 28, midnight America/New_York). |
 | Removal | Owner/operator stops new signed builds at expiry; author replaces affected dependencies when patched, regenerates the frozen graph, re-audits and verifies the build/install path before removing the exception. No automatic renewal. |
 
-No native-build exception is installed or presumed approved. Offline source
-preparation can continue. Device sign-in, exact Expo project/free-quota/artifact
+The project owner instructed: “Approve the temporary exception and continue with
+the free Fieldnotes build” on October 22. This explicitly approves only the
+listed Fieldnotes Android scope, limits, expiry and removal step. It does not
+change the original source-only exception or authorize paid usage. Record this
+review with the external-job evidence; no new security suppression is installed. Device sign-in, exact Expo project/free-quota/artifact
 access/key custody checks, job submission/recovery and actual install evidence
 remain separate gates. Prior source-only exceptions and acceptance waivers stay
 unchanged.
+
+
+## October 22 continuation
+
+The owner reports signing in to Expo and authorizes continuation with the free
+Fieldnotes build. Verify the host CLI session separately: browser sign-in alone
+is not evidence that the device grant has completed. The original October 21
+preparation observations remain historical. External build results will be
+recorded separately after project/access/quota checks and source inspection.
