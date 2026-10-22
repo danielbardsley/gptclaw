@@ -12,7 +12,7 @@ Owner: Project owner. Evidence date: October 22, 2026 (America/New_York).
 | AC-001 | Passed locally | Separate development/preview identities and deterministic config; production, foreign/malformed API binding, invalid version/project inputs refused. Both corrected 34-file snapshots/archives match reviewed hashes. Historical source/provider behavior is unchanged; no installed provider or immutable starter edit. |
 | AC-002 | Pending | Owner approved bardsley/Fieldnotes, free-only builds, Expo-managed keys and the exact expiring exception. Free 0/15 Android allowance and PRIVATE project access readback passed before submission. Development key generated remotely; no local export. Development APK authenticated retrieval/identity/signing-block checks passed; anonymous artifact lookup denied. Preview inspection also passed; broader physical acceptance remains pending. |
 | AC-003 | Pending | Development native cloud compilation passed and APK retrieved. Phone installation/Metro/API/native-module checks remain unobserved. |
-| AC-004 | Pending | Preview cloud build and embedded-bundle/private-artifact checks passed. Owner reports phone app installed, working and connecting to backend. Owner additionally verified create/save, full close/reopen with saved note retained, edit/save and delete. Backend-restart persistence, outage/reconnect, uncertain-write and accessibility scenarios remain unrecorded. |
+| AC-004 | Pending | Preview cloud build and embedded-bundle/private-artifact checks passed. Owner reports phone app installed, working and connecting to backend. Owner additionally verified create/save, full close/reopen with saved note retained, edit/save and delete. Owner confirmed Tailscale-disconnect failure handling and saved notes loading after reconnect/refresh. Backend-restart persistence, uncertain-write and accessibility scenarios remain unrecorded. |
 | AC-005 | Pending | Four local quota/expiry/interruption/duplicate/terminal-state tests passed. Persisted real submission intent reconciles to the same existing remote job. Corrective-binary install/data preservation and a physical recovery drill remain pending. |
 | AC-006 | Pending | Source checks and CI passed; no repeated native build/install or owner acceptance is claimed. |
 
@@ -145,3 +145,14 @@ This updates AC-004 partial evidence; it does not establish backend-restart
 persistence, outage/reconnect, uncertain-write recovery, accessibility,
 development-client/native-module behavior or compatible corrective installation.
 No additional automated tests or runtime mutations were needed for this report.
+
+
+## Owner-confirmed connection recovery — October 22
+
+In response to the explicit connection-recovery checklist, the project owner
+confirmed: disconnect Tailscale, observe handled connection failure, reconnect
+and refresh, then saved notes load again. Record this as owner-confirmed physical
+outage/reconnect behavior for AC-004. It does not establish uncertain-write
+reconciliation, backend-restart persistence, accessibility or the remaining
+development-client/corrective-install gates. No runtime mutation or new automated
+test was needed to record this report.
