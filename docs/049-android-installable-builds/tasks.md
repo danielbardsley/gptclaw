@@ -21,12 +21,17 @@ Date: 2026-10-21 (America/New_York).
 Offline preparation can proceed under P3. Resolve applicable P2 choices before
 external account/signing/build actions; record exact versions before dependency changes.
 
-- [ ] T1 — Record concrete account/signing/upload/artifact/budget dispositions and
+- [x] T1 — Record concrete account/signing/upload/artifact/budget dispositions and
   exact reviewed source/backend/device inputs before any external job. AB-001/AB-002;
   AC-001/AC-002. Revalidate installed capabilities and preserve historical contracts.
-- [ ] T2 — Implement strict identity/environment/native-runtime validation and new
+  Recorded October 22: account/project/Free quota, PRIVATE access setting, remote
+  key custody and exact reviewed input provenance; actual artifact/phone acceptance
+  remains a separate check, not implied by this preparation task.
+- [x] T2 — Implement strict identity/environment/native-runtime validation and new
   exact tooling/release as needed, preserving published releases and unsigned quality
   checks. AB-001/AB-003/AB-004; AC-001/AC-003/AC-004. Add meaningful refusal/regression tests.
+  First-app scope passed source/identity/profile/upload checks in Fieldnotes PR #2;
+  no immutable published starter, historical schema or installed provider changed.
 - [ ] T3 — Implement bounded EAS submission/observation and durable interrupted-job
   recovery; test synthetic credential/upload exclusion, failure, unknown state and
   duplicate refusal. AB-002/AB-005; AC-002/AC-005. Verify authenticated artifact access.
@@ -74,3 +79,26 @@ Keep its exact scope and October 28 midnight Eastern expiry unchanged. Do not
 request approval again for these decisions; verify host authentication, selected
 project, authenticated artifact access and available free quota before upload.
 No paid upgrade/overage, production or store action is authorized.
+
+## Submitted development build and prepared preview — October 22
+
+Host authentication as `bardsley` completed. The owner clarified the browser/device
+flow and then explicitly resumed the free build. EAS reports Free, Android 0/15
+used before submission; the selected project is
+`aa3e7457-b41f-449b-9f66-ea95139c74e3`, with PRIVATE internal-build access verified.
+Expo generated the development signing key in the cloud. No key export or paid
+usage was requested.
+
+Development job `d89b3748-fce7-4406-b51e-b9496e367d51` is submitted and observed
+IN_QUEUE. The standalone preview snapshot and its exact 31-file archive are
+verified; no second cloud job is submitted while development is active. Source
+revision remains `e06625d`; later support-only commit `83f9a49` adds four passing
+quota/expiry/duplicate/interruption/terminal-state tests. Actual development job
+reconciliation through that tested helper returned the existing job ID, without
+resubmitting. Local lint and existing Git-dependent isolation checks passed;
+new-head CI remains distinct from the earlier passing `e06625d` workflow.
+
+Installed runtime provider 1.17.0 reports the named Fieldnotes API/DB stopped,
+consistent with closeout. This was a read-only operation; no backend, Metro,
+route, database or unrelated service mutation was performed. Phone installation
+and native behavior are still unobserved.
