@@ -1,6 +1,6 @@
 # SPEC-049 acceptance tracking
 
-Status: Both APKs built and inspected; owner reports phone installation and backend connection; remaining native scenarios pending.
+Status: Both APKs built and inspected; owner verified phone installation, backend connection, CRUD and saved-note retention after relaunch; remaining native scenarios pending.
 Owner: Project owner. Evidence date: October 22, 2026 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md) ·
 [Detailed execution/tooling review](build-tool-review.md)
@@ -12,7 +12,7 @@ Owner: Project owner. Evidence date: October 22, 2026 (America/New_York).
 | AC-001 | Passed locally | Separate development/preview identities and deterministic config; production, foreign/malformed API binding, invalid version/project inputs refused. Both corrected 34-file snapshots/archives match reviewed hashes. Historical source/provider behavior is unchanged; no installed provider or immutable starter edit. |
 | AC-002 | Pending | Owner approved bardsley/Fieldnotes, free-only builds, Expo-managed keys and the exact expiring exception. Free 0/15 Android allowance and PRIVATE project access readback passed before submission. Development key generated remotely; no local export. Development APK authenticated retrieval/identity/signing-block checks passed; anonymous artifact lookup denied. Preview inspection also passed; broader physical acceptance remains pending. |
 | AC-003 | Pending | Development native cloud compilation passed and APK retrieved. Phone installation/Metro/API/native-module checks remain unobserved. |
-| AC-004 | Pending | Preview cloud build and embedded-bundle/private-artifact checks passed. Owner reports phone app installed, working and connecting to backend. CRUD, cold launch, persistence, outage/reconnect and accessibility scenarios remain unrecorded. |
+| AC-004 | Pending | Preview cloud build and embedded-bundle/private-artifact checks passed. Owner reports phone app installed, working and connecting to backend. Owner additionally verified create/save, full close/reopen with saved note retained, edit/save and delete. Backend-restart persistence, outage/reconnect, uncertain-write and accessibility scenarios remain unrecorded. |
 | AC-005 | Pending | Four local quota/expiry/interruption/duplicate/terminal-state tests passed. Persisted real submission intent reconciles to the same existing remote job. Corrective-binary install/data preservation and a physical recovery drill remain pending. |
 | AC-006 | Pending | Source checks and CI passed; no repeated native build/install or owner acceptance is claimed. |
 
@@ -132,3 +132,16 @@ backend connectivity. No independent device observation, exact device/OS report,
 Expo Go absence, deliberate cold launch, CRUD/persistence, offline recovery,
 accessibility or corrective replacement result is inferred. AC-004 has partial
 physical evidence; broader acceptance and PR merge remain pending.
+
+
+## Owner-verified saved-note flow — October 22
+
+In response to the explicit phone checklist, the project owner confirmed
+“verified”: create/save a test note; fully close and reopen Fieldnotes and confirm
+the saved note remains; edit/save and delete the test note. Record these as
+owner-verified physical CRUD and saved-record retention across application
+relaunch, alongside the earlier installation/backend-connectivity report.
+This updates AC-004 partial evidence; it does not establish backend-restart
+persistence, outage/reconnect, uncertain-write recovery, accessibility,
+development-client/native-module behavior or compatible corrective installation.
+No additional automated tests or runtime mutations were needed for this report.

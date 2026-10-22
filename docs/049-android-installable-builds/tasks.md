@@ -71,8 +71,9 @@ retry. No simultaneous or paid build was submitted.
 T3 has implemented/tested submission recovery and development artifact access;
 preview completion, embedded bundle and authenticated-only artifact access now verified. T4/T5 cloud and physical gates are
 separate: the owner reports phone installation, working launch and backend connectivity.
-Metro/native-module, CRUD/persistence/recovery and accessibility scenarios remain
-unrecorded. T6/T7 repeatability, merge and owner
+The owner also verified phone create/save, full close/reopen with the note retained,
+edit/save and delete. Metro/native-module, backend-restart persistence, outage/
+uncertain-write recovery and accessibility scenarios remain unrecorded. T6/T7 repeatability, merge and owner
 acceptance remain open. See [acceptance](acceptance.md) and the
 [tooling review](build-tool-review.md) for exact provenance and limitations.
 
