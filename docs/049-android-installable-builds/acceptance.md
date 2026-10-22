@@ -172,3 +172,43 @@ confirmed checks remain verified; waived checks remain unexecuted. Do not reques
 these checks again for this trial. This does not extend the waiver to production,
 store release, other applications, development-client engineering checks or merge
 requirements, and does not extend the temporary build-tool exception expiry.
+
+
+## Requested Fieldnotes Observe extension — October 22
+
+The owner requested Expo Observe using the official get-started guide and selected
+an updated Android preview. This extends the test app only: SDK-57-compatible
+expo-observe 57.0.26, root render/error instrumentation, route timing and interactive
+readiness after the initial notebook request settles. Handled-error reports use
+fixed categories without original errors or note/request/backend data. An optional
+native-module guard preserves Expo Go/older-client source behavior. Debug dispatch
+remains disabled; preview source-map upload is enabled, with existing project,
+package, remote signing key and a higher Android versionCode.
+
+The app integration design/tasks are in Fieldnotes PR #2, docs/observe.md. Local
+lint/type checks, 13 Jest tests, 12 Node tests, 10 Git-dependent config/upload tests
+and the existing source security gate passed. The source advisory exceptions and
+native-tool exception retain their existing October 28 midnight Eastern expiry.
+The account remains Free, with 2/15 Android builds used before this extension.
+Authenticated read-only Observe API lookup succeeded; no device/session data was
+printed. Exports/archive/cloud build and post-install metrics reception are tracked
+separately; prior test-app acceptance and waived checks remain valid.
+
+
+Observe extension checkpoint: both JavaScript/assets exports passed; no iOS native
+build. The corrected 35-file actual upload passed exact hashes, workspace policy,
+isolated Git and no-symlink checks. The first local archive included a dependency
+symlink and was refused; a subsequent dirty-snapshot refusal was also resolved
+locally before any submission. Verified snapshot
+`ef3952d1e5aff163d4a8017cefe09bf46f2ee1aa` derives from source
+`de0db12e0d316bf5352954a75ddb4df723a2c0af`, config digest
+`e638ee59ab49840189e7ce82667db7328bdbc8112b1c80c6061ff3fe67b0d45c`.
+
+Fresh Free/private/no-active-job checks admitted one preview versionCode 2 job,
+[431ebb7f](https://expo.dev/accounts/bardsley/projects/fieldnotes-mobile/builds/431ebb7f-8b40-4f47-b86e-46bb802312a8),
+with 13 free Android builds available and the existing remote preview key reused.
+Persisted intent `55c404c2-fd29-431e-b35c-fbf7fd8d8790`; observed IN_PROGRESS.
+[Source CI 39862126882](https://github.com/danielbardsley/fieldnotes-mobile/actions/runs/39862126882)
+was still running. New-APK installation, source-map success and Observe metrics
+receipt remain pending. No paid usage, automatic retries or prior acceptance
+waiver expansion was requested.
