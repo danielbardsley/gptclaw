@@ -1,6 +1,6 @@
 # TASKS-049 — Android installable builds
 
-Status: Approved free Fieldnotes builds in progress; development APK finished, preview queued, phone acceptance pending. Owner: Project owner.
+Status: Approved free Fieldnotes builds in progress; both APKs finished; owner reports phone install/backend connection; further acceptance pending. Owner: Project owner.
 Date: 2026-10-21 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md)
 
@@ -64,20 +64,21 @@ installation, disposable Android native generation and corrected-source CI passe
 Development job `c789df30-82ca-4849-ad8d-e1a2f1b4ebe5` is FINISHED. Official
 authenticated APK retrieval and package/manifest/DEX/signing-block checks passed;
 anonymous artifact lookup was denied. Preview job
-`d580a4b0-09df-4cd1-bc67-43d8f8b30c71` is queued after a fresh preflight showing
+`d580a4b0-09df-4cd1-bc67-43d8f8b30c71` finished after a fresh preflight showing
 14 free Android builds remaining. Preserve its intent and reconcile before any
 retry. No simultaneous or paid build was submitted.
 
 T3 has implemented/tested submission recovery and development artifact access;
-preview completion/access remain to verify. T4/T5 cloud and physical gates are
-separate: neither phone installation nor Metro/API/native-module/CRUD/recovery/
-accessibility behavior has been observed. T6/T7 repeatability, merge and owner
+preview completion, embedded bundle and authenticated-only artifact access now verified. T4/T5 cloud and physical gates are
+separate: the owner reports phone installation, working launch and backend connectivity.
+Metro/native-module, CRUD/persistence/recovery and accessibility scenarios remain
+unrecorded. T6/T7 repeatability, merge and owner
 acceptance remain open. See [acceptance](acceptance.md) and the
 [tooling review](build-tool-review.md) for exact provenance and limitations.
 
 The initial provider 1.17.0 read-only check found Fieldnotes API/database stopped.
 The owner subsequently requested startup: one start operation passed and an
 independent status confirmed both ready/healthy, with the private route configured.
-See acceptance for the operation receipt; physical phone access remains pending. Prior mobile/quality acceptance and
+See acceptance for the operation receipt; the owner subsequently reported successful phone connectivity. Prior mobile/quality acceptance and
 waivers remain closed; SPEC-049 adds binary-specific evidence. No feature is
 marked Delivered from cloud-build success alone.

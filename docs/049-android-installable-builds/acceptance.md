@@ -1,6 +1,6 @@
 # SPEC-049 acceptance tracking
 
-Status: In progress; development APK built and inspected; free standalone preview queued.
+Status: Both APKs built and inspected; owner reports phone installation and backend connection; remaining native scenarios pending.
 Owner: Project owner. Evidence date: October 22, 2026 (America/New_York).
 [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md) ·
 [Detailed execution/tooling review](build-tool-review.md)
@@ -10,9 +10,9 @@ Owner: Project owner. Evidence date: October 22, 2026 (America/New_York).
 | Criterion | State | Evidence and remaining action |
 |---|---|---|
 | AC-001 | Passed locally | Separate development/preview identities and deterministic config; production, foreign/malformed API binding, invalid version/project inputs refused. Both corrected 34-file snapshots/archives match reviewed hashes. Historical source/provider behavior is unchanged; no installed provider or immutable starter edit. |
-| AC-002 | Pending | Owner approved bardsley/Fieldnotes, free-only builds, Expo-managed keys and the exact expiring exception. Free 0/15 Android allowance and PRIVATE project access readback passed before submission. Development key generated remotely; no local export. Development APK authenticated retrieval/identity/signing-block checks passed; anonymous artifact lookup denied. Preview inspection and physical acceptance remain pending. |
+| AC-002 | Pending | Owner approved bardsley/Fieldnotes, free-only builds, Expo-managed keys and the exact expiring exception. Free 0/15 Android allowance and PRIVATE project access readback passed before submission. Development key generated remotely; no local export. Development APK authenticated retrieval/identity/signing-block checks passed; anonymous artifact lookup denied. Preview inspection also passed; broader physical acceptance remains pending. |
 | AC-003 | Pending | Development native cloud compilation passed and APK retrieved. Phone installation/Metro/API/native-module checks remain unobserved. |
-| AC-004 | Pending | Standalone preview submitted after development finished and fresh Free/private/no-active-job checks passed; currently queued. No preview binary or physical acceptance yet. |
+| AC-004 | Pending | Preview cloud build and embedded-bundle/private-artifact checks passed. Owner reports phone app installed, working and connecting to backend. CRUD, cold launch, persistence, outage/reconnect and accessibility scenarios remain unrecorded. |
 | AC-005 | Pending | Four local quota/expiry/interruption/duplicate/terminal-state tests passed. Persisted real submission intent reconciles to the same existing remote job. Corrective-binary install/data preservation and a physical recovery drill remain pending. |
 | AC-006 | Pending | Source checks and CI passed; no repeated native build/install or owner acceptance is claimed. |
 
@@ -112,3 +112,23 @@ The existing private route remains configured. No migration, seed, reset, Metro
 startup or new exposure was requested. Runtime source/data and unrelated projects
 are preserved. This supersedes the earlier stopped observation; physical phone
 access and native CRUD acceptance remain unobserved.
+
+
+## Preview completion and owner phone report — October 22
+
+Preview job `d580a4b0-09df-4cd1-bc67-43d8f8b30c71` is FINISHED, independently
+queried and reconciled through the tested existing-intent receipt helper without
+resubmission. Official authenticated download succeeded; anonymous artifact
+lookup was denied. The 98,675,967-byte APK has the expected preview package,
+manifest, DEX, APK signing block and embedded application bundle. SHA-256:
+`2fd2dc00e15e6cbaa03ccc2e11fdfa7dee297fd9deb7895a35da2afe180dd1c7`.
+The bounded credential-pattern scan checked 2,186,646 eligible compiled-content
+bytes with no match; this is not exhaustive secret detection or cryptographic
+signature verification.
+
+The project owner reports: “App installed on phone and working / connecting to
+the back end.” Record this as owner-reported physical installation, launch and
+backend connectivity. No independent device observation, exact device/OS report,
+Expo Go absence, deliberate cold launch, CRUD/persistence, offline recovery,
+accessibility or corrective replacement result is inferred. AC-004 has partial
+physical evidence; broader acceptance and PR merge remain pending.
