@@ -125,3 +125,5 @@ Deliver reviewed contracts/adapters, documented build/install/recovery interface
 meaningful tests and an acceptance record. Mark only this Android slice Delivered
 after implementation merge and actual installation/owner acceptance. Full MOB-005,
 MOB-006 store distribution, iOS and production remain separately scoped.
+
+[Acceptance tracking](acceptance.md) records local/CI/cloud/phone gates separately.
