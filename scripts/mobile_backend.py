@@ -34,7 +34,7 @@ def verify_owner(root, project):
 
 def inspect(root, hostname=None):
     """Validate local binding against canonical Python/PostgreSQL source identity."""
-    root,document=app.target(root);app.need(document['schema_version']==9,'mobile-unsupported')
+    root,document=app.target(root);app.need(document['schema_version'] in (9,12),'mobile-unsupported')
     raw=deps.read_bytes(root/CONFIG,8192);value=deps.json_data(raw)
     app.need(isinstance(value,dict) and set(value)=={'schema_version','mobile','backend','root','profile','contract_version','api_url'}
              and type(value['schema_version']) is int and value['schema_version']==1
@@ -60,7 +60,7 @@ def generated(value):
 
 def bind(root, backend_root, api_url):
     """Bind stopped canonical mobile source without modifying backend activation."""
-    root,document=app.target(root);app.need(document['schema_version']==9,'mobile-unsupported')
+    root,document=app.target(root);app.need(document['schema_version'] in (9,12),'mobile-unsupported')
     worktrees.canonical(root)
     backend,contract=app.target(backend_root);app.need(contract['schema_version']==8,'mobile-policy')
     worktrees.canonical(backend)

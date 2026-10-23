@@ -27,7 +27,7 @@ MESSAGES = {
     'yaml_feature': 'Aliases, anchors, explicit tags and merge keys are unsupported.',
     'document': 'Provide exactly one mapping document.',
     'mapping_key': 'Mapping keys must be unique strings.',
-    'version': 'Use a supported integer schema_version: 1 (web), 2 (API), 3 (ephemeral group), 4 (persistent group), 5 (mobile source), 6 (mobile Metro opt-in), 7 (TypeScript API), 8 (Python API/DB), 9 (bound mobile), or 10 (static web).',
+    'version': 'Use a supported integer schema_version: 1 (web), 2 (API), 3 (ephemeral group), 4 (persistent group), 5 (mobile source), 6 (mobile Metro opt-in), 7 (TypeScript API), 8 (Python API/DB), 9 (bound mobile), 10 (static web), 11 (Android development client) or 12 (bound Android development client).',
     'field_required': 'A required field is missing.',
     'field_unknown': 'This object contains unsupported fields.',
     'field_type': 'The field has the wrong type.',
@@ -220,7 +220,7 @@ def validate_project(project_root, *, directory_fd=None):
             return failure('setup', 2)
         document = parse_manifest(read_manifest(project_root, directory_fd))
         version = document.get('schema_version')
-        if type(version) is not int or version not in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10):
+        if type(version) is not int or version not in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12):
             result, contract, code = failure('version')
             result['errors'][0]['path'] = '/schema_version'
             return result, contract, code
@@ -241,7 +241,7 @@ def validate_project(project_root, *, directory_fd=None):
                 errors.append(diagnostic(code, safe_pointer(parts, schema)))
         # Cross-field checks run only on a structurally valid contract.
         if not errors:
-            if version not in (5, 6, 9) and document['exposure']['base_path'] != '/projects/' + document['project']['id'] + '/':
+            if version not in (5, 6, 9, 11, 12) and document['exposure']['base_path'] != '/projects/' + document['project']['id'] + '/':
                 errors.append(diagnostic('field_value', '/exposure/base_path'))
             if version in (3, 4, 8):
                 names = ('api',) if version==8 else ('api','web')
@@ -274,7 +274,7 @@ def validate_project(project_root, *, directory_fd=None):
                         health = document['components'][name]['service'][probe]['path']
                         if any(segment in ('.', '..') for segment in health.split('/')):
                             errors.append(diagnostic('field_value', '/components/'+name+'/service/'+probe+'/path'))
-            elif version in (5, 6, 9):
+            elif version in (5, 6, 9, 11, 12):
                 import project_mobile
                 if not project_mobile.manifest_config(project_root, document, directory_fd):
                     errors.append(diagnostic('field_value', '/mobile/app_config'))

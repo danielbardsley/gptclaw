@@ -37,9 +37,11 @@ def directory(project):
 def location(project):return directory(project)/'session.json'
 def hashes(root):
     output={name:hashlib.sha256(deps.read_bytes(root/name)).hexdigest() for name in FILES}
-    if app.validate_project(root)[1]['schema_version']==9:
+    if app.validate_project(root)[1]['schema_version'] in (9,12):
         import mobile_backend
         output.update(mobile_backend.fingerprint(root))
+    if app.validate_project(root)[1]['schema_version'] in (11,12):
+        output.update({p:hashlib.sha256(deps.read_bytes(root/p)).hexdigest() for p in ['eas.json','.gptclaw/development-build.json']})
     return output
 def unit_path(value):return app.safe(UNITS/(value['name']+'.service'))
 def network(value):return value['name']+'-net'
@@ -91,9 +93,9 @@ def save(value):
 def control(value,allow_frozen=False):
     data=app.read_json(directory(value['project'])/'control.json')
     app.need(isinstance(data,dict) and set(data)=={'schema_version','project','root','generation','inputs','source','provider','audit','root_identity','mount_identities'}
-             and type(data['schema_version']) is int and data['schema_version'] in (2,3) and data['project']==value['project']
+             and type(data['schema_version']) is int and data['schema_version'] in (2,3,4,5) and data['project']==value['project']
              and data['root']==value['root'] and data['generation']==value['generation'],'conflict')
-    app.need(isinstance(data['inputs'],dict) and set(data['inputs'])==(set(FILES)|({'.gptclaw/backend.local.json','src/config/backend.generated.ts'} if data['schema_version']==3 else set()))
+    app.need(isinstance(data['inputs'],dict) and set(data['inputs'])==(set(FILES)|({'.gptclaw/backend.local.json','src/config/backend.generated.ts'} if data['schema_version'] in (3,5) else set())|({'eas.json', '.gptclaw/development-build.json'} if data['schema_version'] in (4,5) else set()))
              and all(isinstance(v,str) and states.HEX64.fullmatch(v) for v in data['inputs'].values()),'conflict')
     app.need(data['source']==str(directory(value['project'])/'sources'/value['generation'])
              and isinstance(data['provider'],str),'conflict')
@@ -116,7 +118,8 @@ def revoke_path(policy_digest):
     app.need(isinstance(policy_digest,str) and states.HEX64.fullmatch(policy_digest) is not None,'invalid')
     return app.safe(app.STORE/'metro'/'revocations'/(policy_digest+'.json'))
 def admitted(value=None):
-    policy=security.read_policy(app.REPO);key=digest(policy)
+    policy=security.read_policy(app.REPO) if not value or value.get('schema_version')!=3 else __import__('native_runtime').policy(Path(value['root']))
+    key=digest(policy)
     app.need(not revoke_path(key).exists() and not revoke_path(key).is_symlink(),'conflict')
     if value:app.need(value['policy_digest']==key,'conflict')
     return policy
@@ -228,7 +231,7 @@ def result(value,root,identity=None):
     return descriptor
 
 def status(root):
-    root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported')
+    root,source=app.target(root);app.need(source['schema_version'] in (6,9,11,12),'mobile-unsupported')
     identity=worktrees.canonical(root);value=load(source['project']['id'],root)
     if value is None:return {'project':source['project']['id'],'state':'not-started','transport_available':False,'origin':None}
     return result(value,root,identity)
@@ -237,7 +240,7 @@ def status(root):
 
 def logs(root,lines=80):
     app.need(type(lines) is int and 1<=lines<=256,'invalid')
-    root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported');worktrees.canonical(root)
+    root,source=app.target(root);app.need(source['schema_version'] in (6,9,11,12),'mobile-unsupported');worktrees.canonical(root)
     project=source['project']['id'];value=load(project,root)
     if value is None:return {'project':project,'events':[],'log_kind':'lifecycle-events'}
     events=[event for event in read_events(project) if 0<=time.time()-event['observed_at']<=7*86400]
@@ -279,16 +282,20 @@ def lifetime(source,seconds=None):
 
 
 def start(root,no_route=False,ttl_seconds=None,expected_generation=None,transport=None,lease_expiry=None):
-    spike.require_operator();root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported')
+    spike.require_operator();root,source=app.target(root);app.need(source['schema_version'] in (6,9,11,12),'mobile-unsupported')
     app.need(transport in {None,'https','tailnet-http'},'invalid')
     seconds=lifetime(source,ttl_seconds)
-    policy=admitted();identity=worktrees.canonical(root);project=identity['project']
+    native=source['schema_version'] in (11,12)
+    app.need(not native or transport in {None,'https'},'native-policy')
+    policy=__import__('native_runtime').policy(root) if native else admitted()
+    identity=worktrees.canonical(root);project=identity['project']
     with app.locked(project):
         require_idle(root,project);contract.inputs(root)
         old=load(project,root)
         if lease_expiry is not None:
             app.need(type(lease_expiry) in (int,float) and old is not None and time.time()<lease_expiry<=old['expires_at'],'control-expired')
         selected_transport=transport or ('tailnet-http' if old and old['origin'].startswith('http://') else 'https')
+        app.need(not native or selected_transport=='https','native-policy')
         if expected_generation is not None:
             app.need(isinstance(expected_generation,str) and states.HEX32.fullmatch(expected_generation)
                      and old is not None and old['generation']==expected_generation,'conflict')
@@ -314,7 +321,8 @@ def start(root,no_route=False,ttl_seconds=None,expected_generation=None,transpor
         metro,proxy,tls=reserve(root,identity)
         origin=('http' if selected_transport=='tailnet-http' else 'https')+'://'+app.node_identity()+':'+str(tls)
         now=time.time();expiry=min(now+seconds,security.timestamp(policy['expires_at']),lease_expiry if lease_expiry is not None else now+seconds)
-        value={'schema_version':2 if selected_transport=='tailnet-http' else 1,
+        value={'schema_version':3 if native else 2 if selected_transport=='tailnet-http' else 1,
+               **({'mode':'development-client'} if native else {}),
                **({'transport':'private-tailnet-http'} if selected_transport=='tailnet-http' else {}),
                'adapter':'metro-v1','project':project,'root':str(root),'canonical_key':identity['key'],
                'name':'gptclaw-metro-'+project,'generation':generation,'token':token,'image':image,'input_digest':digest(input_files),
@@ -330,7 +338,7 @@ def start(root,no_route=False,ttl_seconds=None,expected_generation=None,transpor
         try:
             view=directory(project)/'sources'/generation;view.parent.mkdir(parents=True,mode=0o700,exist_ok=True)
             spike.prepare_view(root,view,inventory);retention.seal(value,inventory)
-            data={'schema_version':3 if source['schema_version']==9 else 2,'project':project,'root':str(root),'generation':generation,'inputs':input_files,
+            data={'schema_version':5 if source['schema_version']==12 else 4 if native else 3 if source['schema_version']==9 else 2,'project':project,'root':str(root),'generation':generation,'inputs':input_files,
                   'source':str(view),'provider':str(snapshot),'audit':None,'root_identity':identity['root_identity'],'mount_identities':mount_identities(root)};app.save(directory(project)/'control.json',data)
             path=unit_path(value);app.safe(UNITS);UNITS.mkdir(mode=0o700,parents=True,exist_ok=True)
             if path.exists():
@@ -416,7 +424,7 @@ def recover_stop(root,generation):
 
 
 def stop(root):
-    spike.require_operator();root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported')
+    spike.require_operator();root,source=app.target(root);app.need(source['schema_version'] in (6,9,11,12),'mobile-unsupported')
     worktrees.canonical(root);project=source['project']['id']
     with app.locked(project):
         value=load(project,root)
@@ -424,11 +432,15 @@ def stop(root):
         return stop_owned(root,value)
 
 
-def restart(root,no_route=False,transport=None):stop(root);return start(root,no_route,transport=transport)
+def restart(root,no_route=False,transport=None):
+    _,source=app.target(root)
+    app.need(source['schema_version'] not in (11,12) or transport in {None,'https'},'native-policy')
+    stop(root)
+    return start(root,no_route,transport=transport)
 
 
 def renewal_plan(root,generation,ttl_seconds=None):
-    root,source=app.target(root);app.need(source['schema_version'] in (6,9),'mobile-unsupported')
+    root,source=app.target(root);app.need(source['schema_version'] in (6,9,11,12),'mobile-unsupported')
     app.need(isinstance(generation,str) and states.HEX32.fullmatch(generation),'invalid')
     seconds=lifetime(source,ttl_seconds);identity=worktrees.canonical(root)
     value=load(identity['project'],root);app.need(value is not None and value['generation']==generation,'conflict')
@@ -501,7 +513,7 @@ def supervise(root,generation):
     try:
         verify_unit(value);data=control(value);view=Path(data['source']);policy=admitted(value)
         _,source=app.target(root);identity=worktrees.canonical(root)
-        app.need(source['schema_version'] in (6,9) and source['project']['id']==project
+        app.need(source['schema_version'] in (6,9,11,12) and source['project']['id']==project
                  and identity['key']==value['canonical_key'] and identity['root_identity']==data['root_identity'],'conflict')
         value.update(phase='starting',operation_result='running');save(value)
         app.need(hashes(root)==data['inputs'] and mount_identities(root)==data['mount_identities'],'conflict')
@@ -511,7 +523,7 @@ def supervise(root,generation):
         audit_seconds=min(120,math.floor(value['expires_at']-time.time()));app.need(audit_seconds>0,'invalid')
         audit=app.command(['podman','run','--name',audit_name,'--label',LABEL+'='+value['token'],
                            *spike.container_options(view,root,audit_seconds),value['image'],'pnpm','audit','--json','--registry=https://registry.npmjs.org/'],timeout=audit_seconds+20,optional=True)
-        app.need(audit.returncode in {0,1},'command');data['audit']=security.evaluate(json.loads(audit.stdout),policy,deps.read_bytes(root/'pnpm-lock.yaml'))
+        app.need(audit.returncode in {0,1},'command');data['audit']=(__import__('native_runtime').evaluate if value['schema_version']==3 else security.evaluate)(json.loads(audit.stdout),policy,deps.read_bytes(root/'pnpm-lock.yaml'))
         app.save(directory(project)/'control.json',data);admitted(value);app.need(hashes(root)==data['inputs'],'conflict')
         app.need(ownership('network',network(value),value['token'])=='absent','conflict')
         stage='network'
@@ -523,7 +535,7 @@ def supervise(root,generation):
         for name in ['src','assets']:
             if live_mounts[name] is not None:args+=['--volume',str(root/name)+':/workspace/'+name+':ro']
         args+=['--env','EXPO_OFFLINE=1','--env','EXPO_PACKAGER_PROXY_URL='+value['origin'],value['image'],
-               'node','node_modules/expo/bin/cli','start','--offline','--go','--port','8081']
+               'node','node_modules/expo/bin/cli','start','--offline','--dev-client' if value['schema_version']==3 else '--go','--port','8081']
         stage='sdk'
         runner=spike.EphemeralOutput(args)
         stage='proxy'

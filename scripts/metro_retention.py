@@ -246,7 +246,7 @@ def retired_records(current, selected):
 def prune_plan(root):
     import metro_sessions
     root, source = app.target(root)
-    app.need(source['schema_version'] in (6,9), 'mobile-unsupported')
+    app.need(source['schema_version'] in (6,9,11,12), 'mobile-unsupported')
     identity = worktrees.canonical(root)
     current = metro_sessions.load(identity['project'], root)
     app.need(current is not None and current['canonical_key'] == identity['key'], 'conflict')

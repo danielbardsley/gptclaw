@@ -1,0 +1,8 @@
+{
+  "name": "gptclaw-eas-toolchain",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "eas-cli": "25.3.0"
+  }
+}

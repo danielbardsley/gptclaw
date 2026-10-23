@@ -88,7 +88,7 @@ class ManifestTests(unittest.TestCase):
                 self.assertEqual(self.validate(data)[2], 0)
 
     def test_versions(self):
-        for value in [0, 11, -1, True, False, 1.0, '1', None, {}, []]:
+        for value in [0, 13, -1, True, False, 1.0, '1', None, {}, []]:
             with self.subTest(value=value):
                 self.invalid(self.change(['schema_version'], value), 'version', '/schema_version')
         data = copy.deepcopy(VALID)

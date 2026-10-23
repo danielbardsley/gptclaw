@@ -127,7 +127,7 @@ def runtime_rows(root, value):
                           'generation': digest({k: owned[k] for k in ('token', 'active', 'epoch', 'revision')}) if owned else None,
                           'receipt': owned, 'root': str(root)}
         return parent, rows
-    if value['schema_version'] in (6, 9):
+    if value['schema_version'] in (6, 9, 11, 12):
         import metro_sessions as metro
         owned = metro.load(project, root)
         if owned:
@@ -175,7 +175,7 @@ def inspect_component(root, contract):
 
 def inspect(root, *, include_source=True):
     root, value = app.target(root)
-    app.need(value['schema_version'] in (1, 2, 3, 4, 6, 7, 8, 9, 10), 'invalid')
+    app.need(value['schema_version'] in (1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12), 'invalid')
     parent, rows = runtime_rows(root, value)
     info = root.stat(follow_symlinks=False)
     source = source_files(root) if include_source else {}
@@ -246,7 +246,7 @@ def impact(value, action, component):
         parts.append('Build current locked source; retain persistent database data and leave a stopped project stopped.')
     if action == 'pause':
         parts.append('Freeze stateless processes and withdraw private app links until Resume reaches readiness.')
-    if value['schema_version'] in (6, 9):
+    if value['schema_version'] in (6, 9, 11, 12):
         parts.append('The bound backend is unchanged; session authorization and transport are preserved.')
     return ' '.join(parts)
 
@@ -518,7 +518,7 @@ def execute(root, action, component=None, *, expected=None, operation_id=None, s
         completed = False
         try:
             stage('validated', component)
-            if value['schema_version'] in (6, 9):
+            if value['schema_version'] in (6, 9, 11, 12):
                 import metro_sessions as metro
                 old = rows['metro']['receipt']
                 app.need(old is not None, 'control-unsupported')

@@ -173,7 +173,7 @@ def validate_plan(value, vacant=False):
     require(isinstance(selected,dict) and set(selected)=={'schema_version','id','version','digest'})
     release, _ = templates.resolve(selected['id'],selected['version'])
     require(value['template'] == templates.provenance(release))
-    if release['provider']=='expo-v1':
+    if release['provider'] in {'expo-v1','expo-dev-v1','expo-dev-notes-v1'}:
         import project_mobile as mobile
         require(value.get('mobile_inputs')==mobile.creation_inputs(name,release))
     else: require('mobile_inputs' not in value)
@@ -215,7 +215,7 @@ def plan(name, destination, api, environments=(), secret_references=(), template
              'secret_references': sorted(secret_references, key=lambda r: (r['scope'], r['name'])),
              'capabilities': capabilities(environments, secret_references),
              'description': 'Private application; GptClaw setup ' + operation}
-    if release['provider']=='expo-v1':
+    if release['provider'] in {'expo-v1','expo-dev-v1','expo-dev-notes-v1'}:
         import project_mobile as mobile
         value['mobile_inputs']=mobile.creation_inputs(name,release)
     value['plan_digest'] = digest(value)
@@ -379,7 +379,7 @@ def starter(receipt):
     templates.generate(generated, receipt['plan']['repository'], release, contents)
     git(root, 'checkout', '-b', receipt['plan']['branches']['head'])
     for path in sorted(generated.rglob('*')):
-        if release['provider']=='expo-notes-v1' and path.relative_to(generated).as_posix()=='src/config/backend.generated.ts':
+        if release['provider'] in {'expo-notes-v1','expo-dev-notes-v1'} and path.relative_to(generated).as_posix()=='src/config/backend.generated.ts':
             continue  # Local public binding is recreated before checks/bind, never published.
         if path.is_file():
             out = root/path.relative_to(generated)

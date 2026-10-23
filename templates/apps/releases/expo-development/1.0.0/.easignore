@@ -1,0 +1,9 @@
+*
+!app.json
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!tsconfig.json
+!eas.json
+!src/**
+!assets/**

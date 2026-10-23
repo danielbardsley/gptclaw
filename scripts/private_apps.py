@@ -20,7 +20,7 @@ import uuid
 
 from project_manifest import validate_project
 
-VERSION = '1.17.0'
+VERSION = '1.18.0'
 REPO = Path(__file__).resolve().parents[1]
 PROJECTS = Path('/srv/forge/projects')
 STORE = PROJECTS / '.gptclaw-runtime/v1'
@@ -45,6 +45,13 @@ MESSAGES = {
  'metro-capacity': 'Owned Metro runtime retention reached its bounded capacity; inspect metro prune and remove only confirmed inactive generated copies. Source and unknown files are preserved.',
  'metro-prune-recovery': 'An owned Metro copy changed during cleanup; retain the prune-GENERATION staging directory and reconcile its identity before retrying. Canonical source is unchanged.',
  'metro-metadata-recovery': 'A Metro opt-in publication needs scoped reconciliation; inspect its owned metadata record and retained previous file before retrying.',
+ 'native-policy': 'Native identity, inputs or approval scope do not match the reviewed development-build policy.',
+ 'native-dirty': 'Commit and review source before planning or submitting a native build.',
+ 'native-toolchain': 'Prepare the frozen native build toolchain and source dependencies first.',
+ 'native-budget': 'The authorized native build attempt or spending bound is exhausted.',
+ 'native-recovery': 'Reconcile the existing native job before submitting another build.',
+ 'native-drift': 'Native build inputs changed; prepare and review a fresh plan.',
+ 'native-remote': 'External build identity or observation is unavailable; no automatic retry was made.',
  'mobile-unsupported': 'Mobile source creation and quality checks are supported; Metro, device and native release operations are not available.',
  'mobile-policy': 'Mobile identity, SDK packages or source configuration do not match the reviewed Expo profile.',
  'database-state': 'Database ownership or persisted state is invalid; no data was initialized or removed.',
@@ -195,7 +202,7 @@ def target(root):
  result, contract, code = validate_project(root)
  need(code == 0, 'invalid')
  marker = read_json(root / '.gptclaw/template.json')
- need(marker == {'provider': 'nextjs-static-v1' if contract['schema_version']==10 else 'expo-notes-v1' if contract['schema_version']==9 else 'fastapi-postgres-v1' if contract['schema_version']==8 else 'expo-v1' if contract['schema_version'] in (5,6,9) else 'notes-postgres-v1' if contract['schema_version'] == 4 else 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'fastify-v1' if contract['schema_version'] == 7 else 'nextjs-v1'}, 'invalid')
+ need(marker == {'provider': 'expo-dev-notes-v1' if contract['schema_version']==12 else 'expo-dev-v1' if contract['schema_version']==11 else 'nextjs-static-v1' if contract['schema_version']==10 else 'expo-notes-v1' if contract['schema_version']==9 else 'fastapi-postgres-v1' if contract['schema_version']==8 else 'expo-v1' if contract['schema_version'] in (5,6,9,11,12) else 'notes-postgres-v1' if contract['schema_version'] == 4 else 'notes-v1' if contract['schema_version'] == 3 else 'fastapi-v1' if contract['schema_version'] == 2 else 'fastify-v1' if contract['schema_version'] == 7 else 'nextjs-v1'}, 'invalid')
  import project_templates as templates
  templates.validate_provenance(root)
  need(not any((root/name).exists() for name in ['.env','.env.local','.env.development','.env.production','.npmrc','.ssh','.aws']),'invalid')
@@ -289,7 +296,7 @@ def available(port):
 
 
 def reserve(root, contract):
- need(contract['schema_version'] not in (5,6,9), 'mobile-unsupported')
+ need(contract['schema_version'] not in (5,6,9,11,12), 'mobile-unsupported')
  slug = contract['project']['id']
  with locked('registry',project_guard=False):
   s = state_for(slug)
@@ -499,7 +506,7 @@ def save_text(path,text):
 
 
 def start(root, no_route=False, take_lock=True):
- if target(root)[1]['schema_version'] in (5,6,9): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (5,6,9,11,12): raise AppError('mobile-unsupported')
  if target(root)[1]['schema_version'] in (3,4,8):
   import project_groups as groups
   return groups.start(root,no_route,take_lock)
@@ -549,7 +556,7 @@ def start(root, no_route=False, take_lock=True):
 
 
 def stop(root, take_lock=True):
- if target(root)[1]['schema_version'] in (5,6,9): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (5,6,9,11,12): raise AppError('mobile-unsupported')
  if target(root)[1]['schema_version'] in (3,4,8):
   import project_groups as groups
   return groups.stop(root,take_lock)
@@ -578,7 +585,7 @@ def stop(root, take_lock=True):
 
 
 def restart(root):
- if target(root)[1]['schema_version'] in (5,6,9): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (5,6,9,11,12): raise AppError('mobile-unsupported')
  if target(root)[1]['schema_version'] in (3,4,8):
   import project_groups as groups
   return groups.restart(root)
@@ -595,7 +602,7 @@ def restart(root):
 
 
 def status(root):
- if target(root)[1]['schema_version'] in (5,6,9): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (5,6,9,11,12): raise AppError('mobile-unsupported')
  if target(root)[1]['schema_version'] in (3,4,8):
   import project_groups as groups
   return groups.status(root)
@@ -614,7 +621,7 @@ def test_app(root):
 
 
 def quality_app(root, action='test'):
- if target(root)[1]['schema_version'] in (5,6,9):
+ if target(root)[1]['schema_version'] in (5,6,9,11,12):
   return __import__('project_mobile').quality(root,action)
  import project_dependencies as deps
  root,contract=target(root);slug=contract['project']['id']
@@ -654,7 +661,7 @@ def redact(text):
 
 
 def logs(root,lines):
- if target(root)[1]['schema_version'] in (5,6,9): raise AppError('mobile-unsupported')
+ if target(root)[1]['schema_version'] in (5,6,9,11,12): raise AppError('mobile-unsupported')
  root,contract=target(root);s=state_for(contract['project']['id']);need(s is not None,'invalid')
  need(s['root']==str(root));need(1<=lines<=200,'invalid')
  if unit_path(s).exists():verify_unit(s)

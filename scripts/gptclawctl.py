@@ -20,6 +20,21 @@ def main(argv=None):
   if name in {'start','restart'}:p.add_argument('--metro-transport',choices=['https','tailnet-http'],help='Explicit native Metro transport; HTTP remains inside the development tailnet.')
   if name=='start':p.add_argument('--local-only',action='store_true',help='Diagnose without requiring a private route; never claims desktop readiness.')
   if name=='logs':p.add_argument('--lines',type=int,default=80)
+ native=sub.add_parser('native-build',help='Explicit signed Android development builds; separate from source build')
+ native_actions=native.add_subparsers(dest='native_action',required=True)
+ for name in ['configure','plan','prepare-toolchain','submit','status','reconcile','resolve-not-submitted','cancel','fetch-artifact','verify-artifact','installed','launch']:
+  p=native_actions.add_parser(name,allow_abbrev=False);p.add_argument('--project-root',required=True)
+  if name=='configure':p.add_argument('--config-file',required=True);p.add_argument('--apply',action='store_true');p.add_argument('--confirm-plan')
+  if name=='resolve-not-submitted':p.add_argument('--confirmation',required=True)
+  if name=='cancel':p.add_argument('--credential-file',required=True);p.add_argument('--confirm-job',required=True)
+  if name=='fetch-artifact':p.add_argument('--credential-file',required=True)
+  if name=='submit':p.add_argument('--confirm-plan',required=True);p.add_argument('--credential-file',required=True)
+  if name in {'status','reconcile','resolve-not-submitted','cancel','fetch-artifact','verify-artifact','installed','launch'}:p.add_argument('--operation-id',required=True)
+  if name in {'status','reconcile'}:p.add_argument('--credential-file')
+  if name=='reconcile':p.add_argument('--job-id',required=True)
+  if name=='verify-artifact':p.add_argument('--apk-file',required=True)
+  if name=='installed':p.add_argument('--artifact-sha256',required=True);p.add_argument('--device-os',required=True)
+  if name=='launch':p.add_argument('--generation',required=True)
  control=sub.add_parser('control',help='Typed lifecycle capabilities and explicit interrupted-operation reconciliation')
  control_actions=control.add_subparsers(dest='control_action',required=True)
  for name in ['capabilities','reconcile']:
@@ -127,7 +142,7 @@ def main(argv=None):
  try:
   import private_apps as app
   if args.provider_version:
-   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['smoke','control','backend','metro','worktrees','db','new','validate','start','stop','restart','rebuild','pause','resume','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'lifecycle_control_schema':1,'lifecycle_actions':['start','stop','restart','rebuild','pause','resume'],'component_restart':['web','api','db','metro'],'backend_actions':['bind','inspect'],'backend_contract_schemas':[1],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6,9],'metro_session_schemas':[1,2],'metro_control_schemas':[2,3],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[1],'project_manifest_schemas':[1,2,3,4,5,6,7,8,9,10],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6,7,8,9,10],'toolchain_schemas':[1,2],'template_catalogue_schema':8,'receipt_schema':1,'group_receipt_schema':4,'group_receipt_schemas':[2,3,4],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':5,'credential_profile_schemas':[1,2,3,4,5],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
+   print(json.dumps({'provider':'gptclawctl','version':app.VERSION,'worktree_receipt_schema':1,'capabilities':['native-build','smoke','control','backend','metro','worktrees','db','new','validate','start','stop','restart','rebuild','pause','resume','status','observe','logs','test','deps','toolchain','templates','repo','credentials','build','format','lint','typecheck','security','verify','hooks'],'lifecycle_control_schema':1,'lifecycle_actions':['start','stop','restart','rebuild','pause','resume'],'component_restart':['web','api','db','metro'],'backend_actions':['bind','inspect'],'backend_contract_schemas':[1],'metro_actions':['enable','renew','prune','route-plan','recover-stop','revoke'],'metro_contract_manifest_schemas':[6,9,11,12],'metro_session_schemas':[1,2,3],'metro_control_schemas':[2,3,4,5],'expo_go_inspection_schemas':[1],'expo_go_launch_schemas':[1],'native_build_schema':1,'project_manifest_schemas':[1,2,3,4,5,6,7,8,9,10,11,12],'project_kinds':['web','api','group','mobile'],'runtime_manifest_schemas':[1,2,3,4,6,7,8,9,10,11,12],'toolchain_schemas':[1,2],'template_catalogue_schema':9,'receipt_schema':1,'group_receipt_schema':4,'group_receipt_schemas':[2,3,4],'dependency_receipt_schema':1,'dependency_receipt_schemas':[1,2],'toolchain_receipt_schema':1,'credential_profile_schema':5,'credential_profile_schemas':[1,2,3,4,5],'credential_binding_schema':1,'dashboard_observation_schema':1,'dashboard_route_schema':1}));return 0
   if not args.action:parser.print_help();return 0
   if args.action=='templates':
    import project_templates as templates
@@ -154,6 +169,21 @@ def main(argv=None):
    import project_smoke
    if args.enable_after_start or args.disable_after_start: project_smoke.configure(args.project_root,args.enable_after_start)
    return project_smoke.observe(args.project_root,args.watch_seconds,args.poll_seconds)
+  if args.action=='native-build':
+   import native_builds as native
+   name=args.native_action
+   if name=='configure':result=native.contract.configure(args.project_root,args.config_file,args.apply,args.confirm_plan)
+   elif name=='plan':result=native.public_plan(args.project_root)
+   elif name=='prepare-toolchain':result=native.prepare_tools(args.project_root)
+   elif name=='submit':result=native.submit(args.project_root,args.confirm_plan,args.credential_file)
+   elif name in {'status','reconcile'}:result=native.observe(args.project_root,args.operation_id,args.credential_file,getattr(args,'job_id',None))
+   elif name=='resolve-not-submitted':result=native.resolve_not_submitted(args.project_root,args.operation_id,args.confirmation)
+   elif name=='cancel':result=native.cancel(args.project_root,args.operation_id,args.credential_file,args.confirm_job)
+   elif name=='fetch-artifact':result=native.fetch_artifact(args.project_root,args.operation_id,args.credential_file)
+   elif name=='verify-artifact':result=native.verified_artifact(args.project_root,args.operation_id,args.apk_file)
+   elif name=='installed':result=native.installed(args.project_root,args.operation_id,args.artifact_sha256,args.device_os)
+   else:result=native.launch(args.project_root,args.operation_id,args.generation)
+   print(json.dumps(result,sort_keys=True));return 0
   if args.action=='go':
    import expo_go
    result=expo_go.inspect(args.project_root,args.platform,args.client_version,args.os_version) if args.go_action=='inspect' else expo_go.launch(args.project_root,args.platform,args.client_version,args.os_version,args.generation)
@@ -205,7 +235,7 @@ def main(argv=None):
    import project_controls as controls
    app.need(getattr(args,'metro_transport',None) is None,'invalid')
    result=controls.execute(args.project_root,args.action,getattr(args,'component',None))
-  elif args.action in {'start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','deps','toolchain','db','hooks'} and app.target(args.project_root)[1]['schema_version'] in (5,6,9):
+  elif args.action in {'start','stop','restart','status','observe','logs','test','build','format','lint','typecheck','security','verify','deps','toolchain','db','hooks'} and app.target(args.project_root)[1]['schema_version'] in (5,6,9,11,12):
    import project_mobile as mobile
    result=mobile.dispatch(args)
   elif getattr(args,'metro_transport',None) is not None:

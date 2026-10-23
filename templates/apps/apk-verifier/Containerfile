@@ -1,0 +1,7 @@
+FROM docker.io/library/eclipse-temurin@sha256:fc1394dc03c3de483ea03b14ccf0a076f772f7782aaeffc9d5a2cbde2ae5df0e
+WORKDIR /opt/verifier
+ADD https://dl.google.com/dl/android/maven2/com/android/tools/build/apksig/8.13.0/apksig-8.13.0.jar /opt/verifier/apksig.jar
+RUN chmod 0644 apksig.jar && echo 'c070ed1394629d74641aa0906f60b2ffa1ee77e6366a1f93437f59717b1aeb89  apksig.jar' | sha256sum -c -
+COPY VerifyApk.java ./
+RUN javac -cp apksig.jar VerifyApk.java
+ENTRYPOINT ["java", "-cp", "/opt/verifier:/opt/verifier/apksig.jar", "VerifyApk"]

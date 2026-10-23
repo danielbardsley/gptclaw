@@ -107,7 +107,10 @@ def source_inventory(root):
             with directory(parent=parent,name=name) as child:walk(child,name)
         try:config=json.loads(read_at(parent,'app.json'))['expo']
         except (ValueError,KeyError,TypeError):raise app.AppError('invalid') from None
-        app.need(isinstance(config,dict) and not {'extra','updates','plugins'} & set(config),'invalid')
+        document=app.validate_project(root)[1]
+        if isinstance(document,dict) and document.get('schema_version') in (11,12):
+            app.need(__import__('native_contract').app_config(config,document),'native-policy')
+        else:app.need(isinstance(config,dict) and not {'extra','updates','plugins'} & set(config),'invalid')
     return output
 
 

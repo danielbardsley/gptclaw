@@ -1,0 +1,69 @@
+{
+  "name": "Application quality",
+  "on": {
+    "pull_request": {},
+    "push": {
+      "branches": [
+        "main"
+      ]
+    }
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "concurrency": {
+    "group": "quality-${{ github.ref }}",
+    "cancel-in-progress": true
+  },
+  "jobs": {
+    "quality": {
+      "runs-on": "ubuntu-24.04",
+      "timeout-minutes": 45,
+      "steps": [
+        {
+          "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "with": {
+            "persist-credentials": false
+          }
+        },
+        {
+          "uses": "actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+          "with": {
+            "path": "**/.gptclaw-cache/pnpm\n**/.gptclaw-cache/uv",
+            "key": "qlt-${{ runner.os }}-${{ runner.arch }}-${{ github.ref }}-${{ hashFiles('**/pnpm-lock.yaml', '**/uv.lock', 'quality.json', '**/checks/toolchain*/**') }}"
+          }
+        },
+        {
+          "name": "Frozen restore and quality gates",
+          "run": "python3 checks/gptclaw_quality.py verify --engine docker"
+        },
+        {
+          "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "if": "always()",
+          "with": {
+            "name": "quality-report",
+            "path": ".gptclaw-cache/quality/report.json",
+            "retention-days": 7,
+            "if-no-files-found": "error"
+          }
+        }
+      ]
+    },
+    "required": {
+      "runs-on": "ubuntu-24.04",
+      "timeout-minutes": 2,
+      "needs": [
+        "quality"
+      ],
+      "if": "always()",
+      "steps": [
+        {
+          "env": {
+            "QUALITY_RESULT": "${{ needs.quality.result }}"
+          },
+          "run": "test \"$QUALITY_RESULT\" = success"
+        }
+      ]
+    }
+  }
+}

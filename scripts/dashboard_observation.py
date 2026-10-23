@@ -222,7 +222,7 @@ def _project(root, *, expected=None, clock=time.time):
         slug=contract['project']['id']
         if expected is not None:
             app.need(slug==expected['id'],'conflict')
-        if contract['schema_version'] in (6,9):
+        if contract['schema_version'] in (6,9,11,12):
             import metro_sessions
             from dashboard_metro import project as native_project
             descriptor=metro_sessions.status(root)
