@@ -72,3 +72,19 @@ filelock/virtualenv entries). Those releases were not edited or silently waived.
 Fastify source checks passed. These broader CI failures remain separate from the
 new native source and EAS admission findings above; passing component tests does
 not imply a passing dependency audit or approval to sign/upload source.
+
+
+## Rechecked after account authorization — October 23
+
+Credential-free public npm metadata still names EAS 25.3.0 and node-forge 1.4.0 as
+latest. EAS pins node-forge 1.4.0 directly; latest certificate/PKCS12/JKS wrappers
+also depend on node-forge ^1.4.0. The [node-forge advisory](https://github.com/advisories/GHSA-86w9-cpqp-85rv)
+still lists no patched version. Zod latest is 4.6.7, but latest Expo CLI 58.1.15
+still requires Zod ^3.25.76 and node-forge ^1.4.0. An SDK migration or forced
+major override is not an established repair. These are registry/advisory checks,
+not fresh installation/audit/test evidence. Frozen source and gates are unchanged.
+
+Next technical step is a supported upstream repair or a separately reviewed,
+tested minimal dependency patch. A security exception would require a concrete
+call-path/exposure assessment and the existing explicit disposition fields; the
+owner's account/build/payment choices do not authorize an exception.

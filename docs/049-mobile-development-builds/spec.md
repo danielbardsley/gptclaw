@@ -176,15 +176,19 @@ upload staging; artifact/key retention follows the recorded owner decision.
 The project owner approved this specification and authorized implementation on
 October 23, 2026: “looks good. go ahead with the implementation”. The owner selected
 the previous Expo account, Expo-managed signing, willingness to pay and 30-day
-retention. Exact account/project identification, numeric spend ceiling and artifact
-access verification remain prerequisites to external operations. No billing,
+retention. The owner subsequently identified the `bardsley` Expo account and
+authorized as many development builds as needed, with owner-managed paid-plan
+activation when required. Use free attempts in bounded operational batches; do
+not infer a paid spend ceiling or activate billing. Exact project, credentials,
+certificate and artifact access verification remain prerequisites to external
+operations. No billing,
 credential or listener changes have been performed by this implementation task.
 
 | Decision | Proposed default / owner and next action |
 |---|---|
 | Platform/device | Android-first; project owner confirms actual device/OS before physical acceptance. iOS needs a separate scoped plan and account/device prerequisites. |
-| Expo account/project and signing | Project owner selects exact isolated development scope and managed-signing custody/recovery before setup or external execution. |
-| Spending and artifact sharing | Project owner supplies attempt/cost ceiling, access, expiry and retention before first upload/job; unresolved values block external execution, not offline implementation after authorization. |
+| Expo account/project and signing | Account `bardsley` is selected; Expo-managed signing and 30-day retention are approved. Resolve the development-only project, credential privileges and signing recovery metadata before external execution. |
+| Spending and artifact sharing | Owner authorized as many development builds as needed. Use bounded batches within verified free quota and zero paid spend until the owner activates a paid account. A paid total/per-attempt ceiling and verified artifact access remain prerequisites for paid jobs. |
 | Exact compiler/client/module pins | Implementer verifies SDK-57 cloud support and selects exact compatible CLI/dev-client/module/image pins in the reviewed implementation. SDK migration requires a scope amendment if current pins cannot build. |
 | Private transport | Implementer proves HTTPS with the new binary. Project owner reviews any required bounded exception; existing Go approval does not apply. |
 

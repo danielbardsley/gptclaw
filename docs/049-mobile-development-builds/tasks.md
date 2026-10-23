@@ -97,3 +97,23 @@ checked October 23). This recommendation does not authorize payment.
 Final focused native suite: 32/32 tests pass at source revision `b871a6b`;
 release immutability, local documentation links and whitespace checks pass.
 Fresh CI and the broad local run remain pending; no full-check success is claimed.
+
+
+## Account decision and upstream follow-through — October 23
+
+The owner supplied https://expo.dev/accounts/bardsley, authorized as many builds as
+needed and will pay for an account when required. Account selection and free-build
+count authorization are resolved; the earlier three-build/$25 suggestions are not
+limits selected by the owner. Keep individual operational batches bounded and
+within verified free quota; no billing activation or paid spend is inferred.
+A focused project-choice question is pending. Signing remains Expo-managed and
+retention 30 days. Credentials, certificate, actual access and device acceptance
+remain distinct. No secret was requested in chat or inspected.
+
+Public npm metadata was rechecked: latest EAS remains 25.3.0 and pins node-forge
+1.4.0. Latest node-forge remains 1.4.0 and its advisory has no patched release.
+Latest Expo CLI 58.1.15 still depends on Zod ^3.25.76 and node-forge ^1.4.0;
+upgrading SDKs alone is not a verified remediation. No frozen release, lock,
+audit gate or runtime was changed. Follow-up needs an upstream-compatible repair
+or a concrete reviewed patch; no security exception is authorized by build-count
+or payment authorization.
