@@ -29,6 +29,15 @@ class StateTests(unittest.TestCase):
         result=self.project();self.assertTrue(result['transport_available']);self.assertEqual(result['state'],'ready')
         self.assertEqual(result['native_client_acceptance'],'unverified');self.assertNotIn('launch_uri',result)
         self.assertNotIn('token',result);self.assertNotIn('image',result);self.assertNotIn('device',result)
+    def test_development_client_has_separate_https_only_receipt(self):
+        self.value.update(schema_version=3,mode='development-client')
+        result=self.project()
+        self.assertEqual(result['requested_mode'],'development-client')
+        self.assertEqual(result['transport_targets'],['android'])
+        self.assertEqual(result['native_client_acceptance'],'unverified')
+        self.value['origin']='http://fixture.tail123.ts.net:8443'
+        with self.assertRaises(app.AppError):state.validate(self.value)
+
     def test_http_requires_new_explicit_receipt_version_and_private_origin(self):
         original = copy.deepcopy(self.value)
         self.value.update(schema_version=2, transport='private-tailnet-http',

@@ -322,8 +322,8 @@ successful full rerun. Python remains the application backend default.
 
 The next selected planning slice is [SPEC-049](../049-mobile-development-builds/spec.md):
 Android-first stage-5 development builds (MOB-004 with minimum MOB-005/006
-credential/environment/build prerequisites). Its specification, design and tasks
-are Draft; implementation and external operations are not authorized. Account,
+credential/environment/build prerequisites). Implementation was authorized October 23; source is in review. External
+execution still depends on the recorded account, signing and security gates. Account,
 signing custody, source-upload, budget and artifact-access decisions precede live
 EAS work; iOS, standalone previews and store distribution remain separate.
 SPEC-036 acceptance does not establish iOS, signed-build or production readiness. Fastify remains optional.

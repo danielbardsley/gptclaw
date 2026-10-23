@@ -134,6 +134,14 @@ if ! python3 -B scripts/tests/test_project_toolchains.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_native_builds.py; then
+  status=1
+fi
+
+if ! python3 -B scripts/tests/test_apk_metadata.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/tests/test_project_mobile.py; then
   status=1
 fi

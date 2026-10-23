@@ -242,10 +242,10 @@ def context(root, coherent=True):
     blobs = {name: read_bytes(root/name, 65536 if name != 'pnpm-lock.yaml' else 2*1024*1024) for name in FILES}
     manifest = json_data(blobs['package.json']); validate_package(manifest, p)
     workspace = yaml_documents(blobs['pnpm-workspace.yaml'])[0]; validate_workspace(workspace, p)
-    if manifest.get('gptclawMobile') == 'expo-v1':
+    if manifest.get('gptclawMobile') in {'expo-v1','expo-dev-v1'}:
         import project_mobile as mobile
         mobile.validate_package(manifest)
-    validate_lock(yaml_documents(blobs['pnpm-lock.yaml'], 2), manifest, p, coherent, mobile=manifest.get('gptclawMobile')=='expo-v1')
+    validate_lock(yaml_documents(blobs['pnpm-lock.yaml'], 2), manifest, p, coherent, mobile=manifest.get('gptclawMobile') in {'expo-v1','expo-dev-v1'})
     return {'policy': p, 'policy_hash': digest, 'files': blobs, 'manifest': manifest,
             'hashes': {k: hashlib.sha256(v).hexdigest() for k, v in blobs.items()}}
 
@@ -338,7 +338,7 @@ def status(root, operation_id=None):
     except a.AppError as error:
         result.update(policy='invalid', error=error.code, state='error')
     s = a.state_for(slug)
-    if contract['schema_version'] in (5,6,9):
+    if contract['schema_version'] in (5,6,9,11,12):
         import project_mobile as mobile
         s = mobile.load_state(root, slug)
     result['operation_busy'] = a.object_owned('container', s['name']+'-job', s['token']) if s else False
@@ -348,9 +348,9 @@ def status(root, operation_id=None):
 
 def stopped_state(root, contract):
     a = app()
-    if contract['schema_version'] in (6,9):
+    if contract['schema_version'] in (6,9,11,12):
         __import__('metro_sessions').assert_stopped(root,contract['project']['id'])
-    if contract['schema_version'] in (5,6,9):
+    if contract['schema_version'] in (5,6,9,11,12):
         import project_mobile as mobile
         return mobile.job_state(root, contract)
     s = a.reserve(root, contract)
@@ -538,7 +538,7 @@ def operate(root, action, name=None, version=None, kind='runtime', operation_id=
             manifest.setdefault(group, {})[name] = version
         elif action == 'remove':
             for group in groups: del manifest[group][name]
-        if manifest.get('gptclawMobile') == 'expo-v1':
+        if manifest.get('gptclawMobile') in {'expo-v1','expo-dev-v1'}:
             __import__('project_mobile').validate_package(manifest)
         import project_toolchains as tools
         selected = tools.selection(root)

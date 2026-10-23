@@ -1,6 +1,6 @@
 # SPEC-049 — Android development builds (MOB-004)
 
-- **Status:** Draft; specification requested, implementation not authorized.
+- **Status:** Approved for implementation; implementation in progress, external acceptance pending.
 - **Owner:** Project owner
 - **Date:** 2026-10-22 (America/New_York)
 - **Features:** MOB-004; minimum development-profile, credential and build-job
@@ -173,9 +173,12 @@ upload staging; artifact/key retention follows the recorded owner decision.
 
 ## Decisions and completion
 
-Planning is authorized by the request to write this specification. Review and
-implementation authorization remain pending. No account, credential, build,
-installation or listener operation is authorized by this document's existence.
+The project owner approved this specification and authorized implementation on
+October 23, 2026: “looks good. go ahead with the implementation”. The owner selected
+the previous Expo account, Expo-managed signing, willingness to pay and 30-day
+retention. Exact account/project identification, numeric spend ceiling and artifact
+access verification remain prerequisites to external operations. No billing,
+credential or listener changes have been performed by this implementation task.
 
 | Decision | Proposed default / owner and next action |
 |---|---|

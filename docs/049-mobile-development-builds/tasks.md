@@ -1,6 +1,6 @@
 # TASKS-049 — Android development builds
 
-Status: Draft; planning complete, implementation authorization pending.
+Status: Implementation authorized October 23; in progress.
 Owner: Project owner. Date: 2026-10-22 (America/New_York).
 [Specification](spec.md) · [Technical design](technical-design.md)
 
@@ -9,7 +9,7 @@ Owner: Project owner. Date: 2026-10-22 (America/New_York).
 - [x] T1 — Read current-main mobile direction/catalogue, provider contracts and
   SPEC-036 closeout. Select stage-5 MOB-004 and draft requirements/design/tasks.
   Preserve Android-first acceptance and existing owner waivers. No live operations.
-- [ ] T2 — Project owner reviews scope and authorizes implementation. Record
+- [ ] T2 — Implementation authorized by the project owner October 23. Record
   account/project, signing custody/recovery, actual credential privileges,
   attempt/cost ceiling, artifact access/expiry/retention and device decisions
   before their dependent external actions. Implementer validates exact supported
@@ -66,9 +66,22 @@ Owner: Project owner. Date: 2026-10-22 (America/New_York).
 
 ## Current handover
 
-Draft spec/design/tasks and index/catalogue/mobile-sequence links are prepared
-for review. Implementation and all external actions remain unstarted. Exact native
-matrix and owner account/custody/budget/access/device decisions remain substantive
-preconditions, with responsibilities above. Planning verification is documented in
-the planning PR; no application tests, EAS jobs, credentials, runtime changes or
-physical checks are claimed by this draft.
+Implementation authorization is recorded. Provider/contracts, new immutable native
+starters, CLI/job receipts, deterministic uploads, interrupted-job reconciliation,
+artifact signature verification, Android launch admission, private repository
+provenance and runbook are prepared on `codex/mob-004-development-builds` for PR #99.
+Existing web/API/DB/Go source and installed services are preserved.
+
+Source native component tests and Android unsigned exports pass; full `verify`
+stops at an unapproved Zod advisory. The frozen EAS toolchain audit has nine high
+vulnerable package entries. No native signing/runtime exception is authorized.
+See [acceptance tracking](acceptance.md) and [security disposition](security-review.md).
+The broad repository suite is being rerun against stable release metadata after
+fixing the version-refusal fixture and discarding a superseded in-progress run.
+
+The owner selected prior-account reuse, Expo-managed signing, willingness to pay
+and 30-day retention. The exact account/project/certificate, numeric budget and
+actual artifact access remain unresolved. No credentials, billing, cloud jobs,
+managed rollout, private listener changes or physical installation were performed.
+T2/T7/T8/T9/T10 remain open until their stated gates have actual evidence. No
+waivers or catalogue Delivered status are inferred from source implementation.

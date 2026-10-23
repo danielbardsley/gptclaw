@@ -81,6 +81,11 @@ def catalogue():
         extension=data(static_path)
         check(not list(deps.StrictValidator(data(app().REPO/'schemas/templates/v8.schema.json')).iter_errors(extension)))
         value={**value,'schema_version':8,'releases':[*value['releases'],*extension['releases']]}
+    native_path = app().REPO/'config/templates/v9.json'
+    if native_path.exists() or native_path.is_symlink():
+        extension=data(native_path)
+        check(not list(deps.StrictValidator(data(app().REPO/'schemas/templates/v9.schema.json')).iter_errors(extension)))
+        value={**value,'schema_version':9,'releases':[*value['releases'],*extension['releases']]}
     releases = {}
     _, profiles = tools.registry()
     for release in value['releases']:
@@ -116,11 +121,11 @@ def catalogue():
             py.dependencies(py.toml(contents['api/pyproject.toml']))
             check(contents['api/.python-version'].decode().strip()==release['toolchains']['api']['versions']['python'])
             releases[key]=(release,contents);continue
-        if release['provider'] in {'expo-v1','expo-notes-v1'}:
+        if release['provider'] in {'expo-v1','expo-notes-v1','expo-dev-v1','expo-dev-notes-v1'}:
             import project_mobile as mobile
-            check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','app.json','AGENTS.md','README.md','checks/quality.cjs','src/app/index.tsx',('tests/notes.test.tsx' if release['provider']=='expo-notes-v1' else 'tests/counter.test.tsx')} <= outputs)
+            check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','app.json','AGENTS.md','README.md','checks/quality.cjs','src/app/index.tsx',('tests/native.test.tsx' if release['provider'] in {'expo-dev-v1','expo-dev-notes-v1'} else 'tests/notes.test.tsx' if release['provider']=='expo-notes-v1' else 'tests/counter.test.tsx')} <= outputs)
             mobile.validate_package(deps.json_data(contents['package.json']))
-            check(release['mobile_profile_digest']==hashlib.sha256(json.dumps(mobile.profile(),sort_keys=True,separators=(',',':')).encode()).hexdigest())
+            check(release['mobile_profile_digest']==hashlib.sha256(json.dumps(mobile.profile(release['provider'] in {'expo-dev-v1','expo-dev-notes-v1'}),sort_keys=True,separators=(',',':')).encode()).hexdigest())
             releases[key] = (release, contents); continue
         if release['provider'] == 'nextjs-static-v1':
             check({'package.json','pnpm-lock.yaml','pnpm-workspace.yaml','AGENTS.md','README.md','app/page.tsx','scripts/serve.mjs','scripts/build.mjs','checks/node-profile.json','Containerfile'} <= outputs)
@@ -189,7 +194,7 @@ def validate_provenance(root):
     release, _ = resolve(value['id'], value['version'])
     check(value == provenance(release))
     check(app().read_json(root/'.gptclaw/template.json') == {'provider':release['provider']})
-    if release['provider'] in {'expo-v1','expo-notes-v1'}:
+    if release['provider'] in {'expo-v1','expo-notes-v1','expo-dev-v1','expo-dev-notes-v1'}:
         __import__('project_mobile').validate_policies(root,release)
     # Provenance is creation identity; subsequent supported toolchain switches
     # are independent and are validated by the toolchain contract.
@@ -208,7 +213,7 @@ def publish(stage, destination):
 
 
 def generate(path, slug, release, contents):
-    if release['provider'] in {'expo-v1','expo-notes-v1'}:
+    if release['provider'] in {'expo-v1','expo-notes-v1','expo-dev-v1','expo-dev-notes-v1'}:
         import project_mobile as mobile
         with app().locked('mobile-identity'):
             mobile.assert_identity_vacant(path,slug)
@@ -232,13 +237,18 @@ def _generate(path, slug, release, contents):
             'commands':{'build':['pnpm','build'],'start':['pnpm','dev'],'test':['pnpm','test']},
             'service':{'internal_port':3000,'health':{'path':'/projects/'+slug+'/api/health/','timeout_seconds':5}},
             'exposure':{'private':True,'base_path':'/projects/'+slug+'/','funnel':False},'data':{'mode':'ephemeral'}}
-        if release['provider'] in {'expo-v1','expo-notes-v1'}:
+        if release['provider'] in {'expo-v1','expo-notes-v1','expo-dev-v1','expo-dev-notes-v1'}:
             import project_mobile as mobile
             contract = mobile.contract(slug)
             if release['provider']=='expo-notes-v1':
                 contract.update(schema_version=9,metro={'adapter':'metro-v1','mode':'expo-go','ttl_seconds':7200},backend={'adapter':'fastapi-postgres-v1','profile':'development','contract_version':1,'config':'.gptclaw/backend.local.json'})
             config = deps.json_data(contents['app.json'])
             config['expo'].update(mobile.identities(slug))
+            if release['provider'] in {'expo-dev-v1','expo-dev-notes-v1'}:
+                import native_contract as native
+                contract=native.contract(slug,release['provider']=='expo-dev-notes-v1')
+                config['expo'].update(native.identity(slug),platforms=['android'],plugins=[['expo-dev-client',{'launchMode':'most-recent'}]])
+                app().save(stage/'eas.json',native.eas_config())
             (stage/'app.json').write_text(json.dumps(config,indent=2)+'\n')
         if release['provider'] == 'nextjs-static-v1':
             contract = __import__('project_static').contract(slug)
@@ -293,6 +303,10 @@ def bundle_paths():
         paths += [Path('config/templates/v7.json'),Path('schemas/templates/v7.schema.json')]
     if (app().REPO/'config/templates/v8.json').exists():
         paths += [Path(p) for p in ('scripts/project_static.py','config/templates/v8.json','schemas/templates/v8.schema.json','schemas/project/v10.schema.json')]
+    if (app().REPO/'config/templates/v9.json').exists():
+        paths += [Path(p) for p in ('scripts/native_contract.py','scripts/native_builds.py','scripts/native_runtime.py','scripts/apk_metadata.py','config/mobile/v2.json','config/templates/v9.json','schemas/templates/v9.schema.json','schemas/project/v11.schema.json','schemas/project/v12.schema.json')]
+        paths += [Path('templates/apps/eas-toolchain')/name for name in ['Containerfile','package.json','package-lock.json','worker.cjs','.dockerignore','.gitignore']]
+        paths += [Path('templates/apps/apk-verifier')/name for name in ['Containerfile','VerifyApk.java']]
     for release in value['releases']:
         base = Path('templates/apps/releases')/release['id']/release['version']
         paths += [base/item['source'] for item in release['files']]

@@ -18,10 +18,10 @@ def check(ok, code='mobile-policy'):
     app().need(ok, code)
 
 
-def profile():
+def profile(native=False):
     import project_dependencies as deps
-    value = deps.json_data(deps.read_bytes(app().REPO/'config/mobile/v1.json', 65536))
-    check(value.get('schema_version') == 1 and value.get('adapter') == 'expo-v1')
+    value = deps.json_data(deps.read_bytes(app().REPO/('config/mobile/v2.json' if native else 'config/mobile/v1.json'), 65536))
+    check(value.get('schema_version') == (2 if native else 1) and value.get('adapter') == ('expo-dev-v1' if native else 'expo-v1'))
     check(isinstance(value.get('packages'), dict) and len(value['packages']) <= 100)
     for name, version in {**value['packages'], **value.get('allowed_additions', {})}.items():
         deps.package_name(name); deps.exact_version(version)
@@ -67,6 +67,8 @@ def manifest_config(root, document, directory_fd=None):
         value = deps.json_data(data)
         if set(value)!= {'expo'} or not isinstance(value['expo'],dict):return False
         expo=value['expo'];expected=identities(document['project']['id'])
+        if document['schema_version'] in (11,12):
+            return __import__('native_contract').app_config(expo,document)
         if set(expo)!= {'name','slug','scheme','version','platforms','orientation','ios','android'}:return False
         if not all(expo.get(key)==val for key,val in expected.items()):return False
         if expo['name']!=document['project']['name'] or expo['platforms']!=['ios','android'] or expo['orientation']!='portrait':return False
@@ -78,11 +80,11 @@ def manifest_config(root, document, directory_fd=None):
 
 
 def validate_package(package):
-    check(package.get('gptclawMobile')=='expo-v1' and package.get('main')=='expo-router/entry')
+    check(package.get('gptclawMobile') in {'expo-v1','expo-dev-v1'} and package.get('main')=='expo-router/entry')
     actual={}
     for group in ['dependencies','devDependencies','optionalDependencies']:
         actual.update(package.get(group,{}))
-    matrix=profile();required=matrix['packages'];allowed=matrix.get('allowed_additions',{})
+    matrix=profile(package.get('gptclawMobile')=='expo-dev-v1');required=matrix['packages'];allowed=matrix.get('allowed_additions',{})
     check(all(actual.get(name)==version for name,version in required.items()))
     check(all(name in required or allowed.get(name)==version for name,version in actual.items()))
 
@@ -138,7 +140,7 @@ def invalidate(state, complete=False, operation_id=None):
 def quality(root, action):
     import project_dependencies as deps
     import project_toolchains as tools
-    a=app();root,document=a.target(root);check(document['schema_version'] in (5,6,9))
+    a=app();root,document=a.target(root);check(document['schema_version'] in (5,6,9,11,12))
     check(action in document['commands'],'mobile-unsupported')
     slug=document['project']['id']
     # Preparation is a shared transactional operation; it owns its own lock.
@@ -146,7 +148,7 @@ def quality(root, action):
     if status['state']!='dependencies-ready':
         deps.require_clean(root,slug);deps.operate(root,'install')
     with a.locked(slug):
-        if document['schema_version'] in (6,9):__import__('metro_sessions').assert_stopped(root,slug)
+        if document['schema_version'] in (6,9,11,12):__import__('metro_sessions').assert_stopped(root,slug)
         deps.require_clean(root,slug);ctx=deps.context(root)
         check(manifest_config(root,document))
         state=job_state(root,document);selected=tools.selection(root)
@@ -169,7 +171,7 @@ def quality(root, action):
 def dispatch(args):
     a=app();root,document=a.target(args.project_root)
     check(getattr(args,'component',None) is None,'mobile-unsupported')
-    if document['schema_version'] in (6,9) and args.action in {'start','stop','restart','status','observe','logs'}:
+    if document['schema_version'] in (6,9,11,12) and args.action in {'start','stop','restart','status','observe','logs'}:
         import metro_sessions as metro
         if args.action in {'status','observe'}:return metro.status(root)
         if args.action=='logs':return metro.logs(root,getattr(args,'lines',80))
@@ -188,7 +190,8 @@ def dispatch(args):
 
 
 def creation_inputs(slug, release):
-    return {'identity':identities(slug),'profile_digest':hashlib.sha256(json.dumps(profile(),sort_keys=True,separators=(',',':')).encode()).hexdigest(),
+    native=release['provider'] in {'expo-dev-v1','expo-dev-notes-v1'}
+    return {'identity':__import__('native_contract').identity(slug) if native else identities(slug),'profile_digest':hashlib.sha256(json.dumps(profile(native),sort_keys=True,separators=(',',':')).encode()).hexdigest(),
             'release_digest':release['digest']}
 
 

@@ -1,0 +1,17 @@
+node_modules/
+.expo/
+.gptclaw-cache/
+.gptclaw-build/
+coverage/
+android/
+ios/
+.env
+.env.*
+*.keystore
+*.p12
+*.mobileprovision
+.cache/
+
+.gptclaw-cache/
+__pycache__/
+dist/

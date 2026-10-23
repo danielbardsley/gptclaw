@@ -28,17 +28,19 @@ def metadata_clean(root):
 
 def inputs(root):
     paths=['.gptclaw/project.yaml','.gptclaw/template.json','.gptclaw/template-release.json','.gptclaw/toolchain.json','app.json']
+    native=app.validate_project(root)[1]['schema_version'] in (11,12)
     output={name:hashlib.sha256(deps.read_bytes(root/name,65536)).hexdigest() for name in paths}
     context=deps.context(root)
     output.update({'dependency:'+k:v for k,v in context['hashes'].items()})
     selected=tools.selection(root)
-    app.need(selected['declaration']=={'schema_version':1,**mobile.profile()['toolchain']},'toolchain-policy')
+    app.need(selected['declaration']=={'schema_version':1,**mobile.profile(native)['toolchain']},'toolchain-policy')
     output['toolchain-selection']=selected['selection_hash']
-    output['mobile-profile']=hashlib.sha256(json.dumps(mobile.profile(),sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    output['mobile-profile']=hashlib.sha256(json.dumps(mobile.profile(native),sort_keys=True,separators=(',',':')).encode()).hexdigest()
     output['dependency-policy']=context['policy_hash']
-    if app.validate_project(root)[1]['schema_version']==9:
+    if app.validate_project(root)[1]['schema_version'] in (9,12):
         import mobile_backend
         output.update(mobile_backend.fingerprint(root))
+    if native:output.update({p:hashlib.sha256(deps.read_bytes(root/p)).hexdigest() for p in ['eas.json','.gptclaw/development-build.json']})
     return output
 
 

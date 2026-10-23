@@ -63,6 +63,10 @@
           "run": ".venv-manifest/bin/python scripts/tests/test_project_quality.py\n.venv-manifest/bin/python scripts/quality_templates.py\n.venv-manifest/bin/python scripts/check-template-releases.py --baseline \"${{ github.event.pull_request.base.sha || github.event.before || github.sha }}\""
         },
         {
+          "name": "Native upload worker boundary (no network or credentials)",
+          "run": "docker run --rm --network=none --cap-drop=ALL --security-opt=no-new-privileges -v \"$PWD/templates/apps/eas-toolchain/worker.cjs:/provider/worker.cjs:ro\" -v \"$PWD/scripts/tests/eas_worker.test.cjs:/test.cjs:ro\" docker.io/library/node@sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd node --test /test.cjs"
+        },
+        {
           "name": "Discover every supported exact quality release",
           "id": "matrix",
           "run": ".venv-manifest/bin/python scripts/quality_templates.py --list --github-output \"$GITHUB_OUTPUT\""

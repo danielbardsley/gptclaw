@@ -34,13 +34,16 @@ def verify_baseline(baseline):
             templates.check(tracked.get(rel) == blob)
     if exists.returncode: return
     old = {'releases': []}
-    for version in (1, 2, 3, 4, 5, 6, 7, 8):
+    for version in (1, 2, 3, 4, 5, 6, 7, 8, 9):
         rel = 'config/templates/v'+str(version)+'.json'
         entry = subprocess.run(['git','show',commit+':'+rel], cwd=repo, capture_output=True)
         if entry.returncode == 0: old['releases'].extend(json.loads(entry.stdout)['releases'])
     if any(release.get('provider')=='expo-v1' for release in old['releases']):
         original=subprocess.run(['git','show',commit+':config/mobile/v1.json'],cwd=repo,capture_output=True,check=True).stdout
         templates.check(original==(repo/'config/mobile/v1.json').read_bytes())
+    if any(release.get('provider') in {'expo-dev-v1','expo-dev-notes-v1'} for release in old['releases']):
+        original=subprocess.run(['git','show',commit+':config/mobile/v2.json'],cwd=repo,capture_output=True,check=True).stdout
+        templates.check(original==(repo/'config/mobile/v2.json').read_bytes())
     for release in old['releases']:
         key = (release['id'],release['version'])
         templates.check(key in releases and releases[key][0] == release)

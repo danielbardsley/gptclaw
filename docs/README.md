@@ -330,10 +330,12 @@ interfaces; existing accepted slices remain valid. QLT-010 stays optional.
   [Technical design](048-release-notes-and-changelog/technical-design.md) ·
   [Tasks](048-release-notes-and-changelog/tasks.md)
 
-- **049 — Android development builds (MOB-004), draft:**
+- **049 — Android development builds (MOB-004), implementation in progress:**
   [Specification](049-mobile-development-builds/spec.md) ·
   [Technical design](049-mobile-development-builds/technical-design.md) ·
-  [Tasks](049-mobile-development-builds/tasks.md)
+  [Tasks](049-mobile-development-builds/tasks.md) ·
+  [Acceptance tracking](049-mobile-development-builds/acceptance.md) ·
+  [Security disposition](049-mobile-development-builds/security-review.md)
 
 ## Current application milestone
 
