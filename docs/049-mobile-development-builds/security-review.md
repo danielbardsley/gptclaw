@@ -62,3 +62,13 @@ patched release is a different major from Expo CLI's pinned transitive selection
 No safe complete automatic remediation has been established for these pins; a
 reviewed tooling change or exact scoped risk decision is still needed. No broad
 `audit fix --force`, dependency-policy relaxation or advisory exception was used.
+
+
+## Broader CI audit boundaries
+
+The generated matrix also found fresh advisories in existing immutable Next and
+Python starter releases (including Next critical/high entries and Python
+filelock/virtualenv entries). Those releases were not edited or silently waived.
+Fastify source checks passed. These broader CI failures remain separate from the
+new native source and EAS admission findings above; passing component tests does
+not imply a passing dependency audit or approval to sign/upload source.

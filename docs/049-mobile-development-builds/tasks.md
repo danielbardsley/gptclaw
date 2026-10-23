@@ -19,7 +19,7 @@ Owner: Project owner. Date: 2026-10-22 (America/New_York).
 
 ## Implementation after authorization
 
-- [ ] T3 — Allocate unused versioned contracts/profile/capabilities; implement
+- [x] T3 — Allocate unused versioned contracts/profile/capabilities; implement
   source-only opt-in and deterministic identity/public config/native fingerprint.
   Preserve frozen releases, legacy providers, Go and optional backend contracts.
   Add new immutable starter release(s) with explicit generated-native ownership.
@@ -28,10 +28,10 @@ Owner: Project owner. Date: 2026-10-22 (America/New_York).
   size/path limits, credential boundary, redaction and signing metadata handling.
   Prove actual pinned EAS upload matches reviewed inputs before network submission.
   Map to DB-002, DB-003; AC-002,003.
-- [ ] T5 — Implement plan/submit/observe/reconcile/artifact interfaces with durable
+- [x] T5 — Implement plan/submit/observe/reconcile/artifact interfaces with durable
   intent/job receipts, locks, admission/budget limits and unknown-outcome recovery.
   Interruptions cannot automatically duplicate external jobs. Map to DB-004; AC-004.
-- [ ] T6 — Implement verified artifact/package/certificate handling and separate
+- [x] T6 — Implement verified artifact/package/certificate handling and separate
   development-client launch admission/serializer. Validate private HTTPS, native
   fingerprint, session generation/expiry and explicit installation evidence.
   Keep Go/Metro/backend lifecycles independent. Map to DB-005, DB-006; AC-005–007.
@@ -76,8 +76,10 @@ Source native component tests and Android unsigned exports pass; full `verify`
 stops at an unapproved Zod advisory. The frozen EAS toolchain audit has nine high
 vulnerable package entries. No native signing/runtime exception is authorized.
 See [acceptance tracking](acceptance.md) and [security disposition](security-review.md).
-The broad repository suite is being rerun against stable release metadata after
-fixing the version-refusal fixture and discarding a superseded in-progress run.
+The broad repository suite remains running. It recorded legacy spike and template
+fixture failures; corrected full focused suites pass. Latest CI is not green.
+Software implementation of T3/T5/T6 is complete; external acceptance is tracked
+separately by T9. T4 remains open for real pinned upload observation.
 
 The owner selected prior-account reuse, Expo-managed signing, willingness to pay
 and 30-day retention. The exact account/project/certificate, numeric budget and
@@ -85,3 +87,13 @@ actual artifact access remain unresolved. No credentials, billing, cloud jobs,
 managed rollout, private listener changes or physical installation were performed.
 T2/T7/T8/T9/T10 remain open until their stated gates have actual evidence. No
 waivers or catalogue Delivered status are inferred from source implementation.
+
+Budget guidance: recommend starting with Expo Free (15 Android builds/month),
+or a $25 total first-month ceiling if paid access becomes necessary. The owner
+has not approved that numeric ceiling or added billing details. Expo Starter
+is $19/month plus usage with $45 build credit ([pricing](https://expo.dev/pricing),
+checked October 23). This recommendation does not authorize payment.
+
+Final focused native suite: 32/32 tests pass at source revision `b871a6b`;
+release immutability, local documentation links and whitespace checks pass.
+Fresh CI and the broad local run remain pending; no full-check success is claimed.

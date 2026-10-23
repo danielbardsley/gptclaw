@@ -6,7 +6,7 @@
 - **Scope:** Android-first development clients, supporting MOB-005/006 slices.
 - **Source:** `codex/mob-004-development-builds`, based on planning commit
   `f29c6fc` and main `6375986`; implementation commit `e79e09a`. Corrective
-  regression updates follow on the same PR.
+  regression updates follow on the same PR; final source revision `b871a6b`.
 - **Review:** [PR #99](https://github.com/danielbardsley/gptclaw/pull/99)
 - **Plans:** [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 
@@ -119,3 +119,47 @@ CI on `e79e09a` began all five repository workflows; the dashboard job failed it
 old session-schema assertion before browser tests. That is not a passing CI result.
 Corrective CI, final broad outcomes, security resolution and native external/device
 acceptance remain distinct.
+
+## Final corrective evidence
+
+- Full corrected template fixture suite: 24 tests passed. It now copies both
+  native helper toolchains into installed-snapshot fixtures and expects catalogue
+  version 9. Frozen historical releases remain unchanged.
+- Full corrected Metro contract suite: 20 tests passed. Dashboard collector 7,
+  dashboard Metro 9, legacy spike 24 and Metro state 16 tests passed.
+- The complete native suite passed 31 tests before the final account-wide budget
+  regression was added. The final expanded result is recorded below.
+- The worker's three Node VM tests also passed with the CI resource limits,
+  read-only container filesystem and network disabled.
+- On corrective commit `b68d371`, dashboard CI passed. The Tailscale workflow's
+  complete repository check finished with only the two template-fixture failures
+  listed above, subsequently corrected and rerun locally. Its protected apply and
+  plan jobs were skipped. This was a failed CI run, not a deployment.
+- Private application and quality matrix CI failed. In addition to the corrected
+  template fixtures, real audits rejected native/Expo source dependencies and
+  existing immutable Next/Python starter dependency graphs. Fastify passed;
+  matrix metadata (including the native worker tests) passed. These failures
+  are not waived. The final corrective commit requires fresh CI.
+
+The owner has not supplied billing details or approved a numeric budget. The
+recommended starting point is Expo Free; $25 total for the first month is a
+proposed ceiling if paid access is needed, not authorization to subscribe.
+No cloud job, credential read, signing-key operation, provider rollout or physical
+Android installation occurred. Task-only dependency/export files and synthetic
+signing material were removed; public source/locks and sanitized evidence remain.
+
+
+Final source verification at `b871a6b`: `python -B
+scripts/tests/test_native_builds.py -v` passed all 32 tests in 292.768 seconds,
+including shared-account approval enforcement across projects. Frozen catalogue
+baseline integrity and local Markdown links passed; changed Python modules
+compiled and shell/whitespace checks passed. Fresh CI started all five workflows
+and remains pending at handover. The local broad checker remains running through
+repository-credential fixtures; its earlier corrected failures mean that run
+cannot be reported green. No final full-check success is claimed.
+
+Source and evidence are committed/pushed on the isolated feature branch. The
+original dashboard worktree has no uncommitted changes and was preserved. Remaining
+work: resolve audit findings through reviewed compatible tooling, obtain exact
+external configuration and numeric approval, complete CI/review/merge, then conduct
+the separately gated remote build and Android acceptance. No Delivered status.
