@@ -34,10 +34,10 @@ setup and store publication require their concrete scope to be authorized.
 | Existing capability | Reuse and boundary |
 |---|---|
 | FND-001–006; AGT guidance/skills | Use the existing private host, protected volume, unprivileged forge account, repository/area instructions and planning/PR workflow. Do not rebuild the foundation. Remaining host/client acceptance stays recorded separately. |
-| PRJ-001/002/003; SYS-002/003 | Reuse versioned validation, the installed provider, immutable template catalogue and pinned dependency/toolchain policies. MOB-001 delivers schema-5 mobile source creation/quality using exact Node 24.21.0/pnpm 12.10.1. Planning readback sees stable 1.10.1 and main source 1.11.0 with PRJ-006; implementation must preserve both mobile and canonical-worktree contracts. Neither provides an accepted Metro session. Recheck installed capability at rollout. |
+| PRJ-001/002/003; SYS-002/003 | Reuse versioned validation, the installed provider, immutable template catalogue and pinned dependency/toolchain policies. MOB-001 delivers schema-5 mobile source creation/quality using exact Node 24.21.0/pnpm 12.10.1. SPEC-033/034 subsequently delivered Android Metro/Go and SPEC-036 delivered bound mobile/API contracts. Preserve canonical-worktree behavior; recheck installed versions/capabilities at rollout rather than using historical planning readbacks. |
 | PRJ-004/005; PRJ-006 | Reuse private repository creation, explicit credential bindings, branches/worktrees and owned-operation locking. Repository credentials do not become Expo, Apple or Google credentials. |
-| TPL-003; RUN-006/011 | Reuse FastAPI, ordered group lifecycle and PostgreSQL persistence/migrations/recovery. Current schema 4 and `notes-postgres@1.0.0` require web + API + DB; an API/DB-only shape is an extension, not an existing capability. SPEC-026 is delivered; SPEC-025's historical closeout still lists review/merge as pending. |
-| NET-101–103; DSH-001–003 | Reuse private HTTPS API routes, inventory, observations and safe links. Metro transport, WebSocket behavior and native launch links have not been accepted through this routing path. |
+| TPL-003; RUN-006/011 | Reuse FastAPI, ordered group lifecycle and PostgreSQL persistence/migrations/recovery. SPEC-036 now delivers the API/DB-only shape (manifest 8), explicit mobile binding (manifest 9), and Android integration alongside the retained three-service template. Reuse accepted persistence/recovery; retain its recorded limitations. |
+| NET-101–103; DSH-001–003 | Reuse private HTTPS API routes, inventory, observations and safe links. SPEC-033/034 delivered a separate Android private Metro transport/launch contract; API HTTPS routes remain distinct. Closed trial listeners are not currently available or standing authorization to recreate them. |
 
 Evidence and operational interfaces: [private apps](../../runbooks/manage-private-apps.md),
 [FastAPI](../../runbooks/manage-python-apis.md), [groups](../../runbooks/manage-multi-service-projects.md),
@@ -320,9 +320,14 @@ with source/data retained; owner-supplied final Serve JSON confirms the temporar
 private listener is removed and both HTTPS 443 handlers are preserved. The initial restore failure remains documented despite the
 successful full rerun. Python remains the application backend default.
 
-The next substantive mobile capability is the stage-5 development-build slice
-(MOB-004 with required MOB-005/006 credential/environment/build prerequisites),
-subject to its own specification and authorization. This acceptance does not
+The next selected planning requirement is [SPEC-049](../049-android-installable-builds/spec.md):
+Android development-client installation, followed by a standalone preview APK
+with Metro stopped (MOB-004 with necessary MOB-005/006 slices). The project owner
+approved this scope and selected Fieldnotes on October 21. Reversible build
+preparation proceeds; account/signing/budget and operational choices remain
+necessary before dependent external actions. Reuse merged
+QLT-001–010 source contracts; their outstanding rollout/adoption observations
+remain separate and task closure is preserved. This acceptance does not
 establish iOS, signed-build or production readiness. Fastify remains optional.
 
 **M1 spans stages 1–4 across compatible initiatives:** SPEC-031 begins with
@@ -339,7 +344,7 @@ specification; this roadmap authorizes no installation.
 |---|---|
 | First product and first acceptance devices | Project owner selects the product/device availability when commissioning the first specification; target iOS and Android, label any initial platform limitation. |
 | SDK/toolchain and private Metro transport | Specification author validates current Expo compatibility and actual device transport during stages 1/4; the owner reviews the selected contract. |
-| Backend topology | Propose separately managed mobile and API/DB projects; first fixture may reuse the existing three-service template. Review a shared repository only for a justified common product lifecycle. |
+| Backend topology | SPEC-036 delivers separately managed mobile and API/DB projects. Reuse their explicit binding and independent lifecycles; a shared repository needs a justified product lifecycle. |
 | EAS account, signing custody, budget and external upload | Project owner resolves before stage 5; plan cloud builds first, with no assumed credentials, subscription or host native toolchain. |
 | Production audience, identity and store distribution | Project owner resolves in the product production specification before stage 8; private development does not select these. |
 
