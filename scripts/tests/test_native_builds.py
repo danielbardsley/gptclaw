@@ -162,6 +162,16 @@ class NativeBuilds(unittest.TestCase):
         self.assertEqual(observed['state'], 'succeeded')
         self.assertFalse(observed['artifact_verified'])
 
+    def test_scoped_job_id_survives_incomplete_remote_metadata(self):
+        digest=builds.plan(self.root)[0]['plan_digest']
+        def response(value,*args):
+            remote=self.remote(value);remote.pop('appIdentifier');return remote
+        with patch.object(builds,'worker',side_effect=response):
+            result=builds.submit(self.root,digest,'/not-read')
+        self.assertEqual(result['state'],'unknown')
+        self.assertEqual(result['job_id'],'22222222-2222-2222-2222-222222222222')
+        with self.assertRaises(app.AppError):self.submit()
+
     def test_remote_identity_mismatch_leaves_unknown(self):
         digest = builds.plan(self.root)[0]['plan_digest']
         def response(value, *args):

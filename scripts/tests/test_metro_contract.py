@@ -195,7 +195,7 @@ class ContractTests(unittest.TestCase):
         output=io.StringIO()
         with redirect_stdout(output):self.assertEqual(cli.main(['--version']),0)
         caps=json.loads(output.getvalue());self.assertIn(6,caps['project_manifest_schemas']);self.assertIn(6,caps['runtime_manifest_schemas']);self.assertNotIn(5,caps['runtime_manifest_schemas'])
-        self.assertEqual(caps['metro_actions'],['enable','renew','prune','route-plan','recover-stop','revoke']);self.assertEqual(caps['metro_session_schemas'],[1,2])
+        self.assertEqual(caps['metro_actions'],['enable','renew','prune','route-plan','recover-stop','revoke']);self.assertEqual(caps['metro_session_schemas'],[1,2,3])
         self.assertEqual(caps['expo_go_inspection_schemas'],[1]);self.assertEqual(caps['expo_go_launch_schemas'],[1])
         self.assertNotIn('devices',caps);self.assertNotIn('expo-go',caps['capabilities'])
 

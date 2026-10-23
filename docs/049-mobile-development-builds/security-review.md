@@ -52,3 +52,13 @@ exports; both remain blocked.
 [Zod advisory](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5). Unsigned
 exports are checked offline without credentials, independently of this failed
 security gate; they do not establish signing or native runtime admission.
+
+## Automatic remediation review
+
+For every high package chain, npm's `fixAvailable` suggestion selects EAS CLI
+0.24.1 as a semver-major change from 25.3.0. That is a major historical downgrade,
+not a verified SDK-57-compatible repair, and was not applied. Source Zod's listed
+patched release is a different major from Expo CLI's pinned transitive selection.
+No safe complete automatic remediation has been established for these pins; a
+reviewed tooling change or exact scoped risk decision is still needed. No broad
+`audit fix --force`, dependency-policy relaxation or advisory exception was used.

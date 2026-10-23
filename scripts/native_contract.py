@@ -49,7 +49,7 @@ def app_config(expo, document):
     allowed = {'name', 'slug', 'scheme', 'version', 'platforms', 'orientation', 'ios', 'android', 'plugins', 'owner', 'extra'}
     if not isinstance(expo, dict) or not set(expo) <= allowed:
         return False
-    if not all(expo.get(k) == v for k, v in expected.items()):
+    if expo.get('name') != document['project']['name'] or not all(expo.get(k) == v for k, v in expected.items()):
         return False
     if (expo.get('platforms') != ['android'] or expo.get('orientation') != 'portrait'
             or expo.get('plugins') != [['expo-dev-client', {'launchMode': 'most-recent'}]]

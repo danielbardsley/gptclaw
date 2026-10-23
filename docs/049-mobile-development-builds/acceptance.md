@@ -5,7 +5,8 @@
 - **Evidence date:** 2026-10-23 (America/New_York)
 - **Scope:** Android-first development clients, supporting MOB-005/006 slices.
 - **Source:** `codex/mob-004-development-builds`, based on planning commit
-  `f29c6fc` and main `6375986`; implementation revision recorded after commit.
+  `f29c6fc` and main `6375986`; implementation commit `e79e09a`. Corrective
+  regression updates follow on the same PR.
 - **Review:** [PR #99](https://github.com/danielbardsley/gptclaw/pull/99)
 - **Plans:** [Specification](spec.md) · [Design](technical-design.md) · [Tasks](tasks.md)
 
@@ -94,3 +95,27 @@ The isolated worktree preserves the original dashboard branch and unrelated
 working trees. Local task containers did not change running applications,
 listeners, database data or the installed provider. Implementation merge and
 Android owner acceptance remain pending.
+
+## Corrective regression follow-through
+
+The stable broad run executed all 26 native build regressions successfully and
+all three APK parser cases. Targeted launch/provenance/audit checks (3) and native
+tool-image/foreign-job checks (2) also passed. Review added scoped job-ID retention
+when queued remote metadata is incomplete; its focused test is tracked separately.
+
+The broad run caught a legacy spike regression: bare source-only spike fixtures
+have no manifest. Native configuration dispatch now handles that case without
+weakening the original Go config restrictions. All 24 spike tests and 9 dashboard
+Metro projection tests passed after correction. CI caught an expected capability
+assertion still listing session schemas 1/2; the collector and Metro contract tests
+now include schema 3. The corrected collector suite passed 7 tests.
+
+`check-template-releases.py --baseline origin/main` passes after explicitly tracking
+the release's disabled, public synthetic backend default (normally ignored in
+generated projects). Catalogue 9 and native profile 2 now participate in historical
+immutability checks. No pre-existing published release was changed.
+
+CI on `e79e09a` began all five repository workflows; the dashboard job failed its
+old session-schema assertion before browser tests. That is not a passing CI result.
+Corrective CI, final broad outcomes, security resolution and native external/device
+acceptance remain distinct.

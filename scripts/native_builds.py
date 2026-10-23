@@ -300,12 +300,16 @@ def accept_remote(value, remote):
     """Accept identity and state only. Never persist remote messages or bearer URLs."""
     p = value['plan']
     need(isinstance(remote, dict) and isinstance(remote.get('id'), str) and re.fullmatch(contract.UUID, remote['id']))
-    need(value['job_id'] in {None, remote['id']} and remote.get('platform') == 'ANDROID'
-         and remote.get('buildProfile') == 'development' and remote.get('distribution') == 'INTERNAL'
-         and remote.get('appIdentifier') == contract.identity(value['project'])['android']['package']
+    need(value['job_id'] in {None, remote['id']}
          and isinstance(remote.get('app'), dict) and remote['app'].get('id') == p['eas_project']
-         and remote['app'].get('ownerAccount', {}).get('name') == p['account']
-         and remote.get('message') == 'gptclaw:' + value['operation_id'] + ':' + p['plan_digest']
+         and isinstance(remote['app'].get('ownerAccount'),dict)
+         and remote['app']['ownerAccount'].get('name') == p['account']
+         and remote.get('message') == 'gptclaw:' + value['operation_id'] + ':' + p['plan_digest'], 'native-remote')
+    # Preserve a scoped job identity even if queued build metadata is incomplete.
+    value['job_id']=remote['id']
+    need(remote.get('platform') == 'ANDROID' and remote.get('buildProfile') == 'development'
+         and remote.get('distribution') == 'INTERNAL'
+         and remote.get('appIdentifier') == contract.identity(value['project'])['android']['package']
          and remote.get('status') in REMOTE, 'native-remote')
     need(value['state'] in ACTIVE or value['state']==REMOTE[remote['status']], 'native-remote')
     value.update(job_id=remote['id'], state=REMOTE[remote['status']], updated_at=time.time(), last_remote_at=time.time())

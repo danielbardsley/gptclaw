@@ -57,7 +57,7 @@ class CollectorTests(unittest.TestCase):
         actual=collector.provider_capabilities()
         self.assertEqual(actual,json.loads(output.getvalue()))
         self.assertIn(6,actual['runtime_manifest_schemas'])
-        self.assertEqual(actual['metro_session_schemas'],[1,2])
+        self.assertEqual(actual['metro_session_schemas'],[1,2,3])
         self.assertEqual(actual['expo_go_launch_schemas'],[1])
 
 
