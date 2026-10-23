@@ -174,7 +174,7 @@ def main(argv=None):
    name=args.native_action
    if name=='configure':result=native.contract.configure(args.project_root,args.config_file,args.apply,args.confirm_plan)
    elif name=='plan':result=native.public_plan(args.project_root)
-   elif name=='prepare-toolchain':result={'state':'toolchain-ready','eas_image':native.toolchain(True),'apk_verifier_image':native.apk_toolchain(True)}
+   elif name=='prepare-toolchain':result=native.prepare_tools(args.project_root)
    elif name=='submit':result=native.submit(args.project_root,args.confirm_plan,args.credential_file)
    elif name in {'status','reconcile'}:result=native.observe(args.project_root,args.operation_id,args.credential_file,getattr(args,'job_id',None))
    elif name=='resolve-not-submitted':result=native.resolve_not_submitted(args.project_root,args.operation_id,args.confirmation)

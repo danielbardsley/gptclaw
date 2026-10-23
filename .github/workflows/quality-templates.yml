@@ -64,7 +64,7 @@
         },
         {
           "name": "Native upload worker boundary (no network or credentials)",
-          "run": "docker run --rm --network=none --cap-drop=ALL --security-opt=no-new-privileges -v \"$PWD/templates/apps/eas-toolchain/worker.cjs:/provider/worker.cjs:ro\" -v \"$PWD/scripts/tests/eas_worker.test.cjs:/test.cjs:ro\" docker.io/library/node@sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd node --test /test.cjs"
+          "run": "docker run --rm --read-only --memory=512m --pids-limit=64 --cpus=1 --network=none --user \"$(id -u):$(id -g)\" --cap-drop=ALL --security-opt=no-new-privileges -v \"$PWD/templates/apps/eas-toolchain/worker.cjs:/provider/worker.cjs:ro\" -v \"$PWD/scripts/tests/eas_worker.test.cjs:/test.cjs:ro\" docker.io/library/node@sha256:51b1100cc2a83d370c6a60952e3f2989c8a43159d0e38586e090f3b3326efefd node --test /test.cjs"
         },
         {
           "name": "Discover every supported exact quality release",

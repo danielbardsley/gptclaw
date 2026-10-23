@@ -162,6 +162,41 @@ class NativeBuilds(unittest.TestCase):
         self.assertEqual(observed['state'], 'succeeded')
         self.assertFalse(observed['artifact_verified'])
 
+    def test_credential_worker_is_owned_and_bounded_independently_of_its_client(self):
+        result=self.submit();value=builds.load('native-one',result['operation_id'])
+        (self.root/'node_modules').mkdir()
+        with tempfile.NamedTemporaryFile() as token:
+            token.write(b'synthetic-expo-test-token');token.flush()
+            response=subprocess.CompletedProcess([],0,json.dumps(self.remote(value)),'')
+            with patch.object(builds,'toolchain',return_value='sha256:'+'a'*64),patch.object(app,'command',return_value=response) as command:
+                builds.worker(value,'observe',token.name,value['job_id'])
+        argv=command.call_args.args[0]
+        self.assertIn('--timeout=220',argv);self.assertIn('--stop-timeout=3',argv)
+        self.assertIn('gptclaw-native-observe-'+value['operation_id'],argv)
+        self.assertIn('--read-only',argv);self.assertNotIn('synthetic-expo-test-token',' '.join(argv))
+
+    def test_tool_preparation_requires_an_opted_in_native_project(self):
+        with patch.object(app,'target',return_value=(self.root,{'schema_version':1})),patch.object(builds,'toolchain') as tools:
+            with self.assertRaises(app.AppError):builds.prepare_tools(self.root)
+        tools.assert_not_called()
+        with patch.object(builds,'toolchain',return_value='sha256:'+'a'*64),patch.object(builds,'apk_toolchain',return_value='sha256:'+'b'*64):
+            self.assertEqual(builds.prepare_tools(self.root)['state'],'toolchain-ready')
+
+    def test_local_staging_failure_keeps_a_recoverable_receipt_without_remote_call(self):
+        digest=builds.plan(self.root)[0]['plan_digest']
+        with patch.object(Path,'write_bytes',side_effect=OSError('Synthetic staging failure')),patch.object(builds,'worker') as remote:
+            result=builds.submit(self.root,digest,'/not-read')
+        self.assertEqual(result['state'],'failed');remote.assert_not_called()
+        self.assertEqual(len(builds.receipts('native-one')),1)
+        self.assertEqual(builds.load('native-one',result['operation_id'])['reserved_cost_cents'],100)
+
+    def test_observer_refuses_an_unmatched_toolchain_before_reading_a_credential(self):
+        result=self.submit();value=builds.load('native-one',result['operation_id'])
+        value['plan']['toolchain_digest']='0'*64
+        with self.assertRaises(app.AppError),patch.object(app,'command') as command:
+            builds.worker(value,'observe','/must-not-read',value['job_id'])
+        command.assert_not_called()
+
     def test_scoped_job_id_survives_incomplete_remote_metadata(self):
         digest=builds.plan(self.root)[0]['plan_digest']
         def response(value,*args):
@@ -186,6 +221,19 @@ class NativeBuilds(unittest.TestCase):
         self.assertEqual(observed['state'], 'queued')
         self.assertEqual(observed['last_remote_at'], value['last_remote_at'])
         self.assertEqual(observed['observation'], 'unavailable')
+
+    def test_shared_account_approval_cannot_reset_its_budget_in_another_project(self):
+        self.config['attempt_limit']=1;app.save(self.root/contract.CONFIG,self.config);self.commit()
+        result=self.submit();value=builds.load('native-one',result['operation_id']);value['state']='failed';builds.save(value)
+        other=Path(app.create('native-two',template='expo-development',template_version='1.0.0')['root'])
+        config=dict(self.config,project_id='33333333-3333-3333-3333-333333333333')
+        app.save(other/contract.CONFIG,config)
+        expo=json.loads((other/'app.json').read_text());expo['expo'].update(owner=config['account'],extra={'eas':{'projectId':config['project_id']}});app.save(other/'app.json',expo)
+        self.root=other;self.git('init','-q');self.git('config','user.name','Synthetic fixture');self.git('config','user.email','fixture@example.invalid');self.commit()
+        digest=builds.plan(self.root)[0]['plan_digest']
+        with patch.object(builds,'worker') as remote,self.assertRaises(app.AppError):
+            builds.submit(self.root,digest,'/not-read')
+        remote.assert_not_called()
 
     def test_budget_and_attempt_limits_precede_remote(self):
         d = dict(self.config, budget_cents=0, attempt_cost_ceiling_cents=0, attempt_limit=1)
@@ -213,6 +261,7 @@ class NativeBuilds(unittest.TestCase):
         value['artifact'] = {'sha256': 'a' * 64, 'package':contract.identity('native-one')['android']['package'],
                              'certificate_sha256':'b'*64,'job_id':value['job_id'],'verified_at':time.time(),
                              'expires_at':time.time()+60,'evidence':'apksig-8.13.0-and-binary-manifest'}
+        self.assertEqual(builds.public(value)['artifact']['sha256'],'a'*64)
         value['installed'] = {'artifact_sha256': 'a' * 64, 'native_fingerprint': contract.fingerprint(self.root),
                               'os':'Android 11','reported_at':time.time()}; builds.save(value)
         descriptor = {'generation': 'c' * 32, 'transport_available': True, 'requested_mode': 'development-client',

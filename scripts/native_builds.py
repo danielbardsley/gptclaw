@@ -113,6 +113,10 @@ def verify_archive(data, inventory):
     need(found == inventory)
 
 
+def budget_scope(config):
+    return {k:config[k] for k in ['attempt_limit','budget_cents','attempt_cost_ceiling_cents','expires_at']}
+
+
 def plan(root):
     root, document, config = contract.inspect(root)
     commit, files = source(root)
@@ -122,7 +126,7 @@ def plan(root):
              'canonical_key': worktrees.canonical(root)['key'], 'commit': commit,
              'configuration_digest': contract.digest(config), 'native_fingerprint': contract.fingerprint(root),
              'account': config['account'], 'eas_project': config['project_id'], 'platform': 'android',
-             'profile': 'development', 'approval_id': config['approval_id'],
+             'profile': 'development', 'approval_id': config['approval_id'], 'budget_scope':budget_scope(config),
              'archive_sha256': hashlib.sha256(archive).hexdigest(), 'inventory': inventory,
              'toolchain_digest': toolchain_digest()}
     value['plan_digest'] = contract.digest(value)
@@ -134,7 +138,8 @@ def public_plan(root):
     return {key: value[key] for key in ['schema_version', 'project', 'commit', 'plan_digest', 'archive_sha256',
                                        'native_fingerprint']} | {'state': 'build-planned', 'file_count': len(value['inventory']),
                                                                'archive_bytes': len(data), 'submits_build': False,
-                                                               'contains_private_backend_configuration': 'src/config/backend.generated.ts' in value['inventory']}
+                                                               'contains_private_backend_configuration': 'src/config/backend.generated.ts' in value['inventory'],
+                                                               'budget_scope':value['budget_scope']}
 
 
 def toolchain_digest():
@@ -220,6 +225,12 @@ def load(project, op):
     need(value['last_remote_at'] is None or type(value['last_remote_at']) in {int, float})
     for field in ['native_fingerprint','archive_sha256','configuration_digest','canonical_key','toolchain_digest']:
         need(isinstance(p.get(field),str) and re.fullmatch(contract.HEX,p[field]),'native-recovery')
+    scope=p.get('budget_scope')
+    need(isinstance(scope,dict) and set(scope)=={'attempt_limit','budget_cents','attempt_cost_ceiling_cents','expires_at'}
+         and type(scope['attempt_limit']) is int and 1<=scope['attempt_limit']<=20
+         and type(scope['budget_cents']) is int and 0<=scope['budget_cents']<=100000
+         and type(scope['attempt_cost_ceiling_cents']) is int and 0<=scope['attempt_cost_ceiling_cents']<=scope['budget_cents']
+         and isinstance(scope['expires_at'],str),'native-recovery')
     downloaded=value['download_sha256']
     need(downloaded is None or isinstance(downloaded,str) and re.fullmatch(contract.HEX,downloaded),'native-recovery')
     artifact=value['artifact']
@@ -257,15 +268,30 @@ def receipts(project):
     return values
 
 
+def account_receipts():
+    base=app.safe(app.STORE/'native-builds')
+    if not base.exists():return []
+    values=[]
+    for index,project in enumerate(sorted(base.iterdir())):
+        need(index<4096 and not project.is_symlink() and project.is_dir(),'native-recovery')
+        __import__('project_mobile').identities(project.name)
+        values.extend(receipts(project.name))
+        need(len(values)<=2000,'native-recovery')
+    return values
+
+
 def public(value):
+    artifact=value['artifact']
     return {'project': value['project'], 'operation_id': value['operation_id'], 'state': value['state'],
             'job_id': value['job_id'], 'commit': value['plan']['commit'], 'updated_at': value['updated_at'],
             'last_remote_at': value['last_remote_at'], 'artifact_verified': value['artifact'] is not None,
-            'installation_recorded': value['installed'] is not None}
+            'installation_recorded': value['installed'] is not None,
+            'artifact':{k:artifact[k] for k in ['sha256','package','certificate_sha256','expires_at']} if artifact else None}
 
 
 def worker(value, action, credential_file, job=None):
     """Fixed container, bounded outputs; credential is a mounted file, never argv/env."""
+    need(value['plan']['toolchain_digest']==toolchain_digest(),'native-toolchain')
     secret = app.safe(Path(credential_file).absolute())
     info = secret.stat()
     need(stat.S_ISREG(info.st_mode) and info.st_uid == os.getuid() and info.st_nlink == 1
@@ -277,7 +303,9 @@ def worker(value, action, credential_file, job=None):
     # Dependency preparation has its own credential-free step before submit.
     modules = app.safe(Path(value['root']) / 'node_modules')
     need(modules.is_dir() and not modules.is_symlink(), 'native-toolchain')
-    argv = ['podman', 'run', '--rm', '--read-only', '--userns=keep-id', '--user', str(os.getuid()) + ':' + str(os.getgid()),
+    argv = ['podman', 'run', '--rm', '--timeout=220', '--stop-timeout=3',
+            '--name', 'gptclaw-native-'+action+'-'+value['operation_id'],
+            '--label', 'com.gptclaw.native-build='+value['operation_id'], '--read-only', '--userns=keep-id', '--user', str(os.getuid()) + ':' + str(os.getgid()),
             '--cap-drop=all', '--security-opt=no-new-privileges', '--pids-limit=256', '--memory=2g', '--cpus=2',
             '--tmpfs=/tmp:rw,size=512m,mode=1777', '--env=HOME=/tmp/home', '--env=CI=1',
             '--volume', str(secret) + ':/run/secrets/expo-token:ro', '--volume', str(base) + ':/input:ro',
@@ -322,25 +350,38 @@ def submit(root, confirm_plan, credential_file):
     _, _, config = contract.inspect(root)
     security_gate(Path(p['root']), p['project'])
     project = p['project']
-    with app.locked('native-submission', project_guard=False), app.locked(project):
+    with app.locked('.native-build-submission', project_guard=False), app.locked(project):
         old = receipts(project)
         need(not any(r['state'] in ACTIVE for r in old), 'native-recovery')
         # Limits apply to the approval identity across configuration edits, not per revision.
-        prior = [r for r in old if r['plan']['approval_id'] == config['approval_id']]
+        prior = [r for r in account_receipts() if r['plan']['approval_id'] == config['approval_id'] and r['plan']['account']==config['account']]
+        need(all(r['plan']['budget_scope']==budget_scope(config) for r in prior),'native-budget')
         need(len(prior) < config['attempt_limit']
              and sum(r['reserved_cost_cents'] for r in prior) + config['attempt_cost_ceiling_cents'] <= config['budget_cents'], 'native-budget')
         # Compare again under locks before intent/archive persistence.
         fresh, files, archive = plan(root); need(fresh == p, 'native-drift')
-        op = uuid.uuid4().hex; base = directory(project) / op; base.mkdir(mode=0o700)
-        stage = base / 'source'; stage.mkdir(mode=0o700)
-        for name, data in files.items():
-            out = stage / name; out.parent.mkdir(parents=True, exist_ok=True, mode=0o700); out.write_bytes(data)
-        (base / 'archive.tar.gz').write_bytes(archive)
-        (base / 'archive.sha256').write_text(p['archive_sha256'] + '\n')
+        op = uuid.uuid4().hex; base = directory(project) / op
+        preparing=directory(project)/('.prepare-'+op); preparing.mkdir(mode=0o700)
         value = {'schema_version': 1, 'operation_id': op, 'project': project, 'root': str(root), 'state': 'submitting',
                  'plan': p, 'job_id': None, 'updated_at': time.time(), 'last_remote_at': None,
                  'reserved_cost_cents': config['attempt_cost_ceiling_cents'], 'artifact': None, 'installed': None, 'download_sha256': None}
-        save(value)  # Durable intent before the first possible external request.
+        # Publish only a directory that already contains its durable intent.
+        app.save(preparing/'receipt.json',value)
+        __import__('project_templates').publish(preparing,base)
+        for parent in [base.parent,base.parent.parent,app.STORE]:
+            fd=os.open(parent,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+            try:os.fsync(fd)
+            finally:os.close(fd)
+        try:
+            stage = base / 'source'; stage.mkdir(mode=0o700)
+            for name, data in files.items():
+                out = stage / name; out.parent.mkdir(parents=True, exist_ok=True, mode=0o700); out.write_bytes(data)
+            (base / 'archive.tar.gz').write_bytes(archive)
+            (base / 'archive.sha256').write_text(p['archive_sha256'] + '\n')
+        except (OSError,app.AppError):
+            # No credential or remote request was reached; keep evidence/reservation.
+            value.update(state='failed',updated_at=time.time());save(value)
+            return public(value)
         try:
             accept_remote(value, worker(value, 'submit', credential_file))
         except (app.AppError, OSError, ValueError):
@@ -421,6 +462,12 @@ def fetch_artifact(root, op, credential_file):
             path.unlink(missing_ok=True)
 
 
+def prepare_tools(root):
+    _,document=app.target(root)
+    need(document['schema_version'] in (11,12))
+    return {'state':'toolchain-ready','eas_image':toolchain(True),'apk_verifier_image':apk_toolchain(True)}
+
+
 def apk_toolchain(prepare=False):
     base = app.REPO / 'templates/apps/apk-verifier'
     digest = contract.digest({name: hashlib.sha256(deps.read_bytes(base / name)).hexdigest()
@@ -449,7 +496,9 @@ def verified_artifact(root, op, apk_file, take_lock=True):
         with snapshot.open('xb') as out: out.write(apk)
         snapshot.chmod(0o600)
         try:
-            response = app.command(['podman', 'run', '--rm', '--read-only', '--network=none',
+            response = app.command(['podman', 'run', '--rm', '--timeout=50', '--stop-timeout=3',
+                                    '--name', 'gptclaw-native-apk-'+op, '--label', 'com.gptclaw.native-apk='+op,
+                                    '--read-only', '--network=none',
                                     '--cap-drop=all', '--security-opt=no-new-privileges', '--memory=512m',
                                     '--pids-limit=64', '--userns=keep-id', '--user', str(os.getuid())+':'+str(os.getgid()),
                                     '--volume', str(snapshot)+':/input/app.apk:ro', apk_toolchain(), '/input/app.apk'],
@@ -510,7 +559,7 @@ def resolve_not_submitted(root, op, confirmation):
     root, document = app.target(root); project = document['project']['id']
     with app.locked(project):
         value = load(project, op)
-        need(value['root']==str(root) and value['state']=='unknown' and value['job_id'] is None
+        need(value['root']==str(root) and value['state'] in {'unknown','submitting'} and value['job_id'] is None
              and confirmation==op+':'+value['plan']['plan_digest'], 'native-recovery')
         value.update(state='failed', updated_at=time.time())
         # Retain full intent and budget reservation; resolution never refunds an attempt.

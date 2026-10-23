@@ -35,8 +35,11 @@ attempt limit, total budget and per-attempt cost ceiling in cents, credential sc
 UTC expiry. These are approval metadata, never secrets. A zero-cent budget permits
 only explicitly approved free attempts. A paid ceiling must include potential
 subscription costs, taxes and other account usage in the owner's billing decision.
-The local attempt ledger reserves the selected per-attempt ceiling; it is not an
-Expo billing cap or an estimate/guarantee of service charges. Stop when remaining
+The local attempt ledger reserves the selected per-attempt ceiling across all
+projects using the same account and approval ID. Budget terms are fixed for that
+approval; changed terms require a new recorded approval ID. Failed attempts retain
+their reservation. This is not an Expo billing cap or an estimate/guarantee of
+service charges. Stop when remaining
 quota/cost cannot be established. Do not enable billing from a source plan.
 
 The credential file is separate, mode 0600, owned by forge, outside project roots.

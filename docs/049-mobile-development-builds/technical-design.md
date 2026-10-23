@@ -181,3 +181,10 @@ Local audit evidence blocks signing/submission and native runtime admission; see
 [security disposition](security-review.md). Source component tests and unsigned
 exports cannot establish that those gates passed. [Acceptance](acceptance.md)
 records observed checks separately from remaining cloud/device/owner acceptance.
+
+Budget enforcement serializes submission globally and reserves attempts/cost across
+project receipts sharing the account and approval ID. The public plan binds the
+approval limits and expiry; changing those terms requires a new approval ID.
+Atomic publication places a durable intent before local staging and any remote
+request. Credential and APK workers have independent container deadlines, owned
+names/labels and host command deadlines. No retry or refund follows ambiguity.
