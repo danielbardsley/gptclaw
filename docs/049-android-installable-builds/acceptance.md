@@ -212,3 +212,15 @@ Persisted intent `55c404c2-fd29-431e-b35c-fbf7fd8d8790`; observed IN_PROGRESS.
 was still running. New-APK installation, source-map success and Observe metrics
 receipt remain pending. No paid usage, automatic retries or prior acceptance
 waiver expansion was requested.
+
+
+## Observe metrics verified — October 23, 2026 (America/New_York)
+
+The project owner confirmed “metrics verified” for the requested instrumented
+Fieldnotes preview. The existing Observe build `431ebb7f-8b40-4f47-b86e-46bb802312a8`
+was independently queried as FINISHED; source CI run 39862126882 completed with
+success. The requested test-app Observe metrics setup is accepted on this
+owner-confirmed evidence. No raw device/session data was fetched, no new build
+was submitted and no runtime/billing changes were made. Individual error-stack
+symbolication and APK-replacement data preservation are not inferred. Existing
+preview waivers and broader initiative/merge gates remain separate.
