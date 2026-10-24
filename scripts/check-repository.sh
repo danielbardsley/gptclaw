@@ -241,6 +241,10 @@ fi
 if ! python3 -B scripts/tests/test_dashboard_observation.py; then
   status=1
 fi
+if ! python3 -B scripts/tests/test_dashboard_reads.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/tests/test_dashboard_status.py; then
   status=1
 fi

@@ -62,6 +62,7 @@ jobs:
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_controls.py
           .venv-manifest/bin/python -B scripts/tests/test_project_controls.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_observation.py
+          .venv-manifest/bin/python -B scripts/tests/test_dashboard_reads.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_status.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_metro.py
           .venv-manifest/bin/python -B scripts/tests/test_dashboard_links.py

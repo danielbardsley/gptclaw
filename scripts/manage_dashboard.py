@@ -87,11 +87,13 @@ def origin():
 
 def unit_text(release, provider, interpreter, image, public_origin, with_status=False, with_links=False, with_controls=False):
     app.need(re.fullmatch(r'https://[a-z0-9.-]+\.ts\.net', public_origin), 'setup')
+    # Legacy snapshots retain their original entrypoint when rolling back.
+    entrypoint = 'dashboard_collector_runner.py' if (Path(provider)/'scripts/dashboard_collector_runner.py').is_file() else 'dashboard_collector.py'
     collector = f'''[Unit]
 Description=GptClaw private read-only dashboard collector
 
 [Service]
-ExecStart={interpreter} -B {provider}/scripts/dashboard_collector.py --projects-root {app.PROJECTS} --socket {PLATFORM}/run/collector.sock --registry {PLATFORM}/metadata.json{' --status' if with_status or with_links or with_controls else ''}{' --links' if with_links else ''}{' --controls' if with_controls else ''}
+ExecStart={interpreter} -B {provider}/scripts/{entrypoint} --projects-root {app.PROJECTS} --socket {PLATFORM}/run/collector.sock --registry {PLATFORM}/metadata.json{' --status' if with_status or with_links or with_controls else ''}{' --links' if with_links else ''}{' --controls' if with_controls else ''}
 Restart=on-failure
 RestartSec=2
 TimeoutStopSec=5

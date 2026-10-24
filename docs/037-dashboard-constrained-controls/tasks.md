@@ -134,3 +134,22 @@ controls release remains active; documentation closure performs no runtime rollo
 Remote task opening is excluded; DB-group/Metro pause/resume and Metro rebuild remain
 deferred. No DSH-009 acceptance work remains; the delivery-record PR completes the
 normal documentation workflow.
+
+## October 24 CPU maintenance
+
+- [x] Verify service CPU accounting and profile read-only collection.
+- [x] Implement viewer leases, hidden-tab polling pause and bounded schema cache repair.
+- [x] Add idle/resume, shared polling and operation-monitoring regressions.
+- [x] Complete broad checks, private installation and measured idle/resume verification;
+  record [performance evidence](performance.md) and publish the focused fix PR.
+
+## Active-view CPU follow-up — October 24
+
+- [x] Profile real isolated workers and separate repeated validation, native CLI,
+  HTTP setup, PostgreSQL startup and multiprocessing initialization costs.
+- [x] Implement byte-checked catalogue reuse, batched native reads, bounded reusable
+  read-only DB sessions, direct loopback HTTP and a thin production entrypoint.
+- [x] Adopt a 15-second rest / 30-second visibility profile with honest timestamps,
+  stale handling, immediate action validation and idle/shutdown cleanup.
+- [x] Complete regression/CPU/freshness verification, install the reviewed immutable
+  release and update PR #105 with [measured evidence](performance.md).

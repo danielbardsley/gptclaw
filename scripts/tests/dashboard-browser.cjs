@@ -36,6 +36,20 @@ const { chromium } = require('playwright-core');
   });
   await page.reload();
   await page.getByRole('heading', { name: 'No managed projects yet' }).waitFor();
+  // A hidden dashboard must stop renewing the collectors' viewer leases.
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'visibilityState', { configurable:true, value:'hidden' });
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  const hiddenReads = reads;
+  await page.waitForTimeout(5500);
+  assert.equal(reads, hiddenReads, 'hidden tabs must not poll');
+  const resumed = page.waitForRequest('**/dashboard/api/snapshot/');
+  await page.evaluate(() => {
+    Object.defineProperty(document, 'visibilityState', { configurable:true, value:'visible' });
+    document.dispatchEvent(new Event('visibilitychange'));
+  });
+  await resumed;
   mode = 'partial'; await page.reload();
   await page.getByText('Partial inventory · scan limit reached', { exact: true }).waitFor();
   assert.equal(await page.locator('tbody img').count(), 0);

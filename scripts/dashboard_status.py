@@ -55,8 +55,9 @@ def component_fields(raw):
 
 
 class StatusStore:
-    def __init__(self, run, *, clock=time.time, observe=status_job, deadline=4, window=20, workers=None):
+    def __init__(self, run, *, clock=time.time, observe=status_job, deadline=4, window=20, workers=None, prepare=None):
         self.run,self.clock,self.observe=run,clock,observe
+        self.prepare = prepare
         self.deadline,self.window=deadline,window
         self.workers=workers if workers is not None else min(4,max(1,os.cpu_count() or 1))
         self.lock=threading.RLock()
@@ -158,8 +159,11 @@ class StatusStore:
             offset=self.offset%len(keys)
             selected=(keys[offset:]+keys[:offset])[:self.window]
             self.offset=(offset+len(selected))%len(keys)
+            shared = self.prepare({key: bindings[key] for key in selected}) if self.prepare else None
             with ThreadPoolExecutor(max_workers=self.workers) as pool:
-                futures={pool.submit(self.run,self.observe,bindings[key],self.deadline,65536):key for key in selected}
+                futures={pool.submit(self.run,self.observe,
+                         {**bindings[key], '_native': shared} if shared else bindings[key],
+                         self.deadline,65536):key for key in selected}
                 for future in as_completed(futures):
                     key=futures[future]
                     try:result=future.result()

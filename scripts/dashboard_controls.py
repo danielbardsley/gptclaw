@@ -19,7 +19,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import private_apps as app
 import project_controls as lifecycle
 from dashboard_inventory import Scanner, InventoryError
-from dashboard_collector import SocketLease, bounded
+from dashboard_collector import SocketLease, bounded, ReadActivity
 
 HEX = re.compile(r'[0-9a-f]{32}')
 MAX_BODY = 8192
@@ -101,10 +101,12 @@ class Controller:
         self.lock = threading.RLock()
         self.sessions, self.intents, self.cache, self.bindings, self.processes = {}, {}, {}, {}, {}
         self.stop_event = threading.Event()
+        self.activity = ReadActivity()
         self.spawn = spawn or self.start_worker
         self.inspector = inspector or self.inspect_capabilities
         self.offset = 0
         self.recover_startup()
+        self.monitored = {r['operation_id'] for r in self.records() if r['state'] in ACTIVE}
 
     def inspect_capabilities(self, root):
         value=bounded(capability_job,str(root),CAPABILITY_TIMEOUT)
@@ -205,6 +207,7 @@ class Controller:
                 self.cache = {}
 
     def snapshot(self):
+        self.activity.touch()
         with self.lock:
             records = self.records()
             result = {}
@@ -282,6 +285,7 @@ class Controller:
                           'stage': 'accepted', 'stage_component': None, 'created_at': now, 'updated_at': now,
                           'reason': None, 'observed_at': None}
                 app.save(path, record)
+                self.monitored.add(ident)
                 intent['used'] = True
                 marker = lifecycle.guard_path(row['id']); private_directory(marker.parent)
                 app.save(marker, {'schema_version': 1, 'operation_id': ident, 'project': row['id'], 'root': str(root)})
@@ -320,11 +324,19 @@ class Controller:
             return public(record)
 
     def loop(self):
+        last = None
         while not self.stop_event.is_set():
-            self.refresh()
-            for record in self.records():
-                self.operation(record['operation_id'])
-            self.stop_event.wait(2)
+            if self.activity.due(last, 15):
+                self.refresh()
+                last = self.activity.clock()
+            with self.lock:
+                monitored = list(self.monitored)
+            for ident in monitored:
+                record = self.operation(ident)
+                if record['state'] not in ACTIVE:
+                    with self.lock:
+                        self.monitored.discard(ident)
+            self.stop_event.wait(1)
 
 
 def worker(state, ident):

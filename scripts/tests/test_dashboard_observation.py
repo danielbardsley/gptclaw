@@ -44,7 +44,7 @@ class ObservationTests(unittest.TestCase):
         opener=MagicMock()
         response=opener.open.return_value.__enter__.return_value
         response.status=200;response.headers.get_content_type.return_value='text/html'
-        mock=patch.object(observation.urllib.request,'build_opener',return_value=opener)
+        mock=patch.object(observation,'http_probe',return_value=True)
         mock.start();self.addCleanup(mock.stop)
 
     def root(self,slug,template='nextjs'):
@@ -212,6 +212,24 @@ class ObservationTests(unittest.TestCase):
         self.assertEqual(invalid['uptime_reason'],'clock-anomaly')
         self.assertEqual(observation.timing({},False,start)['uptime_reason'],'not-applicable')
 
+    def test_catalogue_and_health_reuse_is_limited_to_one_observation(self):
+        import project_templates as templates
+        contract = {'service': {'health': {'path': '/ready', 'timeout_seconds': 5}}}
+        receipt = {'port': 18080}
+        with patch.object(templates, 'catalogue', return_value={'synthetic': []}) as catalogue, \
+             patch.object(observation, 'http_probe', return_value=True) as healthy:
+            for _ in range(2):
+                with observation.cached_reads():
+                    value = templates.catalogue()
+                    value['synthetic'].append('caller-change')
+                    self.assertEqual(templates.catalogue(), {'synthetic': []})
+                    self.assertTrue(app.healthy(receipt, contract))
+                    self.assertTrue(app.healthy(receipt, contract))
+                self.assertIs(templates.catalogue, catalogue)
+                self.assertIsNot(app.healthy, healthy)
+            self.assertEqual(catalogue.call_count, 2)
+            self.assertEqual(healthy.call_count, 2)
+
     def test_dashboard_database_readiness_uses_one_fixed_query(self):
         original=db.revision
         receipt={'project':'synthetic'}
@@ -232,10 +250,7 @@ class ObservationTests(unittest.TestCase):
         original=app.healthy
         with observation.cached_reads():
             app.healthy(receipt,contract)
-            opener=observation.urllib.request.build_opener.return_value
-            self.assertEqual(opener.open.call_args.kwargs['timeout'],.5)
-            self.assertEqual(opener.open.call_args.args[0],
-                             'http://127.0.0.1:18080/projects/synthetic/ready')
+            observation.http_probe.assert_called_once_with(18080, '/projects/synthetic/ready', .5)
         self.assertIs(app.healthy,original)
         self.assertEqual(contract['service']['health']['timeout_seconds'],5)
 

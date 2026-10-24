@@ -10,6 +10,7 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest.mock import patch
 
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -41,12 +42,90 @@ class UnixClient(http.client.HTTPConnection):
 
 
 class CollectorTests(unittest.TestCase):
+    def test_viewer_lease_coalesces_requests_and_resumes_immediately(self):
+        now = [100.]
+        activity = collector.ReadActivity(clock=lambda: now[0])
+        self.assertFalse(activity.due(None, 30))
+        activity.touch()
+        self.assertTrue(activity.due(None, 30))
+        for _ in range(20):
+            now[0] += .1
+            activity.touch()
+        self.assertFalse(activity.due(100., 30))
+        now[0] = 118.
+        self.assertFalse(activity.due(100., 5))
+        activity.touch()
+        self.assertTrue(activity.due(100., 30))
+        self.assertFalse(activity.due(118., 30))
+        now[0] = 133.
+        self.assertFalse(activity.due(None, 5))
+
+    def test_idle_background_threads_do_no_collection_and_snapshot_wakes_them(self):
+        calls = threading.Event()
+        result = {'snapshot': {'freshness': 'current', 'complete': True,
+                  'rows': [], 'observed_at': 100., 'last_success_at': 100., 'diagnostics': []}, 'bindings': {}}
+        def run(*args):
+            calls.set()
+            return result
+        c = collector.Collector({}, run=run, enable_status=True)
+        threads = c.start()
+        try:
+            self.assertFalse(calls.wait(.15))
+            c.snapshot()
+            self.assertTrue(calls.wait(2))
+        finally:
+            c.stop_event.set()
+            for thread in threads:
+                thread.join(2)
+                self.assertFalse(thread.is_alive())
+
+    def test_slow_status_round_rests_instead_of_immediately_catching_up(self):
+        now = [100.]
+        c = collector.Collector({}, enable_status=True)
+        c.activity = collector.ReadActivity(clock=lambda: now[0])
+        c.activity.touch()
+        completed = threading.Event()
+        calls = []
+        def round(_):
+            calls.append(now[0])
+            if len(calls) == 1:
+                now[0] = 116.  # Work exceeded the fifteen-second interval.
+                c.activity.touch()
+            completed.set()
+        c.status.round = round
+        with patch.object(collector.time, 'monotonic', side_effect=lambda: now[0]):
+            thread = threading.Thread(target=c.status_loop)
+            thread.start()
+            try:
+                self.assertTrue(completed.wait(2))
+                completed.clear()
+                now[0] = 130.
+                c.activity.touch()
+                self.assertFalse(completed.wait(.15))
+                now[0] = 131.
+                c.activity.touch()
+                self.assertTrue(completed.wait(2))
+                self.assertEqual(calls, [100., 131.])
+            finally:
+                c.stop_event.set()
+                thread.join(2)
+            self.assertFalse(thread.is_alive())
+
     def test_controls_release_uses_finite_status_budget_without_changing_readonly_default(self):
         controlled=collector.Collector({},enable_controls=True)
         readonly=collector.Collector({},enable_status=True)
         self.assertEqual((controlled.status.deadline,controlled.status.workers),(8,2))
         self.assertEqual(readonly.status.deadline,4)
         self.assertEqual(controlled.status.window,readonly.status.window)
+
+    def test_multiprocessing_main_alias_reuses_preloaded_trusted_contracts(self):
+        import runpy
+        trusted = collector.dashboard_observation.TRUSTED_CATALOGUE
+        self.assertIsNotNone(trusted)
+        with patch.object(collector.dashboard_observation, 'preload_catalogue') as preload:
+            runpy.run_module('dashboard_collector', run_name='__mp_main__')
+        preload.assert_not_called()
+        self.assertIs(collector.dashboard_observation.TRUSTED_CATALOGUE, trusted)
 
     def test_entrypoint_uses_the_bundled_cli_native_and_go_capabilities(self):
         import gptclawctl
