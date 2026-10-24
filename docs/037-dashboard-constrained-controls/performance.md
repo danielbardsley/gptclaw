@@ -50,8 +50,10 @@ runtime or persistent data needs replacement for this correction.
   including hidden-tab pause and immediate visibility resume. Generated evidence is
   ignored under `.dashboard-qa/cpu-demand/`.
 - `git diff --check`, staged diff checks and new relative documentation links passed.
-- The broad prepared-environment `scripts/check-repository.sh` run is recorded below
-  when complete. Terraform checks do not apply to this application tooling change.
+- `PATH="$PWD/.venv-manifest/bin:$PATH" ./scripts/check-repository.sh` completed
+  with exit 0 on the deployed-source branch (46 unittest suites / 895 tests,
+  plus the script's other invariants and fixture checks). Terraform checks do not
+  apply to this application tooling change.
 
 ## Private installation
 
@@ -67,3 +69,29 @@ PR targets current main separately and preserves its newer schema/runtime suppor
 No unrelated dark-mode work is included in the CPU-fix PR. No merge or owner browser
 acceptance is inferred from these tests. Existing browser tabs need one reload to
 receive the hidden-tab behavior.
+
+## Final measurements
+
+With the exact owned frontend temporarily stopped, no active/unknown operations,
+a 30-second drain and a subsequent 20-second service-accounting sample, idle CPU was
+0.022% of one core for the collector and 0.017% for the controller (0.039% combined).
+The frontend was restored in a `finally` block and all three services were active.
+This controlled interval excludes ongoing browser requests; it does not claim an
+actively viewed dashboard is idle.
+
+A subsequent 30-second sample with five-second snapshot polling measured 36.87%
+collector CPU, 2.85% controller CPU and 1.722% frontend CPU. All four inventoried
+projects had current status, and inventory was current after resume. Viewed collection
+still performs ownership/readiness validation and native probes; it uses more CPU
+than the sleeping services. These measurements are workload-specific, not universal
+resource limits. Existing browser clients continued polling during earlier uncontrolled
+idle attempts, so those intervals were not used as idle acceptance evidence.
+
+[Focused PR #105](https://github.com/danielbardsley/gptclaw/pull/105) targets main;
+review/CI/merge remain separate from the installed private fix.
+
+Dashboard CI passed on implementation commit `93905f1`:
+[Private platform dashboard run](https://github.com/danielbardsley/gptclaw/actions/runs/40108292650).
+Other workflow runs and final documentation-head CI remain pending; no infrastructure
+plan/apply or production deployment was performed. Both source worktrees are retained,
+and task changes are committed rather than discarding earlier work.
