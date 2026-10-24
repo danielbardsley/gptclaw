@@ -38,7 +38,7 @@ export default function Dashboard() {
   const unavailable = failed || snapshot?.freshness === 'unavailable';
   const stale = failed || snapshot?.freshness === 'stale';
   const hasInventory = snapshot?.last_success_at != null;
-  const columns = [['Project',20],['Type',13],['Repository',16],['Runtime',10],['Docs',12],...(showStatus ? [['Service status',13]] : []),...(showLinks ? [['Links',13]] : []),['Details',3]] as [string,number][];
+  const columns = [['Project',20],['Type',13],['Repository',16],['Runtime',10],...(showStatus ? [['Service status',13]] : []),...(showLinks ? [['Links',13]] : []),['Details',3]] as [string,number][];
   const weight = columns.reduce((sum,[,value]) => sum + value,0);
   const observation = !snapshot && !failed ? 'Loading inventory…' : stale && hasInventory ? 'Inventory stale · collector unavailable' : unavailable ? 'Inventory unavailable' : snapshot?.truncated ? 'Partial inventory · scan limit reached' : snapshot && !snapshot.complete ? 'Partial inventory · some entries unavailable' : 'Inventory current';
   return <>
