@@ -101,7 +101,7 @@ variable "subnet_cidr" {
 variable "root_volume_size_gib" {
   description = "Encrypted root-volume size in GiB."
   type        = number
-  default     = 30
+  default     = 1024
 
   validation {
     condition     = var.root_volume_size_gib >= 20
