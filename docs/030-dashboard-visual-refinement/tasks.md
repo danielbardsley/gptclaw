@@ -80,4 +80,6 @@ installed validator; diagnostics must remain visible for actual invalid projects
 
 - [x] Remove the overview column and adjust expanded-row span.
 - [x] Add browser layout and schema-10 inventory regression coverage.
-- [ ] Verify checks and private installed inventory; record release evidence.
+- [x] Verify focused checks and private installed inventory; record release evidence
+  in [inventory correction](inventory-correction-2026-10-24.md). Broad-check
+  interruption is recorded separately from passing functional verification.

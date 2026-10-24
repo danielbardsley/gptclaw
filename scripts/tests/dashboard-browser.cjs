@@ -156,7 +156,7 @@ const { chromium } = require('playwright-core');
   const before=reads;
   await toggle.focus();await page.keyboard.press('Enter');
   assert.equal(await toggle.getAttribute('aria-expanded'),'true');
-  assert.equal(await page.locator('.project-detail').first().locator('td').getAttribute('colspan'),String(await page.getByRole('columnheader').count()));
+  assert.equal(await page.locator('.project-detail').first().locator('td').getAttribute('colspan'),String(await page.locator('.projects-table > thead > tr > th').count()));
   await page.waitForResponse(response=>response.url().includes('/dashboard/api/snapshot/'),{timeout:7000});
   assert.equal(await toggle.getAttribute('aria-expanded'),'true');
   assert.equal(await toggle.evaluate(el=>el===document.activeElement),true);
