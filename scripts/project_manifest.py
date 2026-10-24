@@ -164,7 +164,8 @@ StrictValidator = validators.extend(Draft202012Validator, type_checker=
     Draft202012Validator.TYPE_CHECKER.redefine('integer', lambda checker, value: type(value) is int))
 
 
-@lru_cache(maxsize=5)
+# Keep all supported schemas warm in each forkserver, with bounded headroom.
+@lru_cache(maxsize=16)
 def check_schema_bytes(source):
     # Reuse only the trusted schema's meta-validation, keyed by exact bytes.
     # Each manifest still gets a fresh schema/validator and full validation.

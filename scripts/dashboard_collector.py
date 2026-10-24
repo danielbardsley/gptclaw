@@ -33,6 +33,36 @@ for schema_version in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12):
 multiprocessing.set_forkserver_preload(['dashboard_collector'])
 FORKSERVER_START_LOCK = threading.Lock()
 
+class ReadActivity:
+    """Shared viewer lease; requests wake background readers without doing probes."""
+    def __init__(self, *, clock=time.monotonic, lease=15):
+        self.clock, self.lease = clock, lease
+        self.condition = threading.Condition()
+        self.expires = float('-inf')
+        self.resumed = float('-inf')
+
+    def touch(self):
+        with self.condition:
+            now = self.clock()
+            if now >= self.expires:
+                self.resumed = now
+            self.expires = now + self.lease
+            self.condition.notify_all()
+
+    def due(self, last, interval):
+        now = self.clock()
+        return now < self.expires and (last is None or last < self.resumed or now-last >= interval)
+
+    def wait(self, stop, last, interval):
+        with self.condition:
+            while not stop.is_set():
+                if self.due(last, interval):
+                    return self.clock()
+                # Stop remains responsive; idle waits create no workers or probes.
+                self.condition.wait(1)
+        return None
+
+
 def observation_context():
     # The forkserver is a fresh interpreter. Give it only the known tooling path
     # while starting, then restore the parent environment before any project read.
@@ -108,6 +138,7 @@ class Collector:
         self.config, self.clock, self.run = config, clock, run
         self.lock = threading.RLock()
         self.stop_event = threading.Event()
+        self.activity = ReadActivity()
         self.inventory = None
         self.bindings = {}
         self.inventory_error = None
@@ -146,6 +177,7 @@ class Collector:
                 self.status.retain({row['key'] for row in snapshot['rows']}, complete=snapshot['complete'])
 
     def snapshot(self):
+        self.activity.touch()
         with self.lock:
             if self.inventory is None:
                 return {'schema_version': 1, 'freshness': 'unavailable', 'complete': False,
@@ -175,14 +207,14 @@ class Collector:
             return value
 
     def inventory_loop(self):
-        while not self.stop_event.is_set():
-            started = time.monotonic()
+        last = None
+        while (started := self.activity.wait(self.stop_event, last, 30)) is not None:
             self.refresh_inventory()
-            self.stop_event.wait(max(.1, 30 - (time.monotonic() - started)))
+            last = started
 
     def status_loop(self):
-        while not self.stop_event.is_set():
-            started=time.monotonic()
+        last = None
+        while (started := self.activity.wait(self.stop_event, last, 5)) is not None:
             with self.lock:
                 bindings=copy.deepcopy(self.bindings) if not self.inventory_error else {}
             try:
@@ -190,7 +222,9 @@ class Collector:
                 self.status_error=False
             except Exception:
                 self.status_error=True
-            self.stop_event.wait(max(.1,5-(time.monotonic()-started)))
+            # Rest after a round, including expensive or timed-out rounds.
+            # Subtracting read time from the interval creates continuous work.
+            last = time.monotonic()
 
     def start(self):
         thread = threading.Thread(target=self.inventory_loop, name='dashboard-inventory', daemon=True)

@@ -134,3 +134,11 @@ controls release remains active; documentation closure performs no runtime rollo
 Remote task opening is excluded; DB-group/Metro pause/resume and Metro rebuild remain
 deferred. No DSH-009 acceptance work remains; the delivery-record PR completes the
 normal documentation workflow.
+
+## October 24 CPU maintenance
+
+- [x] Verify service CPU accounting and profile read-only collection.
+- [x] Implement viewer leases, hidden-tab polling pause and bounded schema cache repair.
+- [x] Add idle/resume, shared polling and operation-monitoring regressions.
+- [ ] Complete broad checks, private installation and measured idle/resume verification;
+  record [performance evidence](performance.md) and publish the focused fix PR.

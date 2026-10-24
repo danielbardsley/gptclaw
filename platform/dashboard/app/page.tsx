@@ -15,7 +15,7 @@ export default function Dashboard() {
     let pending = false;
     let received = performance.now();
     const refresh = async () => {
-      if (pending) return;
+      if (pending || document.visibilityState === 'hidden') return;
       pending = true;
       try {
         const response = await fetch('/dashboard/api/snapshot/', { cache: 'no-store', signal: AbortSignal.timeout(4000) });
@@ -26,10 +26,12 @@ export default function Dashboard() {
       } catch { if (active) setFailed(true); }
       finally { pending = false; }
     };
+    const visible = () => { if (document.visibilityState === 'visible') void refresh(); };
+    document.addEventListener('visibilitychange', visible);
     void refresh();
     const interval = setInterval(() => void refresh(), 5000);
     const aging = setInterval(() => setElapsed((performance.now()-received)/1000), 1000);
-    return () => { active = false; clearInterval(interval); clearInterval(aging); };
+    return () => { active = false; document.removeEventListener('visibilitychange', visible); clearInterval(interval); clearInterval(aging); };
   }, []);
   const showStatus = Boolean(snapshot?.status_capacity || snapshot?.rows.some(row => row.status));
   const showLinks = Boolean(snapshot?.rows.some(row => row.links));

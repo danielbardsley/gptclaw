@@ -50,6 +50,46 @@ class ControllerTests(unittest.TestCase):
         return self.controller.submit({'schema_version':1,'intent_id':intent['intent_id'],'idempotency_key':ident},
             self.session['session'],self.session['csrf'])
 
+    def test_idle_loop_keeps_operation_monitoring_without_capability_scans(self):
+        c = self.controller
+        with patch.object(c, 'refresh') as refresh, patch.object(c, 'records', return_value=[]) as records:
+            thread = threading.Thread(target=c.loop)
+            thread.start()
+            try:
+                threading.Event().wait(.15)
+                refresh.assert_not_called()
+                records.assert_not_called()
+                c.snapshot()
+                for _ in range(30):
+                    if refresh.called:
+                        break
+                    threading.Event().wait(.05)
+                refresh.assert_called_once()
+            finally:
+                c.stop_event.set()
+                thread.join(2)
+            self.assertFalse(thread.is_alive())
+
+    def test_idle_loop_monitors_unfinished_operations_and_drops_terminal_results(self):
+        c = self.controller
+        ident = 'd'*32
+        c.monitored.add(ident)
+        with patch.object(c, 'operation', return_value={'state': 'succeeded'}) as operation, \
+             patch.object(c, 'records') as records:
+            thread = threading.Thread(target=c.loop)
+            thread.start()
+            try:
+                for _ in range(30):
+                    if ident not in c.monitored:
+                        break
+                    threading.Event().wait(.01)
+                self.assertNotIn(ident, c.monitored)
+                operation.assert_called_once_with(ident)
+                records.assert_not_called()
+            finally:
+                c.stop_event.set()
+                thread.join(2)
+
     def test_intent_has_no_effects_and_public_result_has_no_host_path_or_session(self):
         intent=self.intent();self.assertEqual(self.launched,[])
         self.assertEqual(intent['expires_at']-intent['prepared_at'],60)

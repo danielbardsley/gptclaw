@@ -195,7 +195,7 @@ Do not manually retarget the symlink or edit the ownership receipt to pass this 
 The write population is the existing dashboard tailnet population. There are no new
 individual user accounts/roles. Capability preflights have a twelve-second isolated
 worker deadline. Two background readers publish each completed project immediately;
-the next bounded collection begins after a two-second rest. Discovery remains
+the next bounded collection begins after a five-second rest. Discovery remains
 bounded by the inventory contract. Exact Host/Origin, same-origin Fetch Metadata, JSON,
 a Secure/HttpOnly/SameSite session cookie, CSRF proof and a 60-second typed intent
 bind browser consent to the selected action, component and source/runtime generation.
@@ -287,3 +287,24 @@ operation receipts, loopback ports and synthetic database are task-owned. Succes
 runs verify ownership before removing their containers/networks/image aliases and
 fixture tree; failures retain source/receipts for inspection. These results supplement,
 and do not replace, separately authorized real systemd/private/browser acceptance.
+
+## Dashboard collection resource use
+
+Snapshot requests renew a shared 15-second viewer lease in each reader service.
+Without snapshot requests, inventory, status and control capability collection sleep;
+health checks do not renew the lease. A visible dashboard polls every five seconds;
+hidden tabs stop polling and refresh immediately when visible again. Existing clients
+must reload once after upgrading to receive this browser behavior.
+
+Opening the dashboard wakes background collection. Its first response may contain
+unavailable or aged snapshots until reads complete; existing 60-second inventory and
+30-second status/control freshness rules still apply. Requests coalesce and do not
+run provider probes synchronously. While viewed, inventory runs every 30 seconds,
+status and capability rounds each rest five seconds after completion.
+Deadlines, worker bounds, ownership checks and action-time generation validation remain
+in force. Operation completion/recovery monitoring continues without viewers.
+
+The schema meta-validation cache holds 16 exact schema byte strings, enough for the
+supported versions with bounded headroom. Project manifests are still fully validated
+on every read; changed schema bytes cannot reuse an earlier validation result.
+See [CPU investigation and verification](../docs/037-dashboard-constrained-controls/performance.md).

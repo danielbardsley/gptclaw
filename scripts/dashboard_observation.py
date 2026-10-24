@@ -1,6 +1,7 @@
 """Additive owned runtime observation; no lifecycle/repair or project commands."""
 import datetime
 import contextlib
+import copy
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 import hashlib
@@ -139,6 +140,16 @@ def cached_reads():
         original = app.command
         original_bundle = app.provider_bundle
         original_healthy = app.healthy
+        import project_templates as templates
+        original_catalogue = templates.catalogue
+        catalogue_value = []
+        health_cache = {}
+        def catalogue():
+            # One project read sees one fully validated trusted catalogue. Never
+            # retain this cache across workers/refreshes or cache project inputs.
+            if not catalogue_value:
+                catalogue_value.append(original_catalogue())
+            return copy.deepcopy(catalogue_value[0])
         import project_database as db
         original_revision = db.revision
         original_save, original_save_text = app.save, app.save_text
@@ -179,7 +190,10 @@ def cached_reads():
             bounded = {**contract, 'service': {**service, 'health': {
                 **service['health'], 'timeout_seconds': min(
                     service['health']['timeout_seconds'], .5)}}}
-            return original_healthy(receipt, bounded)
+            key = (receipt['port'], service['health']['path'])
+            if key not in health_cache:
+                health_cache[key] = original_healthy(receipt, bounded)
+            return health_cache[key]
         def revision(receipt, generation=None):
             # One authenticated read proves connectivity and migration revision.
             # A missing table fails readiness without a second native query.
@@ -191,6 +205,7 @@ def cached_reads():
             raise app.AppError('conflict')
         app.command = command
         app.healthy = healthy
+        templates.catalogue = catalogue
         db.revision = revision
         # verify_unit compares trusted bootstrap bytes. It needs no snapshot
         # publication while observing from source or an installed snapshot.
@@ -201,6 +216,7 @@ def cached_reads():
         finally:
             app.command = original
             app.healthy = original_healthy
+            templates.catalogue = original_catalogue
             db.revision = original_revision
             app.provider_bundle = original_bundle
             app.save, app.save_text = original_save, original_save_text

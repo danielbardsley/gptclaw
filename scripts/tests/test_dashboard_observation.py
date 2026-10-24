@@ -212,6 +212,24 @@ class ObservationTests(unittest.TestCase):
         self.assertEqual(invalid['uptime_reason'],'clock-anomaly')
         self.assertEqual(observation.timing({},False,start)['uptime_reason'],'not-applicable')
 
+    def test_catalogue_and_health_reuse_is_limited_to_one_observation(self):
+        import project_templates as templates
+        contract = {'service': {'health': {'path': '/ready', 'timeout_seconds': 5}}}
+        receipt = {'port': 18080}
+        with patch.object(templates, 'catalogue', return_value={'synthetic': []}) as catalogue, \
+             patch.object(app, 'healthy', return_value=True) as healthy:
+            for _ in range(2):
+                with observation.cached_reads():
+                    value = templates.catalogue()
+                    value['synthetic'].append('caller-change')
+                    self.assertEqual(templates.catalogue(), {'synthetic': []})
+                    self.assertTrue(app.healthy(receipt, contract))
+                    self.assertTrue(app.healthy(receipt, contract))
+                self.assertIs(templates.catalogue, catalogue)
+                self.assertIs(app.healthy, healthy)
+            self.assertEqual(catalogue.call_count, 2)
+            self.assertEqual(healthy.call_count, 2)
+
     def test_dashboard_database_readiness_uses_one_fixed_query(self):
         original=db.revision
         receipt={'project':'synthetic'}

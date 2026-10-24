@@ -331,7 +331,19 @@ class ManifestTests(unittest.TestCase):
             schema.write_text(json.dumps(value))
             self.assertEqual(self.validate()[2],1)
             self.assertEqual(check.call_count,2)
-        self.assertLessEqual(manifest.check_schema_bytes.cache_info().maxsize,5)
+        self.assertLessEqual(manifest.check_schema_bytes.cache_info().maxsize,16)
+
+    def test_all_supported_schemas_remain_warm_after_forkserver_preload(self):
+        manifest.check_schema_bytes.cache_clear()
+        versions = range(1, 1 + len(list(manifest.SCHEMA_PATH.parent.glob('v*.schema.json'))))
+        with patch.object(manifest.StrictValidator, 'check_schema',
+                          wraps=manifest.StrictValidator.check_schema) as check:
+            for version in versions:
+                manifest.load_schema(version)
+            self.assertEqual(check.call_count, len(versions))
+            for version in versions:
+                manifest.load_schema(version)
+            self.assertEqual(check.call_count, len(versions))
 
     def test_schema_failure_and_remote_refs_fail_without_network(self):
         for content in ['{', '{}', '{"$id":"urn:gptclaw:project:v1","type":"object","$ref":"https://example.invalid/SYNTHETIC_SECRET"}']:
