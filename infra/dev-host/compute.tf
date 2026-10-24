@@ -79,6 +79,14 @@ resource "aws_instance" "dev_host" {
     Name = var.instance_name
   }
 
+  lifecycle {
+    # AMI and cloud-init initialize new hosts; routine applies must preserve the
+    # existing host and its root disk. Intentional replacement requires a
+    # reviewed change to these guards and the recovery runbook's preflight.
+    prevent_destroy = true
+    ignore_changes  = [ami, user_data_base64]
+  }
+
   depends_on = [
     aws_iam_role_policy_attachment.ssm,
     aws_iam_role_policy.dev_host_runtime,

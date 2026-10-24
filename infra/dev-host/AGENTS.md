@@ -18,8 +18,9 @@ only to this subtree; inspect deeper guidance before work there.
 
 Use [.terraform-version](.terraform-version), [versions.tf](versions.tf), and
 [the provider lock](.terraform.lock.hcl) as version sources. Preserve immutable
-bootstrap pins and review cloud-init changes as host replacement changes:
-[compute.tf](compute.tf) enables replacement on user-data changes. Do not turn
+bootstrap pins. [compute.tf](compute.tf) protects existing hosts from destruction
+and ignores AMI/cloud-init drift; intentional replacement requires a reviewed
+change to those lifecycle guards and the recovery preflight. Do not turn
 architecture proposals into installed tools or additional resources.
 
 Use synthetic values in [tests](tests). Inspect provider declarations in each
