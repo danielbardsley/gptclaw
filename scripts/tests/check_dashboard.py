@@ -93,7 +93,7 @@ def main():
                     self.reply(409,{'error':'control-unsupported'})
             control_stub=socketserver.UnixStreamServer(str(run_dir/'control.sock'),ControlStub)
             control_thread=threading.Thread(target=control_stub.serve_forever,daemon=True);control_thread.start()
-            collector=subprocess.Popen([sys.executable,'-B',str(ROOT/'scripts/dashboard_collector.py'),
+            collector=subprocess.Popen([sys.executable,'-B',str(ROOT/'scripts/dashboard_collector_runner.py'),
                 '--projects-root',str(fixtures.projects),'--socket',str(run_dir/'collector.sock')],
                 stdout=subprocess.DEVNULL,stderr=subprocess.PIPE)
             with socket.socket() as probe:

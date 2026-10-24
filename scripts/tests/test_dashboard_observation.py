@@ -44,7 +44,7 @@ class ObservationTests(unittest.TestCase):
         opener=MagicMock()
         response=opener.open.return_value.__enter__.return_value
         response.status=200;response.headers.get_content_type.return_value='text/html'
-        mock=patch.object(observation.urllib.request,'build_opener',return_value=opener)
+        mock=patch.object(observation,'http_probe',return_value=True)
         mock.start();self.addCleanup(mock.stop)
 
     def root(self,slug,template='nextjs'):
@@ -217,7 +217,7 @@ class ObservationTests(unittest.TestCase):
         contract = {'service': {'health': {'path': '/ready', 'timeout_seconds': 5}}}
         receipt = {'port': 18080}
         with patch.object(templates, 'catalogue', return_value={'synthetic': []}) as catalogue, \
-             patch.object(app, 'healthy', return_value=True) as healthy:
+             patch.object(observation, 'http_probe', return_value=True) as healthy:
             for _ in range(2):
                 with observation.cached_reads():
                     value = templates.catalogue()
@@ -226,7 +226,7 @@ class ObservationTests(unittest.TestCase):
                     self.assertTrue(app.healthy(receipt, contract))
                     self.assertTrue(app.healthy(receipt, contract))
                 self.assertIs(templates.catalogue, catalogue)
-                self.assertIs(app.healthy, healthy)
+                self.assertIsNot(app.healthy, healthy)
             self.assertEqual(catalogue.call_count, 2)
             self.assertEqual(healthy.call_count, 2)
 
@@ -250,10 +250,7 @@ class ObservationTests(unittest.TestCase):
         original=app.healthy
         with observation.cached_reads():
             app.healthy(receipt,contract)
-            opener=observation.urllib.request.build_opener.return_value
-            self.assertEqual(opener.open.call_args.kwargs['timeout'],.5)
-            self.assertEqual(opener.open.call_args.args[0],
-                             'http://127.0.0.1:18080/projects/synthetic/ready')
+            observation.http_probe.assert_called_once_with(18080, '/projects/synthetic/ready', .5)
         self.assertIs(app.healthy,original)
         self.assertEqual(contract['service']['health']['timeout_seconds'],5)
 

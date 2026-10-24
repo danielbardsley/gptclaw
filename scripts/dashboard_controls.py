@@ -326,7 +326,7 @@ class Controller:
     def loop(self):
         last = None
         while not self.stop_event.is_set():
-            if self.activity.due(last, 5):
+            if self.activity.due(last, 15):
                 self.refresh()
                 last = self.activity.clock()
             with self.lock:

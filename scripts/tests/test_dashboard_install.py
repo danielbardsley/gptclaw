@@ -46,6 +46,17 @@ class ReleaseTests(unittest.TestCase):
         (app.STORE/'gptclawctl').symlink_to(launcher)
         app.save(app.STORE/'ingress-owner.json',{'launcher':str(launcher)})
 
+    def test_new_provider_uses_thin_runner_and_legacy_snapshot_remains_usable(self):
+        provider=app.STORE/'providers'/('1'*64)
+        arguments=(self.frontend.parent, str(provider), sys.executable, 'sha256:'+'1'*64,
+                   'https://forge-dev.example.ts.net')
+        legacy=manager.unit_text(*arguments)[str(manager.USER_UNITS/manager.COLLECTOR_UNIT)]
+        self.assertIn('/scripts/dashboard_collector.py ',legacy)
+        (provider/'scripts').mkdir(parents=True)
+        (provider/'scripts/dashboard_collector_runner.py').write_text('# synthetic entrypoint')
+        current=manager.unit_text(*arguments)[str(manager.USER_UNITS/manager.COLLECTOR_UNIT)]
+        self.assertIn('/scripts/dashboard_collector_runner.py ',current)
+
     def test_prepare_activate_reprepare_stop_and_previous_release(self):
         first=manager.prepare()
         self.assertEqual(manager.prepare(),first)

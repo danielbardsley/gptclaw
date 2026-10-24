@@ -89,7 +89,8 @@ class CollectorTests(unittest.TestCase):
         def round(_):
             calls.append(now[0])
             if len(calls) == 1:
-                now[0] = 106.  # Work exceeded the five-second poll interval.
+                now[0] = 116.  # Work exceeded the fifteen-second interval.
+                c.activity.touch()
             completed.set()
         c.status.round = round
         with patch.object(collector.time, 'monotonic', side_effect=lambda: now[0]):
@@ -98,13 +99,13 @@ class CollectorTests(unittest.TestCase):
             try:
                 self.assertTrue(completed.wait(2))
                 completed.clear()
-                now[0] = 110.
+                now[0] = 130.
                 c.activity.touch()
                 self.assertFalse(completed.wait(.15))
-                now[0] = 111.
+                now[0] = 131.
                 c.activity.touch()
                 self.assertTrue(completed.wait(2))
-                self.assertEqual(calls, [100., 111.])
+                self.assertEqual(calls, [100., 131.])
             finally:
                 c.stop_event.set()
                 thread.join(2)
@@ -116,6 +117,15 @@ class CollectorTests(unittest.TestCase):
         self.assertEqual((controlled.status.deadline,controlled.status.workers),(8,2))
         self.assertEqual(readonly.status.deadline,4)
         self.assertEqual(controlled.status.window,readonly.status.window)
+
+    def test_multiprocessing_main_alias_reuses_preloaded_trusted_contracts(self):
+        import runpy
+        trusted = collector.dashboard_observation.TRUSTED_CATALOGUE
+        self.assertIsNotNone(trusted)
+        with patch.object(collector.dashboard_observation, 'preload_catalogue') as preload:
+            runpy.run_module('dashboard_collector', run_name='__mp_main__')
+        preload.assert_not_called()
+        self.assertIs(collector.dashboard_observation.TRUSTED_CATALOGUE, trusted)
 
     def test_entrypoint_uses_the_bundled_cli_native_and_go_capabilities(self):
         import gptclawctl

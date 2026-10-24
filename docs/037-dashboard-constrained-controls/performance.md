@@ -95,3 +95,78 @@ Dashboard CI passed on implementation commit `93905f1`:
 Other workflow runs and final documentation-head CI remain pending; no infrastructure
 plan/apply or production deployment was performed. Both source worktrees are retained,
 and task changes are committed rather than discarding earlier work.
+
+## Active-view follow-up — October 24
+
+The project owner rejected the approximately 40% viewed CPU result and requested a
+substantial further reduction with useful status. The follow-up removes repeated
+full catalogue validation, per-resource CLI startup, HTTP TLS initialization and
+per-poll PostgreSQL client startup. Worker startup also re-executed the collector
+module, defeating parts of preloading; new provider snapshots use a thin launcher.
+
+Trusted semantic validation is reused only after all contributing bytes and safe
+file/directory properties match; it never caches project health or bypasses mutable
+project validation. Native batches contain only exact inventory-derived targets and
+fixed projected fields. Workers continue ownership/image/port/unit checks; old or
+unknown native data falls back to independent reads. Database read sessions are bounded
+to eight, use only a fixed revision SELECT and are replaced on container/credential
+changes, failed queries, idle expiry and shutdown. Extra DBs retain one-shot queries.
+
+The resource profile rests 15 seconds between completed status/capability rounds,
+retains the 30-second stale threshold, and targets observed transitions within
+30 seconds under supported load. Browser requests still read shared caches every
+five seconds, and lifecycle actions still validate immediately. This intentionally
+replaces the original 15-second transition target under the owner's resource priority.
+
+Final verification and private installation results are recorded below when complete.
+
+### Active-profile verification and installation
+
+The deployed-source dashboard suite passed all **108 tests**. The main-based PR
+passed its complete 107-test suite before the final per-project client-start failure
+hardening; the final 13-test reader suite then passed on that tree. Tests cover exact
+byte changes with restored timestamps, symlinks/hardlinks, copy isolation, scoped and
+expired native reads, fixed SQL, persistent reuse, eight-session capacity and one-shot
+fallback, instance/credential changes, timeout/reaping, shutdown, and sanitized errors.
+
+The container harness passed all 24 frontend tests, typecheck, production build,
+Unix/HTTP boundaries, local QR decode and browser acceptance using the new thin
+launcher. Release/rollback-entrypoint tests passed (12), private-app tests passed (36),
+changed shell syntax and diff/link checks passed. Full repository results follow below.
+No new project action, migration, database mutation, public exposure, host package or
+infrastructure change was used for acceptance.
+
+A bounded task-owned private systemd fixture measured 6.665% collector CPU during a
+60-second viewed sample, with all four projects current and a maximum sampled age of
+16.413 seconds. Idle collector CPU was 0.027% after the lease drained. The fixture and
+its PostgreSQL readers were stopped and its temporary socket namespace removed.
+
+Private installed release:
+`36f1e10a2f16a0c9b51ff777cdb510a67a6977483541bde1d12a8ce564cc9f6d`.
+Activation used the reviewed manager, idle-operation/paused-runtime checks and the
+owned provider installer. The preceding release is retained. Existing dark-mode UI,
+project processes, persistent data and private handlers were preserved.
+
+After a 30-second warmup, a 60-second installed-stack sample with five-second browser
+snapshot polling measured percentages of one CPU core as follows:
+
+| Service | Before active-profile fix | After |
+| --- | ---: | ---: |
+| Collector | 36.870% | 8.546% |
+| Controller | 2.850% | 1.085% |
+| Frontend | 1.722% | 0.351% |
+| **Total measured dashboard services** | **41.442%** | **9.982%** |
+
+The readers alone fell from 39.720% to 9.631% (approximately 76% less CPU).
+All four projects were current in every sample; maximum sampled status age was
+18.265 seconds. These are observed workload-specific results, not universal caps.
+Installed-service measurements are authoritative; the private fixture uses a different
+source/provider path and does not stand in for the complete installed stack.
+The observed memory was approximately 144 MiB collector, 38 MiB controller and
+107 MiB frontend. All three services were active and the listener remained loopback.
+
+The final prepared-environment `scripts/check-repository.sh` run exited 0:
+47 unittest suites / 910 tests plus the other repository invariants passed. The
+complete check includes the newly registered reader tests; the final private-app
+packaging test was also run separately after introducing the thin launcher.
+Review/CI/merge for the updated PR remain separate from private installation.

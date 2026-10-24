@@ -165,3 +165,34 @@ within 15 seconds. Whole-worker process-group termination, ownership validation,
 All-blocked workloads can exceed the supported healthy-load latency; their rows
 remain explicitly unavailable/stale. Record actual deployed group refresh and
 degradation/recovery measurements separately.
+
+## Current active-view resource profile — October 24
+
+The amended specification uses a 15-second rest between completed observation rounds
+and a 30-second supported-load visibility target. The original scheduling discussion
+above is superseded for this resource profile; stale thresholds remain 30 seconds.
+A bounded preparatory worker batches exact inventory-owned container/unit/network and
+private-route reads. Per-project workers still verify binding, receipts, unit bytes,
+labels, images, ports and readiness; batch data expires after ten seconds and unknown
+or changed targets use the existing isolated read path. No raw native fields enter
+public snapshots.
+
+The clean forkserver prevalidates the trusted template catalogue. Every use rechecks
+all contributing file bytes, regular-file/owner/link properties, directory membership
+and pinned directory identities through no-follow descriptors before reusing semantic
+validation. Changes fall back to full validation. Project manifests are always read
+and validated anew; only duplicate parsing of identical text is shared within one
+observation. A thin launcher avoids re-executing expensive module initialization in
+multiprocessing workers.
+
+Up to eight read-only PostgreSQL sessions avoid repeated `podman exec`/client startup.
+They are bound to the verified container instance, receipt root and credential epoch;
+each observation issues the same fixed authenticated revision SELECT. One-second
+query deadlines and server statement/lock timeouts bound failure. Two parallel readers
+serve the bounded window; additional databases retain the isolated one-shot query.
+Sessions close on replacement, query failure, inactivity and shutdown. HTTP readiness
+uses fixed loopback HTTP connections with no proxies, redirects or TLS setup. CLI and
+lifecycle mutations retain their original fresh validation and connection behavior.
+
+Actual CPU, freshness, failure/cleanup and release results belong in the linked
+[performance evidence](../037-dashboard-constrained-controls/performance.md).

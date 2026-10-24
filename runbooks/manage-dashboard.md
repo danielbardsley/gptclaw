@@ -195,7 +195,7 @@ Do not manually retarget the symlink or edit the ownership receipt to pass this 
 The write population is the existing dashboard tailnet population. There are no new
 individual user accounts/roles. Capability preflights have a twelve-second isolated
 worker deadline. Two background readers publish each completed project immediately;
-the next bounded collection begins after a five-second rest. Discovery remains
+the next bounded collection begins after a fifteen-second rest. Discovery remains
 bounded by the inventory contract. Exact Host/Origin, same-origin Fetch Metadata, JSON,
 a Secure/HttpOnly/SameSite session cookie, CSRF proof and a 60-second typed intent
 bind browser consent to the selected action, component and source/runtime generation.
@@ -300,7 +300,7 @@ Opening the dashboard wakes background collection. Its first response may contai
 unavailable or aged snapshots until reads complete; existing 60-second inventory and
 30-second status/control freshness rules still apply. Requests coalesce and do not
 run provider probes synchronously. While viewed, inventory runs every 30 seconds,
-status and capability rounds each rest five seconds after completion.
+status and capability rounds each rest fifteen seconds after completion.
 Deadlines, worker bounds, ownership checks and action-time generation validation remain
 in force. Operation completion/recovery monitoring continues without viewers.
 
@@ -308,3 +308,16 @@ The schema meta-validation cache holds 16 exact schema byte strings, enough for 
 supported versions with bounded headroom. Project manifests are still fully validated
 on every read; changed schema bytes cannot reuse an earlier validation result.
 See [CPU investigation and verification](../docs/037-dashboard-constrained-controls/performance.md).
+
+The active resource profile targets status changes within 30 seconds under supported
+load. It batches native reads for the selected window and rechecks exact trusted
+catalogue bytes before reusing validation. The frontend still reads cached snapshots
+every five seconds while visible; it cannot start probes per tab. Status retains its
+30-second stale threshold and action checks remain immediate.
+
+The collector owns up to eight fixed read-only PostgreSQL client sessions, tied to
+verified container instances and credential epochs. Each uses the existing in-container
+password file; no new credential file or host package is created. Queries have a
+one-second deadline and server statement/lock timeouts. Sessions close on idle, failure,
+replacement and shutdown. The thin collector runner is part of new immutable provider
+snapshots; releases using older providers retain their original entrypoint for rollback.

@@ -77,7 +77,7 @@ history or claim of exact unseen transition timing is required.
 
 Collect asynchronously with finite per-project timeouts, concurrency and output bounds.
 Coalesce browser requests; no separate runtime process/probe storm per browser or tab.
-Healthy fixtures become visible within 15 seconds of a provider-observable transition
+Healthy fixtures become visible within 30 seconds of a provider-observable transition
 under the documented supported load. Each result carries its own observation time and
 freshness. After 30 seconds without a successful observation, show stale/unknown and
 last successful time; an unavailable component cannot inherit a sibling's timestamp.
@@ -114,7 +114,7 @@ runtime observation is down. Keyboard users can open and read component details.
 |---|---|---|
 | AC-001 | Synthetic provider tests cover supported single web/API and schema-3/4 groups: never-started, stopped, starting, ready, unpublished, failed, busy, degraded and DB recovery conditions; missing/conflicting resources and unavailable providers never report healthy or stopped falsely. | STS-001 |
 | AC-002 | Controlled owned-instance tests show uptime progression/reset, measured zero/nonzero restart counts, stopped and unsupported metrics, clock anomalies, first observation and transitions across gaps/collector restarts with truthful labels. | STS-002 |
-| AC-003 | With 20 synthetic projects, four component observations per project maximum and two clients, healthy transitions appear within 15 seconds; a hung project times out, stale values are labeled by 30 seconds, repeated clients share collection and other rows remain responsive. | STS-003 |
+| AC-003 | With 20 synthetic projects, four component observations per project maximum and two clients, healthy transitions appear within 30 seconds; a hung project times out, stale values are labeled by 30 seconds, repeated clients share collection and other rows remain responsive. | STS-003 |
 | AC-004 | Mutation/execution spies and synthetic-secret fixtures prove observation invokes only allowed reads/probes, verifies ownership, rejects arbitrary targets and emits allowlisted output without secrets. Inventory/HTTP boundary tests continue to pass. | STS-001/004 |
 | AC-005 | Live acceptance on a task-owned synthetic single-service app and web/API/DB group verifies displayed health/component state, timing semantics and freshness against provider observations. Explicit CLI test operations create stopped/degraded/recovered scenarios; dashboard reads never cause those actions. Owner browser and keyboard checks pass; acceptance records local/CI/live/owner results separately. | STS-001/002/003/005 |
 
@@ -136,3 +136,13 @@ DSH-001, DSH-002 and DSH-003. Finish once all acceptance criteria have been met.
 This approves the specified scope and defaults and authorizes implementation and
 necessary reversible private runtime verification. Existing operator, review/merge,
 public-exposure and production gates remain in force. Actual local/CI/private/owner evidence is recorded in [acceptance.md](acceptance.md); implementation merged in PR #69; acceptance passed.
+
+## October 24 resource-profile amendment
+
+The project owner's follow-up requires substantially lower CPU while the dashboard
+is viewed, while keeping status useful. The active resource profile rests 15 seconds
+after full status and capability rounds; supported-load visibility is now 30 seconds,
+with the existing 30-second stale threshold and independently timed components.
+Action preflight/execution still revalidate immediately. This supersedes the earlier
+15-second transition target and five-second full-observation scheduling; historical
+acceptance timings remain historical evidence. See the [resource evidence](../037-dashboard-constrained-controls/performance.md).

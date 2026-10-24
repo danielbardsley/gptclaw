@@ -23,12 +23,20 @@ import project_groups
 import project_database
 import project_templates
 import project_toolchains
+import project_worktrees
+import metro_sessions
+import expo_go
 from project_manifest import load_schema
 
 # Compile the immutable contracts once in the clean forkserver. Workers
 # still read exact schema bytes and fully validate each project's current data.
 for schema_version in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12):
     load_schema(schema_version)
+
+# multiprocessing may re-execute this file as __mp_main__ in each worker.
+# Reuse the catalogue already built by the clean forkserver in that case.
+if dashboard_observation.TRUSTED_CATALOGUE is None:
+    dashboard_observation.preload_catalogue()
 
 multiprocessing.set_forkserver_preload(['dashboard_collector'])
 FORKSERVER_START_LOCK = threading.Lock()
@@ -53,9 +61,11 @@ class ReadActivity:
         now = self.clock()
         return now < self.expires and (last is None or last < self.resumed or now-last >= interval)
 
-    def wait(self, stop, last, interval):
+    def wait(self, stop, last, interval, *, on_idle=None):
         with self.condition:
             while not stop.is_set():
+                if on_idle and self.clock() >= self.expires:
+                    on_idle()
                 if self.due(last, interval):
                     return self.clock()
                 # Stop remains responsive; idle waits create no workers or probes.
@@ -143,10 +153,18 @@ class Collector:
         self.bindings = {}
         self.inventory_error = None
         from dashboard_status import StatusStore
+        self.database_readers = dashboard_observation.DatabaseReaders()
         status_options = {'deadline':8,'workers':2} if enable_controls else {}
+        if run is bounded:
+            status_options['prepare'] = self.prepare_status
         self.status = StatusStore(run, clock=clock, **status_options) if enable_status or enable_links or enable_controls else None
         self.status_error = False
         self.enable_links = enable_links
+
+    def prepare_status(self, bindings):
+        native = self.run(dashboard_observation.native_job, list(bindings.values()), 4, MAX_OUTPUT)
+        self.database_readers.sample(bindings, native)
+        return native
 
     def refresh_inventory(self):
         result = self.run(scan_job, self.config, 10.5)
@@ -214,7 +232,8 @@ class Collector:
 
     def status_loop(self):
         last = None
-        while (started := self.activity.wait(self.stop_event, last, 5)) is not None:
+        while (started := self.activity.wait(self.stop_event, last, 15,
+                on_idle=self.database_readers.close)) is not None:
             with self.lock:
                 bindings=copy.deepcopy(self.bindings) if not self.inventory_error else {}
             try:
@@ -225,6 +244,7 @@ class Collector:
             # Rest after a round, including expensive or timed-out rounds.
             # Subtracting read time from the interval creates continuous work.
             last = time.monotonic()
+        self.database_readers.close()
 
     def start(self):
         thread = threading.Thread(target=self.inventory_loop, name='dashboard-inventory', daemon=True)
@@ -432,6 +452,9 @@ def main():
                     server.serve_forever()
                 finally:
                     collector.stop_event.set()
+                    collector.database_readers.close(shutdown=True)
+                    for thread in threads:
+                        thread.join(timeout=2)
     except (OSError, InventoryError):
         raise SystemExit('Dashboard collector could not acquire its owned socket.') from None
 
