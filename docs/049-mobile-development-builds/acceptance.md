@@ -173,8 +173,10 @@ authorized as many development builds as needed and will activate a paid account
 when required. The suggested three-build/$25 limits were not accepted constraints.
 Free execution can use bounded operational batches once all other gates pass;
 paid jobs still require confirmed plan/quota/cost bounds. No billing was changed.
-Project selection, credential privileges/reference, public signing certificate,
-artifact access and device acceptance remain unverified. AC-002 remains Pending.
+The owner selected creation of a new development-only project in `bardsley`.
+Creation is authorized, but no remote project or UUID has been created or observed.
+Credential privileges/reference, public signing certificate, artifact access and
+device acceptance remain unverified. AC-002 remains Pending.
 
 Public registry inspection (Python urllib, no credentials/install) reported latest
 EAS 25.3.0, node-forge 1.4.0, Zod 4.6.7, Expo 58.0.19 and Expo CLI 58.1.15.

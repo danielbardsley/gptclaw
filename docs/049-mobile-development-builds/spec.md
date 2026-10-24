@@ -187,7 +187,7 @@ credential or listener changes have been performed by this implementation task.
 | Decision | Proposed default / owner and next action |
 |---|---|
 | Platform/device | Android-first; project owner confirms actual device/OS before physical acceptance. iOS needs a separate scoped plan and account/device prerequisites. |
-| Expo account/project and signing | Account `bardsley` is selected; Expo-managed signing and 30-day retention are approved. Resolve the development-only project, credential privileges and signing recovery metadata before external execution. |
+| Expo account/project and signing | Account `bardsley` and creation of a new development-only project are selected; Expo-managed signing and 30-day retention are approved. Record the actual project UUID after authorized setup; resolve credential privileges and signing recovery metadata before external execution. |
 | Spending and artifact sharing | Owner authorized as many development builds as needed. Use bounded batches within verified free quota and zero paid spend until the owner activates a paid account. A paid total/per-attempt ceiling and verified artifact access remain prerequisites for paid jobs. |
 | Exact compiler/client/module pins | Implementer verifies SDK-57 cloud support and selects exact compatible CLI/dev-client/module/image pins in the reviewed implementation. SDK migration requires a scope amendment if current pins cannot build. |
 | Private transport | Implementer proves HTTPS with the new binary. Project owner reviews any required bounded exception; existing Go approval does not apply. |

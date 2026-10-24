@@ -106,7 +106,9 @@ needed and will pay for an account when required. Account selection and free-bui
 count authorization are resolved; the earlier three-build/$25 suggestions are not
 limits selected by the owner. Keep individual operational batches bounded and
 within verified free quota; no billing activation or paid spend is inferred.
-A focused project-choice question is pending. Signing remains Expo-managed and
+The owner selected creation of a new development-only project in that account.
+Project creation is authorized; no remote project or UUID has been created or
+observed. Signing remains Expo-managed and
 retention 30 days. Credentials, certificate, actual access and device acceptance
 remain distinct. No secret was requested in chat or inspected.
 
