@@ -15,9 +15,9 @@ verifies it, and runs its installer as `forge` without Git credentials. No clone
 or project volume content is required beforehand. GitHub must be reachable and
 the repository publicly readable; a failed fetch/install keeps bootstrap failed.
 
-Changing the pin or adding this bootstrap step can replace EC2 because user-data
-replacement remains enabled. Review the protected pipeline plan and follow the
-existing replacement runbook. Use in-place installation below for routine policy
+Changing the pin or bootstrap affects new hosts. Existing hosts ignore cloud-init
+drift and have destruction protection; intentional replacement requires a reviewed
+change to the lifecycle guards and the replacement runbook. Use in-place installation below for routine policy
 updates. A future replacement receives the pinned baseline, so review the pin
 against the desired version before replacement. The Terraform output describes
 first-boot configuration only; verify the live policy separately.

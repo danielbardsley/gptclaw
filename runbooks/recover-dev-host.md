@@ -24,6 +24,13 @@ Do not print the Tailscale secret or dump the process environment.
 
 ## Planned instance replacement
 
+The EC2 lifecycle prevents destruction and ignores AMI/cloud-init drift on an
+existing host. New hosts still use the configured AMI and bootstrap. Routine
+applies, including root-volume growth, preserve the current instance. Bootstrap
+changes do not update the running host; use the reviewed in-place installers.
+Intentional replacement requires a separate reviewed change to these lifecycle
+guards, explicit replacement authorization, and the preflight below.
+
 1. Quiesce writes beneath `/srv/forge/projects`.
 2. Review `host_policy_revision` against the desired approved baseline before
    replacement; in-place updates do not automatically advance this pin.

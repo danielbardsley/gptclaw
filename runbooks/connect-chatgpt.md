@@ -23,10 +23,11 @@ AWS Systems Manager access has been verified.
 
 4. Store only the `.pub` value in the HCP Terraform variable
    `desktop_ssh_public_key`. The private key remains on the desktop.
-   Because the public key is rendered into cloud-init and
-   `user_data_replace_on_change` is enabled, rotating it replaces the EC2
-   instance while retaining the protected project volume. Store a fresh
-   one-use Tailscale enrollment key before planning the replacement.
+   The public key is rendered into first-boot cloud-init. Existing hosts ignore
+   cloud-init drift, so changing this variable alone does not rotate the live
+   authorized key. Keep the existing connection until an authorized in-place
+   key update is verified. Intentional host replacement requires the lifecycle
+   guard review and preflight in [the recovery runbook](recover-dev-host.md).
 5. Deploy through the protected GitHub workflow; do not run Terraform locally.
 
 ## 2. Verify Tailscale and SSH
