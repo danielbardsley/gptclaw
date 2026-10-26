@@ -144,3 +144,14 @@ adoption/recovery work; no automatic deletion or repair path exists.
 The documented CLI adds a write-free --check mode. Linux procfs, POSIX directory file
 descriptors and same-filesystem hardlinks are required; unsupported filesystems
 fail without overwriting entries. No additional Python package is used.
+
+
+## Standards bundle extension
+
+[SPEC-050](../050-project-standards-inheritance/technical-design.md) extends the
+original five-template/five-skill-file inventory with a fixed versioned engineering
+package and shared resource mapping in scripts/project_guidance.py. Bootstrap
+reads every resource from the explicit source commit, rejects missing or unexpected
+resources, and records its version, source paths and output hashes. The generated
+root/index links remain entirely local. The original publication/retry safeguards
+remain in place. See the extension's acceptance record for current checks.

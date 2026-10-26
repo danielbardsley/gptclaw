@@ -232,6 +232,12 @@ def _generate(path, slug, release, contents):
         for name, content in contents.items():
             output = stage/name; output.parent.mkdir(parents=True, exist_ok=True)
             with output.open('xb') as stream: stream.write(content)
+        import project_guidance as guidance
+        try:
+            guidance.validate_inventory(app().REPO)
+            guidance.install(stage, lambda name: deps.read_bytes(app().REPO/name, 65536), slug.replace('-', ' ').title())
+        except ValueError as error:
+            raise app().AppError('template-policy') from error
         meta = stage/'.gptclaw'; meta.mkdir()
         contract = {'schema_version':1,'project':{'id':slug,'name':slug.replace('-',' ').title(),'kind':'web'},
             'commands':{'build':['pnpm','build'],'start':['pnpm','dev'],'test':['pnpm','test']},
@@ -307,6 +313,9 @@ def bundle_paths():
         paths += [Path(p) for p in ('scripts/native_contract.py','scripts/native_builds.py','scripts/native_runtime.py','scripts/apk_metadata.py','config/mobile/v2.json','config/templates/v9.json','schemas/templates/v9.schema.json','schemas/project/v11.schema.json','schemas/project/v12.schema.json')]
         paths += [Path('templates/apps/eas-toolchain')/name for name in ['Containerfile','package.json','package-lock.json','worker.cjs','.dockerignore','.gitignore']]
         paths += [Path('templates/apps/apk-verifier')/name for name in ['Containerfile','VerifyApk.java']]
+    import project_guidance as guidance
+    paths += [Path('scripts/project_guidance.py'), Path(guidance.ENGINEERING + 'VERSION')]
+    paths += [Path(name) for name in sorted(set(guidance.RESOURCES) | set(guidance.APP_TEMPLATES))]
     for release in value['releases']:
         base = Path('templates/apps/releases')/release['id']/release['version']
         paths += [base/item['source'] for item in release['files']]

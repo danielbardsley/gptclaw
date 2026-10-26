@@ -36,6 +36,8 @@ on:
       - schemas/project/**
       - requirements/**
       - templates/apps/**
+      - templates/projects/**
+      - .agents/skills/gptclaw-specification/**
       - docs/019-project-dependency-policy/**
       - runbooks/manage-project-dependencies.md
       - docs/018-first-private-application/**
@@ -77,6 +79,8 @@ on:
       - schemas/project/**
       - requirements/**
       - templates/apps/**
+      - templates/projects/**
+      - .agents/skills/gptclaw-specification/**
       - docs/019-project-dependency-policy/**
       - runbooks/manage-project-dependencies.md
       - docs/018-first-private-application/**

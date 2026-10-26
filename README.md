@@ -74,7 +74,9 @@ For the purpose of each directory and its main subdirectories, see the
 
 - **Connect to the host:** follow [the remote project connection runbook](runbooks/connect-chatgpt.md).
 - **Prepare another project's guidance:** use [the repository template and adaptation guide](templates/agents/README.md) and [nested guidance pattern](templates/agents/nested/README.md).
-- **Create a local planning starter:** follow [the project bootstrap workflow](.agents/skills/gptclaw-project-bootstrap/SKILL.md), which uses `scripts/bootstrap-project.py`.
+- **Create a local planning starter:** follow [the project bootstrap workflow](.agents/skills/gptclaw-project-bootstrap/SKILL.md), which uses `scripts/bootstrap-project.py` and copies the complete planning skill
+  and [engineering standards](templates/projects/engineering/README.md). Application
+  creation receives the same guidance; stack selection must map standards to checks.
 - **Create and run private apps:** follow [the private application runbook](runbooks/manage-private-apps.md), using the source CLI or installed stable launcher.
 - **Validate a project declaration:** follow [the manifest setup and usage reference](docs/project-manifest.md); [the example](examples/project-manifest/web.yaml) is inert.
 - **Plan and review work:** start with [AGENTS.md](AGENTS.md), the applicable initiative, and [architecture decisions](docs/decisions/README.md).

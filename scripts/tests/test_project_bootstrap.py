@@ -7,10 +7,12 @@ import os
 from pathlib import Path
 import shutil
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'scripts'))
 spec = importlib.util.spec_from_file_location('bootstrap', ROOT / 'scripts/bootstrap-project.py')
 b = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(b)
@@ -22,7 +24,7 @@ class BootstrapTests(unittest.TestCase):
         cls.fixture = tempfile.TemporaryDirectory(prefix='gptclaw-bootstrap-source-')
         cls.source_base = Path(cls.fixture.name) / 'source'
         cls.source_base.mkdir()
-        for prefix in [b.STARTER, b.SKILL]:
+        for prefix in [b.STARTER, b.SKILL, b.guidance.ENGINEERING]:
             shutil.copytree(ROOT / prefix, cls.source_base / prefix)
         (cls.source_base / '.codex').mkdir()
         (cls.source_base / '.codex/auth.json').write_text('synthetic excluded sentinel')
@@ -72,6 +74,29 @@ class BootstrapTests(unittest.TestCase):
         self.assertNotEqual(b.git(self.dest, 'rev-parse', '--verify', 'HEAD', check=False).returncode, 0)
         self.assertEqual(b.git(self.dest, 'symbolic-ref', 'HEAD').stdout.strip(), b'refs/heads/main')
         self.assertFalse(list(self.root.glob('.gptclaw-staging-*')))
+
+    def test_standards_are_complete_portable_and_hashed(self):
+        self.create()
+        record = json.loads((self.dest / b.PROVENANCE).read_text())
+        self.assertEqual(record['starter_version'], '1.1.0')
+        self.assertEqual(record['engineering']['version'], '1.0.0')
+        for source, target in b.guidance.RESOURCES.items():
+            actual = (self.dest / target).read_bytes()
+            self.assertEqual(actual, (self.source / source).read_bytes())
+            self.assertEqual(record['engineering']['files'][target]['sha256'], b.digest(actual))
+        self.assertIn('docs/engineering/README.md', (self.dest / 'AGENTS.md').read_text())
+        self.assertIn('coverage', (self.dest / 'docs/engineering/README.md').read_text())
+        self.assertEqual(self.create()['status'], 'already-created')
+
+    def test_missing_standard_refuses_before_destination_write(self):
+        (self.source / b.guidance.ENGINEERING / 'python-standards.md').unlink()
+        b.git(self.source, 'add', '.')
+        b.git(self.source, '-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid',
+              'commit', '--quiet', '-m', 'missing standard')
+        self.revision = b.git(self.source, 'rev-parse', 'HEAD').stdout.decode().strip()
+        with self.assertRaises(b.BootstrapError):
+            self.create()
+        self.assertFalse(self.dest.exists())
 
     def test_existing_empty_directory_identity_preserved(self):
         self.dest.mkdir(mode=0o750)

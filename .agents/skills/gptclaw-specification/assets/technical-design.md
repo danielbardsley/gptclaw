@@ -30,3 +30,9 @@ cleanup only when the feature needs them. State known limitations.
 |---|---|---|---|
 
 Record unresolved decisions, owner, next action, and what can proceed meanwhile.
+
+For a project with inherited engineering standards, identify applicable references
+and map their formatter/lint, typing, tests/coverage, security, build and CI
+requirements to implemented commands and verification. Record justified
+adaptations and gaps with rationale, owner and review status; do not treat copied
+files or passing unit tests as proof that all required gates exist.

@@ -30,3 +30,9 @@ and UI. Record any spec-required retained demos and preserve user data.
 
 Summarize completed work, evidence, remaining tasks, limitations, and the next
 action/owner. Keep earlier acceptance records and unaffected approvals intact.
+
+For a project with inherited engineering standards, identify applicable references
+and map their formatter/lint, typing, tests/coverage, security, build and CI
+requirements to implemented commands and verification. Record justified
+adaptations and gaps with rationale, owner and review status; do not treat copied
+files or passing unit tests as proof that all required gates exist.

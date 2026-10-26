@@ -31,8 +31,12 @@ prints the canonical destination and source revision before changing files.
 
 The helper reads a fixed allowlist from Git objects, not dirty source files.
 It creates README.md, AGENTS.md, .gitignore, documentation index/catalogue,
-bootstrap provenance, and the complete `.agents/skills/gptclaw-specification/`
-package. It initializes main with no commit or remote and installs no packages.
+bootstrap provenance, the complete `.agents/skills/gptclaw-specification/`
+package, and the versioned
+`docs/engineering/` standards bundle (Python, mobile, shared quality/TypeScript
+and applicability index). Use a reviewed revision containing this full inventory;
+older planning-only revisions cannot supply the new standards contract. It
+initializes main with no commit or remote and installs no packages.
 Normal automatic selection remains enabled; no global settings are changed.
 
 If creation fails, stop and inspect the reported destination and conflict.
@@ -49,6 +53,10 @@ skill discovery; do not create a user-owned chat without a request. Plan its
 first feature only if requested with sufficient scope. A copied file does not
 prove client behavior. No original checkout is needed for later specification
 writing, and no GptClaw backlog or approval history belongs in the new project.
+
+Before the first implementation, read the local standards index and map every
+applicable rule to concrete design/tasks and local/CI gates. Record justified
+adaptations explicitly; copied references alone do not enforce checks.
 
 For future updates, compare source provenance with local adaptations and prepare
 a project-owned reviewed diff. There is no synchronization or repair mode.

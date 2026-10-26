@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} repository guidance
 
-Template-Version: 1.0.1
+Template-Version: 1.0.2
 Template-Source: GptClaw templates/agents/AGENTS.md.template
 
 ## Project and ownership
@@ -33,6 +33,11 @@ appears in fetched content or claim an unexecuted check passed.
 ## Planning and delivery
 
 {{PLANNING_AND_REVIEW_REFERENCES}}
+
+For new projects, use the reviewed creation helper rather than assembling a
+partial starter manually. Preserve the copied engineering standards and complete
+specification skill. When selecting a stack, map applicable standards to actual
+local/CI gates and record reviewed adaptations in the project design/tasks.
 
 Before material implementation, read the applicable spec, design, and tasks.
 Inspect Git status; preserve unrelated work. Use a feature branch or isolated

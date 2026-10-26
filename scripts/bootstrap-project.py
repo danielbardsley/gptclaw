@@ -16,6 +16,8 @@ import sys
 import tempfile
 import unicodedata
 
+import project_guidance as guidance
+
 SOURCE_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_URL = 'https://github.com/danielbardsley/gptclaw'
 STARTER = 'templates/projects/planning/'
@@ -27,8 +29,7 @@ TEMPLATES = {
     'docs/README.md.template': 'docs/README.md',
     'docs/platform/features.md.template': 'docs/platform/features.md',
 }
-SKILL_FILES = {'SKILL.md', 'assets/spec.md', 'assets/technical-design.md',
-               'assets/tasks.md', 'assets/acceptance.md'}
+SKILL_FILES = guidance.SKILL_FILES
 PROVENANCE = 'docs/bootstrap-provenance.json'
 MARKER = '.gptclaw-bootstrap-in-progress'
 DIRECTORY_FLAGS = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
@@ -75,7 +76,7 @@ def load_payload(source, revision, values):
     if actual != revision:
         raise BootstrapError('Source must identify a commit, not a tag object')
     entries = {}
-    tree = git(source, 'ls-tree', '-r', '-z', revision, '--', STARTER, SKILL).stdout
+    tree = git(source, 'ls-tree', '-r', '-z', revision, '--', STARTER, SKILL, guidance.ENGINEERING).stdout
     for item in tree.split(b'\0'):
         if not item:
             continue
@@ -85,7 +86,7 @@ def load_payload(source, revision, values):
         if mode != '100644' or kind != 'blob':
             raise BootstrapError('Source contains non-regular resource: ' + path)
         entries[path] = oid
-    expected = {STARTER + x for x in TEMPLATES} | {STARTER + 'VERSION'} | {SKILL + x for x in SKILL_FILES}
+    expected = {STARTER + x for x in TEMPLATES} | {STARTER + 'VERSION'} | set(guidance.RESOURCES) | {guidance.ENGINEERING + 'VERSION'}
     if set(entries) != expected:
         raise BootstrapError('Source package inventory differs from reviewed allowlist')
     blobs = {}
@@ -107,11 +108,14 @@ def load_payload(source, revision, values):
         if '{{' in rendered or '}}' in rendered:
             raise BootstrapError('Unresolved starter placeholder')
         payload[target] = rendered.encode()
-    for filename in SKILL_FILES:
-        payload[SKILL + filename] = blobs[SKILL + filename]
+    try:
+        inherited, bundle = guidance.payload(blobs.__getitem__)
+    except ValueError as error:
+        raise BootstrapError(str(error)) from error
+    payload.update(inherited)
     record = {'schema_version': 1, 'source_repository': SOURCE_URL,
               'source_revision': revision, 'starter': 'planning',
-              'starter_version': version, 'inputs': values,
+              'starter_version': version, 'inputs': values, 'engineering': bundle,
               'files': {name: digest(data) for name, data in sorted(payload.items())}}
     payload[PROVENANCE] = (json.dumps(record, indent=2, sort_keys=True) + '\n').encode()
     validate_payload(payload)

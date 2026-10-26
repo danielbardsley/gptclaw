@@ -137,3 +137,13 @@ branch and PR. Mark Deployed when the implementation is merged and available;
 mark Delivered after all required acceptance passes. A supported-client check
 may also contribute evidence to AGT-004 only when its particular criterion is
 actually exercised; do not close earlier initiatives by implication.
+
+
+## Standards inheritance extension (October 26, 2026)
+
+The project owner authorized [SPEC-050](../050-project-standards-inheritance/spec.md).
+PBS-003–005 now also require the complete versioned engineering references, local
+applicability links and standards-to-gates handoff; provenance includes source
+paths and hashes. This extends the original file inventory without changing
+historical acceptance evidence or updating existing projects. Planning starter
+1.1.0 requires a reviewed source revision containing the new engineering package.
