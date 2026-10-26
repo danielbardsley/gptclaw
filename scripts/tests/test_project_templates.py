@@ -229,6 +229,8 @@ class Tests(unittest.TestCase):
         path.write_text('must not be silently omitted')
         with self.assertRaises(ValueError):
             guidance.validate_inventory(self.repo)
+        with self.assertRaises(app.AppError):
+            templates.bundle_paths()
         path.unlink()
         path.symlink_to(self.repo/'templates/projects/engineering/quality.md')
         with self.assertRaises(ValueError):

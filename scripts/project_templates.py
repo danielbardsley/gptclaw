@@ -291,6 +291,11 @@ def _generate(path, slug, release, contents):
 
 
 def bundle_paths():
+    import project_guidance as guidance
+    try:
+        guidance.validate_inventory(app().REPO)
+    except ValueError as error:
+        raise app().AppError('template-policy') from error
     value, _ = catalogue()
     paths = [Path('scripts/project_templates.py'),Path('config/templates/v1.json'),Path('schemas/templates/v1.schema.json')]
     if (app().REPO/'config/templates/v2.json').exists():
@@ -313,7 +318,6 @@ def bundle_paths():
         paths += [Path(p) for p in ('scripts/native_contract.py','scripts/native_builds.py','scripts/native_runtime.py','scripts/apk_metadata.py','config/mobile/v2.json','config/templates/v9.json','schemas/templates/v9.schema.json','schemas/project/v11.schema.json','schemas/project/v12.schema.json')]
         paths += [Path('templates/apps/eas-toolchain')/name for name in ['Containerfile','package.json','package-lock.json','worker.cjs','.dockerignore','.gitignore']]
         paths += [Path('templates/apps/apk-verifier')/name for name in ['Containerfile','VerifyApk.java']]
-    import project_guidance as guidance
     paths += [Path('scripts/project_guidance.py'), Path(guidance.ENGINEERING + 'VERSION')]
     paths += [Path(name) for name in sorted(set(guidance.RESOURCES) | set(guidance.APP_TEMPLATES))]
     for release in value['releases']:
