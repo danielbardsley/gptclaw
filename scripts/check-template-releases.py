@@ -26,6 +26,10 @@ def verify_baseline(baseline):
     algorithm = subprocess.run(['git','rev-parse','--show-object-format'],cwd=repo,capture_output=True,text=True,check=True).stdout.strip()
     templates.check(algorithm in {'sha1','sha256'})
     for (name, version), (release, contents) in releases.items():
+        prefix = f'templates/apps/releases/{name}/{version}/'
+        declared = {prefix + item['source'] for item in release['files']}
+        # New committed guidance must enter the copied inventory, not disappear at creation.
+        templates.check({path for path in tracked if path.startswith(prefix)} == declared)
         for item in release['files']:
             rel = (Path('templates/apps/releases')/name/version/item['source']).as_posix()
             content = contents[item['output']]

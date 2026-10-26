@@ -23,6 +23,8 @@ package installation or production promotion is included.
 - PSI-003: Record source identity and file hashes, include all resources in
   provider packaging, reject missing/unsafe resources before publishing, and
   preserve immutable releases, no-clobber creation and existing project bytes.
+  The release gate must reject committed starter files missing from the copied
+  application-release inventory.
 - PSI-004: Test both creation paths, completeness, local references, provenance,
   missing resources and provider parity with synthetic isolated fixtures.
 

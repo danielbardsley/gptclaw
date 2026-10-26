@@ -74,3 +74,14 @@ repository tests and CI run #67 passed. Evidence is recorded in
 [acceptance](./acceptance.md). Supported-client discovery
 remains pending; PR #18 merged as `947a78f` on 2026-09-30; no real project, remote repository, or runtime is
 created as part of implementation.
+
+
+## Standards inheritance follow-up
+
+The project owner authorized the October 26 standards-copying extension under
+[SPEC-050](../050-project-standards-inheritance/spec.md). Its
+[tasks](../050-project-standards-inheritance/tasks.md) and
+[evidence](../050-project-standards-inheritance/acceptance.md) track the new file
+inventory, source hashes, application-creation parity and required gate mapping.
+The original merge and supported-client acceptance history above remains intact;
+the extension is in review and does not update existing projects.

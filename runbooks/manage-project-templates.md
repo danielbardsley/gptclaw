@@ -126,7 +126,11 @@ are not product requirements.
 
 Guidance bundle updates increment `templates/projects/engineering/VERSION` and
 ship through review with resource/completeness tests. Keep the fixed inventory in
-`project_guidance.py` in step with added files. New default guidance affects future
+`project_guidance.py` in step with added files. The release gate also rejects
+committed application starter files absent from the catalogue copy inventory,
+so adding a standard cannot silently leave it out of generated applications.
+When changing language standards for a new application release, review the shared
+bundle and applicability index too; preserve historical published releases. New default guidance affects future
 creation only; existing projects, including Dogstats, require separate adoption.
 An installed provider keeps its bundled revision until a reviewed provider update;
 source changes alone do not update that installation. Roll back with a reviewed

@@ -336,6 +336,15 @@ class Tests(unittest.TestCase):
         self.seal(release);self.write()
         with self.assertRaises(app.AppError):module.verify_baseline(baseline)
         git('add','.');module.verify_baseline(baseline)
+        unlisted = base/'2.0.0/docs/required-standard.md'
+        unlisted.parent.mkdir(exist_ok=True)
+        unlisted.write_text('Synthetic standard must not be silently omitted.')
+        git('add', str(unlisted.relative_to(self.repo)))
+        with self.assertRaises(app.AppError):
+            module.verify_baseline(baseline)
+        unlisted.unlink()
+        git('add', '-u', str(unlisted.relative_to(self.repo)))
+        module.verify_baseline(baseline)
 
 
 class PythonSecurityReleases(unittest.TestCase):
