@@ -1,6 +1,6 @@
 # SPEC-050: Project standards inheritance
 
-Status: Implementation authorized by the project owner on October 26, 2026.
+Status: Implementation in review; authorized by the project owner on October 26, 2026.
 Owner: project owner. [Design](technical-design.md) · [Tasks](tasks.md).
 
 ## Outcome and scope

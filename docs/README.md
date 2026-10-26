@@ -337,7 +337,7 @@ interfaces; existing accepted slices remain valid. QLT-010 stays optional.
   [Acceptance tracking](049-mobile-development-builds/acceptance.md) ·
   [Security disposition](049-mobile-development-builds/security-review.md)
 
-- **050 — Project standards inheritance, implementation authorized:**
+- **050 — Project standards inheritance, implementation in review:**
   [Specification](050-project-standards-inheritance/spec.md) ·
   [Design](050-project-standards-inheritance/technical-design.md) ·
   [Tasks](050-project-standards-inheritance/tasks.md)
