@@ -5,8 +5,8 @@ Owner: {{PROJECT_OWNER}}
 This catalogue starts empty. Add only this project's requested features.
 Entries describe candidate scope, not implementation authorization.
 
-| ID | Feature | Status | Evidence or next step |
-|---|---|---|---|
+| ID  | Feature | Status | Evidence or next step |
+| --- | ------- | ------ | --------------------- |
 
 Use Candidate for unselected ideas, Draft for plans under review, Planned for
 approved scope, Deployed for available implementation awaiting acceptance, and

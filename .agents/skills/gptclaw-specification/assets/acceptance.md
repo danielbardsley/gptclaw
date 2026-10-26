@@ -7,7 +7,7 @@ stays explicitly unknown. Creating this record does not declare acceptance.
 ## Criterion mapping
 
 | Criterion | State | Evidence or limitation | Remaining action and owner |
-|---|---|---|---|
+| --------- | ----- | ---------------------- | -------------------------- |
 
 Use passed, failed, pending, or not applicable with a reason. Include every
 criterion. Cite actual artifacts/check outcomes; attribute supplied reports.

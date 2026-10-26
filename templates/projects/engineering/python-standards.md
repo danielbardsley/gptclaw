@@ -71,15 +71,15 @@ explicit pinned, scanned, tested and reviewed operations.
 
 ## Automated gates and test conventions
 
-| Gate | Required behavior |
-|---|---|
-| format | isort then Black explicitly format the selected project's source/tests. |
-| lint | isort/Black check-only plus Ruff lint; Ruff formatter/import fixes do not compete with the chosen tools. Include annotation/docstring/style and bare-except checks where the pinned rule set supports them. |
-| typecheck | Strict mypy for the source, with typed fixtures/tests and narrowly documented compatibility exceptions. |
-| test | pytest plus coverage.py (directly or via pinned pytest-cov). At least 80% statement and 80% branch coverage across declared critical source modules; zero tests/coverage is a failure. |
-| security | Bandit static checks and a pinned dependency-vulnerability audit of the already locked/installed graph; no automatic fixes or dependency resolution. Zero unreviewed findings; narrow documented suppressions require review. |
-| verify / CI | Required formatting, imports, lint, types, tests/coverage, security and application build checks; failures propagate without source/lock rewrites. |
-| pre-commit | Versioned config uses the same pinned tools/commands via the reviewed container workflow. Hook installation is an explicit project-local action, never automatic scaffold/host installation. No floating remote hooks or extra tool downloads. |
+| Gate        | Required behavior                                                                                                                                                                                                                              |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| format      | isort then Black explicitly format the selected project's source/tests.                                                                                                                                                                        |
+| lint        | isort/Black check-only plus Ruff lint; Ruff formatter/import fixes do not compete with the chosen tools. Include annotation/docstring/style and bare-except checks where the pinned rule set supports them.                                    |
+| typecheck   | Strict mypy for the source, with typed fixtures/tests and narrowly documented compatibility exceptions.                                                                                                                                        |
+| test        | pytest plus coverage.py (directly or via pinned pytest-cov). At least 80% statement and 80% branch coverage across declared critical source modules; zero tests/coverage is a failure.                                                         |
+| security    | Bandit static checks and a pinned dependency-vulnerability audit of the already locked/installed graph; no automatic fixes or dependency resolution. Zero unreviewed findings; narrow documented suppressions require review.                  |
+| verify / CI | Required formatting, imports, lint, types, tests/coverage, security and application build checks; failures propagate without source/lock rewrites.                                                                                             |
+| pre-commit  | Versioned config uses the same pinned tools/commands via the reviewed container workflow. Hook installation is an explicit project-local action, never automatic scaffold/host installation. No floating remote hooks or extra tool downloads. |
 
 Critical coverage explicitly includes domain/service logic, models/settings,
 versioned endpoints, exception/logging middleware, pagination, request admission
@@ -95,7 +95,6 @@ format/lint/type failures, leaked logging fields, unversioned routes, readiness
 failure, insufficient coverage and static/vulnerability findings. Tool-conflicting
 rules must be narrowly configured/tested, not hidden with global ignores. Runtime
 local/CI evidence stays distinct from private-client acceptance.
-
 
 ## Platform adaptations
 

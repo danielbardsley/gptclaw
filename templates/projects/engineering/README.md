@@ -3,11 +3,11 @@
 These references are copied at project creation, independently of application
 release files. They remain available without the original GptClaw checkout.
 
-| Applicability | Required reference |
-|---|---|
-| Every implemented stack | [Shared quality and TypeScript conventions](quality.md) |
-| Python / FastAPI components | [Python engineering standards](python-standards.md) |
-| Expo / React Native components | [Mobile engineering standards](mobile-standards.md) |
+| Applicability                  | Required reference                                      |
+| ------------------------------ | ------------------------------------------------------- |
+| Every implemented stack        | [Shared quality and TypeScript conventions](quality.md) |
+| Python / FastAPI components    | [Python engineering standards](python-standards.md)     |
+| Expo / React Native components | [Mobile engineering standards](mobile-standards.md)     |
 
 Read the applicable rows before designing or implementing a component. Mixed
 stacks use every applicable row. A planning-only project retains all references;

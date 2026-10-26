@@ -92,7 +92,7 @@ def install(stage, read, project_name="New project"):
                                   'source_sha256': hashlib.sha256(template).hexdigest(),
                                   'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}
     root = stage / 'AGENTS.md'
-    text = root.read_text() + ROOT_NOTICE
+    text = root.read_text().rstrip() + '\n\n' + ROOT_NOTICE.lstrip()
     if len(text.encode()) > 8192:
         raise ValueError('Generated guidance exceeds 8 KiB')
     root.write_text(text)

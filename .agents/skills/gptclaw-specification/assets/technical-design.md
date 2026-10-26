@@ -12,7 +12,7 @@ flows/storage, permissions, failure handling, and dependencies where relevant.
 ## Components and changes
 
 | File or component | Responsibility and planned change | Requirement IDs |
-|---|---|---|
+| ----------------- | --------------------------------- | --------------- |
 
 Reference existing version and command sources rather than inventing pins or
 assuming future tools are installed.
@@ -27,7 +27,7 @@ cleanup only when the feature needs them. State known limitations.
 ## Traceability and decisions
 
 | Requirement IDs | Design mechanism | Task IDs | Acceptance IDs |
-|---|---|---|---|
+| --------------- | ---------------- | -------- | -------------- |
 
 Record unresolved decisions, owner, next action, and what can proceed meanwhile.
 
