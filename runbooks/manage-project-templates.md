@@ -105,7 +105,10 @@ Both planning bootstrap and application `new` now copy the versioned
 [engineering bundle](../templates/projects/engineering/README.md) and complete
 specification skill. Root guidance links to project-local `docs/engineering/`. Application creation
 also adds the local planning index and empty feature catalogue; existing
-application documentation indexes are extended rather than replaced.
+application documentation indexes are extended rather than replaced. Planning
+headings substitute the project title; provenance hashes record the resulting
+project-specific bytes. This is an explicit identity substitution alongside the
+existing manifest identity fields.
 Planning bootstrap requires a reviewed source revision containing the full bundle;
 it records the source commit, bundle version, source paths and output hashes in
 `docs/bootstrap-provenance.json`. Application creation adds a separate guidance

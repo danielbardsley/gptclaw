@@ -120,7 +120,23 @@ class Tests(unittest.TestCase):
     def test_same_release_reproducible_and_source_edits_allowed(self):
         one=self.new();selected=templates.resolve()[0];two=self.new('beta',template=selected['id'],template_version=selected['version'])
         for p in one.rglob('*'):
-            if p.is_file() and p.name!='project.yaml':self.assertEqual(p.read_bytes(),(two/p.relative_to(one)).read_bytes())
+            if not p.is_file() or p.name == 'project.yaml':
+                continue
+            relative = p.relative_to(one).as_posix()
+            first, second = p.read_bytes(), (two/relative).read_bytes()
+            if relative in {'docs/README.md', 'docs/platform/features.md'}:
+                first = first.replace(b'Alpha', b'Identity')
+                second = second.replace(b'Beta', b'Identity')
+            if relative == 'docs/starter-guidance-provenance.json':
+                records = [json.loads(first), json.loads(second)]
+                for root, record in zip([one, two], records):
+                    for target, item in record['files'].items():
+                        self.assertEqual(item['sha256'], __import__('hashlib').sha256((root/target).read_bytes()).hexdigest())
+                        if target in {'docs/README.md', 'docs/platform/features.md'}:
+                            item['sha256'] = 'normalized-project-identity'
+                self.assertEqual(*records)
+            else:
+                self.assertEqual(first, second, relative)
         normalized=[]
         for root in [one,two]:
             manifest=json.loads((root/'.gptclaw/project.yaml').read_text())
