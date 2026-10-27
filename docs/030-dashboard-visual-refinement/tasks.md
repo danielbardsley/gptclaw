@@ -69,3 +69,17 @@ The project owner instructed “implement the spec” on October 12. This approv
 SPEC-030 and its documented supported-only adaptation and authorizes implementation
 and necessary reversible private rollout/verification through the owned dashboard
 release path. Review/merge and actual owner acceptance remain separate delivery gates.
+
+## Inventory and docs follow-up — October 24
+
+The project owner requested removal of the overview Docs column and correction of
+the partial inventory warnings. Remove that column, retain README/index presence
+in expanded details and align the installed provider with current supported schemas.
+The warnings came from two schema-10 static projects observed by a pre-schema-10
+installed validator; diagnostics must remain visible for actual invalid projects.
+
+- [x] Remove the overview column and adjust expanded-row span.
+- [x] Add browser layout and schema-10 inventory regression coverage.
+- [x] Verify focused checks and private installed inventory; record release evidence
+  in [inventory correction](inventory-correction-2026-10-24.md). Broad-check
+  interruption is recorded separately from passing functional verification.
