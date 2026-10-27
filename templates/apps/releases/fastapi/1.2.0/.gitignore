@@ -1,0 +1,15 @@
+.venv/
+.gptclaw-cache/
+__pycache__/
+*.pyc
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.env
+.env.*
+.cache/
+
+.gptclaw-cache/
+__pycache__/
+dist/

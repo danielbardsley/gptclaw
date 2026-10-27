@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "retirements": [
+    {
+      "template": "expo-development",
+      "version": "1.0.0",
+      "successor": "1.2.0",
+      "reason": "Superseded vulnerable dependency graph; retain immutable generation/integrity coverage. Patched successor retains full security, quality and defect-rejection gates."
+    },
+    {
+      "template": "expo-development-notes",
+      "version": "1.0.0",
+      "successor": "1.2.0",
+      "reason": "Superseded vulnerable dependency graph; retain immutable generation/integrity coverage. Patched successor retains full security, quality and defect-rejection gates."
+    },
+    {
+      "template": "expo-notes",
+      "version": "1.1.0",
+      "successor": "1.2.0",
+      "reason": "Superseded vulnerable dependency graph; retain immutable generation/integrity coverage. Patched successor retains full security, quality and defect-rejection gates."
+    },
+    {
+      "template": "expo-react-native",
+      "version": "1.1.0",
+      "successor": "1.2.0",
+      "reason": "Superseded vulnerable dependency graph; retain immutable generation/integrity coverage. Patched successor retains full security, quality and defect-rejection gates."
+    },
+    {
+      "template": "fastapi",
+      "version": "1.1.0",
+      "successor": "1.2.0",
+      "reason": "Superseded vulnerable dependency graph; retain immutable generation/integrity coverage. Patched successor retains full security, quality and defect-rejection gates."
+    },
+    {
+      "template": "fastapi-postgres",
+      "version": "1.1.0",
+      "successor": "1.2.0",
+      "reason": "Superseded vulnerable dependency graph; retain immutable generation/integrity coverage. Patched successor retains full security, quality and defect-rejection gates."
+    },
+    {
+      "template": "nextjs",
+      "version": "1.1.0",
+      "successor": "1.2.0",
+      "reason": "Superseded vulnerable dependency graph; retain immutable generation/integrity coverage. Patched successor retains full security, quality and defect-rejection gates."
+    },
+    {
+      "template": "nextjs-static",
+      "version": "1.0.0",
+      "successor": "1.2.0",
+      "reason": "Superseded vulnerable dependency graph; retain immutable generation/integrity coverage. Patched successor retains full security, quality and defect-rejection gates."
+    },
+    {
+      "template": "notes",
+      "version": "1.1.0",
+      "successor": "1.2.0",
+      "reason": "Superseded vulnerable dependency graph; retain immutable generation/integrity coverage. Patched successor retains full security, quality and defect-rejection gates."
+    },
+    {
+      "template": "notes-postgres",
+      "version": "1.1.0",
+      "successor": "1.2.0",
+      "reason": "Superseded vulnerable dependency graph; retain immutable generation/integrity coverage. Patched successor retains full security, quality and defect-rejection gates."
+    }
+  ]
+}

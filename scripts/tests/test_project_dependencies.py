@@ -111,6 +111,19 @@ class DependencyTests(unittest.TestCase):
             with self.assertRaises(app.AppError): deps.context(self.root)
         (self.root/'pnpm-workspace.yaml').write_bytes(original)
 
+    def test_only_reviewed_mobile_security_override_and_exact_age_exclusion_pass(self):
+        policy = deps.context(self.root)['policy']
+        workspace = {'packages': ['.'], 'minimumReleaseAge': 1440,
+                     'minimumReleaseAgeExclude': ['node-forge@1.4.1'],
+                     'overrides': dict(deps.MOBILE_SECURITY_OVERRIDES)}
+        deps.validate_workspace(workspace, policy, mobile=True)
+        with self.assertRaises(app.AppError): deps.validate_workspace(workspace, policy)
+        for key, value in [('node-forge', '*'), ('zod@3.25.76', 'https://example.invalid/zod.tgz'), ('extra', '1.0.0')]:
+            changed = {**workspace, 'overrides': {**workspace['overrides'], key: value}}
+            with self.assertRaises(app.AppError): deps.validate_workspace(changed, policy, mobile=True)
+        with self.assertRaises(app.AppError):
+            deps.validate_workspace({**workspace, 'minimumReleaseAgeExclude': ['node-forge@*']}, policy, mobile=True)
+
     def test_lock_integrity_exotic_resolution_and_extra_importer_rejected(self):
         context = deps.context(self.root); docs = deps.yaml_documents(context['files']['pnpm-lock.yaml'], 2)
         p = context['policy']; key = next(iter(docs[1]['packages']))

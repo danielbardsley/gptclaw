@@ -500,6 +500,506 @@
         }
       ],
       "digest": "8714b1153e292e75237560ff0349ba30012fd2ed6275fc0ff19d6772fc928489"
+    },
+    {
+      "id": "expo-development",
+      "version": "1.2.0",
+      "description": "Opt-in Android development client with native storage probe",
+      "kind": "mobile",
+      "provider": "expo-dev-v1",
+      "manifest_schema": 11,
+      "catalogue_schema": 9,
+      "stack": [
+        "React Native",
+        "Expo SDK 57",
+        "Expo Router",
+        "TypeScript"
+      ],
+      "toolchain": {
+        "schema_version": 1,
+        "profile": "node-pnpm",
+        "profile_version": 1,
+        "versions": {
+          "node": "24.21.0",
+          "pnpm": "12.10.1"
+        }
+      },
+      "data": "none",
+      "exposure": "none",
+      "substitutions": [
+        "project-id",
+        "project-name",
+        "mobile-identity"
+      ],
+      "mobile_profile_digest": "cd44e6bab7589993c66d17f35d9c5b54a2c848289875c87b490638c975ca6358",
+      "files": [
+        {
+          "source": ".easignore",
+          "output": ".easignore",
+          "sha256": "688405ce03e4f7f75812bb2aa407c1f5de861cfe3d58cd409a2a7f767b8f0303"
+        },
+        {
+          "source": ".github/dependabot.yml",
+          "output": ".github/dependabot.yml",
+          "sha256": "32700bff2e45e68d72a1951d6b44c96eea9c32fcd810749988446b8815766507"
+        },
+        {
+          "source": ".github/workflows/quality.yml",
+          "output": ".github/workflows/quality.yml",
+          "sha256": "f244a9f38545ec8effc2e48f5e222cf272d05b0920a4fe74958a7bf9c61e7877"
+        },
+        {
+          "source": ".gitignore",
+          "output": ".gitignore",
+          "sha256": "11ece4f6604f73ffd248205f2f4975f22edfcce744e64720345e23521b325706"
+        },
+        {
+          "source": ".prettierignore",
+          "output": ".prettierignore",
+          "sha256": "c25b1214b1fc98909ac8a489b027b4d69dedd9fd7f6007571d794bc27119c4a9"
+        },
+        {
+          "source": ".prettierrc.json",
+          "output": ".prettierrc.json",
+          "sha256": "32dcd743a0ffca59a737c87abcfcc3f57a0cede5cedb6a8b1b68d32a3b6d4506"
+        },
+        {
+          "source": "AGENTS.md",
+          "output": "AGENTS.md",
+          "sha256": "df13f1b2ad4458d4f2ca8cfe82bf186318413d900a267947959fe73eb3674c9f"
+        },
+        {
+          "source": "README.md",
+          "output": "README.md",
+          "sha256": "cfd0a785280d342b8880299e7782c9fc3d83cc0e3da3a68d2e5747b8be6d5da5"
+        },
+        {
+          "source": "app.json",
+          "output": "app.json",
+          "sha256": "df75135265807cfc8fd178b7c7ae094f5ec83fe36712defea72064bf7bdc95a2"
+        },
+        {
+          "source": "assets/icon.png",
+          "output": "assets/icon.png",
+          "sha256": "41c5028d232c20672121818fc63796242b6da381a985716b0a357e2eaff459bb"
+        },
+        {
+          "source": "checks/advisory-policy.json",
+          "output": "checks/advisory-policy.json",
+          "sha256": "d43efaf3934692089efc6970907256507ab8e403b697ac061775cbe5e59d7990"
+        },
+        {
+          "source": "checks/gptclaw_quality.py",
+          "output": "checks/gptclaw_quality.py",
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
+        },
+        {
+          "source": "checks/quality.cjs",
+          "output": "checks/quality.cjs",
+          "sha256": "ed40135f073e9359787fbc64de98902928f2e4177fda2076fd883b35d600bbc0"
+        },
+        {
+          "source": "checks/sdk.json",
+          "output": "checks/sdk.json",
+          "sha256": "04d5c800ea481d058dafbedb20fb75f570554166e2c717ae6fbdcf23fd6971c3"
+        },
+        {
+          "source": "checks/security.cjs",
+          "output": "checks/security.cjs",
+          "sha256": "dc7bd3213757b04ad6e1ff31095a1f218ebba09c5c652ebde128683b8e71af84"
+        },
+        {
+          "source": "checks/security.test.cjs",
+          "output": "checks/security.test.cjs",
+          "sha256": "7660f0f5b2f7d5ab89f50daa3730dc25392f430074ed08971205940dd0293678"
+        },
+        {
+          "source": "checks/toolchain/Containerfile",
+          "output": "checks/toolchain/Containerfile",
+          "sha256": "e5cd7670b43c0115a1193ac5f6ac19b5c2f39db03502123fcd8a4797652f1c3b"
+        },
+        {
+          "source": "checks/toolchain/install-pnpm.cjs",
+          "output": "checks/toolchain/install-pnpm.cjs",
+          "sha256": "43e29b1a2b518dbc37fc691f97852ec740db8eb4154b62c6d3bb816acd2b7640"
+        },
+        {
+          "source": "checks/toolchain/profile.json",
+          "output": "checks/toolchain/profile.json",
+          "sha256": "405e536e1b506787c5649164a25ff4101650f5ff8db7cddd2aca1dd0452c8608"
+        },
+        {
+          "source": "docs/README.md",
+          "output": "docs/README.md",
+          "sha256": "f8cebd0ebe7a8431ab548bdf1f7400047eed71f7e0f6cf3878a0583eb66aa072"
+        },
+        {
+          "source": "docs/architecture.md",
+          "output": "docs/architecture.md",
+          "sha256": "87bc96a1784b7223f67cef3c5c044b58e6b6786916828c9571ca892f13bee31e"
+        },
+        {
+          "source": "docs/mobile-standards.md",
+          "output": "docs/mobile-standards.md",
+          "sha256": "b35a3c89d1401bd30e9eddee4ba6e39a582536998dd541c610b6e8a15bc57c7e"
+        },
+        {
+          "source": "docs/provenance.md",
+          "output": "docs/provenance.md",
+          "sha256": "06904b485b0e132a073827ef5a97b73d7ad1a7fc672ac8cf6987cfec5e0f35fc"
+        },
+        {
+          "source": "docs/quality.md",
+          "output": "docs/quality.md",
+          "sha256": "6c88b3de3ad372631b5f873c7b43bf428375b80aaa6c84f513abf7c7c00c82cf"
+        },
+        {
+          "source": "eas.json",
+          "output": "eas.json",
+          "sha256": "aaf411705c3b5924b016a88316af1898a70e78234829521c0d0cf8a45e623d90"
+        },
+        {
+          "source": "eslint.config.js",
+          "output": "eslint.config.js",
+          "sha256": "ea3aa0186d01716f50de490289b4d893c4a031c682ce9cc689d4c0ae171078c5"
+        },
+        {
+          "source": "jest.config.cjs",
+          "output": "jest.config.cjs",
+          "sha256": "f160263c15e80e6675b1afcf37d05c07b34dd18aa4940804a4c93d59833fbc1d"
+        },
+        {
+          "source": "jest.setup.cjs",
+          "output": "jest.setup.cjs",
+          "sha256": "3c219190544cfaa3458b0e049741ac6952855deb5ced5f4203f5fe908665a4f4"
+        },
+        {
+          "source": "package.json",
+          "output": "package.json",
+          "sha256": "ea8dbd4a1f65d06d16bfa1e96a77e0c5034fecd32657ec95e58e21214ed1073f"
+        },
+        {
+          "source": "pnpm-lock.yaml",
+          "output": "pnpm-lock.yaml",
+          "sha256": "41e6f2d4cccf573ed24e6d567e52ef0d4ec5adbabe3191e60d057c191075f3c8"
+        },
+        {
+          "source": "pnpm-workspace.yaml",
+          "output": "pnpm-workspace.yaml",
+          "sha256": "4a8e37889fcd6263f6e79a1c14c36e719b4dbca74652892f8f71b63dac5edfe0"
+        },
+        {
+          "source": "quality.json",
+          "output": "quality.json",
+          "sha256": "d876e23fa44e3bee1d60af6c91128dd5b5b970b97274e8a15f93997aa5c47937"
+        },
+        {
+          "source": "src/app/_layout.tsx",
+          "output": "src/app/_layout.tsx",
+          "sha256": "a9025892305895924de4f3a271b852d8a8beaf0acae865b6d8ce71aca9cc9027"
+        },
+        {
+          "source": "src/app/index.tsx",
+          "output": "src/app/index.tsx",
+          "sha256": "67854fda7f488c910c4cde85494de63a6c68f3998cb5acba8f8bc12f004f89fa"
+        },
+        {
+          "source": "src/components/NativeProbe.tsx",
+          "output": "src/components/NativeProbe.tsx",
+          "sha256": "839b77dee62bb3169dc8d7043d4d67f5b2bea6435f6eb81a59cfe662a644e0be"
+        },
+        {
+          "source": "src/native-demo.ts",
+          "output": "src/native-demo.ts",
+          "sha256": "2fb47d5d00c91af3405b17af31f67aaa30d40799b4068038837a6d24b968c2ce"
+        },
+        {
+          "source": "tests/native.test.tsx",
+          "output": "tests/native.test.tsx",
+          "sha256": "b525797994a9592ae27c9efcadc5825731284e28525a190d4453033afbee2cff"
+        },
+        {
+          "source": "tsconfig.json",
+          "output": "tsconfig.json",
+          "sha256": "40b81e3f7cb8e75c8891214b2553f0b50211cda2657c649e50d87c56b625dbbc"
+        }
+      ],
+      "digest": "36c455082f02da0cb4df738a7e104116b6ad085451bf26944e19dc55aa194eeb"
+    },
+    {
+      "id": "expo-development-notes",
+      "version": "1.2.0",
+      "description": "Opt-in Android development client with explicit FastAPI notes binding",
+      "kind": "mobile",
+      "provider": "expo-dev-notes-v1",
+      "manifest_schema": 12,
+      "catalogue_schema": 9,
+      "stack": [
+        "React Native",
+        "Expo SDK 57",
+        "Expo Router",
+        "TypeScript"
+      ],
+      "toolchain": {
+        "schema_version": 1,
+        "profile": "node-pnpm",
+        "profile_version": 1,
+        "versions": {
+          "node": "24.21.0",
+          "pnpm": "12.10.1"
+        }
+      },
+      "data": "none",
+      "exposure": "none",
+      "substitutions": [
+        "project-id",
+        "project-name",
+        "mobile-identity"
+      ],
+      "mobile_profile_digest": "cd44e6bab7589993c66d17f35d9c5b54a2c848289875c87b490638c975ca6358",
+      "files": [
+        {
+          "source": ".easignore",
+          "output": ".easignore",
+          "sha256": "688405ce03e4f7f75812bb2aa407c1f5de861cfe3d58cd409a2a7f767b8f0303"
+        },
+        {
+          "source": ".github/dependabot.yml",
+          "output": ".github/dependabot.yml",
+          "sha256": "32700bff2e45e68d72a1951d6b44c96eea9c32fcd810749988446b8815766507"
+        },
+        {
+          "source": ".github/workflows/quality.yml",
+          "output": ".github/workflows/quality.yml",
+          "sha256": "f244a9f38545ec8effc2e48f5e222cf272d05b0920a4fe74958a7bf9c61e7877"
+        },
+        {
+          "source": ".gitignore",
+          "output": ".gitignore",
+          "sha256": "37c724dfa799a7782ebec03d66b3471673d2b90ffee726329b0fea398af28467"
+        },
+        {
+          "source": ".prettierignore",
+          "output": ".prettierignore",
+          "sha256": "29c98a6cf8cd56149ebf809c0a0b9d4f5cd57977a0a1d7a26194574239139f82"
+        },
+        {
+          "source": ".prettierrc.json",
+          "output": ".prettierrc.json",
+          "sha256": "32dcd743a0ffca59a737c87abcfcc3f57a0cede5cedb6a8b1b68d32a3b6d4506"
+        },
+        {
+          "source": "AGENTS.md",
+          "output": "AGENTS.md",
+          "sha256": "df13f1b2ad4458d4f2ca8cfe82bf186318413d900a267947959fe73eb3674c9f"
+        },
+        {
+          "source": "README.md",
+          "output": "README.md",
+          "sha256": "cfd0a785280d342b8880299e7782c9fc3d83cc0e3da3a68d2e5747b8be6d5da5"
+        },
+        {
+          "source": "app.json",
+          "output": "app.json",
+          "sha256": "df75135265807cfc8fd178b7c7ae094f5ec83fe36712defea72064bf7bdc95a2"
+        },
+        {
+          "source": "assets/icon.png",
+          "output": "assets/icon.png",
+          "sha256": "41c5028d232c20672121818fc63796242b6da381a985716b0a357e2eaff459bb"
+        },
+        {
+          "source": "checks/advisory-policy.json",
+          "output": "checks/advisory-policy.json",
+          "sha256": "d43efaf3934692089efc6970907256507ab8e403b697ac061775cbe5e59d7990"
+        },
+        {
+          "source": "checks/config.cjs",
+          "output": "checks/config.cjs",
+          "sha256": "823efcb92323e9d9400807f2c29266553f16f8844f29de89a8055fb8fd5fffd1"
+        },
+        {
+          "source": "checks/contract.cjs",
+          "output": "checks/contract.cjs",
+          "sha256": "2e2fbe7be1fc549f33da69f35bde28b556394250b86d10f27dabd91d1b39b45e"
+        },
+        {
+          "source": "checks/contract.test.cjs",
+          "output": "checks/contract.test.cjs",
+          "sha256": "74ca4a2d95ec426bf4c91da50e7f8de09ed4453d871506e51e2fe073038a8af4"
+        },
+        {
+          "source": "checks/gptclaw_quality.py",
+          "output": "checks/gptclaw_quality.py",
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
+        },
+        {
+          "source": "checks/quality.cjs",
+          "output": "checks/quality.cjs",
+          "sha256": "682dca412e06a7d378fee42e42095134e75f6137c63d12da2b8d09c05852a577"
+        },
+        {
+          "source": "checks/sdk.json",
+          "output": "checks/sdk.json",
+          "sha256": "04d5c800ea481d058dafbedb20fb75f570554166e2c717ae6fbdcf23fd6971c3"
+        },
+        {
+          "source": "checks/security.cjs",
+          "output": "checks/security.cjs",
+          "sha256": "dc7bd3213757b04ad6e1ff31095a1f218ebba09c5c652ebde128683b8e71af84"
+        },
+        {
+          "source": "checks/security.test.cjs",
+          "output": "checks/security.test.cjs",
+          "sha256": "7660f0f5b2f7d5ab89f50daa3730dc25392f430074ed08971205940dd0293678"
+        },
+        {
+          "source": "checks/toolchain/Containerfile",
+          "output": "checks/toolchain/Containerfile",
+          "sha256": "e5cd7670b43c0115a1193ac5f6ac19b5c2f39db03502123fcd8a4797652f1c3b"
+        },
+        {
+          "source": "checks/toolchain/install-pnpm.cjs",
+          "output": "checks/toolchain/install-pnpm.cjs",
+          "sha256": "43e29b1a2b518dbc37fc691f97852ec740db8eb4154b62c6d3bb816acd2b7640"
+        },
+        {
+          "source": "checks/toolchain/profile.json",
+          "output": "checks/toolchain/profile.json",
+          "sha256": "405e536e1b506787c5649164a25ff4101650f5ff8db7cddd2aca1dd0452c8608"
+        },
+        {
+          "source": "contract/openapi.json",
+          "output": "contract/openapi.json",
+          "sha256": "6bcc8d750a399275bb7845a5d2b1b7e127249baa092fb3f987f2116b93f25fcf"
+        },
+        {
+          "source": "docs/README.md",
+          "output": "docs/README.md",
+          "sha256": "f8cebd0ebe7a8431ab548bdf1f7400047eed71f7e0f6cf3878a0583eb66aa072"
+        },
+        {
+          "source": "docs/architecture.md",
+          "output": "docs/architecture.md",
+          "sha256": "87bc96a1784b7223f67cef3c5c044b58e6b6786916828c9571ca892f13bee31e"
+        },
+        {
+          "source": "docs/mobile-standards.md",
+          "output": "docs/mobile-standards.md",
+          "sha256": "b35a3c89d1401bd30e9eddee4ba6e39a582536998dd541c610b6e8a15bc57c7e"
+        },
+        {
+          "source": "docs/provenance.md",
+          "output": "docs/provenance.md",
+          "sha256": "32541ce5cb7391078fd235a7a3b61dd4d5a07ec61adc589d75522044cb002ec3"
+        },
+        {
+          "source": "docs/quality.md",
+          "output": "docs/quality.md",
+          "sha256": "6c88b3de3ad372631b5f873c7b43bf428375b80aaa6c84f513abf7c7c00c82cf"
+        },
+        {
+          "source": "eas.json",
+          "output": "eas.json",
+          "sha256": "aaf411705c3b5924b016a88316af1898a70e78234829521c0d0cf8a45e623d90"
+        },
+        {
+          "source": "eslint.config.js",
+          "output": "eslint.config.js",
+          "sha256": "ea3aa0186d01716f50de490289b4d893c4a031c682ce9cc689d4c0ae171078c5"
+        },
+        {
+          "source": "jest.config.cjs",
+          "output": "jest.config.cjs",
+          "sha256": "bd1263fea24e1309130ecd75cef2de2cc7c9ac383efcd79efef454f82ed87d58"
+        },
+        {
+          "source": "jest.setup.cjs",
+          "output": "jest.setup.cjs",
+          "sha256": "3c219190544cfaa3458b0e049741ac6952855deb5ced5f4203f5fe908665a4f4"
+        },
+        {
+          "source": "package.json",
+          "output": "package.json",
+          "sha256": "ea8dbd4a1f65d06d16bfa1e96a77e0c5034fecd32657ec95e58e21214ed1073f"
+        },
+        {
+          "source": "pnpm-lock.yaml",
+          "output": "pnpm-lock.yaml",
+          "sha256": "41e6f2d4cccf573ed24e6d567e52ef0d4ec5adbabe3191e60d057c191075f3c8"
+        },
+        {
+          "source": "pnpm-workspace.yaml",
+          "output": "pnpm-workspace.yaml",
+          "sha256": "4a8e37889fcd6263f6e79a1c14c36e719b4dbca74652892f8f71b63dac5edfe0"
+        },
+        {
+          "source": "quality.json",
+          "output": "quality.json",
+          "sha256": "a8a0144001345316d037ccc96c1a39265255f7119c820457a2680a28846867f3"
+        },
+        {
+          "source": "src/api/client.ts",
+          "output": "src/api/client.ts",
+          "sha256": "f23fd0abd8690291f47784d9ad14b5c856b63ab01b4dee7d4bf89b92bd4017d5"
+        },
+        {
+          "source": "src/api/contract.ts",
+          "output": "src/api/contract.ts",
+          "sha256": "14fda6fe85e38eba6368a4203f358083426b933aa790b2ecc155cf814ce28dec"
+        },
+        {
+          "source": "src/app/_layout.tsx",
+          "output": "src/app/_layout.tsx",
+          "sha256": "e5705fd8cfed450d25a63f3751f991a9f2ff0320762910412f574736f227dbac"
+        },
+        {
+          "source": "src/app/index.tsx",
+          "output": "src/app/index.tsx",
+          "sha256": "18c707a8eac7bfd2016df9a7a37023dd3072532581bdaf3ca3121ee1de1dbebb"
+        },
+        {
+          "source": "src/components/NativeProbe.tsx",
+          "output": "src/components/NativeProbe.tsx",
+          "sha256": "839b77dee62bb3169dc8d7043d4d67f5b2bea6435f6eb81a59cfe662a644e0be"
+        },
+        {
+          "source": "src/components/Notebook.tsx",
+          "output": "src/components/Notebook.tsx",
+          "sha256": "f98eacd1f876bd92052f3d0c7a676269e09cdbb275ec66ba86995d50e05c7905"
+        },
+        {
+          "source": "src/config/backend.generated.ts",
+          "output": "src/config/backend.generated.ts",
+          "sha256": "1207d14972a2da949ea8db1dfd133fbf1ff67fab7a19cd3adc6442ef0d3cf9ab"
+        },
+        {
+          "source": "src/native-demo.ts",
+          "output": "src/native-demo.ts",
+          "sha256": "2fb47d5d00c91af3405b17af31f67aaa30d40799b4068038837a6d24b968c2ce"
+        },
+        {
+          "source": "tests/client.test.tsx",
+          "output": "tests/client.test.tsx",
+          "sha256": "64fb8736d9c8e12223b6078f848baf2245416b06375b8b33e37fed0d976fdf0e"
+        },
+        {
+          "source": "tests/native.test.tsx",
+          "output": "tests/native.test.tsx",
+          "sha256": "b525797994a9592ae27c9efcadc5825731284e28525a190d4453033afbee2cff"
+        },
+        {
+          "source": "tests/notes.test.tsx",
+          "output": "tests/notes.test.tsx",
+          "sha256": "8fb4d45cc0f5fd710ac55ee33cad2d6683a3616aac14599f533715b4efe32b50"
+        },
+        {
+          "source": "tsconfig.json",
+          "output": "tsconfig.json",
+          "sha256": "40b81e3f7cb8e75c8891214b2553f0b50211cda2657c649e50d87c56b625dbbc"
+        }
+      ],
+      "digest": "babd3647978da03f0d4bb94e0f413eea1da416515de3d76d59467af951edd526"
     }
   ]
 }

@@ -1,0 +1,19 @@
+# Static site project guidance
+
+Use the existing rootless GptClaw Node/pnpm profile and managed lifecycle.
+Read the approved project spec/design/tasks before material product changes.
+Preserve unrelated source and Git work; deliver reviewable PRs. Use synthetic data.
+
+This is Next.js static export, not a request-time application server. Edit app/
+and public/; lib/site.ts owns the build-time private prefix. Keep navigation and
+health working. Server actions, cookies, middleware, runtime image optimization,
+ISR and runtime secrets are unsupported. No public or production deployment is
+implied. Keep credentials and generated output out of Git.
+
+Use managed rebuild after source edits; it stops this preview before exporting.
+Failure leaves it unavailable until repair/rebuild; unrelated projects remain
+available. Stop retains source. Never prune shared storage to recover a project.
+Read README.md for quality checks, starter adaptation and private URL behavior.
+Use gptclawctl deps/toolchain for authorized exact dependency/profile changes.
+Install hooks and implicit runtime/tool downloads remain disabled. Preserve the
+original catalogue provenance; template upgrades require reviewed source changes.

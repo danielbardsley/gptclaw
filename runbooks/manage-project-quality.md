@@ -8,11 +8,11 @@ Managed rollout/deployment remains separately authorized.
 
 ## Select and inspect
 
-Select an exact `1.1.0` quality release for Next.js, FastAPI, Fastify, notes,
-notes-postgres, fastapi-postgres, expo-react-native or expo-notes through existing
-template discovery/creation. Historical releases keep their bytes and explicit
+Select exact `1.2.0` releases for Next.js, FastAPI, notes, notes-postgres,
+fastapi-postgres, nextjs-static and all four Expo families. Fastify remains at
+`1.1.0`. Historical releases keep their bytes and explicit
 selection; adoption by existing applications is a reviewed source change. The source
-catalogue's default is Next.js 1.1.0; installed providers retain their current
+catalogue's default is Next.js 1.2.0; installed providers retain their current
 catalogue until a separately authorized rollout. Explicit old release selection
 remains available.
 Do not replace `.gptclaw` provenance or persistent data to upgrade an application.
@@ -183,11 +183,15 @@ From the prepared GptClaw manifest environment:
 ```bash
 python scripts/quality_templates.py --list
 python scripts/quality_templates.py
-python scripts/quality_templates.py --template nextjs --version 1.1.0 --execute --engine podman
+python scripts/quality_templates.py --template nextjs --version 1.2.0 --execute --engine podman
 ```
 
-All exact releases receive integrity and generation checks. The new `1.1.0`
-quality releases receive full container checks. Superseded releases retain
+All exact releases receive integrity and generation checks. Active quality
+releases receive full container checks. Exact retirements in
+`config/quality-template-retirements.json` require an existing active quality
+successor and a reason; missing, backward or chained retirements fail validation.
+The ten vulnerable predecessors now have patched `1.2.0` successors; Fastify
+remains at `1.1.0`. Existing project adoption remains a separate reviewed change. Superseded releases retain
 historical generation coverage; this is an explicit testing matrix decision, not
 silent deletion or an automatic application migration. Newest unclassified
 releases fail matrix enumeration. The pinned workflow runs metadata checks and
@@ -201,13 +205,14 @@ Never prune the shared container store. Images are reusable check caches.
 For an explicitly unpublished successor release only:
 
 ```bash
-python scripts/seal-quality-releases.py --version 1.1.0 --baseline origin/main
+python scripts/seal-quality-releases.py --version 1.2.0 --baseline origin/main
 git add config/templates templates/apps/releases scripts
 python scripts/check-template-releases.py --baseline origin/main
 ```
 
 The sealer refuses releases already in the baseline, prunes development caches
-and generated binding/type/state files from its inventory, and hashes source
+and transient type/state artifacts from its inventory. Inert starter type declarations
+and backend placeholders remain copied source, and hashes source
 assets only. The release checker also requires the exact declared bytes in the
 Git index, so ignored local files or partially staged changes cannot hide a
 missing asset in CI. The canonical portable

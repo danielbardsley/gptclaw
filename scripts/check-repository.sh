@@ -281,6 +281,9 @@ if ! python3 -B scripts/tests/test_project_smoke.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_ci_workflow_diagnostics.py; then
+  status=1
+fi
 if ! python3 -B scripts/tests/test_project_quality.py; then
   status=1
 fi

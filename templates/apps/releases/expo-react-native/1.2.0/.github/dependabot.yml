@@ -1,0 +1,92 @@
+{
+  "version": 2,
+  "updates": [
+    {
+      "package-ecosystem": "github-actions",
+      "directory": "/",
+      "schedule": {
+        "interval": "weekly"
+      },
+      "open-pull-requests-limit": 1,
+      "ignore": [
+        {
+          "dependency-name": "*",
+          "update-types": [
+            "version-update:semver-major"
+          ]
+        }
+      ],
+      "groups": {
+        "compatible": {
+          "patterns": [
+            "*"
+          ],
+          "update-types": [
+            "minor",
+            "patch"
+          ]
+        }
+      }
+    },
+    {
+      "package-ecosystem": "npm",
+      "directory": "/",
+      "schedule": {
+        "interval": "weekly"
+      },
+      "open-pull-requests-limit": 1,
+      "ignore": [
+        {
+          "dependency-name": "*",
+          "update-types": [
+            "version-update:semver-major"
+          ]
+        },
+        {
+          "dependency-name": "expo"
+        },
+        {
+          "dependency-name": "expo-*"
+        },
+        {
+          "dependency-name": "@expo/*"
+        },
+        {
+          "dependency-name": "react"
+        },
+        {
+          "dependency-name": "react-native"
+        },
+        {
+          "dependency-name": "react-native-*"
+        },
+        {
+          "dependency-name": "@react-native/*"
+        },
+        {
+          "dependency-name": "jest-expo"
+        },
+        {
+          "dependency-name": "eslint-config-expo"
+        },
+        {
+          "dependency-name": "pnpm"
+        },
+        {
+          "dependency-name": "node"
+        }
+      ],
+      "groups": {
+        "compatible": {
+          "patterns": [
+            "*"
+          ],
+          "update-types": [
+            "minor",
+            "patch"
+          ]
+        }
+      }
+    }
+  ]
+}

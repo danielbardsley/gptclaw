@@ -17,8 +17,31 @@ import private_apps as app
 import project_templates as templates
 
 
+def retirements(releases):
+    path = app.REPO/'config/quality-template-retirements.json'
+    if not path.exists():
+        return {}
+    value = templates.data(path)
+    app.need(set(value) == {'schema_version', 'retirements'} and value['schema_version'] == 1
+             and isinstance(value['retirements'], list), 'template-policy')
+    result = {}
+    for entry in value['retirements']:
+        app.need(isinstance(entry, dict) and set(entry) == {'template', 'version', 'successor', 'reason'}, 'template-policy')
+        app.need(all(isinstance(v, str) and v for v in entry.values()), 'template-policy')
+        key = (entry['template'], entry['version'])
+        successor = (entry['template'], entry['successor'])
+        app.need(key in releases and successor in releases and key not in result
+                 and tuple(map(int, successor[1].split('.'))) > tuple(map(int, key[1].split('.'))), 'template-policy')
+        release, contents = releases[successor]
+        app.need('quality.json' in contents or release['provider'] == 'nextjs-static-v1', 'template-policy')
+        result[key] = entry
+    app.need(not any((v['template'], v['successor']) in result for v in result.values()), 'template-policy')
+    return result
+
+
 def matrix():
     _, releases = templates.catalogue()
+    retired = retirements(releases)
     newest = {}
     for key in releases:
         if key[0] not in newest or tuple(map(int, key[1].split('.'))) > tuple(map(int, newest[key[0]].split('.'))):
@@ -27,11 +50,12 @@ def matrix():
     for (name, version), (release, contents) in sorted(releases.items()):
         quality = 'quality.json' in contents
         static = release['provider'] == 'nextjs-static-v1'
+        retirement = retired.get((name, version))
         if version == newest[name]:
             app.need(quality or static, 'template-policy')
         result.append({'id': name, 'version': version, 'digest': release['digest'],
-                       'provider': release['provider'], 'checks': 'full' if quality else 'static' if static else 'historical-generation',
-                       'reason': 'Current quality-enabled release' if quality else 'Static adapter uses its export/browser/negative-check helper' if static else 'Superseded exact release; preserve integrity and generation compatibility',
+                       'provider': release['provider'], 'checks': 'historical-generation' if retirement else 'full' if quality else 'static' if static else 'historical-generation',
+                       'reason': retirement['reason']+' Successor: '+name+'@'+retirement['successor'] if retirement else 'Current quality-enabled release' if quality else 'Static adapter uses its export/browser/negative-check helper' if static else 'Superseded exact release; preserve integrity and generation compatibility',
                        'native_device': 'pending separate physical acceptance' if 'expo' in name else 'not applicable'})
     return result
 

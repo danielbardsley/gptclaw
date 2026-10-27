@@ -1,0 +1,36 @@
+# Application guidance
+
+This is a private Next.js/TypeScript development app. Follow inherited host rules.
+Use the reviewed GptClaw lifecycle runner; Node and pnpm run inside containers.
+Validate `.gptclaw/project.yaml`; it describes this one private, ephemeral-data
+service. Source lives on retained project storage. No production dependencies,
+secrets, database provisioning, public sharing or host package installation is
+implied. Do not put credentials into source, logs or commits.
+
+Before material changes read this project's approved specification/design/tasks;
+use proportionate planning for routine fixes. Preserve unrelated Git work and
+use reviewable branches/PRs. No product specification is supplied by scaffolding.
+Use the runner's test command for health tests, and container pnpm build/typecheck
+for the corresponding checks. Report exact commands and outcomes. Keep the
+health route and `/projects/<project-id>/` prefix working. Stop preserves source;
+application data is ephemeral. Do not reset/prune shared container storage.
+
+Use `gptclawctl deps` for dependency installation and exact add/update/remove
+requests. Read the dependency runbook in the selected GptClaw repository.
+Stop only this app before a dependency mutation; retain unrelated source/Git work.
+Review and commit package.json and pnpm-lock.yaml changes in this app's PR.
+Install hooks, private registries, executable pnpm configuration, global installs
+and implicit runtime downloads are unsupported. Do not bypass the policy with
+build/test scripts. Keep .gptclaw-cache/ and node_modules/ out of Git.
+On a partial dependency outcome, inspect deps status and recover the same
+operation ID; never overwrite an editor's changes or cancel unknown jobs.
+
+Use the exact `.gptclaw/toolchain.json` profile through `gptclawctl toolchain` and
+the reviewed lifecycle. Preserve pins and source; stop the selected app before
+an authorized toolchain switch. Do not run host language installers or select
+arbitrary container images. Unsupported versions need a reviewed profile PR.
+
+Template discovery uses `gptclawctl templates list` and `templates show`.
+The separate `.gptclaw/template-release.json` records the original starter;
+editing app source does not change that provenance. Template upgrades are manual
+reviewed application changes, not an automatic catalogue operation.

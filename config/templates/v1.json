@@ -2,7 +2,7 @@
   "schema_version": 1,
   "default": {
     "id": "nextjs",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "releases": [
     {
@@ -305,6 +305,199 @@
         }
       ],
       "digest": "d5d56d696229d45fef5a43ab8a9a91d9d1302316f735f82e8ef063df355a9417"
+    },
+    {
+      "id": "nextjs",
+      "version": "1.2.0",
+      "description": "Private Next.js/React/TypeScript web starter",
+      "kind": "web",
+      "provider": "nextjs-v1",
+      "manifest_schema": 1,
+      "catalogue_schema": 1,
+      "stack": [
+        "Next.js",
+        "React",
+        "TypeScript"
+      ],
+      "toolchain": {
+        "schema_version": 1,
+        "profile": "node-pnpm",
+        "profile_version": 1,
+        "versions": {
+          "node": "24.21.0",
+          "pnpm": "12.10.1"
+        }
+      },
+      "data": "ephemeral",
+      "exposure": "private",
+      "substitutions": [
+        "project-id",
+        "project-name",
+        "base-path"
+      ],
+      "files": [
+        {
+          "source": ".github/dependabot.yml",
+          "output": ".github/dependabot.yml",
+          "sha256": "32700bff2e45e68d72a1951d6b44c96eea9c32fcd810749988446b8815766507"
+        },
+        {
+          "source": ".github/workflows/quality.yml",
+          "output": ".github/workflows/quality.yml",
+          "sha256": "f244a9f38545ec8effc2e48f5e222cf272d05b0920a4fe74958a7bf9c61e7877"
+        },
+        {
+          "source": ".gitignore",
+          "output": ".gitignore",
+          "sha256": "16b2368fd6d81695fcb9168f5dcc55ac963ba6e75584d1744ed51a85488dfb53"
+        },
+        {
+          "source": ".prettierignore",
+          "output": ".prettierignore",
+          "sha256": "bd5f863f0e75e60e6d957821209ab41f7a8f76c6df093f4571a929bfccd0d453"
+        },
+        {
+          "source": ".prettierrc.json",
+          "output": ".prettierrc.json",
+          "sha256": "e51419e8206a0a5493e85ef1f4dea080982dc9187992bb253220a93d0784f6b2"
+        },
+        {
+          "source": "AGENTS.md.template",
+          "output": "AGENTS.md",
+          "sha256": "6e166f4078a0fabd04e4453dd2ef83fcf166da23ed5fa3fd093dbaf004d51267"
+        },
+        {
+          "source": "README.md",
+          "output": "README.md",
+          "sha256": "53cade885969decc3878c8905e0ae7e497e6b37cfbf2c0e2a979823a02f01223"
+        },
+        {
+          "source": "app/api/health/route.ts",
+          "output": "app/api/health/route.ts",
+          "sha256": "7d297bdad132f2e5b2e54441c4e746f2ceb0d00bc0f578713e53b46ef8a5796b"
+        },
+        {
+          "source": "app/counter.tsx",
+          "output": "app/counter.tsx",
+          "sha256": "1244d1777057aca35297e0477ee7da5b86ee8cebbdddac176431e89eaf66b4a3"
+        },
+        {
+          "source": "app/globals.css",
+          "output": "app/globals.css",
+          "sha256": "314fbaa1b0a89282b23fde90c166aa32b78db6b507a666d5ece9b488e5f5051d"
+        },
+        {
+          "source": "app/layout.tsx",
+          "output": "app/layout.tsx",
+          "sha256": "09e9faa86b89f80b67ade241cf5bfce350597d87dbda92aadad8018a2ccb623d"
+        },
+        {
+          "source": "app/page.tsx",
+          "output": "app/page.tsx",
+          "sha256": "4513e37a598ede135a2c6779faf50d9c8dd47fc0d7d5c81d1d50912362acad7a"
+        },
+        {
+          "source": "checks/Browser.Containerfile",
+          "output": "checks/Browser.Containerfile",
+          "sha256": "6e28c3e0b7799a512bdccb7b08c2718508edfed8313845a909263186793936a1"
+        },
+        {
+          "source": "checks/acquire-browser.py",
+          "output": "checks/acquire-browser.py",
+          "sha256": "ed2d91e56332784baf12210b225506d4ef84023047742e0e42d6c79d9dab1e02"
+        },
+        {
+          "source": "checks/axe-LICENSE",
+          "output": "checks/axe-LICENSE",
+          "sha256": "af175b9d96ee93c21a036152e1b905b0b95304d4ae8c2c921c7609100ba8df7e"
+        },
+        {
+          "source": "checks/axe-provenance.json",
+          "output": "checks/axe-provenance.json",
+          "sha256": "9372379b881adb8300e018bd29d277008f265426eea6f447f9b9ebcdefb2b640"
+        },
+        {
+          "source": "checks/axe.min.js",
+          "output": "checks/axe.min.js",
+          "sha256": "20c09fe157a8a34a30e241aaa1fcdade657734f08ab379ecfbeb7d45cc46e878"
+        },
+        {
+          "source": "checks/browser.cjs",
+          "output": "checks/browser.cjs",
+          "sha256": "a635fa8e298aa9582c051420e5d7308bce3b3790dcbd24b857e38928067c5e3c"
+        },
+        {
+          "source": "checks/browser.json",
+          "output": "checks/browser.json",
+          "sha256": "25c1648672ee3ea1fbcebf796f64dde41bbf6774a128adce495160960787468a"
+        },
+        {
+          "source": "checks/gptclaw_quality.py",
+          "output": "checks/gptclaw_quality.py",
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
+        },
+        {
+          "source": "checks/toolchain-node/Containerfile",
+          "output": "checks/toolchain-node/Containerfile",
+          "sha256": "e5cd7670b43c0115a1193ac5f6ac19b5c2f39db03502123fcd8a4797652f1c3b"
+        },
+        {
+          "source": "checks/toolchain-node/install-pnpm.cjs",
+          "output": "checks/toolchain-node/install-pnpm.cjs",
+          "sha256": "43e29b1a2b518dbc37fc691f97852ec740db8eb4154b62c6d3bb816acd2b7640"
+        },
+        {
+          "source": "checks/toolchain-node/profile.json",
+          "output": "checks/toolchain-node/profile.json",
+          "sha256": "405e536e1b506787c5649164a25ff4101650f5ff8db7cddd2aca1dd0452c8608"
+        },
+        {
+          "source": "docs/quality.md",
+          "output": "docs/quality.md",
+          "sha256": "6c88b3de3ad372631b5f873c7b43bf428375b80aaa6c84f513abf7c7c00c82cf"
+        },
+        {
+          "source": "eslint.config.mjs",
+          "output": "eslint.config.mjs",
+          "sha256": "73da39fb5645cd12f576dee52dede4d3289a003bd8056cc15c8b30ceacebeff9"
+        },
+        {
+          "source": "next.config.ts",
+          "output": "next.config.ts",
+          "sha256": "4929a57c5f30efd9245748131f781e40ae2e263ccb78875e4c4e09f9de363054"
+        },
+        {
+          "source": "package.json",
+          "output": "package.json",
+          "sha256": "30b76b493f3b1da640ceb8634473aa294b1b4f734c36ac3c41c03301291e755e"
+        },
+        {
+          "source": "pnpm-lock.yaml",
+          "output": "pnpm-lock.yaml",
+          "sha256": "23024c034ac6ef9ba99b34c6bd9e63e26855932ce3547ecc740c6553e0e47a18"
+        },
+        {
+          "source": "pnpm-workspace.yaml",
+          "output": "pnpm-workspace.yaml",
+          "sha256": "185021bac428281a21e476e8f0b2ad440916d0534f065fbd2a8b3d1213811f07"
+        },
+        {
+          "source": "quality.json",
+          "output": "quality.json",
+          "sha256": "f14a5d4299f79b08ee2134cba00ee8b950e56bd7c49d253a3c1a57a2d3b6d2dd"
+        },
+        {
+          "source": "tests/health.test.ts",
+          "output": "tests/health.test.ts",
+          "sha256": "32f2d32877ca6cc05e4daa8ce99081c5649b83639d0dd5c67a118b285e197ff9"
+        },
+        {
+          "source": "tsconfig.json",
+          "output": "tsconfig.json",
+          "sha256": "4f1f6cde254a5d5e6a4b7a03d1f56a45366427388e896a6ed06c253f02b31b10"
+        }
+      ],
+      "digest": "7657a9fc8153a464b70e9dd75ae9c9617d84879ab272903bb9129c27352991c5"
     }
   ]
 }

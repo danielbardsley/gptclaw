@@ -342,6 +342,11 @@ interfaces; existing accepted slices remain valid. QLT-010 stays optional.
   [Design](050-project-standards-inheritance/technical-design.md) ·
   [Tasks](050-project-standards-inheritance/tasks.md)
 
+- **051 — Template CI security repair, implementation in progress:**
+  [Specification](051-template-ci-security-repair/spec.md) ·
+  [Design](051-template-ci-security-repair/technical-design.md) ·
+  [Tasks](051-template-ci-security-repair/tasks.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in
