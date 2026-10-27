@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Gptclaw Starter",
+    "slug": "gptclaw-starter",
+    "scheme": "gptclaw-gptclaw-starter-dev",
+    "version": "1.0.0",
+    "platforms": [
+      "android"
+    ],
+    "orientation": "portrait",
+    "ios": {
+      "bundleIdentifier": "dev.gptclaw.gptclaw-starter"
+    },
+    "android": {
+      "package": "dev.gptclaw.gptclaw_starter.development"
+    },
+    "plugins": [
+      [
+        "expo-dev-client",
+        {
+          "launchMode": "most-recent"
+        }
+      ]
+    ]
+  }
+}

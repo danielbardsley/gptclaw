@@ -1,0 +1,14 @@
+node_modules/
+.gptclaw-cache/
+.gptclaw-build/
+pnpm-lock.yaml
+checks/toolchain/
+.cache/
+coverage/
+.gptclaw/
+app.json
+package.json
+pnpm-workspace.yaml
+
+.github/workflows/quality.yml
+.github/dependabot.yml

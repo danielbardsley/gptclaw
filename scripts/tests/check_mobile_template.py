@@ -4,7 +4,6 @@ import argparse
 import hashlib
 import json
 import os
-import shlex
 from pathlib import Path
 import subprocess
 import sys
@@ -13,7 +12,18 @@ sys.dont_write_bytecode=True
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import private_apps as app
 import project_repositories as repos
+import project_quality_core as quality
 import yaml
+
+
+def generated_script(workflow):
+    return next(step['run'] for step in workflow['jobs']['quality']['steps']
+                if step.get('name') == 'Frozen restore and quality gates')
+
+
+def failure_excerpt(output):
+    text = app.redact(output.decode(errors='replace'))
+    return quality.PRIVATE.sub('[private origin]', quality.SECRET.sub('[redacted]', text))[-8192:]
 
 
 def main():
@@ -23,7 +33,7 @@ def main():
     args=parser.parse_args();base=Path(args.directory).absolute()
     app.need(not base.exists() and base.parent.is_dir(),'conflict');base.mkdir(mode=0o700)
     app.PROJECTS=base;app.STORE=base/'.gptclaw-runtime/v1'
-    roots=[Path(app.create(name,template='expo-react-native',template_version='1.0.1')['root']) for name in ['mobile-one','mobile-two']]
+    roots=[Path(app.create(name,template='expo-react-native',template_version='1.2.0')['root']) for name in ['mobile-one','mobile-two']]
     for root in roots:repos.adapt_guidance(root,root.name,waived=True)
     name='gptclaw-mobile-check-'+uuid.uuid4().hex;records=[]
     def run(root,argv,passed=True):
@@ -40,10 +50,12 @@ def main():
             # Execute the published starter's actual workflow command. A different
             # checkout UID must work; the helper's own Docker flags cannot mask it.
             workflow=yaml.safe_load((root/'.github/workflows/quality.yml').read_text())
-            script=workflow['jobs']['quality']['steps'][-1]['run'].replace('gptclaw-mobile-check',shlex.quote(args.image))
+            script=generated_script(workflow)
             result=subprocess.run(['bash','-eu','-o','pipefail','-c',script],cwd=root,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=900)
             log=base/(root.name+'-generated-ci.log');log.write_bytes(result.stdout[-1024*1024:])
-            if result.returncode:raise RuntimeError('Generated workflow failed; inspect '+str(log))
+            if result.returncode:
+                print(failure_excerpt(result.stdout),file=sys.stderr,flush=True)
+                raise RuntimeError('Generated workflow failed; inspect '+str(log))
             records.append({'project':root.name,'action':'generated-ci','returncode':0,'log':log.name})
         else:
             run(root,['pnpm','install','--frozen-lockfile','--ignore-scripts','--no-runtime','--pm-on-fail=error','--ignore-pnpmfile','--registry=https://registry.npmjs.org/','--store-dir=/workspace/.gptclaw-cache/pnpm'])

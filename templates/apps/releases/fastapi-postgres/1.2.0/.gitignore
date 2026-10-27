@@ -1,0 +1,8 @@
+node_modules/
+.next/
+.gptclaw-cache/
+.gptclaw-build/
+.venv/
+__pycache__/
+*.tsbuildinfo
+dist/

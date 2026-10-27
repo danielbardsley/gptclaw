@@ -38,13 +38,13 @@ def seal(root, version, baseline):
                 names[:] = sorted(x for x in names if x not in EXCLUDE)
                 for name in sorted(entries):
                     file = Path(directory)/name
-                    if file.suffix in {'.pyc', '.tsbuildinfo'} or file.name in {'.coverage', 'coverage.json', 'next-env.d.ts'}:
+                    if file.suffix in {'.pyc', '.tsbuildinfo'} or file.name in {'.coverage', 'coverage.json'}:
                         continue
                     if file.is_symlink():
                         raise ValueError('Symlink in unpublished release')
                     source = file.relative_to(base).as_posix()
-                    if source == 'src/config/backend.generated.ts':
-                        continue
+                    # Release-owned inert backend placeholders are starter source;
+                    # generated project bindings never belong in this tree.
                     records.append({'source': source, 'output': outputs.get(source, source), 'sha256': hashlib.sha256(file.read_bytes()).hexdigest()})
             release['files'] = sorted(records, key=lambda x:x['source'])
             release['digest'] = templates.digest({k:v for k,v in release.items() if k != 'digest'})

@@ -1,0 +1,7 @@
+{
+  "source_digest": "05959a962284e338bee63d422cff8fb2ffeb048927c07e352c9f79db95d939ee",
+  "risk": "opaque",
+  "recovery": "Stop and exclude project writers; restore the separately verified logical backup through the existing target-bound managed restore gate. Code rollback does not undo schema changes. Fresh empty fixture initialization has no previous dataset.",
+  "reviewer": "project owner (initial reviewed SPEC-026 migration)",
+  "backup_required": true
+}

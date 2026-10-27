@@ -162,7 +162,7 @@ jobs:
       - name: Prepare isolated validator dependencies
         run: python3 scripts/setup-project-manifest.py --venv .venv-manifest
       - name: Build exact mobile authoring toolchain
-        run: docker build -t gptclaw-mobile-ci -f templates/apps/releases/expo-react-native/1.0.1/checks/toolchain/Containerfile templates/apps/releases/expo-react-native/1.0.1/checks/toolchain
+        run: docker build -t gptclaw-mobile-ci -f templates/apps/releases/expo-react-native/1.2.0/checks/toolchain/Containerfile templates/apps/releases/expo-react-native/1.2.0/checks/toolchain
       - name: Generate two native projects and verify both targets and defect rejection
         run: .venv-manifest/bin/python scripts/tests/check_mobile_template.py "$RUNNER_TEMP/gptclaw-mobile-source" --engine docker --image gptclaw-mobile-ci
 

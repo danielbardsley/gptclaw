@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "template": "expo-react-native@1.2.0",
+  "components": {
+    "app": {
+      "root": ".",
+      "stack": "node",
+      "recipe": "checks/toolchain/Containerfile",
+      "commands": {
+        "format": ["pnpm", "format"],
+        "lint": ["pnpm", "lint"],
+        "typecheck": ["pnpm", "typecheck"],
+        "test": ["pnpm", "test"],
+        "build": ["pnpm", "build"],
+        "security": ["pnpm", "security"],
+        "verify": ["pnpm", "verify"]
+      }
+    }
+  },
+  "integration": null,
+  "budgets": {
+    "bundle_bytes": {
+      "unit": "bytes",
+      "absolute": 20971520,
+      "regression": 0.1
+    }
+  }
+}

@@ -1,0 +1,15 @@
+# FastAPI project guidance
+
+Read [Python standards](docs/python-standards.md) and [README](README.md) before
+editing. Use injected, cohesive service objects and thin versioned HTTP adapters.
+Public code needs complete types and Google docstrings. Use synthetic test data.
+
+The managed provider executes Python/uv and every check inside its pinned container.
+Do not install host tools or run arbitrary pip/uv commands to bypass the policy.
+Dependency changes use gptclawctl deps with an explicitly stopped selected project.
+Do not load dotenv files, mount credentials or introduce persistent data/auth/public
+exposure without that capability's reviewed scope. Preserve unrelated project work.
+
+Use format explicitly, then lint/typecheck/test/security/build or verify as described
+in README. Hook installation is opt-in; generated CI remains authoritative. Keep
+source/lockfile changes reviewable. Never reset/prune the host to fix a project.

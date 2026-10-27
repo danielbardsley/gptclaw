@@ -20,7 +20,7 @@ def main():
     args=parser.parse_args()
     base=Path(args.directory).absolute();base.mkdir(mode=0o700)
     app.PROJECTS=base;app.STORE=base/'.gptclaw-runtime/v1'
-    root=Path(app.create('notes-check',template='notes',template_version='1.0.1')['root'])
+    root=Path(app.create('notes-check',template='notes',template_version='1.2.0')['root'])
     value=app.target(root)[1]
     with groups.scope(root,value) as children:
         before={name:deps.context(path)['hashes'] for name,(path,_) in children.items()}

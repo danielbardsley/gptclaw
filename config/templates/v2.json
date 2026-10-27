@@ -674,6 +674,274 @@
         }
       ],
       "digest": "c8df9d78a41b5c3ef7b2572cca144da5887b24e210aa95baf8dd84e450711e39"
+    },
+    {
+      "id": "fastapi",
+      "version": "1.2.0",
+      "description": "Private Python/FastAPI starter with owner coding standards; certifi security patch",
+      "kind": "api",
+      "provider": "fastapi-v1",
+      "manifest_schema": 2,
+      "catalogue_schema": 2,
+      "stack": [
+        "Python",
+        "FastAPI",
+        "Pydantic"
+      ],
+      "toolchain": {
+        "schema_version": 2,
+        "profile": "python-uv",
+        "profile_version": 1,
+        "versions": {
+          "python": "3.13.16",
+          "uv": "0.13.0"
+        }
+      },
+      "data": "ephemeral",
+      "exposure": "private",
+      "substitutions": [
+        "project-id",
+        "project-name",
+        "base-path"
+      ],
+      "files": [
+        {
+          "source": ".dockerignore",
+          "output": ".dockerignore",
+          "sha256": "6e5ae70cf1f6fb19b043e8d9e5aeb2ae43a5045a4f16c1cdb2fe042bf4254118"
+        },
+        {
+          "source": ".github/dependabot.yml",
+          "output": ".github/dependabot.yml",
+          "sha256": "698034ea1f1f8da569f78bb76ceed730d2a45db6bb27f3701fd3a5ba564dadfd"
+        },
+        {
+          "source": ".github/workflows/quality.yml",
+          "output": ".github/workflows/quality.yml",
+          "sha256": "f244a9f38545ec8effc2e48f5e222cf272d05b0920a4fe74958a7bf9c61e7877"
+        },
+        {
+          "source": ".gitignore",
+          "output": ".gitignore",
+          "sha256": "31941f6e822a1658f560f9be3bd3921122c9f415eefdf66853040d1abd7d7be0"
+        },
+        {
+          "source": ".pre-commit-config.yaml",
+          "output": ".pre-commit-config.yaml",
+          "sha256": "afdc4e9bb2681e99167937ad888540bf762d3c04bcf393ebf2a87e75606bfc3a"
+        },
+        {
+          "source": ".python-version",
+          "output": ".python-version",
+          "sha256": "2d82946ffb2ecf549699ebb86ecbbe663bbc19d53c49c681a1a425f003f80ddb"
+        },
+        {
+          "source": "AGENTS.md.template",
+          "output": "AGENTS.md",
+          "sha256": "411fcccf6874e09c4ffead471a419897787b2f1fe29100f021f155a8256dfc77"
+        },
+        {
+          "source": "Containerfile",
+          "output": "Containerfile",
+          "sha256": "e5c078bd86dd02144bdda3bef05659c166185c98c91cc3a9d350063122273db2"
+        },
+        {
+          "source": "README.md",
+          "output": "README.md",
+          "sha256": "b0b29d8dc3edacbbb1a1419169f567771b9560eb0bb64f5a7bc791d494d95ad9"
+        },
+        {
+          "source": "checks/Browser.Containerfile",
+          "output": "checks/Browser.Containerfile",
+          "sha256": "6e28c3e0b7799a512bdccb7b08c2718508edfed8313845a909263186793936a1"
+        },
+        {
+          "source": "checks/acquire-browser.py",
+          "output": "checks/acquire-browser.py",
+          "sha256": "ed2d91e56332784baf12210b225506d4ef84023047742e0e42d6c79d9dab1e02"
+        },
+        {
+          "source": "checks/axe-LICENSE",
+          "output": "checks/axe-LICENSE",
+          "sha256": "af175b9d96ee93c21a036152e1b905b0b95304d4ae8c2c921c7609100ba8df7e"
+        },
+        {
+          "source": "checks/axe-provenance.json",
+          "output": "checks/axe-provenance.json",
+          "sha256": "9372379b881adb8300e018bd29d277008f265426eea6f447f9b9ebcdefb2b640"
+        },
+        {
+          "source": "checks/axe.min.js",
+          "output": "checks/axe.min.js",
+          "sha256": "20c09fe157a8a34a30e241aaa1fcdade657734f08ab379ecfbeb7d45cc46e878"
+        },
+        {
+          "source": "checks/browser.cjs",
+          "output": "checks/browser.cjs",
+          "sha256": "a635fa8e298aa9582c051420e5d7308bce3b3790dcbd24b857e38928067c5e3c"
+        },
+        {
+          "source": "checks/browser.json",
+          "output": "checks/browser.json",
+          "sha256": "25c1648672ee3ea1fbcebf796f64dde41bbf6774a128adce495160960787468a"
+        },
+        {
+          "source": "checks/gptclaw_quality.py",
+          "output": "checks/gptclaw_quality.py",
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
+        },
+        {
+          "source": "checks/toolchain-python/Containerfile",
+          "output": "checks/toolchain-python/Containerfile",
+          "sha256": "e5c078bd86dd02144bdda3bef05659c166185c98c91cc3a9d350063122273db2"
+        },
+        {
+          "source": "config/environment.example.md",
+          "output": "config/environment.example.md",
+          "sha256": "69bb639f1819a836a11b61bdbe1864981ef0e6b0ce8cbda13f70b665dc02d84e"
+        },
+        {
+          "source": "contract/openapi.json",
+          "output": "contract/openapi.json",
+          "sha256": "e394ff34b8f1de8ce9d5e5461be8902128c07d45e7a1f20bccf6565b2baea8fa"
+        },
+        {
+          "source": "docs/architecture.md",
+          "output": "docs/architecture.md",
+          "sha256": "ca030ad49dddf35ab8a4dd075f6ad8e4cca581f0e7fd3852b3ba242299bbd0f2"
+        },
+        {
+          "source": "docs/python-standards.md",
+          "output": "docs/python-standards.md",
+          "sha256": "e2c9e5a43ceccce8a86eefa49ba57b40d76ba64ef30bfebc45eb01f1ed8d7c1a"
+        },
+        {
+          "source": "docs/quality.md",
+          "output": "docs/quality.md",
+          "sha256": "6c88b3de3ad372631b5f873c7b43bf428375b80aaa6c84f513abf7c7c00c82cf"
+        },
+        {
+          "source": "docs/swagger-LICENSE",
+          "output": "docs/swagger-LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+        },
+        {
+          "source": "docs/swagger-NOTICE",
+          "output": "docs/swagger-NOTICE",
+          "sha256": "0d20d1adef18aee3f40dd258172155521ce702ac445cb5f7b7d60ed32dad2fb2"
+        },
+        {
+          "source": "docs/swagger-provenance.json",
+          "output": "docs/swagger-provenance.json",
+          "sha256": "dcc659a7f325257c149f69342cdbec3a254e9aab6a5be73270bd7243e48cc07d"
+        },
+        {
+          "source": "pyproject.toml",
+          "output": "pyproject.toml",
+          "sha256": "25426fd93ac8f7378cf85aee7e990b3c8c39692619a54b1e7d8cd50687d0c2db"
+        },
+        {
+          "source": "quality.json",
+          "output": "quality.json",
+          "sha256": "c23d39776b2b19b62a52ea37427563e7ba5d99f9a742362b2cf2caf9c563f26a"
+        },
+        {
+          "source": "scripts/quality.py",
+          "output": "scripts/quality.py",
+          "sha256": "4444b497ddb85c4941a5b99587a5c48d5463ec650ecef7b227586ddca13b9b59"
+        },
+        {
+          "source": "src/fastapi_app/__init__.py",
+          "output": "src/fastapi_app/__init__.py",
+          "sha256": "4082a23c7bc6bca661ff6adb164ed00dc1451b97c08ab6d4b0ffc3a3b211ec31"
+        },
+        {
+          "source": "src/fastapi_app/api/__init__.py",
+          "output": "src/fastapi_app/api/__init__.py",
+          "sha256": "cc6a18adb333a8fb4d737de47e9638b0e43f68472b0626c31d858aba92bfa6f1"
+        },
+        {
+          "source": "src/fastapi_app/api/middleware.py",
+          "output": "src/fastapi_app/api/middleware.py",
+          "sha256": "19d2ffed2fe705f4970d9d025f37e88542e80e45573c0ec36cc15821941d16cf"
+        },
+        {
+          "source": "src/fastapi_app/api/routes.py",
+          "output": "src/fastapi_app/api/routes.py",
+          "sha256": "0a2c083f2994671cd9826332fe35aeed0220abdbdb689a3d7b17f54688c7ab18"
+        },
+        {
+          "source": "src/fastapi_app/domain/__init__.py",
+          "output": "src/fastapi_app/domain/__init__.py",
+          "sha256": "6dddd881cfc5a9c1e35fb959876f55ea4628a7cde9e80c687c0590ce132cd34b"
+        },
+        {
+          "source": "src/fastapi_app/domain/models.py",
+          "output": "src/fastapi_app/domain/models.py",
+          "sha256": "2a28152e9951ffe9cab73790e1c6c5107748678c7e06245c1ed201e0961e4f8b"
+        },
+        {
+          "source": "src/fastapi_app/main.py",
+          "output": "src/fastapi_app/main.py",
+          "sha256": "17837d6da47fc9091416b5da195e6a6fc8e9474d0081efaefc7e4450df50aedc"
+        },
+        {
+          "source": "src/fastapi_app/services/__init__.py",
+          "output": "src/fastapi_app/services/__init__.py",
+          "sha256": "a5c5483ece554fc1db7f01d5bbbd619468261f9e485df6aac34c177d6c59ca71"
+        },
+        {
+          "source": "src/fastapi_app/services/echo.py",
+          "output": "src/fastapi_app/services/echo.py",
+          "sha256": "835e2d96fd915d6d03abc11c07326967c83febf5c899f164c457e3303e718f68"
+        },
+        {
+          "source": "src/fastapi_app/settings.py",
+          "output": "src/fastapi_app/settings.py",
+          "sha256": "fa3790a129c423b430e07543276aaa603ba80c3886fe243670e2d976ec6fd090"
+        },
+        {
+          "source": "src/fastapi_app/static/favicon.svg",
+          "output": "src/fastapi_app/static/favicon.svg",
+          "sha256": "2378ed36cbc944039f8c6f45ce89baad707e0690c1f19dbb9ad3d613eab9006e"
+        },
+        {
+          "source": "src/fastapi_app/static/swagger-ui-bundle.js",
+          "output": "src/fastapi_app/static/swagger-ui-bundle.js",
+          "sha256": "050bc415ee7048dcd881682678f720264e7da5e373f7461d7c58c755305255f7"
+        },
+        {
+          "source": "src/fastapi_app/static/swagger-ui.css",
+          "output": "src/fastapi_app/static/swagger-ui.css",
+          "sha256": "1ac324f7dcd27e4b9386b4bd6421271ec147e922a22c05ba24b11515e9aa6321"
+        },
+        {
+          "source": "src/fastapi_app/utils/__init__.py",
+          "output": "src/fastapi_app/utils/__init__.py",
+          "sha256": "cb9d89373e57a1c06d8b434ef832994c0b75c879d12f6c3551cee2c253037f9e"
+        },
+        {
+          "source": "src/fastapi_app/utils/logging.py",
+          "output": "src/fastapi_app/utils/logging.py",
+          "sha256": "2a61c75cd359e33e615e739d0700e3943fce8053e6ffa67d0a12407cc681ed02"
+        },
+        {
+          "source": "tests/test_api.py",
+          "output": "tests/test_api.py",
+          "sha256": "035834909a7075f53448d146bb2a523a0957f3967e7632f6dbe6ea566e15e13f"
+        },
+        {
+          "source": "tests/test_quality.py",
+          "output": "tests/test_quality.py",
+          "sha256": "7f2432941aded999c0c82b17f44dacd321d925f71a502b840f151657bbc8ec91"
+        },
+        {
+          "source": "uv.lock",
+          "output": "uv.lock",
+          "sha256": "8fda110c1846cd323612b9b3ac3ce47bbc31ffe115cee90cee8a0246ead37797"
+        }
+      ],
+      "digest": "2e398d1f01b883d118f54fefdce5772934082d745e5e352bdfab2a098d24b317"
     }
   ]
 }

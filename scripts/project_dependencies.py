@@ -19,6 +19,8 @@ FILES = ('package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml')
 GROUPS = ('dependencies', 'devDependencies', 'optionalDependencies')
 VERSION_RE = r'(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?'
 NAME_RE = r'(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*'
+# Reviewed mobile-only security repair, SPEC-051. Never accept arbitrary overrides.
+MOBILE_SECURITY_OVERRIDES = {'node-forge': '1.4.1', 'zod@3.25.76': '4.6.7'}
 GUARD_ENV = {
     'pnpm_config_pm_on_fail': 'error', 'pnpm_config_ignore_scripts': 'true',
     'pnpm_config_runtime': 'false', 'pnpm_config_ignore_pnpmfile': 'true',
@@ -164,13 +166,16 @@ def validate_package(value, p):
         check(isinstance(version, str) and re.fullmatch(r'[0-9A-Za-z.*+^~<>=| -]+', version))
 
 
-def validate_workspace(value, p):
-    check(set(value) <= {'packages', 'minimumReleaseAge', 'minimumReleaseAgeExclude'})
+def validate_workspace(value, p, mobile=False):
+    check(set(value) <= {'packages', 'minimumReleaseAge', 'minimumReleaseAgeExclude', 'overrides'})
+    if 'overrides' in value:
+        check(mobile and value['overrides'] == MOBILE_SECURITY_OVERRIDES)
     check(value.get('packages', ['.']) == ['.'])
     age = value.get('minimumReleaseAge', 1440)
     check(type(age) is int and 1440 <= age <= 525600)
     exclusions = value.get('minimumReleaseAgeExclude', [])
-    check(isinstance(exclusions, list) and all(isinstance(x, str) and x in p['release_age_exclusions'] for x in exclusions))
+    allowed = p['release_age_exclusions'] + (['node-forge@1.4.1'] if mobile else [])
+    check(isinstance(exclusions, list) and all(isinstance(x, str) and x in allowed for x in exclusions))
     check(len(exclusions) == len(set(exclusions)))
 
 
@@ -180,7 +185,9 @@ def validate_lock(documents, manifest, p, coherent=True, mobile=False):
     manager_count = 0
     for document in documents:
         check(document.get('lockfileVersion') == '9.0')
-        check(set(document) <= {'lockfileVersion', 'settings', 'importers', 'packages', 'snapshots'})
+        check(set(document) <= {'lockfileVersion', 'settings', 'importers', 'packages', 'snapshots', 'overrides'})
+        if 'overrides' in document:
+            check(mobile and document['overrides'] == MOBILE_SECURITY_OVERRIDES)
         importers = document.get('importers'); check(isinstance(importers, dict) and set(importers) == {'.'})
         importer = importers['.']; check(isinstance(importer, dict))
         if 'packageManagerDependencies' in importer or 'configDependencies' in importer:
@@ -241,11 +248,15 @@ def context(root, coherent=True):
         check(not path.exists() and not path.is_symlink())
     blobs = {name: read_bytes(root/name, 65536 if name != 'pnpm-lock.yaml' else 2*1024*1024) for name in FILES}
     manifest = json_data(blobs['package.json']); validate_package(manifest, p)
-    workspace = yaml_documents(blobs['pnpm-workspace.yaml'])[0]; validate_workspace(workspace, p)
+    mobile_project = manifest.get('gptclawMobile') in {'expo-v1','expo-dev-v1'}
+    workspace = yaml_documents(blobs['pnpm-workspace.yaml'])[0]; validate_workspace(workspace, p, mobile_project)
     if manifest.get('gptclawMobile') in {'expo-v1','expo-dev-v1'}:
         import project_mobile as mobile
         mobile.validate_package(manifest)
     validate_lock(yaml_documents(blobs['pnpm-lock.yaml'], 2), manifest, p, coherent, mobile=manifest.get('gptclawMobile') in {'expo-v1','expo-dev-v1'})
+    for document in yaml_documents(blobs['pnpm-lock.yaml'], 2):
+        manager = 'packageManagerDependencies' in document['importers']['.']
+        check(document.get('overrides', {}) == ({} if manager else workspace.get('overrides', {})))
     return {'policy': p, 'policy_hash': digest, 'files': blobs, 'manifest': manifest,
             'hashes': {k: hashlib.sha256(v).hexdigest() for k, v in blobs.items()}}
 

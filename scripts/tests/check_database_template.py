@@ -80,7 +80,7 @@ def main():
         source=Path(args.source_root).absolute() if args.source_root else None
         original=a.validate_project(source)[1] if source else None
         backend_only=bool(original and original['schema_version']==8)
-        root=Path(a.create(slug,template='fastapi-postgres' if backend_only else 'notes-postgres',template_version='1.0.1')['root'])
+        root=Path(a.create(slug,template='fastapi-postgres' if backend_only else 'notes-postgres',template_version='1.2.0')['root'])
         value=a.target(root)[1]
         if args.source_root:
             source=Path(args.source_root).absolute();_,original,_=a.validate_project(source);a.need(original is not None and original['schema_version'] in (4,8),'invalid')

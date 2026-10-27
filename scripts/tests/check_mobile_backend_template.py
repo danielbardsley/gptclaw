@@ -19,10 +19,10 @@ def main():
     a.need(not base.exists(),'conflict');base.mkdir(mode=0o700)
     projects=base/'projects';projects.mkdir()
     with patch.object(a,'PROJECTS',projects),patch.object(a,'STORE',base/'runtime'):
-        backend=Path(a.create('native-api',template='fastapi-postgres',template_version='1.0.1')['root'])
-        mobile=Path(a.create('native-notes',template='expo-notes',template_version='1.0.0')['root'])
-        a.create('second-api',template='fastapi-postgres',template_version='1.0.1')
-        a.create('second-notes',template='expo-notes',template_version='1.0.0')
+        backend=Path(a.create('native-api',template='fastapi-postgres',template_version='1.2.0')['root'])
+        mobile=Path(a.create('native-notes',template='expo-notes',template_version='1.2.0')['root'])
+        a.create('second-api',template='fastapi-postgres',template_version='1.2.0')
+        a.create('second-notes',template='expo-notes',template_version='1.2.0')
     image=args.node_image or 'gptclaw-mobile-backend-check'
     if not args.node_image:
         subprocess.run([args.engine,'build','-t',image,'-f',str(mobile/'checks/toolchain/Containerfile'),str(mobile/'checks/toolchain')],check=True,timeout=300)

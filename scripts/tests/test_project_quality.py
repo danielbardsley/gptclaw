@@ -35,10 +35,33 @@ class QualityTests(unittest.TestCase):
         matrix_spec = importlib.util.spec_from_file_location('quality_templates', ROOT/'scripts/quality_templates.py')
         matrix = importlib.util.module_from_spec(matrix_spec); matrix_spec.loader.exec_module(matrix)
         release = {'provider': 'nextjs-static-v1', 'digest': 'synthetic'}
-        with patch.object(matrix.templates, 'catalogue', return_value=({}, {('nextjs-static', '1.0.0'): (release, {})})):
+        with patch.object(matrix, 'retirements', return_value={}), patch.object(matrix.templates, 'catalogue', return_value=({}, {('nextjs-static', '1.0.0'): (release, {})})):
             self.assertEqual(matrix.matrix()[0]['checks'], 'static')
         release['provider'] = 'unknown-v1'
-        with patch.object(matrix.templates, 'catalogue', return_value=({}, {('unknown', '1.0.0'): (release, {})})):
+        with patch.object(matrix, 'retirements', return_value={}), patch.object(matrix.templates, 'catalogue', return_value=({}, {('unknown', '1.0.0'): (release, {})})):
+            with self.assertRaises(matrix.app.AppError): matrix.matrix()
+
+    def test_retirement_requires_existing_active_quality_successor_and_preserves_generation(self):
+        from unittest.mock import patch
+        spec = importlib.util.spec_from_file_location('matrix_retirement', ROOT/'scripts/quality_templates.py')
+        matrix = importlib.util.module_from_spec(spec); spec.loader.exec_module(matrix)
+        release = {'provider': 'node-v1', 'digest': 'synthetic'}
+        releases = {('one', v): (release, {'quality.json': b'{}'}) for v in ('1.0.0', '1.1.0', '1.2.0')}
+        entry = {'template': 'one', 'version': '1.0.0', 'successor': '1.1.0', 'reason': 'Patched successor.'}
+        path = 'config/quality-template-retirements.json'
+        self.put(path, {'schema_version': 1, 'retirements': [entry]})
+        with patch.object(matrix.app, 'REPO', self.root), patch.object(matrix.templates, 'catalogue', return_value=({}, releases)):
+            cells = matrix.matrix()
+            self.assertEqual([c['checks'] for c in cells], ['historical-generation', 'full', 'full'])
+            self.assertIn('one@1.1.0', cells[0]['reason'])
+            for change in [dict(successor='9.0.0'), dict(successor='1.0.0'), dict(version='1.2.0'), dict(reason='')]:
+                self.put(path, {'schema_version': 1, 'retirements': [{**entry, **change}]})
+                with self.assertRaises(matrix.app.AppError): matrix.matrix()
+            for entries in [[entry, entry], [entry, {**entry, 'version': '1.1.0', 'successor': '1.2.0'}]]:
+                self.put(path, {'schema_version': 1, 'retirements': entries})
+                with self.assertRaises(matrix.app.AppError): matrix.matrix()
+            self.put(path, {'schema_version': 1, 'retirements': [entry]})
+            releases[('one', '1.1.0')] = (release, {})
             with self.assertRaises(matrix.app.AppError): matrix.matrix()
 
     def test_json_rejects_duplicates_nonfinite_oversize_and_symlink(self):

@@ -183,6 +183,194 @@
         }
       ],
       "digest": "e82772bc0c1d461edb6bb1a569bd3e893983cde9f73019a36574ba32c6d00060"
+    },
+    {
+      "id": "nextjs-static",
+      "version": "1.2.0",
+      "description": "Next.js static export with accessible pages and private file preview",
+      "kind": "web",
+      "provider": "nextjs-static-v1",
+      "manifest_schema": 10,
+      "catalogue_schema": 8,
+      "stack": [
+        "Next.js",
+        "TypeScript",
+        "Static export"
+      ],
+      "toolchain": {
+        "schema_version": 1,
+        "profile": "node-pnpm",
+        "profile_version": 1,
+        "versions": {
+          "node": "24.21.0",
+          "pnpm": "12.10.1"
+        }
+      },
+      "data": "ephemeral",
+      "exposure": "private",
+      "substitutions": [
+        "project-id",
+        "project-name",
+        "base-path"
+      ],
+      "files": [
+        {
+          "source": ".dockerignore",
+          "output": ".dockerignore",
+          "sha256": "a262f134abe72347bccda17b2a3451cd588ad3ba1009dc3e0bc4d8c59cb7360d"
+        },
+        {
+          "source": ".github/workflows/quality.yml",
+          "output": ".github/workflows/quality.yml",
+          "sha256": "b0250f7f3b408310944dfd84cc2a75c5dba9ece98417ea0afc093a15fe514256"
+        },
+        {
+          "source": ".gitignore",
+          "output": ".gitignore",
+          "sha256": "397faf871a9075eed730180764eb802ac6b2c58cbf2e186286dbcd25c27dec16"
+        },
+        {
+          "source": ".prettierrc.json",
+          "output": ".prettierrc.json",
+          "sha256": "269bb7358c08eb4a0b68b44d1b7c741cca3e9ab2a45a0a12b5faa7a7ab372abc"
+        },
+        {
+          "source": "AGENTS.md.template",
+          "output": "AGENTS.md",
+          "sha256": "47332b74041d6f7af0f94fbd6d47ae1943cc97dcbc5a95db25da35d831e67664"
+        },
+        {
+          "source": "Containerfile",
+          "output": "Containerfile",
+          "sha256": "bb16a9babe4afacfd3e26a21a5c213982ace7395dc27c84af4c2d90795bd1575"
+        },
+        {
+          "source": "README.md",
+          "output": "README.md",
+          "sha256": "b97126b54d963aac79a055088edaccea6f4bb6484c5c23fd26eec2b23dcd9df8"
+        },
+        {
+          "source": "app/globals.css",
+          "output": "app/globals.css",
+          "sha256": "cbfdc8cc949a0c449604fdc663ff3434e5b9aa6e0fceea16f58e1a794df63c0a"
+        },
+        {
+          "source": "app/guide/getting-started/page.tsx",
+          "output": "app/guide/getting-started/page.tsx",
+          "sha256": "66fefb76ff41a700070c95452316bd000467468f8664df020082a53e9eb038d4"
+        },
+        {
+          "source": "app/layout.tsx",
+          "output": "app/layout.tsx",
+          "sha256": "c7b89f805d02e4f16596445571e084a5b5f094c52e06643fc917e530cd625abc"
+        },
+        {
+          "source": "app/not-found.tsx",
+          "output": "app/not-found.tsx",
+          "sha256": "36cb08ba71f5478ab04e50d6cb86423fe0f0acc2f6dcf9bff5131792c1b3fff7"
+        },
+        {
+          "source": "app/page.tsx",
+          "output": "app/page.tsx",
+          "sha256": "52ce22faf50143e07a349307a6bcc3c9a4f0332a075753187f141a78fe588af0"
+        },
+        {
+          "source": "checks/Browser.Containerfile",
+          "output": "checks/Browser.Containerfile",
+          "sha256": "680cabd8f9ad1557f53a03e80024c5a3710d875c2429190ff77270a075ae77b5"
+        },
+        {
+          "source": "checks/gptclaw_quality.py",
+          "output": "checks/gptclaw_quality.py",
+          "sha256": "c6f101679f148aaf864fb84a0ffcd064d380557225c8d7ef414f138858ed997f"
+        },
+        {
+          "source": "checks/install-pnpm.cjs",
+          "output": "checks/install-pnpm.cjs",
+          "sha256": "43e29b1a2b518dbc37fc691f97852ec740db8eb4154b62c6d3bb816acd2b7640"
+        },
+        {
+          "source": "checks/node-profile.json",
+          "output": "checks/node-profile.json",
+          "sha256": "c50d169092c31bffccf16bd922f218c4af61a27e2fe9981ab04bd5b4528c344a"
+        },
+        {
+          "source": "eslint.config.js",
+          "output": "eslint.config.js",
+          "sha256": "e4977dd8ca5e991ef02f8702d59b7eac87c162cc3110ac53484125bb79db2274"
+        },
+        {
+          "source": "lib/site.ts",
+          "output": "lib/site.ts",
+          "sha256": "db280b66793d888c5b16c6f08d2091a1f7031b7c0f68febfea6c13bc688f98c3"
+        },
+        {
+          "source": "next-env.d.ts",
+          "output": "next-env.d.ts",
+          "sha256": "879741880b6ab48da99dcc06dcc674d381c9826137b0496bf7bb368f302de9fc"
+        },
+        {
+          "source": "next.config.ts",
+          "output": "next.config.ts",
+          "sha256": "1957fff277cf075f3cdd75923dce136d126ed21e3370123fe1b898c90a842fd0"
+        },
+        {
+          "source": "package.json",
+          "output": "package.json",
+          "sha256": "4136903a0ee9239f5351a941cc0db07697a51ffacc13c924ba1cc528fa92da0d"
+        },
+        {
+          "source": "pnpm-lock.yaml",
+          "output": "pnpm-lock.yaml",
+          "sha256": "cf672feb661aeeeab0741bc4f14ca1d38bc789f9ae9c860f519d61b32761d402"
+        },
+        {
+          "source": "pnpm-workspace.yaml",
+          "output": "pnpm-workspace.yaml",
+          "sha256": "185021bac428281a21e476e8f0b2ad440916d0534f065fbd2a8b3d1213811f07"
+        },
+        {
+          "source": "public/mark.svg",
+          "output": "public/mark.svg",
+          "sha256": "94a8514288192a8283d27372c6e984d9d1c412cdaec8e5cbcac8f575f56f70c8"
+        },
+        {
+          "source": "scripts/browser.mjs",
+          "output": "scripts/browser.mjs",
+          "sha256": "33b2461b85245b5020a53a269077d3e66a8c4f26a8a6b34aa25cf1dea0948e60"
+        },
+        {
+          "source": "scripts/build.mjs",
+          "output": "scripts/build.mjs",
+          "sha256": "649d0f9531d0bfd082f829de574e20fbd049839d063c5bb641381cd70a35f524"
+        },
+        {
+          "source": "scripts/check-output.mjs",
+          "output": "scripts/check-output.mjs",
+          "sha256": "44e6c41e4f6b9578a2419de78f48d78b006e689f1f94196d69c136d0d27890f2"
+        },
+        {
+          "source": "scripts/export.mjs",
+          "output": "scripts/export.mjs",
+          "sha256": "1a45469b89d9cdbe4467231259e8640cf477872b0b7c6857651fb68ec10dd2cb"
+        },
+        {
+          "source": "scripts/serve.mjs",
+          "output": "scripts/serve.mjs",
+          "sha256": "5f805d33d4d2b6276ee8c09ecda84e5cc569fd5822b4a6855185a40f5e17cfdd"
+        },
+        {
+          "source": "tests/static.test.mjs",
+          "output": "tests/static.test.mjs",
+          "sha256": "22018ad509399acb234e1197e74ca8132bcd8071b4face1c2f90175e458eb2d4"
+        },
+        {
+          "source": "tsconfig.json",
+          "output": "tsconfig.json",
+          "sha256": "4f1f6cde254a5d5e6a4b7a03d1f56a45366427388e896a6ed06c253f02b31b10"
+        }
+      ],
+      "digest": "3e175aa5434637c49cd4fefae16f992069bbcdaf89835471e01db4206f28c1a8"
     }
   ]
 }
