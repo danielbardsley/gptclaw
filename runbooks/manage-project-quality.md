@@ -8,9 +8,9 @@ Managed rollout/deployment remains separately authorized.
 
 ## Select and inspect
 
-Select an exact `1.1.0` quality release for Next.js, FastAPI, Fastify, notes,
-notes-postgres, fastapi-postgres, expo-react-native or expo-notes through existing
-template discovery/creation. Historical releases keep their bytes and explicit
+Select exact `1.2.0` releases for Next.js, FastAPI, notes, notes-postgres,
+fastapi-postgres, nextjs-static and all four Expo families. Fastify remains at
+`1.1.0`. Historical releases keep their bytes and explicit
 selection; adoption by existing applications is a reviewed source change. The source
 catalogue's default is Next.js 1.2.0; installed providers retain their current
 catalogue until a separately authorized rollout. Explicit old release selection
@@ -211,7 +211,8 @@ python scripts/check-template-releases.py --baseline origin/main
 ```
 
 The sealer refuses releases already in the baseline, prunes development caches
-and generated type/state files from its inventory; release-owned inert backend placeholders remain starter source, and hashes source
+and transient type/state artifacts from its inventory. Inert starter type declarations
+and backend placeholders remain copied source, and hashes source
 assets only. The release checker also requires the exact declared bytes in the
 Git index, so ignored local files or partially staged changes cannot hide a
 missing asset in CI. The canonical portable

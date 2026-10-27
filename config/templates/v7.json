@@ -1436,7 +1436,7 @@
         {
           "source": "README.md",
           "output": "README.md",
-          "sha256": "83b2ee9dead892e9031c34d78da4779a3478a2a7a6dfd2d9f1a8674e2796b960"
+          "sha256": "d3e853c0e272af87c2af793b6e13a9a572210f5f722cf0d90fb92b43e7c5d2f9"
         },
         {
           "source": "api/.dockerignore",
@@ -1714,7 +1714,7 @@
           "sha256": "6f7c465f9bf4902ea07e8caf115d963a91a5a858c9b882e1a0b26ab45fb8875a"
         }
       ],
-      "digest": "184495a672dff9e78dc4acac60a17a0b5b0bb7e098f2b90a4ecd866a2b578b03"
+      "digest": "83bfe8b4f0236c77d02228862c921c895b9101925ed0c2034753944e74d69f9c"
     },
     {
       "id": "expo-notes",
@@ -1781,7 +1781,7 @@
         {
           "source": "README.md",
           "output": "README.md",
-          "sha256": "9695f9f0c097836f58aa5b2f667731f4de48b90178eb8c5fdb316dce4687e50e"
+          "sha256": "52dc3b01fff3b741b78dd26bbf1983031951ac575823829cb32105b5670df2ff"
         },
         {
           "source": "app.json",
@@ -1876,7 +1876,7 @@
         {
           "source": "docs/provenance.md",
           "output": "docs/provenance.md",
-          "sha256": "bcaa5639b019995611648b45b8831624d843605dcf86dca1c52009eea9c1553a"
+          "sha256": "32541ce5cb7391078fd235a7a3b61dd4d5a07ec61adc589d75522044cb002ec3"
         },
         {
           "source": "docs/quality.md",
@@ -1954,7 +1954,7 @@
           "sha256": "40b81e3f7cb8e75c8891214b2553f0b50211cda2657c649e50d87c56b625dbbc"
         }
       ],
-      "digest": "3a124e840b011a7edc0df67d267884ea8e4b383dea871d0cd4eca06007573fdc"
+      "digest": "db10041f5e9ec637b37fbe64a8b70020e46e5f3ca5b08e5910560f995783fa0b"
     }
   ]
 }

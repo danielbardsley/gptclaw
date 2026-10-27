@@ -1,6 +1,6 @@
 # Private FastAPI starter
 
-Generate with `gptclawctl new my-api --template fastapi --template-version 1.0.0 --local-only`.
+Generate with `gptclawctl new my-api --template fastapi --template-version 1.2.0 --local-only`.
 Use the returned absolute project path for `--project-root` on validate, start,
 status, logs, test, restart and stop. Normal start prepares the verified Python/uv
 image, restores the complete locked runtime/dev/test graph and runs build/preflight.

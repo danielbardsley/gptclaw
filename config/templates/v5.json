@@ -731,7 +731,7 @@
         {
           "source": "docs/provenance.md",
           "output": "docs/provenance.md",
-          "sha256": "0022cc2b2ee30b85db319bde1ab8c0c08c4df59a84153ad9909da9d75b61e26f"
+          "sha256": "06904b485b0e132a073827ef5a97b73d7ad1a7fc672ac8cf6987cfec5e0f35fc"
         },
         {
           "source": "docs/quality.md",
@@ -799,7 +799,7 @@
           "sha256": "40b81e3f7cb8e75c8891214b2553f0b50211cda2657c649e50d87c56b625dbbc"
         }
       ],
-      "digest": "ea44a71bb29b7c6e7ea69b2aeffcb549ce040e4f797c2de9301e8e2fe1e60223"
+      "digest": "708e0c6d7492dc442c7e4f291dcc6d036b3ffc4d24d1c861f11079c6c79a019c"
     }
   ]
 }

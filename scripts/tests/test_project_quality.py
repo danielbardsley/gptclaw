@@ -308,10 +308,13 @@ class QualityTests(unittest.TestCase):
         self.put('templates/apps/releases/nextjs/1.1.0/checks/gptclaw_quality.py','unpublished')
         self.put('templates/apps/releases/nextjs/1.1.0/.cache/metadata.json','synthetic cache')
         self.put('templates/apps/releases/nextjs/1.1.0/node_modules/ignored.js','synthetic dependency')
+        self.put('templates/apps/releases/nextjs/1.1.0/next-env.d.ts','// inert starter types')
+        self.put('templates/apps/releases/nextjs/1.1.0/src/config/backend.generated.ts','// inert starter binding')
         self.put('config/templates/v1.json',{'releases':[{'id':'nextjs','version':'1.1.0','files':[]}]})
         module.seal(self.root,'1.1.0',baseline)
         data=q.read_json(self.root/'config/templates/v1.json')['releases'][0]
-        self.assertEqual({p['source'] for p in data['files']},{'checks/gptclaw_quality.py','checks/browser.cjs'})
+        self.assertEqual({p['source'] for p in data['files']},{'checks/gptclaw_quality.py','checks/browser.cjs',
+                                                             'next-env.d.ts','src/config/backend.generated.ts'})
         self.put('config/templates/v1.json',{'releases':[{'id':'nextjs','version':'1.0.0','files':[]}]})
         with self.assertRaises(ValueError):module.seal(self.root,'1.0.0',baseline)
         self.assertEqual((self.root/'templates/apps/releases/nextjs/1.0.0/checks/gptclaw_quality.py').read_text(),'published')

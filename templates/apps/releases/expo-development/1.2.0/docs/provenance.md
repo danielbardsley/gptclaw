@@ -10,8 +10,11 @@ executing a generator. Framework/package assets are retained through their packa
 with the upstream notices/licenses. The Node/pnpm installer is the existing reviewed
 GptClaw toolchain recipe. App identities are documented fixed substitutions.
 
-The two temporary tooling advisory exceptions were approved by the project owner
-October 13, 2026, expire at the end of October 27 in America/New_York, and apply only
-to bounded source checks/export. See checks/advisory-policy.json and the platform's
-SPEC-031 security review. No blanket severity suppression or native release scope
-is implied; verification blocks on unexpected high/critical findings or expiry.
+This successor removes the predecessor's temporary advisory exceptions. Its
+frozen graph uses node-forge 1.4.1 and replaces the CLI's Zod 3 dependency with
+Zod 4.6.7 through exact reviewed overrides; direct SDK/native pins are unchanged.
+Both platform exports and the SDK check are required compatibility gates. The
+single exact node-forge package-age exclusion covers its first 1,440 minutes
+following publication on 2026-10-27T04:44:07.718Z; omit it in the next successor
+after that window. No advisory severity is suppressed. Unexpected high/critical
+findings still block verification. Native release/device acceptance stays separate.

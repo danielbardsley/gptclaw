@@ -1,7 +1,7 @@
 # Fieldnotes — private native notebook
 
 A warm, accessible synthetic notes fixture for Android Expo Go, Python/FastAPI
-and PostgreSQL. Create fastapi-postgres@1.0.0 and expo-notes@1.0.0 independently.
+and PostgreSQL. Create fastapi-postgres@1.2.0 and expo-notes@1.2.0 independently.
 Initialize/start the backend using its own root. Bind the canonical mobile project:
 
 gptclawctl backend bind --project-root MOBILE_ROOT --backend-root BACKEND_ROOT --api-url https://backend.example.invalid/projects/BACKEND_ID/api

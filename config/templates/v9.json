@@ -646,7 +646,7 @@
         {
           "source": "docs/provenance.md",
           "output": "docs/provenance.md",
-          "sha256": "0022cc2b2ee30b85db319bde1ab8c0c08c4df59a84153ad9909da9d75b61e26f"
+          "sha256": "06904b485b0e132a073827ef5a97b73d7ad1a7fc672ac8cf6987cfec5e0f35fc"
         },
         {
           "source": "docs/quality.md",
@@ -724,7 +724,7 @@
           "sha256": "40b81e3f7cb8e75c8891214b2553f0b50211cda2657c649e50d87c56b625dbbc"
         }
       ],
-      "digest": "84784a6252f091ea95387ba87e48bae5c2e53ff26c7dbfb5f997e1b7daede64c"
+      "digest": "36c455082f02da0cb4df738a7e104116b6ad085451bf26944e19dc55aa194eeb"
     },
     {
       "id": "expo-development-notes",
@@ -891,7 +891,7 @@
         {
           "source": "docs/provenance.md",
           "output": "docs/provenance.md",
-          "sha256": "bcaa5639b019995611648b45b8831624d843605dcf86dca1c52009eea9c1553a"
+          "sha256": "32541ce5cb7391078fd235a7a3b61dd4d5a07ec61adc589d75522044cb002ec3"
         },
         {
           "source": "docs/quality.md",
@@ -999,7 +999,7 @@
           "sha256": "40b81e3f7cb8e75c8891214b2553f0b50211cda2657c649e50d87c56b625dbbc"
         }
       ],
-      "digest": "701130840031ebffd6b269c60dd31c2cb48f362b0a9419fdd0430e30bef4d9f8"
+      "digest": "babd3647978da03f0d4bb94e0f413eea1da416515de3d76d59467af951edd526"
     }
   ]
 }
