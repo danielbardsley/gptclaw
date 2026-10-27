@@ -7,7 +7,8 @@
         "scripts/**",
         "config/**",
         "schemas/**",
-        ".github/workflows/quality-templates.yml"
+        ".github/workflows/quality-templates.yml",
+        ".agents/skills/gptclaw-specification/**"
       ]
     },
     "push": {
@@ -19,7 +20,8 @@
         "scripts/**",
         "config/**",
         "schemas/**",
-        ".github/workflows/quality-templates.yml"
+        ".github/workflows/quality-templates.yml",
+        ".agents/skills/gptclaw-specification/**"
       ]
     },
     "schedule": [

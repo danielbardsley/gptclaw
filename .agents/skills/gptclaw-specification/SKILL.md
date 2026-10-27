@@ -14,7 +14,12 @@ A narrow correction changes only the affected text and dependent references.
 Read applicable repository/area guidance and Git status, the documentation index,
 the selected catalogue entry, and relevant existing plans and source evidence.
 For GptClaw these start at `docs/README.md` and `docs/platform/features.md`.
-Resolve these against the repository root, not the skill directory. Inspect
+Resolve these against the repository root, not the skill directory. Read the
+project-local engineering standards index when present and all references
+applicable to the selected stack. When choosing or extending a stack, map its
+standards to concrete local/CI gates in the technical design and tasks; record
+justified adaptations, inapplicable rules and missing gates with owner and review
+status. Preserve standards when removing starter demos. Inspect
 actual command/version sources when the proposal depends on them. Preserve
 unrelated work. Distinguish observed facts from proposals and unknowns; example
 content and catalogue entries provide neither approval nor installed capability.
@@ -93,8 +98,8 @@ authoring placeholders; retain substantive unknowns with an owner and next step.
 Run relevant repository checks, proportionate to the changed files. Summarize
 the result, decision needed, verification, limitations, and Git state.
 
-Maintain this package through the repository PR workflow. Daniel owns GptClaw
-skill changes. A reviewed targeted revert restores a prior revision while
+Maintain this package through the repository PR workflow. The project owner
+owns skill changes in this repository. A reviewed targeted revert restores a prior revision while
 preserving unrelated changes; verify the restored skill in a fresh context.
 Do not change global settings, overwrite unknown skills, or assume an ongoing
 chat reloads updated instructions.

@@ -26,7 +26,7 @@ class Tests(unittest.TestCase):
     def setUp(self):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         self.base=Path(temp.name);self.repo=self.base/'repo';self.repo.mkdir()
-        for rel in ['config/metro','config/mobile','config/databases','config/templates','schemas/templates','config/toolchains','schemas/toolchains','config/project-dependencies','schemas/project-dependencies','schemas/project','templates/apps/releases','templates/apps/node-toolchain','templates/apps/python-toolchain','templates/apps/eas-toolchain','templates/apps/apk-verifier']:
+        for rel in ['templates/projects/planning','templates/projects/engineering','.agents/skills/gptclaw-specification','config/metro','config/mobile','config/databases','config/templates','schemas/templates','config/toolchains','schemas/toolchains','config/project-dependencies','schemas/project-dependencies','schemas/project','templates/apps/releases','templates/apps/node-toolchain','templates/apps/python-toolchain','templates/apps/eas-toolchain','templates/apps/apk-verifier']:
             shutil.copytree(app.REPO/rel,self.repo/rel,ignore=shutil.ignore_patterns('.venv','.gptclaw-cache','.gptclaw-build','coverage','.expo','.cache','.local','.next','out','.static-build','node_modules','__pycache__'))
         helper=Path('templates/apps/start-development-postgres.sh');(self.repo/helper).parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(app.REPO/helper,self.repo/helper)
         shutil.copytree(app.REPO/'scripts',self.repo/'scripts',ignore=shutil.ignore_patterns('__pycache__'))
@@ -120,7 +120,23 @@ class Tests(unittest.TestCase):
     def test_same_release_reproducible_and_source_edits_allowed(self):
         one=self.new();selected=templates.resolve()[0];two=self.new('beta',template=selected['id'],template_version=selected['version'])
         for p in one.rglob('*'):
-            if p.is_file() and p.name!='project.yaml':self.assertEqual(p.read_bytes(),(two/p.relative_to(one)).read_bytes())
+            if not p.is_file() or p.name == 'project.yaml':
+                continue
+            relative = p.relative_to(one).as_posix()
+            first, second = p.read_bytes(), (two/relative).read_bytes()
+            if relative in {'docs/README.md', 'docs/platform/features.md'}:
+                first = first.replace(b'Alpha', b'Identity')
+                second = second.replace(b'Beta', b'Identity')
+            if relative == 'docs/starter-guidance-provenance.json':
+                records = [json.loads(first), json.loads(second)]
+                for root, record in zip([one, two], records):
+                    for target, item in record['files'].items():
+                        self.assertEqual(item['sha256'], __import__('hashlib').sha256((root/target).read_bytes()).hexdigest())
+                        if target in {'docs/README.md', 'docs/platform/features.md'}:
+                            item['sha256'] = 'normalized-project-identity'
+                self.assertEqual(*records)
+            else:
+                self.assertEqual(first, second, relative)
         normalized=[]
         for root in [one,two]:
             manifest=json.loads((root/'.gptclaw/project.yaml').read_text())
@@ -162,12 +178,88 @@ class Tests(unittest.TestCase):
         with app.locked(key):
             with self.assertRaises(app.AppError) as error:self.new()
         self.assertEqual(error.exception.code,'busy');self.assertFalse(path.exists())
+    def test_all_application_families_inherit_complete_guidance(self):
+        import project_guidance as guidance
+        releases = templates.catalogue()[0]['releases']
+        families = {}
+        for release in releases:
+            families[release['provider']] = release
+        for index, release in enumerate(families.values()):
+            with self.subTest(provider=release['provider']):
+                result = self.new('standards-' + str(index), template=release['id'],
+                                  template_version=release['version'])
+                root = result
+                record = json.loads((root/'docs/starter-guidance-provenance.json').read_text())
+                self.assertEqual(record['version'], '1.0.0')
+                import hashlib
+                for target, item in record['files'].items():
+                    self.assertEqual(item['sha256'], hashlib.sha256((root/target).read_bytes()).hexdigest())
+                self.assertEqual(record['generated_guidance_sha256'],
+                                 hashlib.sha256((root/'AGENTS.md').read_bytes()).hexdigest())
+                self.assertTrue((root/'docs/platform/features.md').is_file())
+                self.assertIn('numbered initiatives', (root/'docs/README.md').read_text())
+                self.assertIn('Standards ' + str(index), (root/'docs/platform/features.md').read_text())
+                if release['provider'].startswith('expo'):
+                    self.assertIn('architecture.md', (root/'docs/README.md').read_text())
+                import re
+                from pathlib import PurePosixPath
+                import posixpath
+                for relative in ['AGENTS.md', 'docs/README.md', 'docs/engineering/README.md']:
+                    for link in re.findall(r'\]\(([^)]+)\)', (root/relative).read_text()):
+                        if '://' not in link and not link.startswith('#'):
+                            target = posixpath.normpath(str(PurePosixPath(relative).parent / link.split('#')[0]))
+                            self.assertTrue((root/target).is_file(), (relative, link))
+                for source, target in guidance.RESOURCES.items():
+                    actual = (root/target).read_bytes()
+                    self.assertEqual(actual, (self.repo/source).read_bytes())
+                    self.assertEqual(record['files'][target]['sha256'], __import__('hashlib').sha256(actual).hexdigest())
+                self.assertIn('docs/engineering/README.md', (root/'AGENTS.md').read_text())
+                self.assertEqual(json.loads((root/'.gptclaw/template-release.json').read_text()),
+                                 templates.provenance(release))
+
+    def test_missing_guidance_prevents_publication(self):
+        (self.repo/'templates/projects/engineering/mobile-standards.md').unlink()
+        with self.assertRaises(app.AppError):
+            self.new()
+        self.assertFalse((self.projects/'alpha').exists())
+
+    def test_guidance_inventory_rejects_unmapped_and_symlink_resources(self):
+        import project_guidance as guidance
+        path = self.repo/'templates/projects/engineering/new-standard.md'
+        path.write_text('must not be silently omitted')
+        with self.assertRaises(ValueError):
+            guidance.validate_inventory(self.repo)
+        with self.assertRaises(app.AppError):
+            templates.bundle_paths()
+        path.unlink()
+        path.symlink_to(self.repo/'templates/projects/engineering/quality.md')
+        with self.assertRaises(ValueError):
+            guidance.validate_inventory(self.repo)
+
+    def test_guidance_collision_preserves_original_bytes(self):
+        import project_guidance as guidance
+        stage = self.base/'stage'
+        target = stage/'docs/engineering/README.md'
+        target.parent.mkdir(parents=True)
+        target.write_text('preserve existing guidance')
+        (stage/'AGENTS.md').write_text('original root guidance')
+        with self.assertRaises(FileExistsError):
+            guidance.install(stage, lambda name: (self.repo/name).read_bytes())
+        self.assertEqual(target.read_text(), 'preserve existing guidance')
+        self.assertEqual((stage/'AGENTS.md').read_text(), 'original root guidance')
+
     def test_provider_bundle_inventory_contains_release_and_schema(self):
         paths=templates.bundle_paths()
+        import project_guidance as guidance
+        for name in [*guidance.RESOURCES, *guidance.APP_TEMPLATES, guidance.ENGINEERING + 'VERSION', 'scripts/project_guidance.py']:
+            self.assertIn(Path(name), paths)
         self.assertIn(Path('schemas/templates/v1.schema.json'),paths)
         self.assertIn(Path('templates/apps/releases/nextjs/1.0.0/.gitignore'),paths)
     def test_installed_snapshot_parity_and_default_rollback(self):
         bundle=app.provider_bundle()
+        import project_guidance as guidance
+        for name in set(guidance.RESOURCES) | set(guidance.APP_TEMPLATES):
+            self.assertEqual((bundle/name).read_bytes(), (self.repo/name).read_bytes())
         for name in ['scripts/native_builds.py','scripts/native_contract.py','scripts/native_runtime.py','scripts/apk_metadata.py','templates/apps/eas-toolchain/worker.cjs','templates/apps/apk-verifier/VerifyApk.java']:
             self.assertEqual((bundle/name).read_bytes(),(app.REPO/name).read_bytes())
         self.assertEqual((bundle/'config/metro/runtime-security-v1.json').read_bytes(),(app.REPO/'config/metro/runtime-security-v1.json').read_bytes())
@@ -244,6 +336,15 @@ class Tests(unittest.TestCase):
         self.seal(release);self.write()
         with self.assertRaises(app.AppError):module.verify_baseline(baseline)
         git('add','.');module.verify_baseline(baseline)
+        unlisted = base/'2.0.0/docs/required-standard.md'
+        unlisted.parent.mkdir(exist_ok=True)
+        unlisted.write_text('Synthetic standard must not be silently omitted.')
+        git('add', str(unlisted.relative_to(self.repo)))
+        with self.assertRaises(app.AppError):
+            module.verify_baseline(baseline)
+        unlisted.unlink()
+        git('add', '-u', str(unlisted.relative_to(self.repo)))
+        module.verify_baseline(baseline)
 
 
 class PythonSecurityReleases(unittest.TestCase):

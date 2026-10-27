@@ -1,8 +1,8 @@
 # {{PROJECT_NAME}} repository guidance
 
-Source-Template-Version: 1.0.1
+Source-Template-Version: 1.0.2
 Template-Source: GptClaw templates/agents/AGENTS.md.template
-Starter-Version: 1.0.1
+Starter-Version: 1.1.0
 
 ## Project and ownership
 
@@ -87,3 +87,11 @@ preserve adaptations and unknown overrides. Once committed, rollback uses a
 reviewed targeted Git revert preserving unrelated later work. Verify changed
 instructions in a fresh task; do not interrupt existing tasks or change global
 settings. Updating the source starter never rewrites this project.
+
+## Inherited engineering standards
+
+Before material implementation, read [the required engineering standards](docs/engineering/README.md)
+and every reference applicable to this component's stack. The technical design
+and tasks must map them to actual local/CI gates and record justified adaptations
+or inapplicable rules with owner and review status. Preserve standards while
+removing demos. Copying references does not prove checks ran or tools exist.

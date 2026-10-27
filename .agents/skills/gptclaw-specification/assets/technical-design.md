@@ -12,7 +12,7 @@ flows/storage, permissions, failure handling, and dependencies where relevant.
 ## Components and changes
 
 | File or component | Responsibility and planned change | Requirement IDs |
-|---|---|---|
+| ----------------- | --------------------------------- | --------------- |
 
 Reference existing version and command sources rather than inventing pins or
 assuming future tools are installed.
@@ -27,6 +27,12 @@ cleanup only when the feature needs them. State known limitations.
 ## Traceability and decisions
 
 | Requirement IDs | Design mechanism | Task IDs | Acceptance IDs |
-|---|---|---|---|
+| --------------- | ---------------- | -------- | -------------- |
 
 Record unresolved decisions, owner, next action, and what can proceed meanwhile.
+
+For a project with inherited engineering standards, identify applicable references
+and map their formatter/lint, typing, tests/coverage, security, build and CI
+requirements to implemented commands and verification. Record justified
+adaptations and gaps with rationale, owner and review status; do not treat copied
+files or passing unit tests as proof that all required gates exist.

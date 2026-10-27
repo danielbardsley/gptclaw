@@ -97,3 +97,41 @@ releases. The Python backend has API/DB only; the native notebook uses a separat
 validated development binding. Neither changes the default selection or published
 releases. See [mobile backend operations](manage-mobile-backends.md); physical
 Android acceptance and provider installation remain separate evidence.
+
+
+## Engineering standards at creation
+
+Both planning bootstrap and application `new` now copy the versioned
+[engineering bundle](../templates/projects/engineering/README.md) and complete
+specification skill. Root guidance links to project-local `docs/engineering/`. Application creation
+also adds the local planning index and empty feature catalogue; existing
+application documentation indexes are extended rather than replaced. Planning
+headings substitute the project title; provenance hashes record the resulting
+project-specific bytes. This is an explicit identity substitution alongside the
+existing manifest identity fields.
+Planning bootstrap requires a reviewed source revision containing the full bundle;
+it records the source commit, bundle version, source paths and output hashes in
+`docs/bootstrap-provenance.json`. Application creation adds a separate guidance
+layer with `docs/starter-guidance-provenance.json` (version, source paths, copied
+hashes and final root-guidance hash). `.gptclaw/template-release.json` continues
+to identify the exact original application release; published releases are not
+rewritten. Provider packaging includes the same helper and resources.
+
+When the stack is selected or extended, read all applicable standards and map
+their requirements to concrete design/tasks and local/CI checks. Record explicit
+adaptations with owner and review status. A copied reference is not proof of
+client loading or gate execution. Planning projects do not acquire executable
+configuration or installed tools just by receiving standards. Template examples
+are not product requirements.
+
+Guidance bundle updates increment `templates/projects/engineering/VERSION` and
+ship through review with resource/completeness tests. Keep the fixed inventory in
+`project_guidance.py` in step with added files. The release gate also rejects
+committed application starter files absent from the catalogue copy inventory,
+so adding a standard cannot silently leave it out of generated applications.
+When changing language standards for a new application release, review the shared
+bundle and applicability index too; preserve historical published releases. New default guidance affects future
+creation only; existing projects, including Dogstats, require separate adoption.
+An installed provider keeps its bundled revision until a reviewed provider update;
+source changes alone do not update that installation. Roll back with a reviewed
+revert/provider selection, retaining all independently created projects.

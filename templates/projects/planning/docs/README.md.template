@@ -10,6 +10,9 @@ with [project guidance](../AGENTS.md). Check both this index and existing
 numbered directories before selecting a new number. Honor existing approvals;
 a selected catalogue feature alone does not authorize implementation.
 
+Read the [engineering standards](engineering/README.md) when selecting a stack
+and map applicable rules to implementation and verification tasks.
+
 ## Initiatives
 
 None yet. Select the first feature in the [catalogue](platform/features.md).

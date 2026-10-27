@@ -21,8 +21,8 @@ the design unless a choice is a real constraint.
 
 ## Acceptance criteria
 
-| ID | Observable result and evidence needed | Requirement IDs |
-|---|---|---|
+| ID  | Observable result and evidence needed | Requirement IDs |
+| --- | ------------------------------------- | --------------- |
 
 Populate criteria with measurable evidence. Distinguish tests, runtime checks,
 and owner decisions. Identify recovery/migration evidence when applicable.

@@ -46,10 +46,25 @@ class MobileTests(unittest.TestCase):
             self.assertEqual(app.validate_project(root)[2],0)
             self.assertFalse((root/'node_modules').exists())
             self.assertNotIn('service',app.target(root)[1])
-        names=sorted(self.contents)
+        import project_guidance as guidance
+        names = sorted(set(self.contents) | set(guidance.RESOURCES.values()) |
+                       set(guidance.APP_TEMPLATES.values()) | {'docs/starter-guidance-provenance.json'})
         self.assertEqual(names,sorted(p.relative_to(one).as_posix() for p in one.rglob('*') if p.is_file() and '.gptclaw' not in p.relative_to(one).parts))
         for name in names:
-            if name!='app.json':self.assertEqual((one/name).read_bytes(),(two/name).read_bytes())
+            first, second = (one/name).read_bytes(), (two/name).read_bytes()
+            if name in {'docs/README.md', 'docs/platform/features.md'}:
+                first = first.replace(b'Mobile One', b'Identity')
+                second = second.replace(b'Mobile Two', b'Identity')
+            if name == 'docs/starter-guidance-provenance.json':
+                records = [json.loads(first), json.loads(second)]
+                for root, record in zip([one, two], records):
+                    for target, item in record['files'].items():
+                        self.assertEqual(item['sha256'], hashlib.sha256((root/target).read_bytes()).hexdigest())
+                        if target in {'docs/README.md', 'docs/platform/features.md'}:
+                            item['sha256'] = 'normalized-project-identity'
+                self.assertEqual(*records)
+            elif name != 'app.json':
+                self.assertEqual(first, second, name)
         self.assertNotEqual(json.loads((one/'app.json').read_text())['expo']['ios'],json.loads((two/'app.json').read_text())['expo']['ios'])
         self.assertFalse(list(self.units.iterdir()));self.assertFalse(list(app.STORE.glob('*.json')))
     def test_identity_mapping_platform_grammars(self):
