@@ -1,0 +1,23 @@
+{
+  "platform-tools": {
+    "url": "https://dl.google.com/android/repository/platform-tools_r37.0.1-linux.zip",
+    "sha256": "d230f13842f60f782a8645f9c813f8f845bf36089ea7289f28c48f17979313f1",
+    "bytes": 9054187,
+    "prefix": "platform-tools",
+    "destination": "sdk/platform-tools"
+  },
+  "emulator": {
+    "url": "https://dl.google.com/android/repository/emulator-linux_x64-16740729.zip",
+    "sha256": "cbc7c3cfb83220b8a0f9c513fdab557712e74d339ec19ddffa43f23350ae9bdd",
+    "bytes": 349658551,
+    "prefix": "emulator",
+    "destination": "sdk/emulator"
+  },
+  "android-36-google-apis-x86_64": {
+    "url": "https://dl.google.com/android/repository/sys-img/google_apis/x86_64-36_r07.zip",
+    "sha256": "b1bb0769d0bed7698e61f203d7dc9bf6e7c37cd01a39d0d8788a11186bc78160",
+    "bytes": 1895447397,
+    "prefix": "x86_64",
+    "destination": "sdk/system-images/android-36/google_apis/x86_64"
+  }
+}

@@ -1,0 +1,155 @@
+#cloud-config
+hostname: forge-android-01
+manage_etc_hosts: true
+ssh_pwauth: false
+disable_root: true
+users:
+  - name: forge
+    shell: /bin/bash
+    lock_passwd: true
+    sudo: false
+    ssh_authorized_keys:
+      - ${desktop_ssh_public_key}
+      - ${runner_ssh_public_key}
+package_update: true
+packages:
+  - ca-certificates
+  - curl
+  - python3
+  - openssh-server
+  - ufw
+  - libx11-6
+  - libnss3
+  - libgl1
+  - libpulse0
+  - libxkbcommon0
+  - libxcb1
+  - libdbus-1-3
+  - libasound2t64
+  - libpng16-16t64
+  - libxi6
+  - libxkbfile1
+
+write_files:
+  - path: /etc/ssh/sshd_config.d/00-gptclaw-android.conf
+    permissions: "0644"
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PubkeyAuthentication yes
+      AuthenticationMethods publickey
+      AllowUsers forge
+      X11Forwarding no
+      AllowTcpForwarding local
+      GatewayPorts no
+  - path: /etc/gptclaw/tailscale-federation.json
+    permissions: "0644"
+    content: |
+      ${indent(6, federation_config)}
+  - path: /usr/local/libexec/gptclaw-tailscale-federation
+    permissions: "0755"
+    content: |
+      ${indent(6, tailscale_federation_helper)}
+  - path: /etc/gptclaw/android-artifacts.json
+    permissions: "0644"
+    content: |
+      ${indent(6, android_pins)}
+  - path: /usr/local/libexec/gptclaw-android-setup
+    permissions: "0755"
+    content: |
+      ${indent(6, android_setup)}
+  - path: /etc/systemd/system/tailscaled.service
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Private runner Tailscale
+      Wants=network-online.target
+      After=network-online.target
+      [Service]
+      ExecStart=/usr/local/sbin/tailscaled --state=/var/lib/tailscale/tailscaled.state --socket=/run/tailscale/tailscaled.sock
+      StateDirectory=tailscale
+      RuntimeDirectory=tailscale
+      Restart=on-failure
+      [Install]
+      WantedBy=multi-user.target
+  - path: /etc/systemd/system/gptclaw-android.service
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Dedicated private Android test emulator
+      After=network-online.target tailscaled.service
+      ConditionPathExists=/home/forge/android/license-accepted
+      [Service]
+      User=forge
+      SupplementaryGroups=kvm
+      Environment=HOME=/home/forge
+      Environment=ANDROID_SDK_ROOT=/home/forge/android/sdk
+      Environment=ANDROID_AVD_HOME=/home/forge/android/avd
+      WorkingDirectory=/home/forge/android
+      ExecStart=/home/forge/android/sdk/emulator/emulator -avd dogstats -no-window -no-audio -no-boot-anim -no-snapshot -no-metrics -accel on -gpu swiftshader -feature -Vulkan -memory 3072 -cores 2 -ports 5554,5555
+      KillSignal=SIGTERM
+      TimeoutStopSec=90
+      NoNewPrivileges=true
+      PrivateTmp=true
+      UMask=0077
+      [Install]
+      WantedBy=multi-user.target
+  - path: /etc/systemd/system/gptclaw-android-stop.service
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Stop the private Android runner after its bounded session
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/systemctl stop gptclaw-android.service
+      ExecStart=/sbin/shutdown -h now
+  - path: /etc/systemd/system/gptclaw-android-stop.timer
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Four-hour Android runner session limit
+      [Timer]
+      OnBootSec=4h
+      Unit=gptclaw-android-stop.service
+      [Install]
+      WantedBy=timers.target
+  - path: /usr/local/sbin/gptclaw-android-bootstrap
+    permissions: "0750"
+    content: |
+      #!/bin/bash
+      set -Eeuo pipefail
+      umask 077
+      groupadd -f kvm
+      usermod -aG kvm forge
+      printf '%s\n' 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' > /etc/udev/rules.d/70-gptclaw-kvm.rules
+      modprobe kvm_intel
+      udevadm control --reload-rules
+      udevadm trigger --subsystem-match=misc --sysname-match=kvm
+      test -c /dev/kvm
+      install -d -o forge -g forge -m 0700 /home/forge/.android
+      ufw default deny incoming
+      ufw default allow outgoing
+      ufw allow in on tailscale0 proto tcp to any port 22
+      ufw --force enable
+      sshd -t
+      systemctl reload-or-restart ssh.service
+      tmp=$(mktemp -d)
+      trap 'rm -rf "$tmp"' EXIT
+      curl --fail --silent --show-error --location --max-time 180 https://pkgs.tailscale.com/stable/tailscale_1.104.4_amd64.tgz -o "$tmp/tailscale.tgz"
+      printf '%s\n' '624ea093d47d62cf56f17b8332d74b8decda4a1faa610ebc60a1de334b2b3dc9  tailscale.tgz' > "$tmp/checksum"
+      (cd "$tmp" && sha256sum -c checksum)
+      tar -xzf "$tmp/tailscale.tgz" -C "$tmp" --strip-components=1 tailscale_1.104.4_amd64/tailscale tailscale_1.104.4_amd64/tailscaled
+      install -m 0755 "$tmp/tailscale" /usr/local/bin/tailscale
+      install -m 0755 "$tmp/tailscaled" /usr/local/sbin/tailscaled
+      systemctl daemon-reload
+      systemctl enable --now gptclaw-android-stop.timer tailscaled.service
+      python3 /usr/local/libexec/gptclaw-tailscale-federation
+      runuser -u forge -- python3 /usr/local/libexec/gptclaw-android-setup
+      # Project owner accepted Android SDK terms for this test runner on 2026-10-30.
+      runuser -u forge -- touch /home/forge/android/license-accepted
+      systemctl enable --now gptclaw-android.service
+      echo 'Runner provisioned; verify actual Android boot before acceptance'
+
+runcmd:
+  - [/usr/local/sbin/gptclaw-android-bootstrap]

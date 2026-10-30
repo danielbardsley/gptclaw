@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Offline SDK spike admission, filtered source and ownership failure cases."""
 import contextlib
+from datetime import datetime, timedelta, timezone
 import hashlib
 import copy
 import json
@@ -29,6 +30,13 @@ class SpikeTests(unittest.TestCase):
         self.origin='https://'+spike.HOST+':8443'
     def patch(self,target,name,value):
         p=patch.object(target,name,value);p.start();self.addCleanup(p.stop)
+    def fixture_policy(self):
+        # Simulations need valid synthetic dates, not a live runtime exception.
+        value=json.loads((app.REPO/'config/metro/runtime-security-v1.json').read_text())
+        now=datetime.now(timezone.utc)
+        value['approved_at']=(now-timedelta(minutes=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        value['expires_at']=(now+timedelta(minutes=10)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        return security.policy(value,approved=False)
     def prepare_plan(self):
         self.patch(spike,'TARGETS',{self.root})
         self.patch(app,'target',lambda root:(self.root,{'schema_version':5,'project':{'id':'synthetic'}}))
@@ -71,7 +79,7 @@ class SpikeTests(unittest.TestCase):
     def test_readonly_plan_and_explicit_fixture_bound(self):
         self.prepare_plan()
         before=sorted(str(p) for p in self.root.rglob('*'))
-        policy=copy.deepcopy(security.read_policy(app.REPO,approved=False));policy['approved_at']=None
+        policy=copy.deepcopy(self.fixture_policy());policy['approved_at']=None
         with patch.object(security,'read_policy',return_value=policy),patch.object(app,'command',side_effect=AssertionError('no command')),patch.object(app,'save',side_effect=AssertionError('no writes')):
             result=spike.plan(self.root,self.origin,60)
         self.assertEqual(result['runtime_security'],'approval-pending');self.assertEqual(result['source_retained'],True)
@@ -81,7 +89,7 @@ class SpikeTests(unittest.TestCase):
         with patch.object(spike,'TARGETS',set()),self.assertRaises(app.AppError):spike.plan(self.root,self.origin,60)
     def test_unapproved_run_denies_before_store_and_runtime_writes(self):
         self.prepare_plan()
-        value=copy.deepcopy(security.read_policy(app.REPO,approved=False));value['approved_at']=None
+        value=copy.deepcopy(self.fixture_policy());value['approved_at']=None
         def policy_reader(repo,now=None,approved=True):return security.policy(value,now,approved)
         with patch.object(security,'read_policy',side_effect=policy_reader),patch.object(spike,'require_operator',return_value=None),patch.object(spike,'source_inventory',return_value={}),patch.object(app,'locked',side_effect=AssertionError('no lock write')),patch.object(app,'command',side_effect=AssertionError('no process')):
             with self.assertRaises(security.AdmissionError):spike.run(self.root,self.origin,60)
@@ -147,7 +155,7 @@ class SpikeTests(unittest.TestCase):
         self.patch(spike,'require_operator',lambda:None)
         self.prepare_plan()
         self.patch(app,'STORE',self.root.parent/'runtime')
-        policy=security.read_policy(app.REPO,approved=False);policy=copy.deepcopy(policy)
+        policy=self.fixture_policy();policy=copy.deepcopy(policy)
         policy['approved_at']='2026-10-13T20:00:00Z'
         policy['lock_sha256']=hashlib.sha256((self.root/'pnpm-lock.yaml').read_bytes()).hexdigest()
         self.patch(security,'read_policy',lambda *args,**kwargs:policy)

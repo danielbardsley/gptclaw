@@ -342,6 +342,13 @@ interfaces; existing accepted slices remain valid. QLT-010 stays optional.
   [Design](050-project-standards-inheritance/technical-design.md) ·
   [Tasks](050-project-standards-inheritance/tasks.md)
 
+## Private Android testing
+
+- **051 — Dedicated Android emulator runner, implementation authorized:**
+  [Specification](051-android-emulator-runner/spec.md) ·
+  [Design](051-android-emulator-runner/technical-design.md) ·
+  [Tasks](051-android-emulator-runner/tasks.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in

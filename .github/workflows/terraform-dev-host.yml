@@ -63,6 +63,14 @@ on:
         options:
           - plan
           - apply
+      android_runner_state:
+        description: Dedicated Android runner state (stopped avoids compute charges)
+        required: true
+        type: choice
+        default: stopped
+        options:
+          - stopped
+          - running
       confirmation:
         description: Enter gptclaw-dev-host to authorize apply
         required: false
@@ -83,6 +91,7 @@ env:
   TF_VAR_deployment_revision: ${{ github.sha }}
   TERRAFORM_VERSION: "1.16.5"
   WORKING_DIRECTORY: infra/dev-host
+  TF_VAR_android_runner_state: ${{ inputs.android_runner_state || 'stopped' }}
 
 jobs:
   quality:
