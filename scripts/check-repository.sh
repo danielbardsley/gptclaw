@@ -114,6 +114,10 @@ if ! python3 -B scripts/tests/test_host_tools.py; then
   status=1
 fi
 
+if ! python3 -B scripts/tests/test_android_runner.py; then
+  status=1
+fi
+
 if ! python3 -B scripts/tests/test_rootless_toolchain.py; then
   status=1
 fi
