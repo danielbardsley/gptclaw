@@ -34,7 +34,10 @@ It creates README.md, AGENTS.md, .gitignore, documentation index/catalogue,
 bootstrap provenance, the complete `.agents/skills/gptclaw-specification/`
 package, and the versioned
 `docs/engineering/` standards bundle (Python, mobile, shared quality/TypeScript
-and applicability index). Use a reviewed revision containing this full inventory;
+and applicability index, including the private Android emulator usage guide).
+Mobile projects must arrange approved access and a shared test slot before using
+the runner; the copied guide does not allocate infrastructure or copy keys.
+Use a reviewed revision containing this full inventory;
 older planning-only revisions cannot supply the new standards contract. It
 initializes main with no commit or remote and installs no packages.
 Normal automatic selection remains enabled; no global settings are changed.

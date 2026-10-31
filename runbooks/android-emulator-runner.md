@@ -100,3 +100,12 @@ Preserve the disk on failure. Removal/replacement requires a reviewed change to
 its destruction guard. The private key stays in ignored Dogstats local storage;
 retiring the public key in source alone does not revoke an already provisioned
 authorized_keys entry. Source rollback likewise does not roll back disk data.
+
+## Guidance inherited by projects
+
+New planning and application projects receive the portable
+[Android testing guide](../templates/projects/engineering/android-emulator.md)
+through engineering bundle 1.1.0. Mobile standards link to it; it covers ordinary
+project testing, not provisioning or recovery. Existing projects need an explicit
+reviewed adoption. Allocate a shared-emulator slot and approved access per project;
+the Dogstats private-key path above is not a credential source for other projects.

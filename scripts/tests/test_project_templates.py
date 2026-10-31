@@ -190,7 +190,7 @@ class Tests(unittest.TestCase):
                                   template_version=release['version'])
                 root = result
                 record = json.loads((root/'docs/starter-guidance-provenance.json').read_text())
-                self.assertEqual(record['version'], '1.0.0')
+                self.assertEqual(record['version'], '1.1.0')
                 import hashlib
                 for target, item in record['files'].items():
                     self.assertEqual(item['sha256'], hashlib.sha256((root/target).read_bytes()).hexdigest())
@@ -204,7 +204,8 @@ class Tests(unittest.TestCase):
                 import re
                 from pathlib import PurePosixPath
                 import posixpath
-                for relative in ['AGENTS.md', 'docs/README.md', 'docs/engineering/README.md']:
+                for relative in ['AGENTS.md', 'docs/README.md', 'docs/engineering/README.md', 'docs/engineering/mobile-standards.md',
+                                 'docs/engineering/android-emulator.md']:
                     for link in re.findall(r'\]\(([^)]+)\)', (root/relative).read_text()):
                         if '://' not in link and not link.startswith('#'):
                             target = posixpath.normpath(str(PurePosixPath(relative).parent / link.split('#')[0]))
@@ -214,6 +215,8 @@ class Tests(unittest.TestCase):
                     self.assertEqual(actual, (self.repo/source).read_bytes())
                     self.assertEqual(record['files'][target]['sha256'], __import__('hashlib').sha256(actual).hexdigest())
                 self.assertIn('docs/engineering/README.md', (root/'AGENTS.md').read_text())
+                self.assertIn('android-emulator.md', (root/'docs/engineering/mobile-standards.md').read_text())
+                self.assertTrue((root/'docs/engineering/android-emulator.md').is_file())
                 self.assertEqual(json.loads((root/'.gptclaw/template-release.json').read_text()),
                                  templates.provenance(release))
 

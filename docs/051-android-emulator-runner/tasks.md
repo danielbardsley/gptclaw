@@ -62,3 +62,14 @@ T5 remains open because retained-data stop/start and observed automatic shutdown
 have not been demonstrated. T6 requires actual Dogstats interaction and private
 API/issuer observations; Android boot alone does not complete it. Physical GPS,
 battery and background qualification are not established by this emulator.
+
+## Project guidance extension — ER-07 / AC-06
+
+- [x] G1: Inspect branches and PRs; use merged #109/#111/#112 contract and retain
+  deployment/app/physical acceptance distinctions.
+- [x] G2: Add versioned portable runner guidance to both creation paths and mobile
+  applicability, preserving published application releases and existing projects.
+- [x] G3: Adapt Dogstats guidance in an isolated worktree; preserve existing
+  uncommitted UI work, provenance and app acceptance records.
+- [ ] G4: Verify generated guide/provenance/links, provider parity and repository
+  checks; record results and publish separate reviewable PRs.
