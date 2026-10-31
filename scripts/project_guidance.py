@@ -7,7 +7,7 @@ ENGINEERING = 'templates/projects/engineering/'
 SKILL = '.agents/skills/gptclaw-specification/'
 SKILL_FILES = {'SKILL.md', 'assets/spec.md', 'assets/technical-design.md',
                'assets/tasks.md', 'assets/acceptance.md'}
-ENGINEERING_FILES = {'README.md', 'python-standards.md', 'mobile-standards.md', 'quality.md'}
+ENGINEERING_FILES = {'README.md', 'python-standards.md', 'mobile-standards.md', 'quality.md', 'android-emulator.md'}
 RESOURCES = {**{ENGINEERING + name: 'docs/engineering/' + name for name in ENGINEERING_FILES},
              **{SKILL + name: SKILL + name for name in SKILL_FILES}}
 APP_TEMPLATES = {

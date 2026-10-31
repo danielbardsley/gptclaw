@@ -79,13 +79,18 @@ class BootstrapTests(unittest.TestCase):
         self.create()
         record = json.loads((self.dest / b.PROVENANCE).read_text())
         self.assertEqual(record['starter_version'], '1.1.0')
-        self.assertEqual(record['engineering']['version'], '1.0.0')
+        self.assertEqual(record['engineering']['version'], '1.1.0')
         for source, target in b.guidance.RESOURCES.items():
             actual = (self.dest / target).read_bytes()
             self.assertEqual(actual, (self.source / source).read_bytes())
             self.assertEqual(record['engineering']['files'][target]['sha256'], b.digest(actual))
         self.assertIn('docs/engineering/README.md', (self.dest / 'AGENTS.md').read_text())
         self.assertIn('coverage', (self.dest / 'docs/engineering/README.md').read_text())
+        self.assertIn('android-emulator.md', (self.dest / 'docs/engineering/mobile-standards.md').read_text())
+        runner = (self.dest / 'docs/engineering/android-emulator.md').read_text()
+        self.assertIn('StrictHostKeyChecking=yes', runner)
+        self.assertIn('android_runner_state', runner)
+        self.assertNotIn('/srv/forge/projects/dogstats/', runner)
         self.assertEqual(self.create()['status'], 'already-created')
 
     def test_missing_standard_refuses_before_destination_write(self):

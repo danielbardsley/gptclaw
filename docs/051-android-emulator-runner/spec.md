@@ -62,3 +62,22 @@ project volume.
 The replacement now has a verified Android boot and inspected launcher screenshot.
 The guard-restoration follow-up is pending merge; app and stop/start acceptance
 remain pending.
+
+## Project guidance extension (October 31, 2026)
+
+The project owner authorized bootstrap and Dogstats usage-guidance updates after
+inspection of branches and PRs #109, #111 and #112. PR #112 is merged as
+`7b5fe51`; this section supplements historical deployment status above.
+
+- **ER-07:** Planning and application creation inherit a portable private-runner
+  guide, discovered through mobile standards. Document approved project access,
+  shared fixture/session ownership, SSH/selected-device ADB, inspected APKs,
+  evidence boundaries, protected lifecycle controls and the four-hour timer.
+  Copy no keys or Dogstats-specific credential paths into new projects.
+- **AC-06:** Both creation paths copy/hash the guide with engineering bundle
+  1.1.0; generated links and provider resource parity pass offline checks.
+  Dogstats has adapted local instructions without overwriting user changes.
+
+This extension changes guidance and its copy inventory/tests only. It does not
+operate the runner, deploy a provider, grant other projects a session, or establish
+new app/physical-device acceptance. Existing projects require explicit adoption.

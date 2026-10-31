@@ -90,3 +90,19 @@ The protected replacement apply completed; the new runner booted Android. This
 follow-up restores the runner guards before any subsequent apply. The one-use
 replacement exception has expired. See tasks for actual evidence and remaining
 app/stop-start acceptance. See the [recovery procedure](../../runbooks/android-emulator-runner.md).
+
+## Project guidance extension
+
+ER-07 / AC-06 uses the fixed project_guidance resource mapping to copy
+`templates/projects/engineering/android-emulator.md` into both creation paths
+and provider packaging. Bump the engineering bundle to 1.1.0 and link the guide
+from its applicability index and mobile standards. Root AGENTS already requires
+reading that index. Keep instance recovery/history in the canonical runbook;
+projects receive a self-contained routine testing interface and an upstream link.
+Dogstats adopts a project-specific guide with existing local SDK/key paths,
+package ID, private backend checks and current acceptance limitations.
+
+Run planning/application creation regressions and the offline repository checker;
+review documentation links and whitespace in both repositories. No Terraform,
+SDK installation, private-key inspection or live emulator operation is needed.
+Rollback is a targeted reviewed revert; previously created projects are unchanged.

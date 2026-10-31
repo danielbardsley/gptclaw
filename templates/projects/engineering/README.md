@@ -7,6 +7,7 @@ release files. They remain available without the original GptClaw checkout.
 | ------------------------------ | ------------------------------------------------------- |
 | Every implemented stack        | [Shared quality and TypeScript conventions](quality.md) |
 | Python / FastAPI components    | [Python engineering standards](python-standards.md)     |
+| Android emulator testing       | [Private runner workflow](android-emulator.md)          |
 | Expo / React Native components | [Mobile engineering standards](mobile-standards.md)     |
 
 Read the applicable rows before designing or implementing a component. Mixed
