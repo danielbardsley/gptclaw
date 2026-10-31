@@ -65,9 +65,11 @@ path is superseded; it has not been observed executing.
 The [runbook](../../runbooks/android-emulator-runner.md) now proposes a one-time
 Terraform replacement of the failed runner with corrected cloud-init. Only its
 own fresh root disk is deleted. The existing development host/project storage
-are untouched. A temporary runner-only lifecycle exception needs explicit
-publication/replacement approval and a reviewed remote plan; deployment has not
-been authorized by those proposal files. Restore the guards after that one
+are untouched. On October 31 the project owner approved publication of commit `718c104`,
+merge after required gates, the one-time failed-runner/root-disk replacement
+through the protected pipeline, and the follow-up publication/merge restoring
+the guard. This approval does not waive the reviewed remote plan, environment
+gates or verification. Restore the guards after that one
 replacement and before another apply. Local Terraform format/validate and all 29 mocked-AWS tests pass for this
 expanded proposal. Six focused bootstrap tests and whitespace checks pass;
 no recovery or Android acceptance claimed.

@@ -55,6 +55,8 @@ The October 31 deployment created the runner, but SSH runtime-directory validati
 stopped bootstrap before enrollment. The owner requested automatic provisioning
 instead of manual repair. A one-time replacement of the failed runner and deletion
 of its own 80-GiB root disk is proposed through the existing protected pipeline.
-This requires explicit approval of the replacement and temporary guard exception;
-it does not authorize changes to the existing development host or project volume.
+The project owner approved the scoped replacement, temporary guard exception and
+subsequent guard restoration on October 31. Required gates and remote-plan review
+remain. This does not authorize changes to the existing development host or
+project volume.
 No working Android session has yet been demonstrated.

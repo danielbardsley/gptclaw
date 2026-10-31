@@ -80,7 +80,9 @@ directory and safe retry without running privileged commands.
 The owner requested recovery through automatic machine setup rather than manual
 SSM commands. A proposed one-time exception to **this runner's** destruction and
 user-data-drift guards enables Terraform replacement with corrected cloud-init.
-It is not yet approved for publication, merge or deployment. Create-before-destroy
+The project owner approved publication, merge after required gates, the scoped
+replacement through the protected pipeline and subsequent guard restoration on
+October 31. The remote plan and existing environment gates remain required. Create-before-destroy
 keeps the failed instance until EC2 creation succeeds; bootstrap still requires
 live verification. The failed runner's own root disk will be deleted. The existing
 development host and project-volume guards remain unchanged. No IAM expansion.

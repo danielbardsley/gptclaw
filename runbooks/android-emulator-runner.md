@@ -37,7 +37,7 @@ The owner subsequently requested automatic machine setup instead of the proposed
 manual SSM repair. Do not run the earlier two commands; that recovery path has
 been superseded. No successful manual repair has been observed.
 
-### Proposed one-time Terraform replacement — approval pending
+### Approved one-time Terraform replacement — plan and deployment pending
 
 The repair branch temporarily permits replacement of **only**
 `aws_instance.android_runner` and allows its corrected user-data to trigger it.
@@ -50,8 +50,9 @@ their existing guards and configuration. No SSM permissions or public ingress
 are added. The previous instance never enrolled, so its Tailscale state is not
 copied or reused.
 
-Before publication/merge/apply, obtain explicit approval for this expanded source
-scope and the failed runner/root-disk replacement. Use the protected workflow
+The project owner approved this expanded source scope, merge after required
+gates, the failed runner/root-disk replacement and subsequent guard restoration
+on October 31. Use the protected workflow
 **plan**, state **running**, on main after merge. Inspect the HCP diff: replacement
 is limited to the Android instance and its state resource, plus revision tags.
 Reject any other destruction/replacement, IAM change, ingress or project-volume
