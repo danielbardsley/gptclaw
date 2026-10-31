@@ -37,40 +37,31 @@ The owner subsequently requested automatic machine setup instead of the proposed
 manual SSM repair. Do not run the earlier two commands; that recovery path has
 been superseded. No successful manual repair has been observed.
 
-### Approved one-time Terraform replacement — plan and deployment pending
+### Recovery completed; exception retired
 
-The repair branch temporarily permits replacement of **only**
-`aws_instance.android_runner` and allows its corrected user-data to trigger it.
-It uses create-before-destroy so the failed runner is not removed before EC2 has
-created the replacement. This does not prove the replacement has bootstrapped.
-The new runner's original 80-GiB root disk is deleted with the failed instance;
-there is no Dogstats installation or app data observed on that failed first boot.
-The existing development host, its root disk and persistent project volume keep
-their existing guards and configuration. No SSM permissions or public ingress
-are added. The previous instance never enrolled, so its Tailscale state is not
-copied or reused.
+The project owner approved one pipeline replacement of the failed instance and
+its own fresh root disk, followed by restoration of its lifecycle guards. The
+[reviewed plan](https://github.com/danielbardsley/gptclaw/actions/runs/41218238098)
+and [apply](https://github.com/danielbardsley/gptclaw/actions/runs/41223764115)
+used revision `379fc9f` and state **running**. HCP apply:
+[run-WBWyfSrF2cVmyEsc](https://app.terraform.io/app/Bardsley/gptclaw-dev-host/runs/run-WBWyfSrF2cVmyEsc).
+The apply added/replaced only the Android instance/state resources, destroyed
+the failed runner `i-00eecaeb4e941cf5e`, and updated 14 revision tags.
+Replacement: `i-0128be3340461d289`.
 
-The project owner approved this expanded source scope, merge after required
-gates, the failed runner/root-disk replacement and subsequent guard restoration
-on October 31. Use the protected workflow
-**plan**, state **running**, on main after merge. Inspect the HCP diff: replacement
-is limited to the Android instance and its state resource, plus revision tags.
-Reject any other destruction/replacement, IAM change, ingress or project-volume
-change. Then use **apply**, state **running**, confirmation `gptclaw-dev-host`,
-retaining existing environment gates. Never use local apply or direct EC2 mutation.
+The one-replacement exception is now expired. This follow-up restores
+`prevent_destroy = true` and `ignore_changes = [ami, user_data_base64]` and removes
+`create_before_destroy`; merge it before any subsequent infrastructure apply.
+No further replacement or manual SSM repair is authorized by this record. Do not
+rerun the earlier manual repair proposal. The existing host/project-volume
+protections and IAM/networking were preserved.
 
-Owner of the proposed temporary guard exception: project owner. Reason: consume
-corrected bootstrap after a failed first boot. Scope: the named failed runner
-only. Expiry: completion of this one replacement; it is not standing permission
-to replace future runners. Immediately prepare a follow-up PR restoring
-`prevent_destroy = true` and `ignore_changes = [ami, user_data_base64]`, removing
-`create_before_destroy` and retiring these active recovery instructions while
-retaining evidence. Do not perform another apply while the guard is relaxed.
-If replacement fails, preserve the new instance/disk and stop for diagnosis.
-
-Verify tailnet enrollment, KVM, Android boot and app interaction before claiming
-success. If bootstrap fails again, diagnose it and prepare a separate reviewed
-repair; do not loop replacements or repeat manual repair commands.
+Live private SSH as forge verified KVM read/write access, active Android service,
+`sys.boot_completed=1`, loopback emulator/ADB listeners and the four-hour stop
+timer. An actual launcher screenshot was captured locally. Fresh SSH host trust
+was established on first use through the newly enrolled private tailnet node;
+subsequent connections require that saved host key. Android app and physical
+device acceptance are separate from these runner observations.
 
 ## Connect and verify
 

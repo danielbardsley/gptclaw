@@ -1,7 +1,7 @@
 # Private Android emulator runner
 
 Owner: project owner. Date: 2026-10-30. Status: implementation authorized;
-deployment and runtime evidence pending. The owner requested one additional AWS
+replacement Android boot verified; app and lifecycle acceptance pending. The owner requested one additional AWS
 runner and explicitly required Terraform through GitHub Actions. This does not
 authorize replacing the development host or moving its project volume.
 
@@ -49,14 +49,16 @@ merge/environment gates still apply. Missing access or an unexpected destructive
 remote plan blocks deployment, not independent source preparation. App walk-flow
 acceptance remains in Dogstats and cannot be inferred from runner acceptance.
 
-## Pending recovery scope
+## Approved recovery evidence
 
 The October 31 deployment created the runner, but SSH runtime-directory validation
 stopped bootstrap before enrollment. The owner requested automatic provisioning
 instead of manual repair. A one-time replacement of the failed runner and deletion
-of its own 80-GiB root disk is proposed through the existing protected pipeline.
+of its own 80-GiB root disk completed through the protected pipeline.
 The project owner approved the scoped replacement, temporary guard exception and
 subsequent guard restoration on October 31. Required gates and remote-plan review
 remain. This does not authorize changes to the existing development host or
 project volume.
-No working Android session has yet been demonstrated.
+The replacement now has a verified Android boot and inspected launcher screenshot.
+The guard-restoration follow-up is pending merge; app and stop/start acceptance
+remain pending.
