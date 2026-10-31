@@ -24,6 +24,54 @@ four-hour boot timer stops Android and shuts down the runner, allowing up to 90
 seconds for graceful exit. The encrypted disk survives stop/start; storage and
 applicable IPv4/network charges remain. The timer is not a hard billing cap.
 
+## First-boot SSH runtime-directory failure
+
+The October 31 apply created runner `i-00eecaeb4e941cf5e`, but cloud-init
+stopped at `sshd -t` with `Missing privilege separation directory: /run/sshd`.
+KVM existed; Tailscale had not been installed and Android had not started.
+The bootstrap now explicitly creates the root-owned 0755 runtime directory
+before validating SSH, including on images using socket activation.
+
+Updating ignored cloud-init source does **not** repair an existing instance.
+The owner subsequently requested automatic machine setup instead of the proposed
+manual SSM repair. Do not run the earlier two commands; that recovery path has
+been superseded. No successful manual repair has been observed.
+
+### Approved one-time Terraform replacement — plan and deployment pending
+
+The repair branch temporarily permits replacement of **only**
+`aws_instance.android_runner` and allows its corrected user-data to trigger it.
+It uses create-before-destroy so the failed runner is not removed before EC2 has
+created the replacement. This does not prove the replacement has bootstrapped.
+The new runner's original 80-GiB root disk is deleted with the failed instance;
+there is no Dogstats installation or app data observed on that failed first boot.
+The existing development host, its root disk and persistent project volume keep
+their existing guards and configuration. No SSM permissions or public ingress
+are added. The previous instance never enrolled, so its Tailscale state is not
+copied or reused.
+
+The project owner approved this expanded source scope, merge after required
+gates, the failed runner/root-disk replacement and subsequent guard restoration
+on October 31. Use the protected workflow
+**plan**, state **running**, on main after merge. Inspect the HCP diff: replacement
+is limited to the Android instance and its state resource, plus revision tags.
+Reject any other destruction/replacement, IAM change, ingress or project-volume
+change. Then use **apply**, state **running**, confirmation `gptclaw-dev-host`,
+retaining existing environment gates. Never use local apply or direct EC2 mutation.
+
+Owner of the proposed temporary guard exception: project owner. Reason: consume
+corrected bootstrap after a failed first boot. Scope: the named failed runner
+only. Expiry: completion of this one replacement; it is not standing permission
+to replace future runners. Immediately prepare a follow-up PR restoring
+`prevent_destroy = true` and `ignore_changes = [ami, user_data_base64]`, removing
+`create_before_destroy` and retiring these active recovery instructions while
+retaining evidence. Do not perform another apply while the guard is relaxed.
+If replacement fails, preserve the new instance/disk and stop for diagnosis.
+
+Verify tailnet enrollment, KVM, Android boot and app interaction before claiming
+success. If bootstrap fails again, diagnose it and prepare a separate reviewed
+repair; do not loop replacements or repeat manual repair commands.
+
 ## Connect and verify
 
 Bootstrap downloads approximately 2.3 GB of pinned Android archives. Terraform

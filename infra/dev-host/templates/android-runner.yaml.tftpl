@@ -7,7 +7,7 @@ users:
   - name: forge
     shell: /bin/bash
     lock_passwd: true
-    sudo: false
+    sudo: null
     ssh_authorized_keys:
       - ${desktop_ssh_public_key}
       - ${runner_ssh_public_key}
@@ -132,6 +132,8 @@ write_files:
       ufw default allow outgoing
       ufw allow in on tailscale0 proto tcp to any port 22
       ufw --force enable
+      # Socket-activated SSH may not have created its runtime directory yet.
+      install -d -o root -g root -m 0755 /run/sshd
       sshd -t
       systemctl reload-or-restart ssh.service
       tmp=$(mktemp -d)

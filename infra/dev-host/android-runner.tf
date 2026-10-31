@@ -69,8 +69,12 @@ resource "aws_instance" "android_runner" {
   }
 
   lifecycle {
-    prevent_destroy = true
-    ignore_changes  = [ami, user_data_base64]
+    # TEMPORARY recovery proposal for failed first boot i-00eecaeb4e941cf5e.
+    # Requires owner approval and reviewed remote replacement plan before apply.
+    # Restore prevent_destroy and user_data drift protection after replacement.
+    prevent_destroy       = false
+    create_before_destroy = true
+    ignore_changes        = [ami]
     precondition {
       condition     = var.aws_region == "us-east-1"
       error_message = "The existing federation helper is reviewed only for us-east-1."

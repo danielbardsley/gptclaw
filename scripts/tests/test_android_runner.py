@@ -4,6 +4,9 @@ import hashlib
 import importlib.util
 import io
 import json
+import os
+import subprocess
+import textwrap
 from pathlib import Path
 import tempfile
 import unittest
@@ -73,6 +76,30 @@ class AndroidRunnerTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 runner.install(base, item)
             self.assertEqual(retained.read_text(), "keep")
+
+    def test_ssh_validation_handles_missing_runtime_directory(self):
+        template = (ROOT / "infra/dev-host/templates/android-runner.yaml.tftpl").read_text()
+        bootstrap = template.split("      ufw --force enable\n", 1)[1].split(
+            "      systemctl reload-or-restart ssh.service", 1)[0]
+        # Model socket activation: sshd -t fails until its runtime directory exists.
+        # Stub privileged commands; never create /run/sshd on the test host.
+        harness = r'''set -e
+install() {
+  test "$*" = "-d -o root -g root -m 0755 /run/sshd"
+  mkdir -p -m 0755 "$FIXTURE/sshd"
+}
+sshd() { test "$1" = "-t" && test -d "$FIXTURE/sshd"; }
+'''
+        with tempfile.TemporaryDirectory() as temp:
+            env = dict(os.environ, FIXTURE=temp)
+            missing = subprocess.run(["bash", "-c", harness + "sshd -t"], env=env,
+                                     capture_output=True, text=True)
+            self.assertNotEqual(missing.returncode, 0)
+            for _ in range(2):
+                result = subprocess.run(["bash", "-c", harness + textwrap.dedent(bootstrap)],
+                                        env=env, capture_output=True, text=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual((Path(temp) / "sshd").stat().st_mode & 0o777, 0o755)
 
     def test_live_bootstrap_is_scoped_and_uses_verified_pins(self):
         pins = json.loads((ROOT / "infra/dev-host/android-runner-artifacts.json").read_text())

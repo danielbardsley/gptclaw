@@ -1,6 +1,6 @@
 # Android runner technical design
 
-Owner: project owner. Date: 2026-10-30. Implementation authorized; not deployed.
+Owner: project owner. Date: 2026-10-30. Runner deployed; first-boot recovery pending.
 [Specification](spec.md) · [Tasks](tasks.md)
 
 Add separate compute in `infra/dev-host` using the existing subnet, zero-ingress
@@ -69,3 +69,22 @@ with a targeted PR, preserving subsequent unrelated changes.
 
 Sources: [AWS nested virtualization](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/amazon-ec2-nested-virtualization.html),
 [Android acceleration](https://developer.android.com/studio/run/emulator-acceleration).
+
+## First-boot recovery proposal (October 31)
+
+The initial runner failed at SSH validation before Tailscale installation because
+`/run/sshd` was absent. The corrected template creates it explicitly and uses
+cloud-init's supported `sudo: null` value. Local tests reproduce the missing
+directory and safe retry without running privileged commands.
+
+The owner requested recovery through automatic machine setup rather than manual
+SSM commands. A proposed one-time exception to **this runner's** destruction and
+user-data-drift guards enables Terraform replacement with corrected cloud-init.
+The project owner approved publication, merge after required gates, the scoped
+replacement through the protected pipeline and subsequent guard restoration on
+October 31. The remote plan and existing environment gates remain required. Create-before-destroy
+keeps the failed instance until EC2 creation succeeds; bootstrap still requires
+live verification. The failed runner's own root disk will be deleted. The existing
+development host and project-volume guards remain unchanged. No IAM expansion.
+Restore the runner guards immediately after the single approved replacement,
+before any subsequent apply. See the [recovery procedure](../../runbooks/android-emulator-runner.md).
