@@ -33,35 +33,43 @@ The bootstrap now explicitly creates the root-owned 0755 runtime directory
 before validating SSH, including on images using socket activation.
 
 Updating ignored cloud-init source does **not** repair an existing instance.
-Do not remove lifecycle guards, replace its disk, broaden IAM or rerun Terraform
-and claim recovery. The project owner **approved this two-command operator
-exception** on October 31, 2026 because the pipeline-created runner failed before enrollment.
-Owner: project owner. Scope: this failed first boot on the named instance only.
-The exception expires after this one repair attempt; it grants no standing
-permission. Remove the exception from active recovery instructions once the
-attempt is recorded, retaining the historical evidence. It is not authorization
-for the agent to use sudo or for general manual host changes.
+The owner subsequently requested automatic machine setup instead of the proposed
+manual SSM repair. Do not run the earlier two commands; that recovery path has
+been superseded. No successful manual repair has been observed.
 
-Only on the named runner, after confirming that exact failure and that bootstrap
-has finished, an authorized operator can use the existing SSM session:
+### Proposed one-time Terraform replacement — approval pending
 
-```sh
-sudo install -d -o root -g root -m 0755 /run/sshd
-sudo /usr/local/sbin/gptclaw-android-bootstrap
-```
+The repair branch temporarily permits replacement of **only**
+`aws_instance.android_runner` and allows its corrected user-data to trigger it.
+It uses create-before-destroy so the failed runner is not removed before EC2 has
+created the replacement. This does not prove the replacement has bootstrapped.
+The new runner's original 80-GiB root disk is deleted with the failed instance;
+there is no Dogstats installation or app data observed on that failed first boot.
+The existing development host, its root disk and persistent project volume keep
+their existing guards and configuration. No SSM permissions or public ingress
+are added. The previous instance never enrolled, so its Tailscale state is not
+copied or reused.
 
-This resumes the existing committed bootstrap, including its unchanged firewall,
-artifact checksums, federation, unprivileged installer and stop timer. It does
-not reset the failed cloud-init status or change the persisted bootstrap source;
-cloud-init will continue to record the historical first-boot failure. Do not
-run `cloud-init clean`, disable the firewall or clear any disk/app data. If the
-script fails again, stop and diagnose the exact error rather than retrying
-blindly. Share only non-secret status/error lines, never federation tokens.
+Before publication/merge/apply, obtain explicit approval for this expanded source
+scope and the failed runner/root-disk replacement. Use the protected workflow
+**plan**, state **running**, on main after merge. Inspect the HCP diff: replacement
+is limited to the Android instance and its state resource, plus revision tags.
+Reject any other destruction/replacement, IAM change, ingress or project-volume
+change. Then use **apply**, state **running**, confirmation `gptclaw-dev-host`,
+retaining existing environment gates. Never use local apply or direct EC2 mutation.
 
-After completion check Tailscale enrollment, Android boot and the stop timer as
-below. No Android acceptance is inferred from this repair. If the repair fails,
-retain the disk and prepare a separately reviewed recovery;
-do not assume this exception authorizes another privileged repair.
+Owner of the proposed temporary guard exception: project owner. Reason: consume
+corrected bootstrap after a failed first boot. Scope: the named failed runner
+only. Expiry: completion of this one replacement; it is not standing permission
+to replace future runners. Immediately prepare a follow-up PR restoring
+`prevent_destroy = true` and `ignore_changes = [ami, user_data_base64]`, removing
+`create_before_destroy` and retiring these active recovery instructions while
+retaining evidence. Do not perform another apply while the guard is relaxed.
+If replacement fails, preserve the new instance/disk and stop for diagnosis.
+
+Verify tailnet enrollment, KVM, Android boot and app interaction before claiming
+success. If bootstrap fails again, diagnose it and prepare a separate reviewed
+repair; do not loop replacements or repeat manual repair commands.
 
 ## Connect and verify
 

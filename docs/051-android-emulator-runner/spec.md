@@ -48,3 +48,13 @@ Owner authorizes implementation and provisioning in this conversation. Existing
 merge/environment gates still apply. Missing access or an unexpected destructive
 remote plan blocks deployment, not independent source preparation. App walk-flow
 acceptance remains in Dogstats and cannot be inferred from runner acceptance.
+
+## Pending recovery scope
+
+The October 31 deployment created the runner, but SSH runtime-directory validation
+stopped bootstrap before enrollment. The owner requested automatic provisioning
+instead of manual repair. A one-time replacement of the failed runner and deletion
+of its own 80-GiB root disk is proposed through the existing protected pipeline.
+This requires explicit approval of the replacement and temporary guard exception;
+it does not authorize changes to the existing development host or project volume.
+No working Android session has yet been demonstrated.

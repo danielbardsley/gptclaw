@@ -56,15 +56,26 @@ offline tests pass, including a missing-directory/retry regression using stubs;
 no privileged commands execute on the test host. Terraform formatting, validation
 and three focused runner tests pass with mocked AWS and real cloud-init rendering;
 bootstrap Bash syntax and whitespace checks pass. The full local repository checker
-is running; follow-up CI and live recovery remain pending. The [runbook](../../runbooks/android-emulator-runner.md) records a
-concrete two-command operator repair proposal; the project owner approved this one-attempt
-operator exception and publication of the four-file fix on October 31. The
-operator has been given the commands; execution and successful recovery remain
-unverified. Source changes alone cannot
-repair the existing instance because cloud-init drift is deliberately ignored.
+is running; follow-up CI and live recovery remain pending.
 
-Next: observe the approved operator recovery, verify private access and actual
-Android boot, then install Dogstats and test the requested flow. The GitHub connector has no workflow-dispatch capability and the
+The owner initially approved an operator repair but subsequently requested
+that recovery happen automatically as part of machine setup. The manual repair
+path is superseded; it has not been observed executing.
+
+The [runbook](../../runbooks/android-emulator-runner.md) now proposes a one-time
+Terraform replacement of the failed runner with corrected cloud-init. Only its
+own fresh root disk is deleted. The existing development host/project storage
+are untouched. A temporary runner-only lifecycle exception needs explicit
+publication/replacement approval and a reviewed remote plan; deployment has not
+been authorized by those proposal files. Restore the guards after that one
+replacement and before another apply. Local Terraform format/validate and all 29 mocked-AWS tests pass for this
+expanded proposal. Six focused bootstrap tests and whitespace checks pass;
+no recovery or Android acceptance claimed.
+
+Next: review the concrete replacement proposal, then protected plan/apply,
+restore the guard and verify private access and actual Android boot.
+
+The GitHub connector has no workflow-dispatch capability and the
 existing App's grants do not provide Actions dispatch; an owner/operator must
 trigger the documented workflow. This access gap does not authorize new
 credentials, local apply or direct AWS mutation.
