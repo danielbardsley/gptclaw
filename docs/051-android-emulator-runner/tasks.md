@@ -71,5 +71,7 @@ battery and background qualification are not established by this emulator.
   applicability, preserving published application releases and existing projects.
 - [x] G3: Adapt Dogstats guidance in an isolated worktree; preserve existing
   uncommitted UI work, provenance and app acceptance records.
-- [ ] G4: Verify generated guide/provenance/links, provider parity and repository
+- [x] G4: Verify generated guide/provenance/links, provider parity and repository
   checks; record results and publish separate reviewable PRs.
+
+Guidance verification and PR references: [acceptance evidence](project-guidance-acceptance.md).
