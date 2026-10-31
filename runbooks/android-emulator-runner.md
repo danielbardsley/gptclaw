@@ -24,6 +24,45 @@ four-hour boot timer stops Android and shuts down the runner, allowing up to 90
 seconds for graceful exit. The encrypted disk survives stop/start; storage and
 applicable IPv4/network charges remain. The timer is not a hard billing cap.
 
+## First-boot SSH runtime-directory failure
+
+The October 31 apply created runner `i-00eecaeb4e941cf5e`, but cloud-init
+stopped at `sshd -t` with `Missing privilege separation directory: /run/sshd`.
+KVM existed; Tailscale had not been installed and Android had not started.
+The bootstrap now explicitly creates the root-owned 0755 runtime directory
+before validating SSH, including on images using socket activation.
+
+Updating ignored cloud-init source does **not** repair an existing instance.
+Do not remove lifecycle guards, replace its disk, broaden IAM or rerun Terraform
+and claim recovery. The project owner **approved this two-command operator
+exception** on October 31, 2026 because the pipeline-created runner failed before enrollment.
+Owner: project owner. Scope: this failed first boot on the named instance only.
+The exception expires after this one repair attempt; it grants no standing
+permission. Remove the exception from active recovery instructions once the
+attempt is recorded, retaining the historical evidence. It is not authorization
+for the agent to use sudo or for general manual host changes.
+
+Only on the named runner, after confirming that exact failure and that bootstrap
+has finished, an authorized operator can use the existing SSM session:
+
+```sh
+sudo install -d -o root -g root -m 0755 /run/sshd
+sudo /usr/local/sbin/gptclaw-android-bootstrap
+```
+
+This resumes the existing committed bootstrap, including its unchanged firewall,
+artifact checksums, federation, unprivileged installer and stop timer. It does
+not reset the failed cloud-init status or change the persisted bootstrap source;
+cloud-init will continue to record the historical first-boot failure. Do not
+run `cloud-init clean`, disable the firewall or clear any disk/app data. If the
+script fails again, stop and diagnose the exact error rather than retrying
+blindly. Share only non-secret status/error lines, never federation tokens.
+
+After completion check Tailscale enrollment, Android boot and the stop timer as
+below. No Android acceptance is inferred from this repair. If the repair fails,
+retain the disk and prepare a separately reviewed recovery;
+do not assume this exception authorizes another privileged repair.
+
 ## Connect and verify
 
 Bootstrap downloads approximately 2.3 GB of pinned Android archives. Terraform
