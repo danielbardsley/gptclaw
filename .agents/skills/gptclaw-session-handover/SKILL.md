@@ -1,6 +1,6 @@
 ---
 name: gptclaw-session-handover
-description: Produce a concise current-project handover or resume summary with actual progress, evidence, unfinished work and next actions. Use when a handover is requested, not for every task response or automatic chat transfer.
+description: Produce a concise current-project handover or resume summary with actual progress, evidence, unfinished work and next actions. Use when a handover, resume summary or acceptance reconciliation is requested, not for every small task response or automatic chat transfer.
 ---
 
 # Leave a usable snapshot
@@ -51,3 +51,11 @@ choose a noncolliding name with exclusive file creation. Updating an existing
 report requires that request and a reviewable diff. Resolve relative file links
 from the saved file's directory; do not overwrite user work to fix links. Report
 the location and resulting Git state. Preserve old handovers as dated snapshots.
+
+For application delivery or acceptance reconciliation, lead with the principal
+journey: demonstrated outcome, first observed blocker and next useful action.
+Record exact source, built artifact and installed version separately; newer
+source does not refresh an older APK observation. Reconcile the existing task/
+acceptance record rather than creating a competing ledger. Preserve dated
+history and distinguish core journey evidence from full acceptance. Update a
+saved current record only when requested, retaining actual evidence and limits.

@@ -15,6 +15,10 @@ select applicability when its stack is chosen. For a new language, define and
 review its local standards and gates before implementation rather than assuming
 these references cover it. Preserve these files when removing starter demos.
 
+Read [working journey priorities](delivery.md) before material planning and
+implementation. The generated skill selection guide at `docs/engineering/skills.md` describes local
+workflow availability and later capability selection.
+
 ## Standards become implementation gates
 
 The technical design must map applicable requirements to actual formatter/lint,

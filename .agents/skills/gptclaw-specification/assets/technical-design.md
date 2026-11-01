@@ -36,3 +36,11 @@ and map their formatter/lint, typing, tests/coverage, security, build and CI
 requirements to implemented commands and verification. Record justified
 adaptations and gaps with rationale, owner and review status; do not treat copied
 files or passing unit tests as proof that all required gates exist.
+
+For application delivery, name the principal user journey and a bounded first
+real demonstration milestone. Order implementation tasks to enable and verify
+that journey early. Defer speculative edge cases, broad refactors and optional
+polish with a reason and revisit trigger; reprioritize repeated hardening without
+journey progress. Fix observed blockers and retain required security, privacy,
+data-integrity and acceptance gates. Isolated tests cannot close the journey
+milestone; core journey evidence does not replace full acceptance.

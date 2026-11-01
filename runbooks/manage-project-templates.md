@@ -135,3 +135,31 @@ creation only; existing projects, including Dogstats, require separate adoption.
 An installed provider keeps its bundled revision until a reviewed provider update;
 source changes alone do not update that installation. Roll back with a reviewed
 revert/provider selection, retaining all independently created projects.
+
+## Applicable local skills and delivery priorities
+
+Creation adds a versioned guidance layer without editing published releases.
+Every project receives specification, journey-verification and acceptance/handover
+skills plus working-journey steering. Reviewed web/API/static/group providers add
+runtime-operation; Expo Go providers add Android operation; development-build
+providers also add native-preview delivery. Selection follows explicit provider
+capabilities, never a project name. No tool installation or service start is implied.
+
+Planning bootstrap accepts repeatable `--capability runtime`, `--capability android`
+and `--capability native-build` (requires android). Omit flags for an unknown stack.
+Generated `docs/engineering/skills.md` documents the local command to add applicable
+skills when the stack is selected. For example, from the generated project root:
+
+```sh
+python3 .agents/materialize-skills.py --capability runtime --capability android --capability native-build --check
+python3 .agents/materialize-skills.py --capability runtime --capability android --capability native-build --apply
+```
+
+The recorded local bundle is sufficient offline. Preview validates before writing;
+apply adds only missing selected package files, records current selection hashes
+and leaves creation provenance as a historical snapshot. An unchanged retry is a
+no-op. Adapted active skills, unknown collisions, unsafe paths and partial-operation
+markers stop materialization and require a reviewed diff/recovery; no overwrite
+or repair mode exists. Preserve local adaptations, unrelated skills and generated
+projects when rolling back source. Existing projects require separate adoption.
+Client discovery and actual runtime/device acceptance remain separate evidence.

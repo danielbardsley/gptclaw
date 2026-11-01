@@ -9,8 +9,8 @@ Resolve applicable guidance, the canonical project root and identity, developmen
 environment, and explicit component or requested group. Read the project's
 reviewed lifecycle documentation and confirm the installed provider/version.
 Use [the operation contract](references/operations.md) to map only capabilities
-needed for this request. GptClaw supplies the SPEC-018 single-web provider v1;
-verify its installed version and selected-project contract before use. Missing
+needed for this request. Discover the selected project's reviewed provider and verify its installed
+version and selected-project contract before use. Missing
 contracts, ambiguous targets and unsupported versions block dependent operations.
 Continue useful scoped read-only diagnosis and name the missing fact.
 
@@ -41,3 +41,9 @@ variables, credentials, or unrelated logs/data. Summarize using
 version/operation IDs, elapsed/deadline result, uncertainty and next action.
 Preserve data, private access and unrelated services. Installation, repair,
 rebuild, reset, exposure and production work require their own scoped workflow.
+
+For multi-component/backend or mobile work, map the required API, identity,
+database, Metro and device-connection dependencies in the local operation
+contract. Observe component readiness and actual private device reachability
+separately. Missing forwarding or authentication configuration is a scoped gap,
+not permission to change routes, expose services or repair infrastructure.

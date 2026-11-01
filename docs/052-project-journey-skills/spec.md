@@ -1,9 +1,12 @@
-# SPEC-051: Project skills and working application journeys
+# SPEC-052: Project skills and working application journeys
 
-Status: Draft for review. Owner: project owner. Date: November 1, 2026.
+Status: Approved; implementation authorized November 1, 2026. Owner: project owner. Date: November 1, 2026.
 Feature: AGT-011. [Design](technical-design.md) · [Tasks](tasks.md).
-The project owner requested this specification; implementation, rollout and
-existing-project adoption are not authorized by this planning request.
+The project owner approved this specification and requested implementation on
+November 1, 2026. Installed-provider rollout and existing-project adoption remain
+outside this scope. This initiative was drafted as SPEC-051 in PR #115; it is
+renumbered SPEC-052 because main already uses 051 for the Android runner. Stable
+PJS requirement, task and acceptance IDs are unchanged.
 
 ## Outcome and scope
 

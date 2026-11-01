@@ -1,6 +1,6 @@
 ---
 name: gptclaw-project-bootstrap
-description: Create a new local planning-ready project from GptClaw with adapted guidance and a copied specification skill. Use for new-project bootstrap, not existing-project adoption, application scaffolding, or ordinary feature work.
+description: Create a new local planning-ready project from GptClaw with adapted guidance and capability-selected local skills. Use for new-project bootstrap, not existing-project adoption, application scaffolding, or ordinary feature work.
 ---
 
 # Bootstrap a planning project
@@ -61,3 +61,13 @@ adaptations explicitly; copied references alone do not enforce checks.
 For future updates, compare source provenance with local adaptations and prepare
 a project-owned reviewed diff. There is no synchronization or repair mode.
 Reverting this bootstrap implementation does not delete already-created projects.
+
+Select known capabilities with repeated `--capability runtime`, `--capability
+android`, and `--capability native-build` (native-build requires android). Leave
+all absent for an unknown stack; do not infer installed capability from plans.
+Common specification, journey-verification and acceptance/handover packages are
+always copied. The full optional inventory is retained in the versioned local
+bundle with `.agents/materialize-skills.py`; later explicit selection needs no
+original checkout. Read the generated `docs/engineering/skills.md` for preview/
+apply, provenance and collision handling. Copies remain normally discoverable.
+No helper may overwrite adapted or unknown skills or install runtime tooling.

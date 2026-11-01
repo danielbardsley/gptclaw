@@ -26,7 +26,7 @@ class Tests(unittest.TestCase):
     def setUp(self):
         temp=tempfile.TemporaryDirectory();self.addCleanup(temp.cleanup)
         self.base=Path(temp.name);self.repo=self.base/'repo';self.repo.mkdir()
-        for rel in ['templates/projects/planning','templates/projects/engineering','.agents/skills/gptclaw-specification','config/metro','config/mobile','config/databases','config/templates','schemas/templates','config/toolchains','schemas/toolchains','config/project-dependencies','schemas/project-dependencies','schemas/project','templates/apps/releases','templates/apps/node-toolchain','templates/apps/python-toolchain','templates/apps/eas-toolchain','templates/apps/apk-verifier']:
+        for rel in ['templates/projects/planning','templates/projects/engineering','.agents/skills','config/metro','config/mobile','config/databases','config/templates','schemas/templates','config/toolchains','schemas/toolchains','config/project-dependencies','schemas/project-dependencies','schemas/project','templates/apps/releases','templates/apps/node-toolchain','templates/apps/python-toolchain','templates/apps/eas-toolchain','templates/apps/apk-verifier']:
             shutil.copytree(app.REPO/rel,self.repo/rel,ignore=shutil.ignore_patterns('.venv','.gptclaw-cache','.gptclaw-build','coverage','.expo','.cache','.local','.next','out','.static-build','node_modules','__pycache__'))
         helper=Path('templates/apps/start-development-postgres.sh');(self.repo/helper).parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(app.REPO/helper,self.repo/helper)
         shutil.copytree(app.REPO/'scripts',self.repo/'scripts',ignore=shutil.ignore_patterns('__pycache__'))
@@ -190,7 +190,7 @@ class Tests(unittest.TestCase):
                                   template_version=release['version'])
                 root = result
                 record = json.loads((root/'docs/starter-guidance-provenance.json').read_text())
-                self.assertEqual(record['version'], '1.0.0')
+                self.assertEqual(record['version'], '1.1.0')
                 import hashlib
                 for target, item in record['files'].items():
                     self.assertEqual(item['sha256'], hashlib.sha256((root/target).read_bytes()).hexdigest())
@@ -209,7 +209,13 @@ class Tests(unittest.TestCase):
                         if '://' not in link and not link.startswith('#'):
                             target = posixpath.normpath(str(PurePosixPath(relative).parent / link.split('#')[0]))
                             self.assertTrue((root/target).is_file(), (relative, link))
+                self.assertEqual(record['capabilities'], sorted(guidance.PROVIDER_CAPABILITIES[release['provider']]))
+                selection = json.loads((root/'.agents/skills-selection.json').read_text())
+                self.assertEqual(selection['packages'], guidance.skills.selected(record['capabilities']))
+                self.assertEqual({p.name for p in (root/'.agents/skills').iterdir()}, set(selection['packages']))
                 for source, target in guidance.RESOURCES.items():
+                    if target not in record['files']:
+                        continue
                     actual = (root/target).read_bytes()
                     self.assertEqual(actual, (self.repo/source).read_bytes())
                     self.assertEqual(record['files'][target]['sha256'], __import__('hashlib').sha256(actual).hexdigest())

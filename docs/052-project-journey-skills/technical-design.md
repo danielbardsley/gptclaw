@@ -1,6 +1,6 @@
-# TDD-051: Applicable skills and journey-priority guidance
+# TDD-052: Applicable skills and journey-priority guidance
 
-Status: Proposed. Owner: project owner. Date: November 1, 2026.
+Status: Implementation authorized November 1, 2026. Owner: project owner. Date: November 1, 2026.
 [Specification](spec.md) · [Tasks](tasks.md).
 
 ## Approach and skill selection
@@ -10,7 +10,7 @@ application releases. Keep one explicit bounded resource/selection contract in
 `scripts/project_guidance.py`, shared by bootstrap, catalogue creation and
 provider packaging. Avoid scanning and copying arbitrary `.agents` contents.
 
-| Capability | Proposed package / reuse | Applicability |
+| Capability | Package / reuse | Applicability |
 |---|---|---|
 | Planning | Existing `gptclaw-specification`, full assets | All projects |
 | Current acceptance/handover | Existing `gptclaw-session-handover`, extend with acceptance reconciliation and its complete resources | All projects |
@@ -129,9 +129,10 @@ those criteria pending. Tests must not create hosts or upload sources implicitly
 
 ## Rollout and limitations
 
-SPEC-050 is the source dependency; reconcile its merge revision before coding.
-This planning branch builds on its current candidate and needs rebasing onto
-main after that dependency merges. Source delivery does not update an installed
+SPEC-050 merged in PR #107 (merge ea8d126). Implementation starts from main
+07e66ab and retains its immutable release and shared creation-layer contracts.
+The initiative was renumbered from draft 051 to 052 to preserve the Android
+runner initiative already numbered 051 on main. Source delivery does not update an installed
 provider. Any rollout follows the existing reviewed install path and authorization.
 Use a targeted reviewed revert for regression recovery; retain generated projects
 and their local adaptations. Reverting source cannot undo builds or runtime actions.
@@ -139,3 +140,23 @@ and their local adaptations. Reverting source cannot undo builds or runtime acti
 The project owner reviews the proposed names, capability matrix and explicit
 later-materialization behavior with this design. No unresolved decision blocks
 review of the draft; exact tooling is discovered rather than fabricated.
+
+## Implemented interfaces
+
+The shared inventory lives in `scripts/project_skills.py` and is consumed by
+`project_guidance.py`; its standalone copy is `.agents/materialize-skills.py`.
+Planning selection is repeatable `--capability runtime`, `--capability android`,
+`--capability native-build` (requires Android). Explicit provider capability
+mapping selects catalogue packages. Expo Go supplies runtime/Android operation;
+development-build providers additionally supply native preview.
+
+The optional resources are JSON text/hashes in
+`docs/engineering/skills-bundle.json`; the current selection and helper/bundle
+identities are `.agents/skills-selection.json`. `--check` writes nothing;
+`--apply` adds only missing packages with exclusive writes. Existing active
+adaptations or unknown package collisions stop with a reviewed-diff instruction.
+A retained `.agents/skills-materialization-in-progress` marker prevents blind
+retry after partial publication. Creation provenance is never rewritten by
+materialization. Bundle version is 1.1.0, planning starter 1.2.0 and guidance
+template 1.0.3. Both creators record source hashes and selected capabilities;
+provider packaging carries the same full inventory.

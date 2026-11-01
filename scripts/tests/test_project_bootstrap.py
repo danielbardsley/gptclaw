@@ -24,8 +24,10 @@ class BootstrapTests(unittest.TestCase):
         cls.fixture = tempfile.TemporaryDirectory(prefix='gptclaw-bootstrap-source-')
         cls.source_base = Path(cls.fixture.name) / 'source'
         cls.source_base.mkdir()
-        for prefix in [b.STARTER, b.SKILL, b.guidance.ENGINEERING]:
+        for prefix in [b.STARTER, *b.guidance.SOURCE_PREFIXES]:
             shutil.copytree(ROOT / prefix, cls.source_base / prefix)
+        (cls.source_base / 'scripts').mkdir()
+        shutil.copyfile(ROOT / 'scripts/project_skills.py', cls.source_base / 'scripts/project_skills.py')
         (cls.source_base / '.codex').mkdir()
         (cls.source_base / '.codex/auth.json').write_text('synthetic excluded sentinel')
         b.git(cls.source_base, 'init', '--quiet', '--initial-branch=main', '--template=')
@@ -78,15 +80,31 @@ class BootstrapTests(unittest.TestCase):
     def test_standards_are_complete_portable_and_hashed(self):
         self.create()
         record = json.loads((self.dest / b.PROVENANCE).read_text())
-        self.assertEqual(record['starter_version'], '1.1.0')
-        self.assertEqual(record['engineering']['version'], '1.0.0')
+        self.assertEqual(record['starter_version'], '1.2.0')
+        self.assertEqual(record['engineering']['version'], '1.1.0')
         for source, target in b.guidance.RESOURCES.items():
+            if target not in record['files']:
+                continue
             actual = (self.dest / target).read_bytes()
             self.assertEqual(actual, (self.source / source).read_bytes())
             self.assertEqual(record['engineering']['files'][target]['sha256'], b.digest(actual))
         self.assertIn('docs/engineering/README.md', (self.dest / 'AGENTS.md').read_text())
         self.assertIn('coverage', (self.dest / 'docs/engineering/README.md').read_text())
         self.assertEqual(self.create()['status'], 'already-created')
+
+    def test_explicit_android_capabilities_are_complete_and_retry_is_noop(self):
+        caps = ['runtime', 'android', 'native-build']
+        self.create(capabilities=caps)
+        selection = json.loads((self.dest / b.guidance.skills.SELECTION).read_text())
+        self.assertEqual(selection['packages'], sorted(b.guidance.skills.PACKAGES))
+        before = self.snapshot(self.dest)
+        self.assertEqual(self.create(capabilities=caps)['status'], 'already-created')
+        self.assertEqual(before, self.snapshot(self.dest))
+
+    def test_unknown_capabilities_refuse_before_creation(self):
+        with self.assertRaises(b.BootstrapError):
+            self.create(capabilities=['ios'])
+        self.assertFalse(self.dest.exists())
 
     def test_missing_standard_refuses_before_destination_write(self):
         (self.source / b.guidance.ENGINEERING / 'python-standards.md').unlink()

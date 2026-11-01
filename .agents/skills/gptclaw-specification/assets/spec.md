@@ -31,3 +31,11 @@ and owner decisions. Identify recovery/migration evidence when applicable.
 
 Name deliverables, review owner, approval gates that actually apply, and how
 completion will be established. Link an acceptance record when one exists.
+
+For application delivery, name the principal user journey and a bounded first
+real demonstration milestone. Order implementation tasks to enable and verify
+that journey early. Defer speculative edge cases, broad refactors and optional
+polish with a reason and revisit trigger; reprioritize repeated hardening without
+journey progress. Fix observed blockers and retain required security, privacy,
+data-integrity and acceptance gates. Isolated tests cannot close the journey
+milestone; core journey evidence does not replace full acceptance.

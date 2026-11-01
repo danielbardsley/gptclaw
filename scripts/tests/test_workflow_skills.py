@@ -7,6 +7,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGES = {
+    'gptclaw-android-operation': {'references/device.md', 'assets/observation.md'},
+    'gptclaw-native-preview': {'references/preview.md', 'assets/preview.md'},
+    'gptclaw-journey-verification': {'assets/journey.md'},
     'gptclaw-context-validation': {'references/review-checklist.md', 'assets/context-report.md'},
     'gptclaw-session-handover': {'assets/handover.md'},
     'gptclaw-release-promotion': {'references/release-contract.md', 'assets/release-record.md'},
