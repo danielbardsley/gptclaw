@@ -22,7 +22,24 @@ replacement booted; guard restoration and app testing in progress. [Spec](spec.m
   design. Return to simplifying and repairing the core walk flow; do not add
   general runner/platform features. ER-06 / AC-04.
 
-## Current evidence (October 31, 2026)
+## Restart blocker (November 1, 2026)
+
+Guard restoration merged in PR #112 as `7b5fe51`. The protected
+[restart plan](https://github.com/danielbardsley/gptclaw/actions/runs/41313415827)
+passed quality checks, then refused Android-instance destruction under
+`prevent_destroy`. No apply ran. The narrow correction ignores observed
+public-IP association drift while retaining the creation setting, existing
+guards and explicit state resource. Pinned provider/AWS behavior supports this
+likely cause, but the failed plan omits the specific replacement field and live
+read-only inspection was denied by the host role. Permissions were not changed.
+
+Local pinned Terraform format/validation, all 31 mocked Terraform cases, six
+offline runner tests and whitespace checks pass. The broader repository gate
+is still pending. The additional mocked stop/restart runs check instance identity
+retention; they cannot prove AWS refresh behavior. T5/AC-05 remain open: a fresh reviewed zero-destruction remote
+plan, protected apply and actual retained-data restart are required.
+
+## Earlier evidence (October 31, 2026)
 
 - [PR #109](https://github.com/danielbardsley/gptclaw/pull/109) introduced the
   runner. The project owner approved public publication and SDK terms. Its first

@@ -70,7 +70,10 @@ resource "aws_instance" "android_runner" {
 
   lifecycle {
     prevent_destroy = true
-    ignore_changes  = [ami, user_data_base64]
+    # EC2 releases an auto-assigned public IP while stopped. The pinned provider
+    # reads that temporary absence as false, although this creation setting is
+    # ForceNew. Keep the existing instance/disk for ordinary protected restarts.
+    ignore_changes = [ami, user_data_base64, associate_public_ip_address]
     precondition {
       condition     = var.aws_region == "us-east-1"
       error_message = "The existing federation helper is reviewed only for us-east-1."

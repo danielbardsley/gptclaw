@@ -24,6 +24,22 @@ four-hour boot timer stops Android and shuts down the runner, allowing up to 90
 seconds for graceful exit. The encrypted disk survives stop/start; storage and
 applicable IPv4/network charges remain. The timer is not a hard billing cap.
 
+## Restart plan refuses destruction
+
+The November 1 [restart plan](https://github.com/danielbardsley/gptclaw/actions/runs/41313415827)
+used `main` revision `7b5fe51` and state `running`. Quality checks passed, but the
+remote plan refused an Android-instance destruction because its guard is active.
+No apply ran. Do not disable the guard or rerun an earlier unguarded revision.
+
+The scoped source correction ignores observed public-IP association drift on the
+runner, retaining its creation setting and all destruction/storage/access guards.
+The pinned provider derives that ForceNew field from a current association, which
+can be absent during a normal stop. This is a likely cause, not a verified live
+attribute reading: the host role was denied read-only `DescribeInstances` and no
+permission was expanded. After reviewing/merging the correction, use a new plan
+on current main. Require no runner replacement/deletion or unrelated mutation
+before apply. Actual retained-disk restart remains pending until that succeeds.
+
 ## First-boot SSH runtime-directory failure
 
 The October 31 apply created runner `i-00eecaeb4e941cf5e`, but cloud-init

@@ -75,11 +75,27 @@ run "separate_private_runner" {
   }
 }
 run "explicit_running_session" {
-  command = plan
+  command = apply
   variables { android_runner_state = "running" }
   assert {
     condition     = aws_ec2_instance_state.android_runner.state == "running"
     error_message = "An authorized workflow must be able to start the test runner."
+  }
+}
+run "stop_retained_session" {
+  command = apply
+  variables { android_runner_state = "stopped" }
+  assert {
+    condition     = aws_ec2_instance_state.android_runner.state == "stopped" && aws_instance.android_runner.id == run.separate_private_runner.android_runner.instance_id
+    error_message = "Stopping the test session must retain the existing Android instance."
+  }
+}
+run "restart_retained_session" {
+  command = apply
+  variables { android_runner_state = "running" }
+  assert {
+    condition     = aws_ec2_instance_state.android_runner.state == "running" && aws_instance.android_runner.id == run.separate_private_runner.android_runner.instance_id
+    error_message = "Restarting a retained session must change state without replacing its instance."
   }
 }
 run "reject_unrecognized_state" {

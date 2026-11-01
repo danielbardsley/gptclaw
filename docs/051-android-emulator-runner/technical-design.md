@@ -38,6 +38,28 @@ start/stop; default dispatch state is stopped. A running apply is deliberate and
 may restart an auto-stopped runner. Storage/IPv4 charges are separate; this timer
 is not a hard AWS billing cap. No new recurring automation service is introduced.
 
+## Retained instance after automatic stop
+
+The November 1 restart plan was blocked by `prevent_destroy`, before any apply.
+The pinned AWS provider reads `associate_public_ip_address` from the current
+primary-interface association and marks changes to that field as ForceNew.
+EC2 releases an auto-assigned public IPv4 address on stop. This is the likely
+source of a false-to-true replacement diff on an otherwise retained runner;
+the failed plan did not identify the specific field, and the host role cannot
+perform `ec2:DescribeInstances` to confirm the live attribute.
+
+Keep the creation setting true, but ignore its later observed association along
+with existing AMI/user-data drift. Keep `prevent_destroy = true`, the encrypted
+root disk, existing ingress/identity policy and the explicit instance-state
+resource. A new protected plan must show no replacement or destruction before
+apply. Another unexpected diff remains a deployment blocker; do not remove the
+guard or add broad ignore rules to make it pass. Mock stop/start tests verify
+retained instance identity, but do not reproduce the real provider refresh.
+
+Sources: [pinned provider read](https://github.com/hashicorp/terraform-provider-aws/blob/v6.68.0/internal/service/ec2/ec2_instance.go#L3362),
+[pinned ForceNew schema](https://github.com/hashicorp/terraform-provider-aws/blob/v6.68.0/internal/service/ec2/ec2_instance.go#L250),
+[AWS stop/start behavior](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Stop_Start.html).
+
 ## Verification and operation
 
 Local gates: pinned Terraform format/validate/test with mocked AWS and real local
