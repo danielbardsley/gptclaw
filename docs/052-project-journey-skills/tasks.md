@@ -1,6 +1,7 @@
 # Tasks: Project skills and working application journeys
 
-Status: Implementation authorized November 1, 2026; verification in progress. Owner: project owner.
+Status: Source implementation complete; PR review and live acceptance pending.
+Implementation authorized November 1, 2026. Owner: project owner.
 Date: November 1, 2026. [Specification](spec.md) · [Design](technical-design.md).
 
 ## Planning and authorization
@@ -36,7 +37,7 @@ Date: November 1, 2026. [Specification](spec.md) · [Design](technical-design.md
 
 ## Verification and delivery
 
-- [ ] PJS-T05: Add/run selection, complete-package, safe-path, link, provenance,
+- [x] PJS-T05: Add/run selection, complete-package, safe-path, link, provenance,
   collision, retry and provider-parity regressions across both creators and all
   supported families. Review paired behavioral skill scenarios, including
   speculative-edge-case deferral versus actual privacy/data-loss blockers.
@@ -64,3 +65,13 @@ SPEC-050 is merged in PR #107; this branch is based on main 07e66ab. The draft
 initiative 051 is now 052 because main already used 051 for the Android runner.
 See [acceptance evidence](acceptance.md) for actual checks and pending client/
 Android/runtime observations. No host provisioning or cloud upload was performed.
+
+Final verification: source `16e615c` passed the CI repository checker (1,024
+Python tests/54 suites plus shell/invariant checks), Terraform quality checks,
+focused generation/materialization tests and all five checked mobile formatter
+outputs. Six independent synthetic skill responses passed. The superseded local
+broad run was interrupted after its corrected assertion and 34 completed suites;
+no full local aggregate pass is claimed. PR #116 is open. Generated-release audit
+failures, the opaque legacy mobile CI failure and actual fresh-client/Android
+observations remain in [acceptance](acceptance.md). Project owner review/merge
+and any separately scoped installed-provider rollout are the next actions.
