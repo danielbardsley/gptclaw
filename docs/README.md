@@ -342,6 +342,11 @@ interfaces; existing accepted slices remain valid. QLT-010 stays optional.
   [Design](050-project-standards-inheritance/technical-design.md) ·
   [Tasks](050-project-standards-inheritance/tasks.md)
 
+- **051 — Project skills and working application journeys (AGT-011), Draft:**
+  [Specification](051-project-journey-skills/spec.md) ·
+  [Technical design](051-project-journey-skills/technical-design.md) ·
+  [Tasks](051-project-journey-skills/tasks.md)
+
 ## Current application milestone
 
 [SPEC-018](018-first-private-application/acceptance.md) is merged in
