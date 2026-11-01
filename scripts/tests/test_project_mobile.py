@@ -47,7 +47,8 @@ class MobileTests(unittest.TestCase):
             self.assertFalse((root/'node_modules').exists())
             self.assertNotIn('service',app.target(root)[1])
         import project_guidance as guidance
-        names = sorted(set(self.contents) | set(guidance.RESOURCES.values()) |
+        copied, _ = guidance.payload(lambda name: (app.REPO/name).read_bytes(), ['runtime', 'android'])
+        names = sorted(set(self.contents) | set(copied) |
                        set(guidance.APP_TEMPLATES.values()) | {'docs/starter-guidance-provenance.json'})
         self.assertEqual(names,sorted(p.relative_to(one).as_posix() for p in one.rglob('*') if p.is_file() and '.gptclaw' not in p.relative_to(one).parts))
         for name in names:

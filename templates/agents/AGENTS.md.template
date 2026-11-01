@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}} repository guidance
 
-Template-Version: 1.0.2
+Template-Version: 1.0.3
 Template-Source: GptClaw templates/agents/AGENTS.md.template
 
 ## Project and ownership
@@ -80,3 +80,12 @@ synchronize automatically. Preserve existing guidance and unknown overrides.
 Use a reviewed targeted Git revert for rollback, resolving conflicts while
 retaining unrelated later edits. Verify updated/restored guidance in a fresh
 task; do not interrupt ongoing tasks or alter global configuration automatically.
+
+## Working journey delivery
+
+Prioritize an early demonstration of the principal approved application journey
+through its real interface and persisted result where applicable. Choose each
+next task by how directly it enables or proves that journey. Defer speculative
+edge cases, broad refactors and optional polish with a reason and revisit trigger.
+Reassess repeated hardening without journey progress. Preserve required security,
+privacy, data-integrity and acceptance gates; a core journey is not full acceptance.

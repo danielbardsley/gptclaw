@@ -1,8 +1,8 @@
 # {{PROJECT_NAME}} repository guidance
 
-Source-Template-Version: 1.0.2
+Source-Template-Version: 1.0.3
 Template-Source: GptClaw templates/agents/AGENTS.md.template
-Starter-Version: 1.1.0
+Starter-Version: 1.2.0
 
 ## Project and ownership
 
@@ -95,3 +95,15 @@ and every reference applicable to this component's stack. The technical design
 and tasks must map them to actual local/CI gates and record justified adaptations
 or inapplicable rules with owner and review status. Preserve standards while
 removing demos. Copying references does not prove checks ran or tools exist.
+
+## Working journey delivery
+
+Prioritize an early demonstration of the principal approved application journey
+through its real interface and persisted result where applicable. Choose each
+next task by how directly it enables or proves that journey. Defer speculative
+edge cases, broad refactors and optional polish with a reason and revisit trigger.
+Reassess repeated hardening without journey progress. Preserve required security,
+privacy, data-integrity and acceptance gates; a core journey is not full acceptance.
+
+Read [working journey priorities](docs/engineering/delivery.md) and the
+[local skill selection guide](docs/engineering/skills.md) before material work.

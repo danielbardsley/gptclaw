@@ -69,14 +69,14 @@ def markdown(value):
     return re.sub(r'([\\`*_{}\[\]()<>#!|])', r'\\\1', value)
 
 
-def load_payload(source, revision, values):
+def load_payload(source, revision, values, capabilities=()):
     if not re.fullmatch(r'[0-9a-f]{40}', revision):
         raise BootstrapError('Source revision must be a full lowercase commit SHA')
     actual = git(source, 'rev-parse', '--verify', revision + '^{commit}').stdout.decode().strip()
     if actual != revision:
         raise BootstrapError('Source must identify a commit, not a tag object')
     entries = {}
-    tree = git(source, 'ls-tree', '-r', '-z', revision, '--', STARTER, SKILL, guidance.ENGINEERING).stdout
+    tree = git(source, 'ls-tree', '-r', '-z', revision, '--', STARTER, *guidance.SOURCE_PREFIXES, *guidance.SOURCE_FILES).stdout
     for item in tree.split(b'\0'):
         if not item:
             continue
@@ -109,7 +109,7 @@ def load_payload(source, revision, values):
             raise BootstrapError('Unresolved starter placeholder')
         payload[target] = rendered.encode()
     try:
-        inherited, bundle = guidance.payload(blobs.__getitem__)
+        inherited, bundle = guidance.payload(blobs.__getitem__, capabilities)
     except ValueError as error:
         raise BootstrapError(str(error)) from error
     payload.update(inherited)
@@ -117,7 +117,7 @@ def load_payload(source, revision, values):
               'source_revision': revision, 'starter': 'planning',
               'starter_version': version, 'inputs': values, 'engineering': bundle,
               'files': {name: digest(data) for name, data in sorted(payload.items())}}
-    payload[PROVENANCE] = (json.dumps(record, indent=2, sort_keys=True) + '\n').encode()
+    payload[PROVENANCE] = guidance.skills.encode(record)
     validate_payload(payload)
     return payload
 
@@ -125,9 +125,6 @@ def load_payload(source, revision, values):
 def validate_payload(payload):
     if len(payload['AGENTS.md']) > 8192:
         raise BootstrapError('Generated guidance exceeds 8 KiB')
-    skill_text = payload[SKILL + 'SKILL.md'].decode()
-    if not skill_text.startswith('---\nname: gptclaw-specification\n') or '\ndescription: ' not in skill_text:
-        raise BootstrapError('Invalid specification skill metadata')
     for name, data in payload.items():
         if not name.endswith('.md'):
             continue
@@ -241,9 +238,9 @@ def copy_exclusive(stage, target_fd, check):
             os.link(entry, entry.name, dst_dir_fd=target_fd, follow_symlinks=False)
 
 
-def create(source, revision, destination, name, purpose, owner, check_only=False):
+def create(source, revision, destination, name, purpose, owner, check_only=False, capabilities=()):
     values = metadata(name, purpose, owner)
-    payload = load_payload(source, revision, values)
+    payload = load_payload(source, revision, values, capabilities)
     path = checked_path(destination)
     print(json.dumps({'destination': str(path), 'source_revision': revision,
                       'files': sorted(payload), 'operation': 'check' if check_only else 'create'}), flush=True)
@@ -313,11 +310,12 @@ def main():
     parser.add_argument('--name', required=True)
     parser.add_argument('--purpose', required=True)
     parser.add_argument('--owner', required=True)
+    parser.add_argument('--capability', action='append', choices=sorted(guidance.skills.CAPABILITIES), default=[])
     parser.add_argument('--check', action='store_true', help='Validate inputs and conflicts without writing')
     args = parser.parse_args()
     try:
         result = create(SOURCE_ROOT, args.source_revision, args.destination, args.name,
-                        args.purpose, args.owner, args.check)
+                        args.purpose, args.owner, args.check, args.capability)
         print(json.dumps(result))
     except (BootstrapError, OSError, UnicodeError, ValueError) as error:
         print('Bootstrap stopped: ' + str(error) + '. Preserve the destination; inspect any in-progress marker before recovery.', file=sys.stderr)

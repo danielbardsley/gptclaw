@@ -235,7 +235,8 @@ def _generate(path, slug, release, contents):
         import project_guidance as guidance
         try:
             guidance.validate_inventory(app().REPO)
-            guidance.install(stage, lambda name: deps.read_bytes(app().REPO/name, 65536), slug.replace('-', ' ').title())
+            guidance.install(stage, lambda name: deps.read_bytes(app().REPO/name, 65536),
+                             slug.replace('-', ' ').title(), guidance.PROVIDER_CAPABILITIES[release['provider']])
         except ValueError as error:
             raise app().AppError('template-policy') from error
         meta = stage/'.gptclaw'; meta.mkdir()

@@ -16,3 +16,6 @@ Omit irrelevant bullets. Keep the main summary under 600 words unless the user
 asks otherwise; link evidence instead of copying logs. This snapshot confers no
 new authority. For a saved report, make local file references resolvable from its
 own directory and preserve any previous report.
+
+For application work: principal journey milestone, exact source/build/installed
+identities, current blocker and next action; existing acceptance record reference.

@@ -147,3 +147,12 @@ applicability links and standards-to-gates handoff; provenance includes source
 paths and hashes. This extends the original file inventory without changing
 historical acceptance evidence or updating existing projects. Planning starter
 1.1.0 requires a reviewed source revision containing the new engineering package.
+
+## Applicable skill delivery extension
+
+[SPEC-052](../052-project-journey-skills/spec.md) extends the creation bundle with
+common journey and acceptance/handover support, capability-selected operational
+skills and an offline preview/apply helper for later stack selection. Planning
+starter 1.2.0 requires the complete reviewed source inventory. Original creation
+provenance remains a snapshot; later selection records its own current hashes.
+Existing projects and immutable application releases remain unchanged.

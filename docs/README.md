@@ -348,6 +348,12 @@ interfaces; existing accepted slices remain valid. QLT-010 stays optional.
   [Specification](051-android-emulator-runner/spec.md) ·
   [Design](051-android-emulator-runner/technical-design.md) ·
   [Tasks](051-android-emulator-runner/tasks.md)
+## Project delivery
+
+- **052 — Project skills and working application journeys (AGT-011), implementation in review:**
+  [Specification](052-project-journey-skills/spec.md) ·
+  [Technical design](052-project-journey-skills/technical-design.md) ·
+  [Tasks](052-project-journey-skills/tasks.md)
 
 ## Current application milestone
 
