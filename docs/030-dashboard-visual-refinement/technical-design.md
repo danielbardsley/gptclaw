@@ -34,13 +34,13 @@ toolbar; fill the useful area with actual freshness and last-scan information.
 Render clear loading, empty/partial/truncation, stale/outage and diagnostics regions
 without fake current indicators or new interactions.
 
-Use a semantic table with project/type/repository/runtime/docs/status/destinations
+Use a semantic table with project/type/repository/runtime/status/destinations
 and a disclosure column. Flexible column sizing must fit at 1280 px rather than
 copy the reference's combined fixed minima. All normal rows start collapsed and
 target 72–88 px height with approximately 16 px vertical padding, restrained text
 and small chips. Let long-value rows grow. Shorten a validated repository for display
 only; keep its full value in details and never infer an owner or URL from project ID.
-Use explicit Present/Missing/Unavailable meaning with README/Index chip styling.
+Keep README/Index presence in the expanded details with explicit Present/Missing/Unavailable labels.
 
 ## Expanded presentation and interaction
 

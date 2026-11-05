@@ -130,7 +130,15 @@ Git credential/configuration or broker secret stores. The registry is bounded to
 entries/128 KiB. The scan is bounded to 256 immediate directory candidates, 4096 entries,
 10 seconds and a 1 MiB public response. Discovery does not execute repository code.
 Snapshots refresh at 30 seconds and become stale after 60 seconds without success.
-Documentation labels check safe file presence only, not prose quality.
+README/index labels in expanded project details check safe file presence only, not
+prose quality. The overview has no Docs column.
+
+If inventory reports `version` diagnostics after adding a supported project type,
+compare the installed release's frozen provider with current reviewed schema support.
+An older installed validator can omit newer valid projects even when current source
+validates them. Prepare a current provider release and follow the controls/provider
+alignment procedure below before activation. Retain actual validation warnings;
+do not remove project manifests or suppress diagnostics to make inventory complete.
 
 ## Stop, rollback and recovery
 

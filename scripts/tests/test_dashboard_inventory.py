@@ -101,6 +101,20 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual(result['rows'][-1]['components'], ['api','db','web'])
         self.assertNotIn('commands', json.dumps(result))
 
+    def test_static_projects_are_complete_without_starting_runtimes(self):
+        import project_static as static
+        for name in ('static-one', 'static-two'):
+            root = self.project(name)
+            (root/'.gptclaw/project.yaml').write_text(json.dumps(static.contract(name)))
+        caps = {**CAPS, 'project_manifest_schemas': [1, 2, 3, 4, 10],
+                'runtime_manifest_schemas': [1, 2, 3, 4, 10]}
+        with patch.object(subprocess, 'Popen', side_effect=AssertionError('execution')):
+            result = inventory.Scanner(self.projects, capabilities=caps).scan()
+        self.assertTrue(result['complete'], result['diagnostics'])
+        self.assertEqual(result['diagnostics'], [])
+        self.assertEqual([row['manifest_version'] for row in result['rows']], [10, 10])
+        self.assertTrue(all(row['runtime_support'] == 'supported' for row in result['rows']))
+
     def test_metadata_presence_and_missing_are_honest(self):
         root = self.project('web')
         (root/'README.md').write_text('Do not read this prose')

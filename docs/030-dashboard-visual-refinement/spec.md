@@ -67,7 +67,7 @@ stale. No additional status-aggregation semantics are introduced.
 ### VIS-002 — Compact, complete project overview
 
 Use desktop columns for project name/ID, type/components/manifest version,
-recorded repository, runtime support, documentation presence, overall service
+recorded repository, runtime support, overall service
 status/freshness, applicable destination pills and a disclosure control.
 Move owner, relative location, full values and detailed explanations into the
 project detail area where useful; retain every accepted inventory field.
@@ -79,7 +79,8 @@ summary identity, status and primary links fit without horizontal scrolling.
 Do not preserve the reference's fixed minimum widths if they cause overflow.
 
 Use subdued headers/dividers, aligned cells, monospaced IDs and compact chips.
-README/Index pills have accessible and visible Present/Missing/Unavailable meaning;
+README/Index presence remains in expanded project details with visible
+Present/Missing/Unavailable labels;
 color alone and a hover tooltip are insufficient. Keep the explanation that
 file presence does not assess documentation quality.
 
