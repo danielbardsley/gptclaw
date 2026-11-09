@@ -69,3 +69,9 @@ The project owner instructed “implement the spec” on October 12. This approv
 SPEC-030 and its documented supported-only adaptation and authorizes implementation
 and necessary reversible private rollout/verification through the owned dashboard
 release path. Review/merge and actual owner acceptance remain separate delivery gates.
+
+## Dark mode follow-up — October 16
+
+The project owner's separately requested dark mode and supplied v3 theme design
+are scoped in [dark-mode.md](dark-mode.md). That record tracks implementation and
+verification independently of the original presentation rollout/acceptance.
